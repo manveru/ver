@@ -1,30 +1,35 @@
 module VER
   module Keyboard # avoid initialize
+    ESC_TIMEOUT = 0.1 # seconds
+    ESC         = 27 # keycode
+
     module_function
 
     def focus(view)
       @stack = []
       @view = view
+      @time = Time.now
     end
 
     def poll
-      # trap('SIGINT'){ @view.press('C-c') }
-
       while char = @view.window.getch
-        if ready = resolve(char)
+        # Log.debug :char => char, :stack => @stack
+
+        if char == Ncurses::ERR # timeout or signal
+          @view.press('esc') if @stack == [ESC]
           @stack.clear
-          # Log.debug("ready = %p" % [ready])
+        elsif ready = resolve(char)
+          @stack.clear
+          Log.debug :press => ready
           @view.press(ready)
         end
       end
     end
 
     def resolve(char)
-      @stack << char unless char == -1
+      @stack << char
 
-      if char == -1 and @stack == [27]
-        'esc'
-      elsif @stack.first == 27
+      if @stack.first == ESC
         MOD_KEYS[@stack] || SPECIAL_KEYS[@stack]
       else
         NCURSES_KEYS[char] || CONTROL_KEYS[char] || PRINTABLE_KEYS[char]
@@ -37,11 +42,7 @@ module VER
     CONTROL   = ASCII.grep(/[[:cntrl:]]/)
     PRINTABLE = ASCII.grep(/[[:print:]]/)
 
-    PRINTABLE_KEYS = {}
-    PRINTABLE.each{|c| PRINTABLE_KEYS[c[0]] = c }
-
     SPECIAL_KEYS = {
-      [27, 27]              => 'esc', # TODO: cheap hack, maybe add timeout for esc?
       [27, 91, 49, 49, 126] => 'F1',
       [27, 91, 49, 50, 126] => 'F2',
       [27, 91, 49, 51, 126] => 'F3',
@@ -67,10 +68,10 @@ module VER
       13  => 'C-m', # this may be return
       14  => 'C-n',
       15  => 'C-o',
-      16  => 'C-p', # FIXME: need to turn off flow control
-      17  => 'C-q', # FIXME: need to turn off flow control
+      16  => 'C-p',
+      17  => 'C-q',
       18  => 'C-r',
-      19  => 'C-s', # FIXME: need to turn off flow control
+      19  => 'C-s',
       20  => 'C-t',
       21  => 'C-u',
       22  => 'C-v',
@@ -78,14 +79,19 @@ module VER
       24  => 'C-x',
       25  => 'C-y',
       26  => 'C-z', # FIXME: is usually suspend in shell job control
-      # 27 => 'esc',
+      # 27  => 'esc',
       32  => 'space',
       127 => 'backspace',
     }
 
-    MOD_KEYS = { }
-    (PRINTABLE - ['[']).each{|c| MOD_KEYS[[27, c[0]]] = "M-#{c}" }
-    # M-[ is esc
+    PRINTABLE_KEYS = {}
+    MOD_KEYS = {}
+
+    PRINTABLE.each do |key|
+      code = key.unpack('c')[0] # using unpack to be compatible with 1.9
+      PRINTABLE_KEYS[code] = key
+      MOD_KEYS[[ESC, code]] = "M-#{key}" unless key == '[' # don't map esc
+    end
 
     NCURSES_KEYS = {}
     Ncurses.constants.grep(/^KEY_/).each do |const|
