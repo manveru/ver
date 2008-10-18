@@ -12,6 +12,7 @@ module VER
     def press(key, *modes)
       MODES.each do |mode_name, mode_map|
         if modes.include?(mode_name) and method = mode_map[key]
+          Log.debug :key => key, :mode => mode_name, :method => method
           return yield(mode_name, method)
         end
       end

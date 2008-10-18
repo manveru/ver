@@ -1,8 +1,11 @@
 module VER
+  # TODO:
+  #   * Add the A_ constants, but they need set_attr
+  #   * Add 256 colors if possible
   module Color
     NAME_COLOR = {}
 
-    COLOR_CONSTANTS = Ncurses.constants.grep(/^(COLOR|A)_/)
+    COLOR_CONSTANTS = Ncurses.constants.grep(/^COLOR_/)
 
     # Filling NAME_COLOR
     COLOR_CONSTANTS.each do |const|
@@ -13,25 +16,50 @@ module VER
     # Cache for created colors
     COLOR = {}
 
-    def self.[](bg, fg, *fg_rest)
-      key = [bg, fg, *fg_rest]
-      COLOR[key] ||= create_color(*key)
+    module_function
+
+    def [](*args)
+      COLOR[args] ||= create_color(*args)
     end
 
-    private
+    def start
+      Log.debug "Starting Colors"
+      Ncurses.start_color
+      setup_default_colors
+    end
 
-    def self.create_color(bg, fg, *fg_rest)
+    def background
+      @background ||= determine_background
+    end
+
+    def setup_default_colors(bg = background)
+      Color[:white]
+      Color[:blue]
+    end
+
+    def determine_background
+      bg = Ncurses::COLOR_BLACK
+      bg = -1 if Ncurses.use_default_colors == Ncurses::OK
+    rescue NameError
+      bg
+    end
+
+    # Ncurses.init_pair(1, Ncurses::COLOR_BLUE, bg);
+    # Ncurses.init_pair(2, Ncurses::COLOR_CYAN, bg);
+
+    def create_color(fg, bg = nil)
+      bg = bg ? fetch(bg) : background
       idx = COLOR.size
-      Log.debug("create_color(%p, %p, %p)" % [bg, fg, fg_rest])
-      combined_fg = fg_rest.inject(fetch(fg)){|s,v| s | fetch(v) }
-      Ncurses.init_pair(idx, combined_fg, fetch(bg) )
+
+      Ncurses.init_pair(idx, fetch(fg), bg)
+
       return idx
     end
 
-    def self.fetch(name)
+    def fetch(name)
       c = NAME_COLOR[name.to_s.downcase] or raise("No color for: %p" % name)
-      Log.debug("%p: %p" % [name, c])
-      Log.debug NAME_COLOR
+      # Log.debug("%p: %p" % [name, c])
+      # Log.debug NAME_COLOR
       c
     end
   end

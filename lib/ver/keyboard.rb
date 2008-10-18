@@ -13,14 +13,11 @@ module VER
 
     def poll
       while char = @view.window.getch
-        # Log.debug :char => char, :stack => @stack
-
         if char == Ncurses::ERR # timeout or signal
           @view.press('esc') if @stack == [ESC]
           @stack.clear
         elsif ready = resolve(char)
           @stack.clear
-          Log.debug :press => ready
           @view.press(ready)
         end
       end
@@ -62,10 +59,10 @@ module VER
       7   => 'C-g',
       8   => 'C-h',
       9   => 'tab',
-      10  => 'return',
+      10  => 'return', # C-j
       11  => 'C-k',
       12  => 'C-l',
-      13  => 'C-m', # this may be return
+      13  => 'return', # C-m
       14  => 'C-n',
       15  => 'C-o',
       16  => 'C-p',
