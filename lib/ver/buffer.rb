@@ -1,13 +1,17 @@
 module VER
   class Buffer
-    attr_accessor :name
+    attr_accessor :name, :cursor
 
     def initialize(name)
       @name = name
     end
 
+    def cursor
+      @cursor ||= Cursor.new(self, 0)
+    end
+
     def new_cursor(position = 0)
-      return Cursor.new(position, self)
+      Cursor.new(self, position)
     end
 
     def range(s=nil, len=nil)
@@ -130,6 +134,10 @@ module VER
       @mark = @buffer.size if @mark > @buffer.size
 
       return
+    end
+
+    def close
+      @data = ''
     end
   end
 end

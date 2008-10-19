@@ -17,16 +17,17 @@ differing in length vastly, as to achive a better feeling of what we can do with
 BUFFER
 =end
 
-$buffer_content = <<BUFFER.strip
-...................
-....
-...................
-...
-...................
-..
-...................
-.
-BUFFER
+$buffer_content = <<EXAMPLE.strip
+require 'lib/ver/cursor'
+require 'lib/ver/buffer'
+require 'lib/ver/buffer/memory'
+require 'bacon'
+
+# Bacon.extend(Bacon::TestUnitOutput)
+Bacon.summary_on_exit
+
+=begin
+EXAMPLE
 
 describe 'Cursor' do
   def new_buffer
@@ -37,33 +38,24 @@ describe 'Cursor' do
     cursor = VER::Cursor.new(new_buffer, pos)
   end
 
-=begin
-  should 'debug down' do
+  move, start = :up, 150
+
+  should "debug #{move}" do
     buffer = new_buffer
-    cursor = VER::Cursor.new(buffer, 3)
+    cursor = VER::Cursor.new(buffer, start)
+    old = start
     puts '', buffer[0..-1], ''
 
-    6.times do
-      buffer[cursor.pos, 1] = 'X'
-      puts '', buffer[0..-1], ''
-      cursor.down
-    end
-
-    1.should == 1
-  end
-=end
-
-  should 'debug up' do
-    buffer = new_buffer
-    cursor = VER::Cursor.new(buffer, 2)
-    puts '', buffer[0..-1], ''
-
-    $buffer_content.dup.each_line do
+    $buffer_content.count("\n").times do |n|
+      puts "= #{n} =".center(80, "=")
+      old = cursor.pos
       char = buffer[cursor.pos, 1]
-      p char
+      p :here => char
       buffer[cursor.pos, 1] = 'X' unless char == "\n"
+      # buffer[cursor.pos, 1] = 'O' if char == "\n"
       puts '', buffer[0..-1], ''
-      cursor.down
+      cursor.send(move)
+      break if cursor.pos == old
     end
 
     1.should == 1

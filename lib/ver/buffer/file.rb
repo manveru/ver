@@ -1,9 +1,10 @@
 module VER
   class FileBuffer < MemoryBuffer
-    attr_reader :filename
+    attr_reader :filename, :cursor
 
     def initialize(name, file_or_filename)
       super(name)
+      @cursor = new_cursor(0)
 
       case file_or_filename
       when File
@@ -34,6 +35,14 @@ module VER
 
       @dirty = false
       return filename
+    end
+
+    def hash
+      filename
+    end
+
+    def eql?(other)
+      filename == other.filename
     end
   end
 end

@@ -8,14 +8,7 @@ begin; require 'rubygems'; rescue LoadError; end
 require 'ncurses'
 
 module VER
-       LOG_FILE = File.join(Dir.tmpdir, 'ver.log')
-            DIR = File.expand_path(File.dirname(__FILE__))
-  BLUEPRINT_DIR = File.expand_path(File.join(DIR, '../blueprint'))
-        ETC_DIR = File.expand_path(File.join(DIR, '../etc'))
-       HELP_DIR = File.expand_path(File.join(DIR, '../help'))
-
-  # logfile rotation, 5 files history of 2mb each
-  Log = Logger.new(LOG_FILE, 5, (2 << 20))
+  DIR = File.expand_path(File.dirname(__FILE__))
 
   $LOAD_PATH.unshift(DIR)
 
@@ -24,12 +17,14 @@ module VER
   require 'ver/buffer/memory'
   require 'ver/buffer/file'
 
+  require 'ver/error'
   require 'ver/keyboard'
   require 'ver/keymap'
   require 'ver/action'
   require 'ver/window'
   require 'ver/cursor'
   require 'ver/color'
+  require 'ver/config'
 
   require 'ver/view'
   require 'ver/view/main'
@@ -37,17 +32,16 @@ module VER
   require 'ver/view/ask'
   require 'ver/view/help'
 
-  require File.join(ETC_DIR, 'vi')
-
   module_function
 
   def start(*args)
+    start_config
     Log.debug "Initializing VER"
-
     start_ncurses
+
     catch(:close){ setup(*args) }
   rescue Exception => ex
-    Log.error(ex)
+    VER.error("Fatal error", ex)
   ensure
     stop_ncurses # do this, or the world implodes
   end
@@ -56,12 +50,35 @@ module VER
     stop_ncurses
   end
 
+  def start_config
+    first_start unless File.directory?(Config[:rc_dir])
+
+    require File.join(Config[:keymap])
+
+    log = Config[:logfile, :logfile_history, :logfile_size].map{|c| c.value }
+    VER.const_set('Log', Logger.new(*log))
+  end
+
+  def first_start
+    Config[:rc_dir, :help_dir, :blueprint_dir].each do |dir|
+      FileUtils.mkdir_p(dir)
+    end
+
+    FileUtils.cp_r File.join(DIR, '../keymap'),    Config[:rc_dir]
+    FileUtils.cp_r File.join(DIR, '../help'),      Config[:rc_dir]
+    FileUtils.cp_r File.join(DIR, '../blueprint'), Config[:rc_dir]
+    FileUtils.cp   File.join(DIR, '../ver.rb'),    Config[:rc_file]
+  rescue Object => ex
+    puts ex, *ex.backtrace
+    exit!
+  end
+
   def setup(*args)
-    status_view = setup_status
-    info_view = setup_info
-    ask_view = setup_ask
-    help_view = setup_help
-    main_view = setup_main(*args)
+    ask_view    = setup_ask    # for asking questions
+    status_view = setup_status # status of current buffer
+    info_view   = setup_info   # info about what's going on
+    help_view   = setup_help   # show help
+    main_view   = setup_main(*args)
 
     info_view.show "VER 2008.10.16  F1 for help  F12 to configure  C-q to quit"
 
@@ -78,7 +95,7 @@ module VER
 
     main = MainView.new(:main, window)
 
-    main.buffer = File.join(BLUEPRINT_DIR, 'welcome') if files.empty?
+    main.buffer = File.join(Config[:blueprint_dir], 'welcome') if files.empty?
     files.each{|f| main.buffer = f }
 
     return main
@@ -98,7 +115,7 @@ module VER
 
   def setup_info
     window = Window.new{ {
-      :height => 1,
+      :height => 10,
       :width  => Ncurses.stdscr.getmaxx,
       :top    => Ncurses.stdscr.getmaxy - 1,
       :left   => 0 }
@@ -111,12 +128,13 @@ module VER
   def setup_ask
     window = Window.new{ {
       :height => 2,
-      :width => Ncurses.stdscr.getmaxx,
-      :top => Ncurses.stdscr.getmaxy - 2,
-      :left => 0 }
+      :width  => Ncurses.stdscr.getmaxx,
+      :top    => Ncurses.stdscr.getmaxy - 2,
+      :left   => 0 }
     }
 
     buffer = MemoryBuffer.new(:ask)
+    window.hide
     AskView.new(:ask, window, buffer)
   end
 
@@ -140,12 +158,18 @@ module VER
     View[:status].show(message)
   end
 
-  def ask(question, &block)
-    View[:ask].ask(question, &block)
+  def ask(question, completer, &block)
+    View[:ask].ask(question, completer, &block)
   end
 
   def help
     View[:help].topic('index')
+  end
+
+  def error(message, exception)
+    Log.error(message)
+    Log.error(exception)
+    # View[:error].error(message, exception)
   end
 
   # Setup ncurses, nicely documented by the curses manpages
@@ -229,6 +253,7 @@ module VER
 
   def stop_ncurses
     Log.info " STOP ".center(30, "=")
+  ensure
     Ncurses.echo
     Ncurses.nocbreak
     Ncurses.nl

@@ -23,7 +23,6 @@ module VER
     end
 
     def start
-      Log.debug "Starting Colors"
       Ncurses.start_color
       setup_default_colors
     end
@@ -57,10 +56,7 @@ module VER
     end
 
     def fetch(name)
-      c = NAME_COLOR[name.to_s.downcase] or raise("No color for: %p" % name)
-      # Log.debug("%p: %p" % [name, c])
-      # Log.debug NAME_COLOR
-      c
+      NAME_COLOR[name.to_s.downcase] or raise("No color for: %p" % name)
     end
   end
 end

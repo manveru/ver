@@ -33,8 +33,14 @@ VER::KeyMap.let :control do
   key 'C-r', :unundo
   key 'C-l', :window_resize
   key 'C-o', :buffer_open
-  key 'C-q', :buffer_close
   key 'C-s', :buffer_persist
+  key 'C-b', :buffer_select
+  key 'C-w', :buffer_close
+  key 'C-q', :window_close
+  key 'C-x', :execute
+  key 'F7',  :ruby_filter
+
+  (1..9).each{|n| key("M-#{n}", :buffer, n - 1) }
 
   # mode switches
 
@@ -56,10 +62,10 @@ VER::KeyMap.let :control do
   key :left, :left
   key :right, :right
 
-  key :w, :word_right
-  key :W, :chunk_right
-  key :b, :word_left
-  key :B, :chunk_left
+  key :w, :jump_right, VER::Config[:word_break]
+  key :W, :jump_right, VER::Config[:chunk_break]
+  key :b, :jump_left, VER::Config[:word_break]
+  key :B, :jump_left, VER::Config[:chunk_break]
 end
 
 VER::KeyMap.let :help do

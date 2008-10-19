@@ -1,3 +1,188 @@
+require 'ver/action/switch'
+
+module VER
+  class MainAction < Action
+    include SwitchAction
+
+    def insert_character(char = @key)
+      @cursor.insert(char)
+    end
+
+    def insert_space
+      @cursor.insert(' ')
+    end
+
+    def insert_return
+      @cursor.insert_newline
+    end
+
+    def insert_backspace
+      @cursor.insert_backspace
+    end
+
+    def insert_delete
+      @cursor.insert_delete
+    end
+
+    def right
+      @cursor.right
+    end
+
+    def left
+      @cursor.left
+    end
+
+    def down
+      @cursor.down
+    end
+
+    def up
+      @cursor.up
+    end
+
+    def beginning_of_line
+      @cursor.beginning_of_line
+    end
+
+    def end_of_line
+      @cursor.end_of_line
+    end
+
+    def jump_right(regex)
+      pos, max = @cursor.pos, @buffer.size - 1
+      return if pos == max
+
+      @cursor.region((pos + 1)..max) do |cursor|
+        if found = cursor.index(regex)
+          @cursor.pos = found
+        else
+          @cursor.pos = max
+        end
+      end
+    end
+
+    def jump_left(regex)
+      pos, min = @cursor.pos, 0
+      return if pos == min
+
+      @cursor.region(min..(pos - 2)) do |cursor|
+        if found = cursor.rindex(regex)
+          @cursor.pos = found
+        else
+          @cursor.pos = min
+        end
+      end
+    end
+
+    def buffer_persist(buffer = @buffer)
+      filename = buffer.save_file
+      VER.info "Saved to: #{filename}"
+    end
+
+    BUFFER_CLOSE_PROC = lambda{|got|
+      options = %w[yes no cancel]
+      valid = options.include?(got)
+      choices = options.grep(/^#{got}/)
+      [valid, choices]
+    }
+
+    def buffer_ask_about_saving(buffer = @buffer)
+      file = buffer.filename
+
+      VER.ask("Save changes to: #{file}? ", BUFFER_CLOSE_PROC) do |answer|
+        case answer
+        when 'yes'
+          buffer_persist(buffer)
+          yield
+        when 'no'
+          yield
+        when 'cancel'
+          raise CancelAction
+        end
+      end
+    end
+
+    def buffer_close(buffer = @buffer)
+      buffer_ask_about_saving buffer do
+        idx = @view.buffers.index(buffer)
+        switch_to = [0, idx, (@view.buffers.size - 2)].sort[1]
+        buffer.close
+        @view.buffers.delete(buffer)
+        @view.buffer = @view.buffers[switch_to]
+      end
+    end
+
+    def window_close
+      throw :close
+    end
+
+    BUFFER_OPEN_PROC = lambda{|got|
+      got = File.expand_path(got)
+      got << '/' if File.directory?(got)
+
+      choices = Dir["#{got}*"].map{|path|
+        File.directory?(path) ? path + '/' : path
+      }
+
+      [File.file?(got), choices]
+    }
+
+    def buffer_open
+      VER.ask('File: ', BUFFER_OPEN_PROC) do |filename|
+        @view.buffer = filename
+      end
+    end
+
+    BUFFER_FIND_PROC = lambda{|got|
+      buffer_names = View[:main].buffers.map{|b| b.filename }
+      choices = buffer_names.grep(/#{got}/)
+      [got, choices]
+    }
+
+    def buffer_select
+      VER.ask('Buffer: ', BUFFER_FIND_PROC) do |name|
+        @view.buffer = name
+      end
+    end
+
+    EXECUTE_PROC = lambda{|got|
+      methods = VER::MainAction.instance_methods(false).map{|m| m.to_s }
+      choices = methods.grep(/^#{got}/)
+      valid = methods.include?(got)
+      [valid, choices]
+    }
+
+    def execute(command = nil)
+      if command
+        send(*command.to_s.split)
+      else
+        VER.ask('Execute: ', EXECUTE_PROC) do |cmd|
+          send(*cmd.split)
+        end
+      end
+    end
+
+    # TODO: use irbs completion proc?
+    RUBY_FILTER_PROC = lambda{|got| }
+
+    def ruby_filter
+      VER.ask('Ruby filter: text.', RUBY_FILTER_PROC) do |ruby|
+      end
+    end
+
+    def window_resize
+      View::LIST.each{|name, view| view.window_resize }
+    end
+
+    def buffer(n)
+      if found = @view.buffers[n]
+        @view.buffer = found
+      end
+    end
+  end
+end
+
+__END__
 module VER
   class MainAction < Action
     def up
@@ -242,14 +427,6 @@ module VER
 
       @view.buffer = filename
     end
-
-=begin
-    def buffer_toggle
-      main = View[:main]
-      Log.debug :visible => main.window.visible?
-      main.window.visible? ? main.hide_window : main.show_window
-    end
-=end
 
     def show_help
       VER.help

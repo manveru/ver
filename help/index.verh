@@ -1,2 +1,14 @@
-This is the help.
-Enjoy your stay
+* VER Help system
+
+** Control keymappings
+
+To exit:            C-q
+To open a file:     C-o
+To close a file:    C-w
+To save a buffer:   C-s
+To select a buffer: C-b
+To go to insert mode: i
+
+** Insert mode keymappings
+
+To go to control mode: C-c

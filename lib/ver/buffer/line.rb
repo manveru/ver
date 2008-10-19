@@ -23,7 +23,6 @@ module VER
     end
 
     def store!
-      # VER::Log.debug "buffer[%p, %p] = %p" % [range.begin, range.end, line]
       buffer[range] = line
     end
 

@@ -62,17 +62,24 @@ module VER
     #   * line endings have to be correct for the terminal
     #     on linux at least it has to be \n
     def printw(string)
+      return unless visible?
       line = string.to_s.gsub(/[\r\n]+/, "\n").gsub(/%/, '%%')
       @window.printw(line)
     end
 
+    def print_line(string)
+      return unless visible?
+      sane = string.to_s.rstrip.gsub(/%/, '%%')
+      @window.printw("%-#{width}s" % sane)
+    end
+
     def print_empty_line
+      return unless visible?
       @window.printw(' ' * width)
     end
 
     def show_colored_chunks(chunks)
-      clear
-      move 0, 0
+      return unless visible?
       chunks.each do |color, chunk|
         color_set(color)
         printw(chunk.to_s)
@@ -80,6 +87,7 @@ module VER
     end
 
     def refresh
+      return unless visible?
       @window.refresh
     end
 
@@ -94,6 +102,7 @@ module VER
     end
 
     def clear
+      return unless visible?
       move 0, 0
       printw Array.new(height){ (' ' * (width - 1))}.join("\n")
     end
@@ -118,14 +127,12 @@ module VER
     # panel
 
     def hide
-      Log.debug("Hiding: %p" % self)
       Ncurses::Panel.hide_panel @panel
       Ncurses.refresh
       @visible = false
     end
 
     def show
-      Log.debug("Showing: %p" % self)
       Ncurses::Panel.show_panel @panel
       Ncurses.refresh
       @visible = true

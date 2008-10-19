@@ -11,16 +11,15 @@ module VER
 
     def press(key, *modes)
       MODES.each do |mode_name, mode_map|
-        if modes.include?(mode_name) and method = mode_map[key]
-          Log.debug :key => key, :mode => mode_name, :method => method
-          return yield(mode_name, method)
+        if modes.include?(mode_name) and signature = mode_map[key]
+          return yield(mode_name, signature)
         end
       end
 
       VER.info "not mapped key: %p in modes: %p" % [key, modes]
-    rescue Exception => ex
-      Log.error "Key: %p in modes: %p" % [key, modes]
-      Log.error ex
+    rescue Object => ex
+      message = "Key: %p in modes: %p" % [key, modes]
+      VER.error(message, ex)
     end
 
     class Mode
@@ -33,20 +32,20 @@ module VER
         instance_eval(&block)
       end
 
-      def keys(keys, method)
-        keys.each{|k| self[k] = method }
+      def keys(keys, method, *args)
+        keys.each{|k| key(k, method, *args) }
       end
 
-      def key(k, method)
-        self[k] = method
+      def key(k, method, *args)
+        self[k] = [method, *args]
       end
 
       def [](key)
         @map[key.to_s]
       end
 
-      def []=(key, method)
-        @map[key.to_s] = method
+      def []=(key, signature)
+        @map[key.to_s] = signature
       end
     end
   end

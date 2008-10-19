@@ -1,7 +1,7 @@
 require 'ver/action/help'
 
 module VER
-  class HelpView < MainView
+  class HelpView < View
     def draw
       @window.printw('help')
     end
