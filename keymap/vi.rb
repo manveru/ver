@@ -62,10 +62,10 @@ VER::KeyMap.let :control do
   key :left, :left
   key :right, :right
 
-  key :w, :jump_right, VER::Config[:word_break]
-  key :W, :jump_right, VER::Config[:chunk_break]
-  key :b, :jump_left, VER::Config[:word_break]
-  key :B, :jump_left, VER::Config[:chunk_break]
+  key :w, :jump_right, VER::Config[:word_break].value
+  key :W, :jump_right, VER::Config[:chunk_break].value
+  key :b, :jump_left, VER::Config[:word_break].value
+  key :B, :jump_left, VER::Config[:chunk_break].value
 end
 
 VER::KeyMap.let :help do
@@ -91,4 +91,24 @@ VER::KeyMap.let :ask do
 
   key 'C-q', :stop_asking
   key 'C-c', :stop_asking
+end
+
+VER::KeyMap.let :replace do
+  keys VER::Keyboard::PRINTABLE, :replace_character
+  key :space,     :replace_space
+  key :return,    :replace_return
+  key :backspace, :replace_backspace
+  key :dc,        :replace_delete
+
+  # move
+
+  key :up, :up
+  key :down, :down
+  key :left, :left
+  key :right, :right
+
+  # mode switches
+
+  key :esc,  :into_control_mode
+  key 'C-c', :into_control_mode # esc is slow due to timeout
 end
