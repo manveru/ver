@@ -1,0 +1,10 @@
+This is a little example.
+We will attempt to provide a large variety of buffer strutures in this one.
+
+Like empty lines, or long lines.
+Even lines
+differing in length vastly, as to achive a better feeling of what we can do with it and how to improve.
+
+
+
+And of course multiple empty lines :)
