@@ -221,7 +221,7 @@ module VER
           send(*command.to_s.split)
         else
           VER.ask('Execute: ', EXECUTE_PROC) do |cmd|
-            send(*cmd.split)
+            send(*cmd.split) if cmd
             View.active.draw
           end
         end
