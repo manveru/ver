@@ -13,6 +13,7 @@ module VER
 
   $LOAD_PATH.unshift(DIR)
 
+  require 'ver/log'
   require 'ver/messaging'
   require 'ver/ncurses'
   require 'ver/layout'
@@ -49,7 +50,7 @@ module VER
 
     start_ncurses
 
-    Log.debug :close => catch(:close){ setup(*args) }
+    catch(:close){ setup(*args) }
   rescue ::Exception => ex
     error(ex)
   ensure

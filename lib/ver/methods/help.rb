@@ -26,7 +26,6 @@ module VER
       end
 
       def view_close
-        Log.debug :close
         @view.deactivate
         View[:main].activate
       end

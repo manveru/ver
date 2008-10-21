@@ -84,11 +84,15 @@ VER.map :control, :help do
   key :P,    :paste_before
   key :G,    :goto_end_of_buffer
   key 'C-l', :recenter_view
-  key :/,    :search
   key :u,    :undo
   key 'C-r', :unundo
   key 'C-x', :execute
   key 'F7',  :ruby_filter
+
+  # Searching
+  key :/,    :search
+  key :n,    :next_highlight
+  key :N,    :previous_highlight
 
   # buffer state
   key 'C-o', :buffer_open

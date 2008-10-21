@@ -22,29 +22,42 @@ module VER
     end
 
     def draw
-      @input = buffer[0..-1]
-      valid, @completions = block_complete
+      @valid, @completions = block_complete
+      input = self.input
 
-      window.clear
-      window.move 0, 0
-
-      input_color = valid ? :green : :red
-
-      lines = [ [Color[:white], @question],
-        [Color[input_color], "#@input\n"] ]
-      lines.concat color_complete_from(@input, *@completions)
-      window.show_colored_chunks(lines)
+      draw_readline
+      draw_completions
     rescue Object => ex
+      Log.debug :error
       draw_exception(ex)
     ensure
       adjust_cursor
       window.refresh
     end
 
+    def draw_readline
+      window.clear
+      window.move 0, 0
+
+      window.color_set Color[:white]
+      window.print_line @question
+
+      window.color_set Color[@valid ? :green : :red]
+      window.print_line input + "\n"
+    end
+
+    def draw_completions
+      window.move 1, 0
+      color_complete_from(input, *@completions).each do |color, string|
+        window.color_set color
+        window.print_line string
+      end
+    end
+
     def draw_exception(ex = @exception)
       window.move(1, 0)
       window.color_set(Color[:red])
-      window.print_line(ex.to_s)
+      window.print_line(ex)
     end
 
     def adjust_cursor

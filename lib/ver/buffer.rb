@@ -1,16 +1,17 @@
 module VER
   class Buffer
-    attr_accessor :name, :cursor
+    attr_accessor :name
+    attr_writer :cursor
 
     def initialize(name)
       @name = name
     end
 
     def cursor
-      @cursor ||= Cursor.new(self, 0)
+      @cursor ||= new_cursor
     end
 
-    def new_cursor(pos, mark = nil)
+    def new_cursor(pos = 0, mark = size)
       Cursor.new(self, pos, mark)
     end
 
@@ -109,33 +110,11 @@ module VER
       first = from_offset[0] || total_offset[0]
       last = to_offset[0] || total_offset[1]
 
-      @data[first..(last - 1)]
+      return first..(last - 1)
     end
 
-    def line_at(number)
-      each_line do |line|
-        return line if number == line.number
-      end
-
-      return nil
-    end
-
-    def lines_at(*numbers)
-      return [] if numbers.empty?
-      max = numbers.max
-      result = {}
-
-      each_line do |line|
-        ln = line.number
-
-        if numbers.include?(ln)
-          result[ln] = line
-        end
-
-        break if ln > max
-      end
-
-      result.values_at(*numbers)
+    def data_range(range)
+      @data[line_range(range)]
     end
 
     def line_count

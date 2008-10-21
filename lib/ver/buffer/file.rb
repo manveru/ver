@@ -1,10 +1,9 @@
 module VER
   class FileBuffer < MemoryBuffer
-    attr_reader :filename, :cursor
+    attr_reader :filename
 
     def initialize(name, file_or_filename)
       super(name)
-      @cursor = new_cursor(0)
 
       case file_or_filename
       when File

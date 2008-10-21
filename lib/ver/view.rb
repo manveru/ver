@@ -34,16 +34,20 @@ module VER
       view.draw
     end
 
-    attr_accessor :window, :buffers, :modes, :methods, :active
-    attr_reader :name, :top, :left, :buffer, :keyhandler
+    attr_accessor :window, :methods, :active, :selection, :keyhandler, :highlights
+    attr_reader :buffers, :modes, :name, :top, :left, :buffer
 
     def initialize(name, window, *buffers)
       @name, @window, @buffers = name, window, buffers
       @buffer = @buffers.first
       @top, @left = 0, 0
+
       @modes = [self.class::INITIAL_MODE]
       @methods = Mixer.new(self, *self.class::METHODS)
       @keyhandler = KeyHandler.new(self)
+
+      @highlights = []
+
       View::LIST[name] = self
     end
 
@@ -57,8 +61,11 @@ module VER
     end
 
     def cursor
-      return unless buffer
-      buffer.cursor ||= buffer.new_cursor(0)
+      buffer.cursor
+    end
+
+    def cursor=(cursor)
+      buffer.cursor = cursor
     end
 
     def focus_input
@@ -91,7 +98,7 @@ module VER
         raise(ArgumentError, "Not a buffer: %p" % buffer)
       end
 
-      draw
+      # draw
     end
 
     def adjust_pos(border = 5)
@@ -122,7 +129,7 @@ module VER
     end
 
     def bottom
-      @top + (@window.height - 1)
+      @top + @window.height
     end
 
     def right
@@ -152,7 +159,7 @@ module VER
     def visible_each
       visible_xs = self.visible_xs
 
-      buffer.line_range(visible_ys).each do |line|
+      buffer.data_range(visible_ys).each do |line|
         if substr = line[visible_xs]
           yield substr.size == 0 ? "\n" : substr
         else

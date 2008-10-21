@@ -57,6 +57,10 @@ module VER
       @window.move(y, x)
     end
 
+    def method_missing(meth, *args)
+      @window.send(meth, *args)
+    end
+
     # FIXME:
     #   * printw seems to use printf which interprets stuff starting with '%'
     #   * line endings have to be correct for the terminal
@@ -81,7 +85,7 @@ module VER
       return unless visible?
       chunks.each do |color, chunk|
         color_set(color)
-        printw(chunk.to_s)
+        print_line(chunk)
       end
     end
 

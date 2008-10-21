@@ -62,7 +62,6 @@ module VER
 
       def buffer_open
         VER.ask('File: ', BUFFER_OPEN_PROC) do |filename|
-          Log.debug :filename => filename
           view.buffer = filename if filename
         end
       end
