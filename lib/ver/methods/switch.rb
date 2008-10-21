@@ -5,7 +5,7 @@ module VER
     module Switch
       def into_control_mode
         into_mode :control
-        Log.debug :cursor => cursor
+        view.selection = nil
         left(cursor.bol)
       end
 
