@@ -3,9 +3,9 @@ module VER
     attr_reader :buffer
     attr_accessor :pos, :mark
 
-    def initialize(buffer, pos)
+    def initialize(buffer, pos, mark = nil)
       @buffer, @pos = buffer, pos
-      @mark = buffer.size
+      @mark = mark || buffer.size
     end
 
     def wrap_region
@@ -38,7 +38,8 @@ module VER
     end
 
     def bol
-      if pos = @buffer.rindex(/\n/, 0...@pos)
+      max = [@pos - 1, 0].max
+      if pos = @buffer.rindex(/\n/, 0..max)
         pos + 1
       else
         0
@@ -98,9 +99,9 @@ module VER
       end
     end
 
-    def left
+    def left(boundary = 0)
       @pos -= 1
-      @pos = 0 if @pos < 0
+      @pos = boundary if @pos < boundary
     end
 
     def right
@@ -114,27 +115,44 @@ module VER
     # TODO:
     #   * should take linewrap into account?
     #   * needs up to three matches, might be possible with only 2
-    def to_pos(window = nil)
-      bol = @buffer.rindex(/\n/, 0..@pos)
-      eol = @buffer.index(/\n/, @pos..buffer.size)
+    def to_pos(from_mark = false)
+      return to_y(from_mark), to_x(from_mark)
+    end
 
-      y = @buffer[0...@pos].count("\n")
+    def to_y(from_mark = false)
+      pos = from_mark ? @mark : @pos
+      y = @buffer[0...pos].count("\n")
+    end
+
+    def to_x(from_mark = false)
+      pos = from_mark ? @mark : @pos
+
+      bol = @buffer.rindex(/\n/, 0...pos)
+      eol = @buffer.index(/\n/, pos..buffer.size)
 
       if not bol and not eol # only one line
-        x = @pos
+        x = pos
       elsif not bol # first line
-        x = @pos
+        x = pos
       elsif bol == eol # on newline
-        if bol = @buffer.rindex(/\n/, 0...@pos)
-          x = @pos - (bol + 1)
+        if bol = @buffer.rindex(/\n/, 0...pos)
+          x = pos - (bol + 1)
         else
-          x = @pos
+          x = pos
         end
       else
-        x = @pos - (bol + 1)
+        x = pos - (bol + 1)
       end
 
-      return y, x
+      return x
+    end
+
+    def to_range
+      [@pos, @mark].min..[@pos, @mark].max
+    end
+
+    def delta
+       [@pos, @mark].max - [@pos, @mark].min
     end
 
     def insert(string)

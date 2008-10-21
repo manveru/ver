@@ -10,8 +10,8 @@ module VER
       @cursor ||= Cursor.new(self, 0)
     end
 
-    def new_cursor(position = 0)
-      Cursor.new(self, position)
+    def new_cursor(pos, mark = nil)
+      Cursor.new(self, pos, mark)
     end
 
     def range(s=nil, len=nil)
@@ -20,8 +20,12 @@ module VER
       r = (s...size)  if s.is_a?(Numeric) && !len
       r = s           if s.is_a?(Range)
 
-      if(r.first < 0 || r.first > size || r.last > size)
-        raise RangeError, "#{r} not within 0..#{size}"
+      first = r.begin
+      last = r.end
+      last -= 1 if r.exclude_end?
+
+      if(first < 0 || last > size || last > size)
+        raise RangeError, "%p not within %p" % [r, (first..last)]
       end
 
       return r
@@ -85,6 +89,27 @@ module VER
         range = (range.end...(range.end + line.size))
         yield BufferLine.new(self, line, range, number)
       end
+    end
+
+    # NOTE:
+    #   * This may look really nasty, but using a single regular expression
+    #     beats any other approch i've tried so far (especially using each_line).
+    def line_range(range)
+      from = range.begin + 1
+      to = (range.end - from) + 1
+
+      regex = /\A(.*\n){0,#{from}}(.*\n?){0,#{to}}/
+
+      match = @data.match(regex)
+
+      total_offset = match.offset(0)
+      from_offset = match.offset(1)
+      to_offset = match.offset(2)
+
+      first = from_offset[0] || total_offset[0]
+      last = to_offset[0] || total_offset[1]
+
+      @data[first..(last - 1)]
     end
 
     def line_at(number)

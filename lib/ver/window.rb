@@ -63,14 +63,13 @@ module VER
     #     on linux at least it has to be \n
     def printw(string)
       return unless visible?
-      line = string.to_s.gsub(/[\r\n]+/, "\n").gsub(/%/, '%%')
+      line = string.to_s.gsub(/[\r\n]/, "\n").gsub(/%/, '%%')
       @window.printw(line)
     end
 
     def print_line(string)
       return unless visible?
-      sane = string.to_s.rstrip.gsub(/%/, '%%')
-      @window.printw("%-#{width}s" % sane)
+      @window.waddnstr(string.to_s, width)
     end
 
     def print_empty_line

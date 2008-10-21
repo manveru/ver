@@ -1,4 +1,4 @@
-require 'ver/action/main'
+require 'ver/methods/main'
 
 module VER
   class View
@@ -12,19 +12,53 @@ module VER
       LIST[name] = view
     end
 
-    attr_accessor :window, :buffers, :modes
-    attr_reader :name, :offset, :buffer
+    def self.resize
+      LIST.each{|name, view| view.resize }
+    end
+
+    # FIXME: this doesn't assure only one is active, but would be nice...
+    #        LIST.find{|view| view.active }
+    def self.active
+      @active
+    end
+
+    def self.active=(view)
+      if @active
+        @active.deactivate
+        @active.window.hide
+      end
+
+      @active = view
+      view.activate
+      view.window.show
+      view.draw
+    end
+
+    attr_accessor :window, :buffers, :modes, :methods, :active
+    attr_reader :name, :top, :left, :buffer, :keyhandler
 
     def initialize(name, window, *buffers)
       @name, @window, @buffers = name, window, buffers
       @buffer = @buffers.first
-      @modes = [:control]
-      @offset = 0
+      @top, @left = 0, 0
+      @modes = [self.class::INITIAL_MODE]
+      @methods = Mixer.new(self, *self.class::METHODS)
+      @keyhandler = KeyHandler.new(self)
       View::LIST[name] = self
     end
 
+    def mode
+      @modes.first
+    end
+
+    def press(key)
+      @keyhandler.press(key)
+      draw
+    end
+
     def cursor
-      buffer.cursor
+      return unless buffer
+      buffer.cursor ||= buffer.new_cursor(0)
     end
 
     def focus_input
@@ -52,56 +86,89 @@ module VER
           buffers << @buffer
         end
       when IO
-        raise(ArgumentError "Not a buffer: %p" % buffer)
+        raise(ArgumentError, "Not a buffer: %p" % buffer)
       else
-        raise(ArgumentError "Not a buffer: %p" % buffer)
+        raise(ArgumentError, "Not a buffer: %p" % buffer)
       end
 
-      @buffer.cursor ||= @buffer.new_cursor(0)
       draw
     end
 
-    def adjust_offset(border = 5)
+    def adjust_pos(border = 5)
       y, x = cursor.to_pos
-      view_y = y - @offset
-      window_height = (@window.height - border)
+      view_y = y - @top
+      view_x = x - @left
+      window_height = @window.height - border
+      window_width  = @window.width - border
 
       if view_y > window_height
-        @offset += (view_y - window_height)
+        @top += (view_y - window_height)
       elsif view_y < 0
-        @offset += view_y
+        @top += view_y
       end
 
-      return y - @offset, x
+      if view_x > window_width
+        @left += (view_x - window_width)
+      elsif view_x < 0
+        @left += view_x
+      end
+
+      return y - @top, x - @left
     end
 
     def scroll(n)
-      @offset += n
-      @offset = 0 if @offset < 0
-    end
-
-    def visible_line?(num)
-      visible_lines.include?(num)
-    end
-
-    def visible_pos?(y, x)
-      visible_lines.include?(y + @offset)
-    end
-
-    def visible_lines
-      (top..bottom)
-    end
-
-    def top
-      @offset
+      @top += n
+      @top = 0 if @top < 0
     end
 
     def bottom
-      @offset + (@window.height - 1)
+      @top + (@window.height - 1)
     end
 
-    def window_resize
+    def right
+      @left + (@window.width - 1)
+    end
+
+    def visible_y?(num)
+      visible_ys.include?(num)
+    end
+
+    def visible_ys
+      (top..bottom)
+    end
+
+    def visible_x?(num)
+      visible_xs.include?(num)
+    end
+
+    def visible_xs
+      (left..right)
+    end
+
+    def visible_pos?(y, x)
+      visible_y?(y + @top) and visible_x?(x + @left)
+    end
+
+    def visible_each
+      visible_xs = self.visible_xs
+
+      buffer.line_range(visible_ys).each do |line|
+        if substr = line[visible_xs]
+          yield substr.size == 0 ? "\n" : substr
+        else
+          yield "\n"
+        end
+      end
+    end
+
+    def resize
       window.resize
+    end
+
+    def activate
+    end
+
+    def deactivate
     end
   end
 end

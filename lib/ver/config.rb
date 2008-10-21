@@ -1,6 +1,36 @@
 require 'yaml'
 
 module VER
+  module_function
+
+  # TODO: right now all config is read from ~/.config/ver - we should make sure
+  #       that we can load default config from VER itself. For now we just copy
+  #       all config everytime on startup
+  def start_config
+    first_start # unless File.directory?(Config[:rc_dir])
+
+    require File.join(Config[:keymap])
+
+    log = Config[:logfile, :logfile_history, :logfile_size].map{|c| c.value }
+    VER.const_set('Log', Logger.new(*log))
+  end
+
+  def first_start
+    FileUtils.rm_f(Config[:rc_dir])
+
+    Config[:rc_dir, :help_dir, :blueprint_dir].each do |dir|
+      FileUtils.mkdir_p(dir)
+    end
+
+    FileUtils.cp_r File.join(DIR, '../keymap'),    Config[:rc_dir]
+    FileUtils.cp_r File.join(DIR, '../help'),      Config[:rc_dir]
+    FileUtils.cp_r File.join(DIR, '../blueprint'), Config[:rc_dir]
+    FileUtils.cp   File.join(DIR, '../ver.rb'),    Config[:rc_file]
+  rescue Object => ex
+    puts ex, *ex.backtrace
+    exit!
+  end
+
   Setting = Struct.new(:key, :doc, :value)
   class Setting
     # Array#join (used by File::join) expects #to_str
@@ -80,6 +110,6 @@ module VER
       Regexp.union(*(VER::Keyboard::PRINTABLE - word_part)))
 
     set(:chunk_break, "Regex for boundary of text chunks",
-        /\s+/)
+        /(?:\s+)\b/)
   end
 end

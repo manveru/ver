@@ -6,6 +6,10 @@ module VER
       @data = data
     end
 
+    def filename
+      @name
+    end
+
     def size
       return @data.size
     end
@@ -40,7 +44,7 @@ module VER
         raise ArgumentError
       end
 
-      @data[range(s, len)] = replacement
+      @data[range(s, len)] = replacement.to_s
       @dirty = true
     end
 
@@ -48,20 +52,21 @@ module VER
       @dirty
     end
 
-    def draw_on(window, top)
-      y, x = window.pos
-      window.move 0, 0
+    def grep_cursors(regex)
+      pos = 0
+      cursors = []
 
-      range = (top...(window.height + top))
-      lines_at(*range).each do |line|
-        if line
-          window.printw(line.to_s)
+      while idx = @data.index(regex, pos)
+        if matchdata = $~
+          from, to = matchdata.offset(0)
+          cursors << new_cursor(from, to)
+          pos = to + 1
         else
-          window.print_empty_line
+          pos = idx + 1
         end
       end
 
-      window.move y, x
+      return cursors
     end
   end
 end

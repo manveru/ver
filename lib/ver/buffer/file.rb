@@ -25,7 +25,13 @@ module VER
 
     def load_filename(file)
       @filename = File.expand_path(file)
-      @data = File.read(@filename)
+
+      if File.file?(@filename)
+        @data = File.read(@filename)
+      else
+        @data = ''
+        @dirty = true
+      end
     end
 
     def save_file

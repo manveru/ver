@@ -1,23 +1,24 @@
-require 'ver/action/ask'
+require 'ver/methods/ask'
 
 module VER
   class AskView < View
+    METHODS = [Methods::Ask]
+    INITIAL_MODE = :ask
+
     attr_reader :question
 
     def ask(question, completer, &block)
       @question, @block = question, completer
       @buffer = MemoryBuffer.new(:ask)
 
-      yield catch(:answer){ show_ask }
+      answer = catch(:answer){ activate }
+      Log.debug :answer => answer
+      response = yield(answer)
+    rescue Object => ex
+      VER.error(ex)
     ensure
-      hide_ask
-    end
-
-    def press(key)
-      KeyMap.press(key, :ask) do |mode, signature|
-        AskAction.new(self, mode, key).send(*signature)
-        draw
-      end
+      deactivate
+      View.active.focus_input
     end
 
     def draw
@@ -29,13 +30,21 @@ module VER
 
       input_color = valid ? :green : :red
 
-      lines = [ [Color[:black, :white], @question],
-                [Color[input_color], "#@input\n"] ]
+      lines = [ [Color[:white], @question],
+        [Color[input_color], "#@input\n"] ]
       lines.concat color_complete_from(@input, *@completions)
       window.show_colored_chunks(lines)
-
+    rescue Object => ex
+      draw_exception(ex)
+    ensure
       adjust_cursor
       window.refresh
+    end
+
+    def draw_exception(ex = @exception)
+      window.move(1, 0)
+      window.color_set(Color[:red])
+      window.print_line(ex.to_s)
     end
 
     def adjust_cursor
@@ -90,22 +99,20 @@ module VER
       final
     end
 
-    def show_ask
+    def activate
       View[:status].window.hide
       View[:info].window.hide
       window.show
+
       # window.clear
       window.color_set Color[:black, :white]
       draw
       focus_input
     end
 
-    def hide_ask
-      window.hide
+    def deactivate
       View[:status].window.show
       View[:info].window.show
-      View[:main].draw
-      View[:main].focus_input
     end
   end
 end

@@ -1,36 +1,65 @@
-require 'ver/action/main'
+require 'ver/methods/main'
 
 module VER
   class MainView < View
-    def press(key)
-      KeyMap.press(key, *modes) do |mode, signature|
-        # VER.info "%p in %s mode called: %s" % [key, mode, signature]
-        MainAction.new(self, mode, key).send(*signature)
+    METHODS = [ VER::Methods::Main ]
+    INITIAL_MODE = :control
+
+    def highlight(color, *cursors)
+      cursors.each do |cursor|
+        y, x = cursor.to_pos
+
+        next unless visible_pos?(y, x)
+        y -= @top
+
+        @window.move(y, x)
+        @window.color_set(color)
+        @window.printw @buffer[cursor.to_range]
       end
 
-      draw
+      @window.refresh
+      @window.move(*adjust_pos)
+      # @skip_draw = true
+    end
+
+    def selection=(cursor)
+      @selection = cursor
+    end
+
+    def show_selection
+      return unless @selection
+      highlight(Color[:white, :green], @selection)
+    end
+
+    def selections=(cursors)
+      @selections = cursors
+    end
+
+    def show_selections
+      show_selection
+      return unless @selections
+      # Log.debug :selections => @selections.size
+      highlight(Color[:white, :green], *@selections)
     end
 
     def draw
-      pos = adjust_offset
-      @window.move 0, 0
+      pos = adjust_pos
       last = 0
       @window.color_set Color[:white]
+      @window.move 0, 0
 
-      buffer.each_line do |line|
-        if visible_line?(line.number)
-          @window.print_line(line)
-          last = line.number
-        end
+      visible_each do |line|
+        @window.print_line(line)
       end
 
       @window.color_set Color[:yellow]
-      (last..visible_lines.end).each do
-        @window.print_line('~')
+      (window.height - (window.y + 1)).times do
+        @window.print_line("~\n")
       end
 
       VER.status(status_line)
       @window.move(*pos)
+      show_selections
     end
 
     STATUS_LINE = "%s [%s] (%s) %d,%d  Buffer %d/%d"
@@ -42,7 +71,20 @@ module VER
       row, col = cursor.to_pos
       n, m     = @buffers.index(buffer) + 1, @buffers.size
 
-      STATUS_LINE % [file, modified, modes, row + offset, col, n, m]
+      STATUS_LINE % [file, modified, modes, row + @top, col, n, m]
+    rescue ::Exception => ex
+      VER.error(ex)
+      ''
+    end
+
+    def deactivate
+      window.hide
+    end
+
+    def activate
+      window.show
+      draw
+      focus_input
     end
   end
 end

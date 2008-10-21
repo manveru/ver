@@ -13,6 +13,8 @@ module VER
 
     def poll
       while char = @view.window.getch
+        break if VER.stopping?
+
         if char == Ncurses::ERR # timeout or signal
           @view.press('esc') if @stack == [ESC]
           @stack.clear

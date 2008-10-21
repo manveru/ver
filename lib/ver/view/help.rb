@@ -1,15 +1,33 @@
-require 'ver/action/help'
+require 'ver/methods/help'
 
 module VER
-  class HelpView < View
-    def draw
-      @window.printw('help')
+  class HelpView < MainView
+    METHODS = [Methods::Main, Methods::Help]
+    INITIAL_MODE = :help
+
+    attr_reader :topic
+
+    def topic=(name)
+      filename = File.join(Config[:help_dir], "#{name}.verh")
+      Log.debug :filename => filename
+      self.buffer = filename
     end
 
-    def topic(name)
-      self.buffer = File.join(HELP_DIR, "#{name}.verh")
-      View[:main].hide_window
-      show_window
+    def draw
+      super
+    ensure
+      window.refresh
+    end
+
+    def activate
+      window.show
+      window.color_set Color[:white]
+      draw
+      focus_input
+    end
+
+    def deactivate
+      window.hide
     end
   end
 end

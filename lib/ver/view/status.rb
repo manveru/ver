@@ -1,7 +1,10 @@
-require 'ver/action/status'
+require 'ver/methods/status'
 
 module VER
   class StatusView < View
+    METHODS = [Methods::Status]
+    INITIAL_MODE = :status
+
     attr_reader :buffer
 
     COLOR = {
@@ -23,10 +26,8 @@ module VER
       window.color_set Color[*COLOR[@name]]
       @window.move 0, 0
 
-      buffer.each_line do |line|
-        if visible_line?(line.number)
-          @window.print_line(line)
-        end
+      visible_each do |line|
+        @window.print_line(line.ljust(window.width))
       end
 
       @window.refresh
