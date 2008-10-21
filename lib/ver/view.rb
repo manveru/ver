@@ -95,7 +95,7 @@ module VER
         raise(ArgumentError, "Not a buffer: %p" % buffer)
       end
 
-      # draw
+      draw
     end
 
     def adjust_pos(border = 5)
