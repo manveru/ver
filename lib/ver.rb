@@ -26,7 +26,6 @@ module VER
   require 'ver/error'
   require 'ver/keyboard'
   require 'ver/keymap'
-  require 'ver/action'
   require 'ver/window'
   require 'ver/cursor'
   require 'ver/color'
