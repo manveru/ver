@@ -135,7 +135,8 @@ module VER
     NCURSES_KEYS = {}
     Ncurses.constants.grep(/^KEY_/).each do |const|
       value = Ncurses.const_get(const)
-      key = const[/^KEY_(.*)/, 1].downcase
+      key = const[/^KEY_(.*)/, 1]
+      key = key =~ /^F/ ? key : key.downcase # function keys
       NCURSES_KEYS[value] = key
     end
   end
