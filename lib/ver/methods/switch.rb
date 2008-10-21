@@ -19,7 +19,7 @@ module VER
 
       def into_mode(name)
         return if mode == name
-        view.modes = [name]
+        view.mode = name
       end
     end
   end

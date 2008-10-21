@@ -32,7 +32,7 @@ module VER
 
     def press(key)
       keys << key
-      mode = MODES[view_mode]
+      mode = MODES[view.mode]
 
       findings = mode.get_key(*keys.dup)
 
@@ -48,11 +48,6 @@ module VER
         keys.clear
         return findings.press(view.methods)
       end
-    end
-
-    # TODO: support multiple modes on a single view?
-    def view_mode
-      view.modes.first
     end
   end
 

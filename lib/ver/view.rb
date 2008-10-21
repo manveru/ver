@@ -34,25 +34,22 @@ module VER
       view.draw
     end
 
-    attr_accessor :window, :methods, :active, :selection, :keyhandler, :highlights
-    attr_reader :buffers, :modes, :name, :top, :left, :buffer
+    attr_accessor :window, :methods, :active, :selection, :keyhandler,
+                  :highlights, :mode
+    attr_reader :buffers, :name, :top, :left, :buffer
 
     def initialize(name, window, *buffers)
       @name, @window, @buffers = name, window, buffers
       @buffer = @buffers.first
       @top, @left = 0, 0
 
-      @modes = [self.class::INITIAL_MODE]
+      @mode = self.class::INITIAL_MODE
       @methods = Mixer.new(self, *self.class::METHODS)
       @keyhandler = KeyHandler.new(self)
 
       @highlights = []
 
       View::LIST[name] = self
-    end
-
-    def mode
-      @modes.first
     end
 
     def press(key)

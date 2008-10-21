@@ -29,11 +29,10 @@ module VER
     def status_line
       modified = buffer.modified? ? '+' : ' '
       file     = buffer.filename
-      modes    = @modes.join(',')
       row, col = cursor.to_pos
       n, m     = @buffers.index(buffer) + 1, @buffers.size
 
-      STATUS_LINE % [file, modified, modes, row + @top, col, n, m]
+      STATUS_LINE % [file, modified, mode, row + @top, col, n, m]
     rescue ::Exception => ex
       VER.error(ex)
       ''
