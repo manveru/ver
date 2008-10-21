@@ -210,7 +210,7 @@ module VER
       end
 
       EXECUTE_PROC = lambda{|got|
-        methods = VER::MainAction.instance_methods(false).map{|m| m.to_s }
+        methods = View.active.methods.singleton_methods.map{|m| m.to_s }
         choices = methods.grep(/^#{got}/)
         valid = methods.include?(got)
         [valid, choices]
@@ -222,6 +222,7 @@ module VER
         else
           VER.ask('Execute: ', EXECUTE_PROC) do |cmd|
             send(*cmd.split)
+            View.active.draw
           end
         end
       end
