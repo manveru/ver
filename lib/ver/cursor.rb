@@ -152,5 +152,19 @@ module VER
     def insert_delete
       buffer[pos, 1] = ''
     end
+
+    def normalize
+      from, to = [pos, mark].sort
+      yield(from..to)
+    end
+
+    def rindex(pattern)
+      normalize{|range| buffer.rindex(pattern, range) }
+    end
+
+    def index(pattern)
+      normalize{|range| buffer.index(pattern, range) }
+    end
+    alias find index
   end
 end
