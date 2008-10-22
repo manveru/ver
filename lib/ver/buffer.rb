@@ -86,7 +86,7 @@ module VER
     def each_line
       range = (0..0)
 
-      @data.each_line("\n").with_index do |line, number|
+      @data.each_line.with_index do |line, number|
         range = (range.end...(range.end + line.size))
         yield BufferLine.new(self, line, range, number)
       end

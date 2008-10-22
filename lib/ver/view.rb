@@ -156,7 +156,7 @@ module VER
     def visible_each
       visible_xs = self.visible_xs
 
-      buffer.data_range(visible_ys).each do |line|
+      buffer.data_range(visible_ys).each_line do |line|
         if substr = line[visible_xs]
           yield substr.size == 0 ? "\n" : substr
         else
