@@ -55,16 +55,18 @@ VER.map :control, :help do
   # key(:d, :delete_selection){|view| view.selection }
 
   # Deleting movements
-  key [:d, :k],     :delete_movement, :up
+  key [:d, :h],     :delete_movement, :left
   key [:d, :j],     :delete_movement, :down
+  key [:d, :k],     :delete_movement, :up
+  key [:d, :l],     :delete_movement, :right
   key [:d, :up],    :delete_movement, :up
   key [:d, :down],  :delete_movement, :down
   key [:d, :left],  :delete_movement, :left
   key [:d, :right], :delete_movement, :right
-  key [:d, :w],     :delete_movement, :jump_right, word_break
-  key [:d, :W],     :delete_movement, :jump_right, chunk_break
-  key [:d, :b],     :delete_movement, :jump_left, word_break
-  key [:d, :B],     :delete_movement, :jump_left, chunk_break
+  key [:d, :w],     :delete_movement, :word_right
+  key [:d, :W],     :delete_movement, :chunk_right
+  key [:d, :b],     :delete_movement, :word_left
+  key [:d, :B],     :delete_movement, :chunk_left
   key [:d, :d],     :delete_line
   key :D,           :delete_to_end_of_line
 
@@ -115,10 +117,10 @@ VER.map :control, :help do
   key :k, :up
   key :l, :right
 
-  key :w, :jump_right, word_break
-  key :W, :jump_right, chunk_break
-  key :b, :jump_left, word_break
-  key :B, :jump_left, chunk_break
+  key :w, :word_right
+  key :W, :chunk_right
+  key :b, :word_left
+  key :B, :chunk_left
 end
 
 VER.map :help do

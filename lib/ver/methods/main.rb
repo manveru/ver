@@ -180,29 +180,49 @@ module VER
       end
 
       def jump_right(regex)
-        pos, max = cursor.pos, buffer.size - 1
-        return if pos == max
+        buffer[cursor.pos..-1] =~ regex
+        unless match = $~
+          cursor.pos = buffer.size - 1
+          return
+        end
 
-        cursor.region((pos + 1)..max) do |temp_cursor|
-          if found = temp_cursor.index(regex)
-            cursor.pos = [max, found].min
-          else
-            cursor.pos = max
-          end
+        left, right = $~.offset(0)
+
+        if left == 0
+          cursor.pos += right
+          word_right
+        else
+          cursor.pos += left
         end
       end
 
       def jump_left(regex)
-        pos, min = cursor.pos, 0
-        return if pos == min
+        return if cursor.pos == 0
+        cursor.left
 
-        cursor.region(min..(pos - 1)) do |temp_cursor|
-          if found = temp_cursor.rindex(regex)
-            cursor.pos = [min, found].max
-          else
-            cursor.pos = min
-          end
+        if jump = buffer[0...cursor.pos].rindex(regex)
+          cursor.pos = jump + 1
         end
+      end
+
+      WORD_RIGHT = %r([\w.-]+)
+      def word_right
+        jump_right(WORD_RIGHT)
+      end
+
+      WORD_LEFT = %r([^\w.-]+)
+      def word_left
+        jump_left(WORD_LEFT)
+      end
+
+      CHUNK_RIGHT = %r(\S+)
+      def chunk_right
+        jump_right(CHUNK_RIGHT)
+      end
+
+      CHUNK_LEFT = %r(\s+)
+      def chunk_left
+        jump_left(CHUNK_LEFT)
       end
 
       def show_help
