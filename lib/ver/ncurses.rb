@@ -89,9 +89,11 @@ module VER
     return unless error = @last_error
     log = Config[:logfile].value
 
-    warn "There have been fatal errors, please check #{log}."
-    warn "The most recent error was:"
+    Kernel.warn "There may have been fatal errors logged to: #{log}."
+    Kernel.warn "The most recent was:"
 
-    $stderr.puts '', @last_error_message, @last_error, *@last_error.backtrace
+    $stderr.puts ''
+    $stderr.puts @last_error_message if @last_error_message
+    $stderr.puts @last_error, *@last_error.backtrace
   end
 end

@@ -13,10 +13,12 @@ module VER
 
   $LOAD_PATH.unshift(DIR)
 
+  require 'vendor/silence'
+  require 'vendor/fuzzy_file_finder'
+
   require 'ver/log'
   require 'ver/messaging'
   require 'ver/ncurses'
-  require 'ver/layout'
 
   require 'ver/buffer'
   require 'ver/buffer/line'
@@ -26,18 +28,20 @@ module VER
   require 'ver/error'
   require 'ver/keyboard'
   require 'ver/keymap'
+  require 'ver/methods'
+  require 'ver/mixer'
   require 'ver/window'
   require 'ver/cursor'
   require 'ver/color'
   require 'ver/config'
   require 'ver/clipboard'
-  require 'ver/mixer'
 
   require 'ver/view'
-  require 'ver/view/main'
+  require 'ver/view/file'
+  require 'ver/view/info'
   require 'ver/view/status'
-  require 'ver/view/ask'
-  require 'ver/view/help'
+  require 'ver/view/ask_file'
+  require 'ver/view/ask_fuzzy_file'
 
   module_function
 
@@ -66,10 +70,25 @@ module VER
   end
 
   def setup(*args)
+    @info = View::Info.new(:info)
+    @status = View::Status.new(:status)
+
+    @file = View::File.new(:file)
+    @file.buffer = __FILE__
+
+    VER.info "VER 2008.10.24  F1 for help  F12 to configure  C-q to quit"
+
+    [@info, @status, @file].each do |view|
+      view.open
+    end
+  end
+
+  def foobar
     ask_view    = setup_ask    # for asking questions
     status_view = setup_status # status of current buffer
     info_view   = setup_info   # info about what's going on
     help_view   = setup_help   # show help
+    doc_view    = setup_doc
     main_view   = setup_main(*args)
 
     info_view.show "VER 2008.10.16  F1 for help  F12 to configure  C-q to quit"

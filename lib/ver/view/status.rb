@@ -1,36 +1,19 @@
-require 'ver/methods/status'
+require 'ver/view/info'
 
 module VER
-  class StatusView < View
-    METHODS = [Methods::Status]
-    INITIAL_MODE = :status
+  class View
+    class Status < Info
+      LAYOUT = {
+        :height => 1,
+        :top => lambda{|height| height - 2 },
+        :left => 0,
+        :width => lambda{|width| width }
+      }
 
-    attr_reader :buffer
-
-    COLOR = {
-      :status => [:black, :white],
-      :info   => [:white, :blue]
-    }
-
-    def initialize(name, window, buffer)
-      super
-      @buffer = buffer
-    end
-
-    def show(message)
-      buffer[0..-1] = message
-      draw
-    end
-
-    def draw
-      window.color_set Color[*COLOR[@name]]
-      @window.move 0, 0
-
-      visible_each do |line|
-        @window.print_line(line.ljust(window.width))
+      def initialize(*args)
+        super
+        @color = Color[:white, :blue]
       end
-
-      @window.refresh
     end
   end
 end

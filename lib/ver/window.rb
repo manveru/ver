@@ -9,34 +9,53 @@ module VER
   # want. So we have to wrap instead of subclass.
   class Window # < Ncurses::WINDOW
     attr_reader :width, :height, :top, :left
+    attr_accessor :layout
 
-    def initialize(&block) # height, width, top, left)
-      setup(&block)
+    def initialize(layout)
       @visible = true
-    end
+      reset_layout(layout)
 
-    def height; @options[:height] end
-    def width; @options[:width] end
-    def left; @options[:left] end
-    def top; @options[:top] end
-
-    def setup(&block)
-      @setup = block if block
-      @options = @setup.call
-
-      @panel.delete if @panel
-      @window.delete if @window
       @window = Ncurses::WINDOW.new(height, width, top, left)
       @panel = Ncurses::Panel.new_panel(@window)
 
       Ncurses::keypad(@window, true)
     end
 
-    # Ncurses
+    def resize_with(layout)
+      reset_layout(layout)
+      @window.wresize(height, width)
+      @window.mvwin(top, left)
+    end
+
+    def width=(w)
+      return if w == width
+      @layout[:width] = w
+      resize_with @layout
+    end
+
+    def height=(h)
+      return if h == height
+      @layout[:height] = h
+      resize_with @layout
+    end
+
+    def top=(t)
+      return if t == top
+      @layout[:top] = t
+      resize_with @layout
+    end
+
+    def left=(l)
+      return if l == left
+      @layout[:left] = l
+      resize_with @layout
+    end
 
     def resize
-      setup
+      resize_with(@layout)
     end
+
+    # Ncurses
 
     def pos
       return y, x
@@ -61,19 +80,13 @@ module VER
       @window.send(meth, *args)
     end
 
-    # FIXME:
-    #   * printw seems to use printf which interprets stuff starting with '%'
-    #   * line endings have to be correct for the terminal
-    #     on linux at least it has to be \n
-    def printw(string)
-      return unless visible?
-      line = string.to_s.gsub(/[\r\n]/, "\n").gsub(/%/, '%%')
-      @window.printw(line)
-    end
-
-    def print_line(string)
+    def print(string)
       return unless visible?
       @window.waddnstr(string.to_s, width)
+    end
+
+    def print_yx(string, y = 0, x = 0)
+      @window.mvwaddnstr(y, x, string, width)
     end
 
     def print_empty_line
@@ -89,13 +102,23 @@ module VER
       end
     end
 
+    def puts(*strings)
+      print(strings.join("\n") << "\n")
+    end
+
     def refresh
       return unless visible?
       @window.refresh
     end
 
-    def color_set(color, arg = nil)
-      @window.color_set(color, arg)
+    def wnoutrefresh
+      return unless visible?
+      @window.wnoutrefresh
+    end
+
+    def color=(color)
+      @color = color
+      @window.color_set(color, nil)
     end
 
     def getch
@@ -105,40 +128,57 @@ module VER
     end
 
     def clear
-      return unless visible?
+      # return unless visible?
       move 0, 0
-      printw Array.new(height){ (' ' * (width - 1))}.join("\n")
+      puts *Array.new(height){ ' ' * (width - 1) }
     end
 
-    # IO
+    # setup and reset
 
-    def print
+    def reset_layout(layout)
+      @layout = layout
+
+      [:height, :width, :top, :left].each do |name|
+        instance_variable_set("@#{name}", layout_value(name))
+      end
     end
 
-    def puts
+    def layout_value(name)
+      value = @layout[name]
+      default = default_for(name)
+
+      value = value.call(default) if value.respond_to?(:call)
+      return (value || default).to_i
     end
 
-    def write
+    def default_for(name)
+      case name
+      when :height, :top
+        Ncurses.stdscr.getmaxy
+      when :width, :left
+        Ncurses.stdscr.getmaxx
+      else
+        0
+      end
     end
 
-    def read
-    end
-
-    def readline
-    end
-
-    # panel
+    # Ncurses panel
 
     def hide
       Ncurses::Panel.hide_panel @panel
-      Ncurses.refresh
+      Ncurses.refresh # wnoutrefresh
       @visible = false
     end
 
     def show
       Ncurses::Panel.show_panel @panel
-      Ncurses.refresh
+      Ncurses.refresh # wnoutrefresh
       @visible = true
+    end
+
+    def on_top
+      Ncurses::Panel.top_panel @panel
+      wnoutrefresh
     end
 
     def visible?

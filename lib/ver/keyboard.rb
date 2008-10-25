@@ -1,28 +1,33 @@
 module VER
   module Keyboard # avoid initialize
-    ESC_TIMEOUT = 0.1 # seconds
     ESC         = 27 # keycode
+    @polling = false
 
     module_function
 
-    def focus(view)
+    def focus=(receiver)
       @stack = []
-      @view = view
-      @time = Time.now
+      @focus = receiver
+      poll unless @polling
     end
 
     def poll
-      while char = @view.window.getch
+      @polling = true
+
+      while char = @focus.window.getch
         break if VER.stopping?
 
         if char == Ncurses::ERR # timeout or signal
-          @view.press('esc') if @stack == [ESC]
+          @focus.press('esc') if @stack == [ESC]
           @stack.clear
         elsif ready = resolve(char)
           @stack.clear
-          @view.press(ready)
+          @focus.press(ready)
         end
       end
+
+    ensure
+      @polling = false
     end
 
     def resolve(char)

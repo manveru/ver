@@ -1,6 +1,70 @@
 require 'ver/methods/main'
 
 module VER
+  class View
+    class Main < View
+      METHODS = [ Methods::Main ]
+      MODE = :control
+      STATUS_LINE = "%s [%s] (%s) %d,%d  Buffer %d/%d"
+      LAYOUT = {
+        :height => lambda{|height| height - 2 },
+        :width  => lambda{|width| width },
+        :top    => 0,
+        :left   => 0
+      }
+
+      def initialize(name, buffer = nil)
+        @keyhandler = KeyHandler.new(self)
+        @window     = Window.new(self.class::LAYOUT)
+        @methods    = Mixer.new(self, *self.class::METHODS)
+        @mode       = self.class::MODE
+
+        @name, @buffer = name, buffer
+        @buffers = buffer ? [buffer] : []
+
+        @top = 0
+        @left = 0
+
+        @cursors = []
+      end
+
+      def open
+        self.window = Window.new(LAYOUT)
+        window.show
+        window.clear
+        draw
+        Keyboard.focus = self
+      ensure
+        close
+      end
+
+      def close
+        window.clear
+        window.hide
+      end
+
+      def press(key)
+        @keyhandler.press(key)
+        draw
+      end
+
+      def cursor
+        buffer.cursor
+      end
+
+      def cursor=(cursor)
+        buffer.cursor = cursor
+      end
+
+      def scroll(n)
+        @top += n
+        @top = 0 if @top < 0
+      end
+    end
+  end
+end
+
+__END__
   class MainView < View
     METHODS = [ VER::Methods::Main ]
     INITIAL_MODE = :control
@@ -128,27 +192,5 @@ module VER
       @highlights = cursors
       draw
     end
-
-=begin
-    # yields Enumerable::Enumerator
-    def selections=(cursors)
-      @selections = cursors.each
-    end
-
-    def next_selection
-      @selections.next
-    rescue StopIteration # wraparound
-      @selections.rewind
-      retry
-    end
-
-    def show_selections
-      show_selection
-      return unless @selections
-      # Log.debug :selections => @selections.size
-      highlight(Color[:white, :green], @selections)
-    end
-=end
-
   end
 end

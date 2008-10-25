@@ -1,5 +1,3 @@
-require 'ver/methods/main'
-
 module VER
   class View
     LIST = {}
@@ -16,45 +14,77 @@ module VER
       LIST.each{|name, view| view.resize }
     end
 
-    # FIXME: this doesn't assure only one is active, but would be nice...
-    #        LIST.find{|view| view.active }
-    def self.active
-      @active
+    def self.refresh
+      List.each{|name, view| view.refresh }
+      Ncurses.doupdate
     end
 
-    def self.active=(view)
-      if @active
-        @active.deactivate
-        @active.window.hide
-      end
+    LAYOUT = { :height => 0, :width => 0, :top => 0, :left => 0 }
+    DEFAULT = { :mode => :control, :methods => [], :interactive => false }
 
-      @active = view
-      view.activate
-      view.window.show
-      view.draw
-    end
+    attr_reader :top, :left, :buffer, :buffers, :cursors
+    attr_accessor :window, :keyhandler, :methods, :selection, :mode, :name,
+      :interactive, :options
 
-    attr_accessor :window, :methods, :active, :selection, :keyhandler,
-                  :highlights, :mode
-    attr_reader :buffers, :name, :top, :left, :buffer
+    def initialize(name, options = {})
+      @name = name
+      @options = DEFAULT.merge(self.class::DEFAULT.merge(options))
+      @layout = options[:layout] || self.class::LAYOUT
 
-    def initialize(name, window, *buffers)
-      @name, @window, @buffers = name, window, buffers
-      @buffer = @buffers.first
-      @top, @left = 0, 0
-
-      @mode = self.class::INITIAL_MODE
-      @methods = Mixer.new(self, *self.class::METHODS)
+      @methods = Mixer.new(self, *@options[:methods])
+      @window = Window.new(@layout)
       @keyhandler = KeyHandler.new(self)
 
-      @highlights = []
+      @buffer, @interactive, @mode =
+        @options.values_at(:buffer, :interactive, :mode)
 
-      View::LIST[name] = self
+      @buffers = @buffer ? [@buffer] : []
+      @cursors = []
+
+      @top = @left = 0
+      LIST[name.to_sym] = self
+    end
+
+    def open
+#       resize
+      window.show
+      draw
+#       refresh
+#       Ncurses.doupdate
+
+      if interactive?
+        Keyboard.focus = self
+      else
+        yield(self) if block_given?
+      end
+    end
+
+    def close
+      window.clear
+      window.hide
     end
 
     def press(key)
       @keyhandler.press(key)
       draw
+#     rescue Object => ex
+#       VER.error(ex)
+#       raise(ex)
+    ensure
+      # window.move *adjust_pos
+      refresh
+      Ncurses.doupdate
+    end
+
+    # FIXME:
+    # * figure out the perfect formula, by some accident this one seems to work
+    def draw_padding
+      padding = (window.height + 2) - (window.y + 1)
+      window.puts [''] * padding
+    end
+
+    def resize
+      window.resize_with(@layout)
     end
 
     def cursor
@@ -65,9 +95,12 @@ module VER
       buffer.cursor = cursor
     end
 
-    def focus_input
-      Keyboard.focus(self)
-      Keyboard.poll
+    def interactive?
+      @interactive
+    end
+
+    def refresh
+      window.wnoutrefresh
     end
 
     # Strings are assumed to be filenames
@@ -81,7 +114,7 @@ module VER
           @buffer = buffer
         end
       when String
-        path = File.expand_path(buffer)
+        path = ::File.expand_path(buffer)
 
         if found = buffers.find{|b| b.filename == path }
           @buffer = found
@@ -98,12 +131,16 @@ module VER
       draw
     end
 
-    def adjust_pos(border = 5)
+    def scroll_border
+      window.height / 10
+    end
+
+    def adjust_pos(border = scroll_border)
       y, x = cursor.to_pos
-      view_y = y - @top
-      view_x = x - @left
-      window_height = @window.height - border
-      window_width  = @window.width - border
+      view_y = y - top
+      view_x = x - left
+      window_height = window.height - border
+      window_width  = window.width - border
 
       if view_y > window_height
         @top += (view_y - window_height)
@@ -126,11 +163,11 @@ module VER
     end
 
     def bottom
-      @top + @window.height
+      @top + window.height
     end
 
     def right
-      @left + (@window.width - 1)
+      @left + (window.width - 1)
     end
 
     def visible_y?(num)
@@ -150,7 +187,7 @@ module VER
     end
 
     def visible_pos?(y, x)
-      visible_y?(y + @top) and visible_x?(x + @left)
+      visible_y?(y + top) and visible_x?(x + left)
     end
 
     def visible_each
@@ -163,16 +200,6 @@ module VER
           yield "\n"
         end
       end
-    end
-
-    def resize
-      window.resize
-    end
-
-    def activate
-    end
-
-    def deactivate
     end
   end
 end

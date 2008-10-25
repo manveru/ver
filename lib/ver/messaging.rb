@@ -2,11 +2,11 @@ module VER
   module_function
 
   def info(message)
-    View[:info].show(message)
+    View[:info].change{|v| v.buffer[0..-1] = message }
   end
 
   def status(message)
-    View[:status].show(message)
+    View[:status].change{|v| v.buffer[0..-1] = message }
   end
 
   def ask(question, completer, &block)
@@ -22,6 +22,12 @@ module VER
     help = View[:help]
     help.topic = topic
     View.active = help
+  end
+
+  def doc(regexp)
+    doc = View[:doc]
+    doc.show(regexp)
+    View.active = doc
   end
 
   def error(exception, message = nil)

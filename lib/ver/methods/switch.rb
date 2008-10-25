@@ -1,7 +1,5 @@
 module VER
   module Methods
-    # mode switching
-
     module Switch
       def into_control_mode
         into_mode :control

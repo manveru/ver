@@ -66,4 +66,16 @@ module VER
     buffer = MemoryBuffer.new(:help)
     HelpView.new(:help, window, buffer)
   end
+
+  def setup_doc
+    window = Window.new{ {
+      :height => Ncurses.stdscr.getmaxy - 2,
+      :width  => Ncurses.stdscr.getmaxx,
+      :top    => 0,
+      :left   => 0 }
+    }
+
+    buffer = MemoryBuffer.new(:doc)
+    DocView.new(:doc, window, buffer)
+  end
 end

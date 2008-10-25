@@ -1,5 +1,13 @@
 module VER
-  class Cursor < Struct.new(:buffer, :pos, :mark)
+  class Cursor < Struct.new(:buffer, :pos, :mark, :meta)
+    def [](key, *keys)
+      keys.empty? ? meta[key] : meta.values_at(key, *keys)
+    end
+
+    def []=(key, value)
+      meta[key] = value
+    end
+
     def beginning_of_line
       pos = bol
     end

@@ -12,7 +12,7 @@ module VER
     end
 
     def new_cursor(pos = 0, mark = size)
-      Cursor.new(self, pos, mark)
+      Cursor.new(self, pos, mark, {})
     end
 
     def range(s=nil, len=nil)

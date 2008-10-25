@@ -18,15 +18,15 @@ module VER
       end
 
       def buffer_close(buffer = nil)
-        @view.deactivate
+        view.deactivate
       end
 
       def buffer_open
-        @view.deactivate
+        view.deactivate
       end
 
       def view_close
-        @view.deactivate
+        view.deactivate
         View[:main].activate
       end
 

@@ -1,6 +1,15 @@
 module VER
   module Methods
     module Buffer
+      # Send a resize event to all views, this will force them to recalculate
+      # their window sizes.
+      # This method should be called after any resize of the terminal, and is
+      # automatically issued on some terminals on the actual resize or after a
+      # key was pressed.
+      def window_resize
+        View.resize
+      end
+
       def buffer_persist(buffer = buffer)
         filename = buffer.save_file
         VER.info "Saved to: #{filename}"
@@ -53,6 +62,7 @@ module VER
 
         choices = Dir["#{got}*"].map{|path|
           File.directory?(path) ? path + '/' : path
+          path.gsub(Dir.pwd, '.')
         }
 
         valid = !File.directory?(got)
@@ -60,10 +70,14 @@ module VER
         [valid, choices]
       }
 
-      def buffer_open
-        VER.ask('File: ', BUFFER_OPEN_PROC) do |filename|
-          view.buffer = filename if filename
-        end
+      def ask_file
+        view = View::AskFile.new(:ask_file)
+        view.open
+      end
+
+      def ask_fuzzy_file
+        view = View::AskFuzzyFile.new(:ask_fuzzy_file)
+        view.open
       end
 
       BUFFER_FIND_PROC = lambda{|got|

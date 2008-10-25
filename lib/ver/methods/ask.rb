@@ -1,11 +1,7 @@
-require 'ver/methods/switch'
-require 'ver/methods/buffer'
-
 module VER
   module Methods
     module Ask
-      include Switch
-      include Buffer
+      include Switch, Buffer
 
       def up
       end
