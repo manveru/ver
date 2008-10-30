@@ -1,5 +1,12 @@
 #!/usr/bin/env ruby
 
-require 'ver'
+begin
+  require 'ver'
+rescue LoadError
+  dir = File.dirname(__FILE__)
+  file = File.expand_path(File.join(dir, '../lib/ver'))
+  require file
+end
+
 
 VER.start(*ARGV)
