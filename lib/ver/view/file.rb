@@ -11,7 +11,7 @@ module VER
         :mode        => :control,
         :methods     => [Methods::Control, Methods::Insert],
         :interactive => true,
-        :status_line => "%s [%s] (%s) %d,%d  Buffer %d/%d",
+        :status_line => "%s [%s] (%s - %s) %d,%d  Buffer %d/%d",
       }
 
       attr_accessor :status_line, :selection, :syntax, :redraw
@@ -19,7 +19,7 @@ module VER
       def initialize(*args)
         super
         @status_line = @options[:status_line]
-        @syntax = Syntax[:ruby].new
+        # @syntax = Syntax[:ruby].new
         @redraw = true
       end
 
@@ -36,7 +36,7 @@ module VER
           buffer.dirty = false
         end
 
-        draw_status_line
+        VER.status status_line
       ensure
         refresh
         window.move(*pos) if pos
@@ -53,18 +53,15 @@ module VER
         end
       end
 
-      def draw_status_line
-        VER.status status_line
-      end
-
       def status_line
         modified = buffer.modified? ? '+' : ' '
         file     = buffer.filename
         row, col = cursor.to_pos
         row, col = row + top + 1, col + 1
         n, m     = buffers.index(buffer) + 1, buffers.size
+        syntax   = @syntax ? @syntax.name : 'Plain'
 
-        @status_line % [file, modified, mode, row + top, col, n, m]
+        @status_line % [file, modified, syntax, mode, row + top, col, n, m]
       rescue ::Exception => ex
         VER.error(ex)
         ''

@@ -24,7 +24,7 @@ module VER
 
     attr_reader :top, :left, :buffer, :buffers, :cursors
     attr_accessor :window, :keyhandler, :methods, :selection, :mode, :name,
-      :interactive, :options, :redraw
+      :interactive, :options, :redraw, :syntax
 
     def initialize(name, options = {})
       @name = name
@@ -79,13 +79,10 @@ module VER
       Log.debug :rescue
       VER.error(ex)
     ensure
-      # window.move *adjust_pos
       refresh
-      Log.debug :update => Ncurses.doupdate
+      Ncurses.doupdate
     end
 
-    # FIXME:
-    # * figure out the perfect formula, by some accident this one seems to work
     def draw_padding
       padding = (window.height + 2) - (window.y + 1)
       window.puts [''] * padding
@@ -135,6 +132,8 @@ module VER
       else
         raise(ArgumentError, "Not a buffer: %p" % buffer)
       end
+
+      self.syntax = Syntax.find(self.buffer.filename)
 
       draw
     end

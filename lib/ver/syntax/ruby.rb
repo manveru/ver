@@ -1,11 +1,12 @@
 module VER
   module Syntax
     class Ruby
-      attr_reader :matches, :syntax
+      attr_reader :matches, :syntax, :name
 
       def initialize
         @matches = []
         @syntax = []
+        @name = 'Ruby'
       end
 
       KEYWORDS = %w[ alias begin class def do else end ensure if unless
@@ -14,7 +15,6 @@ module VER
       def compile
         keywords = /(^|\s)#{Regexp.union(*KEYWORDS)}($|\s)/
         let :yellow,  keywords
-        let :green,   /#.*$/        # comment
         let :red,     /"[^"]*"/     # "string"
         let :red,     /'[^']*'/     # 'string'
         let :magenta, /::[A-Z]\w+/  # ::AbsoluteConstant
@@ -22,6 +22,7 @@ module VER
         let :blue,    /\$\w+/       # $global_variable
         let :blue,    /@?@\w+/      # @instance_var and @@class_var
         let :blue,    /:\w+/        # :symbol
+        let :green,   /#.*$/        # comment
       end
 
       def let(color, regex)
