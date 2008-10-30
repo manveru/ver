@@ -8,6 +8,8 @@ begin; require 'rubygems'; rescue LoadError; end
 require 'ncurses'
 
 module VER
+  VERSION = "2008.10.30"
+
   DIR = File.expand_path(File.dirname(__FILE__))
   FatalLog = Logger.new(File.join(Dir.tmpdir, 'ver-fatal.log'), 5, (2 << 20))
 
@@ -83,7 +85,7 @@ module VER
       @file.buffer = File.join(Config[:blueprint_dir], 'welcome')
     end
 
-    VER.info "VER 2008.10.24  F1 for help  F12 to configure  C-q to quit"
+    VER.info "VER #{VERSION} -- F1 for help -- F12 to configure -- C-q to quit"
 
     [@info, @status, @file].each do |view|
       view.open

@@ -8,5 +8,13 @@ rescue LoadError
   require file
 end
 
+require 'optparse'
+
+op = OptionParser.new do |o|
+  o.on('-h', '--help'){ puts o; exit }
+  o.on('-v', '--version'){ puts "VER: #{VER::VERSION}"; exit }
+end
+
+op.parse!(ARGV)
 
 VER.start(*ARGV)
