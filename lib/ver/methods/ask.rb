@@ -1,7 +1,7 @@
 module VER
   module Methods
     module Ask
-      include Switch, Buffer
+      include Switch, Buffer, Insert
 
       def up
       end
@@ -17,31 +17,23 @@ module VER
         cursor.right
       end
 
-      def insert_character(char)
-        cursor.insert(char)
-      end
-
-      def insert_backspace
-        cursor.insert_backspace
-      end
-
-      def insert_delete
-        cursor.insert_delete
-      end
-
-      def stop_asking
-        throw(:answer, false)
+      def stop
+        view.close
+        View[:file].open
       end
 
       def completion
+        view.update_choices
         view.try_completion
       end
 
-      def answer_question
-        input = view.input
-        valid, *rest = view.block_complete
-
-        throw(:answer, input) if valid
+      def pick
+        view.update_choices
+        if answer = view.answer
+          view.block.call(answer)
+          view.close
+          View[:file].open
+        end
       end
     end
   end

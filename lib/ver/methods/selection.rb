@@ -19,7 +19,8 @@ module VER
 
       # Copy current selection to clipboard and stop selecting
       def copy(cursor = cursor)
-        VER.clipboard << buffer[cursor.to_range]
+        VER.clipboard << (string = cursor.to_s)
+        VER.info "Copied #{string.size} characters"
         stop_selection
       end
 

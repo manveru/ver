@@ -52,17 +52,17 @@ module VER
       @dirty
     end
 
-    def grep_cursors(regex)
-      pos = 0
+    def grep_cursors(regex, from_pos = 0, to_pos = size)
+      range = from_pos..to_pos
       cursors = []
 
-      while idx = @data.index(regex, pos)
+      while from_pos < to_pos and idx = @data.index(regex, from_pos)
         if matchdata = $~
           from, to = matchdata.offset(0)
           cursors << new_cursor(from, to)
-          pos = to + 1
+          from_pos = to + 1
         else
-          pos = idx + 1
+          from_pos = idx + 1
         end
       end
 

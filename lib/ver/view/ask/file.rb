@@ -1,13 +1,6 @@
 module VER
   class View
-    class AskFile < View
-      LAYOUT = {
-        :width => lambda{|w| w },
-        :height => lambda{|h| h * 0.8 },
-        :top => 0,
-        :left => 0
-      }
-
+    class AskFile < AskLarge
       DEFAULT = {
         :interactive => true,
         :methods => [Methods::Ask, Methods::AskFile],

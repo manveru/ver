@@ -10,5 +10,6 @@ module VER
 
     add :AskFuzzyFile, :ask_fuzzy_file
     add :AskFile, :ask_file
+    add :AskGrep, :ask_grep
   end
 end

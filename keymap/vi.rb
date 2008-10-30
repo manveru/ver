@@ -24,7 +24,7 @@ VER.map :insert, :control, :replace, :ask, :help, :doc do
   (1..9).each{|n| key("M-#{n}", :buffer_jump, n - 1) }
 end
 
-VER.map :insert, :ask, :ask_file do
+VER.map :insert, :ask, :ask_file, :ask_grep do
   VER::Keyboard::PRINTABLE.each do |char|
     key(char, :insert_character, char)
   end
@@ -100,6 +100,11 @@ VER.map :control, :help do
   key :n,    :next_highlight
   key :N,    :previous_highlight
 
+  # Grepping
+  key 'C-g', :ask_grep
+  key [:g, :n], :next_grep
+  key [:g, :N], :previous_grep
+
   # buffer state
   key 'C-o', :ask_file
   key 'M-o', :ask_fuzzy_file
@@ -138,16 +143,6 @@ VER.map :doc do
   key :/, :doc_grep
 end
 
-VER.map :ask do
-  key :return,    :answer_question
-  key :tab,       :completion
-
-  # mode switches
-
-  key 'C-q', :stop_asking
-  key 'C-c', :stop_asking
-end
-
 VER.map :replace do
   key :space,     :replace_space
   key :return,    :replace_return
@@ -160,13 +155,25 @@ VER.map :replace do
   key 'C-c', :into_control_mode # esc is slow due to timeout
 end
 
-VER.map :ask_file do
-  key :return, :pick
-  key 'C-c', :stop
-  key 'C-q', :stop
-  key :esc,  :stop
-  key :tab,  :completion
+VER.map :ask, :ask_file, :ask_grep do
+  key :return,    :pick
+  key :tab,       :completion
 
+  # mode switches
+
+  key 'C-q', :stop
+  key 'C-c', :stop
+  key :esc,  :stop
+end
+
+VER.map :ask_file do
   key :up, :up
   key :down, :down
+end
+
+VER.map :ask_grep do
+  key :up, :up
+  key :down, :down
+  key :left, :left
+  key :right, :right
 end

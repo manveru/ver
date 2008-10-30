@@ -40,8 +40,12 @@ module VER
   require 'ver/view/file'
   require 'ver/view/info'
   require 'ver/view/status'
-  require 'ver/view/ask_file'
-  require 'ver/view/ask_fuzzy_file'
+  require 'ver/view/ask'
+  require 'ver/view/ask/small'
+  require 'ver/view/ask/large'
+  require 'ver/view/ask/file'
+  require 'ver/view/ask/fuzzy_file'
+  require 'ver/view/ask/grep'
 
   module_function
 
@@ -72,28 +76,18 @@ module VER
   def setup(*args)
     @info = View::Info.new(:info)
     @status = View::Status.new(:status)
+    @ask = View::AskSmall.new(:ask)
 
     @file = View::File.new(:file)
-    @file.buffer = __FILE__
+    if args.each{|a| @file.buffer = a }.empty?
+      @file.buffer = File.join(Config[:blueprint_dir], 'welcome')
+    end
 
     VER.info "VER 2008.10.24  F1 for help  F12 to configure  C-q to quit"
 
     [@info, @status, @file].each do |view|
       view.open
     end
-  end
-
-  def foobar
-    ask_view    = setup_ask    # for asking questions
-    status_view = setup_status # status of current buffer
-    info_view   = setup_info   # info about what's going on
-    help_view   = setup_help   # show help
-    doc_view    = setup_doc
-    main_view   = setup_main(*args)
-
-    info_view.show "VER 2008.10.16  F1 for help  F12 to configure  C-q to quit"
-
-    main_view.activate
   end
 
   def clipboard

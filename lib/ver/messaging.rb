@@ -2,15 +2,17 @@ module VER
   module_function
 
   def info(message)
-    View[:info].change{|v| v.buffer[0..-1] = message }
+    @info.change{|v| v.buffer[0..-1] = message }
   end
 
   def status(message)
-    View[:status].change{|v| v.buffer[0..-1] = message }
+    @status.change{|v| v.buffer[0..-1] = message }
   end
 
   def ask(question, completer, &block)
-    View[:ask].ask(question, completer, &block)
+    catch(:answer) do
+      @ask.open(question, completer, &block)
+    end
   end
 
   def warn(message)

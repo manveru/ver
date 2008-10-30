@@ -9,7 +9,7 @@ module VER
     end
 
     def beginning_of_line
-      pos = bol
+      self.pos = bol
     end
 
     def end_of_line
@@ -93,10 +93,6 @@ module VER
       self.pos += 1 if pos < (buffer.size - 1)
     end
 
-    def render_on(window)
-      window.move(*to_pos)
-    end
-
     # TODO:
     #   * should take linewrap into account?
     #   * needs up to three matches, might be possible with only 2
@@ -130,6 +126,10 @@ module VER
       end
 
       return x
+    end
+
+    def to_s
+      buffer[to_range]
     end
 
     def to_range

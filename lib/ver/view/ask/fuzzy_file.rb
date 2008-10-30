@@ -1,12 +1,6 @@
 module VER
   class View
-    class AskFuzzyFile < View
-      LAYOUT = {
-        :width => lambda{|w| w },
-        :height => lambda{|h| h * 0.8 }, # 80%
-        :top => 0,
-        :left => 0,
-      }
+    class AskFuzzyFile < AskLarge
       DEFAULT = {
         :interactive => true,
         :methods => [Methods::Ask, Methods::AskFile],

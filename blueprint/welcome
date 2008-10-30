@@ -1,3 +1,36 @@
 Welcome to VER, the Vim & Emacs in Ruby editor.
 
 This project can be found at: http://github.com/manveru/ver
+
+Note that M usually stands for the alt key on your keyboard
+
+Various help commands:
+  [M-h h] : Open help browser
+  [M-h k] : Query help for key
+  [M-h g] : Grep help
+  [M-h t] : Open tutorial
+
+Quick intro:
+
+VER is a modal editor, drawing from both Emacs and Vim for inspiration, as they are both excellent projects but have very different downsides.
+I tried to address these downsides:
+
+  * Use of a real programming language (Ruby) for implementation, configuration and scripting (no ancient elisp or crazy vimscript)
+  * Easy to use keymappings to emulate other editors while maintaining the strength of a live environment.
+  * I don't intend this editor to be everything for everybody, it's just useful for myself for now.
+  * Make editing powerful without years of learning and remembering arcane shortcuts, and don't require users of the editor to sacrifice their wrists.
+  * Allow project-based browsing and grepping right from the start.
+
+Current notable features:
+
+  * Fuzzy, project based file browser using M-o
+  * Normal, system-wide file browser using C-o
+  * Quick switching buffers using M-1 to M-9
+  - Switching buffers by partial name using M-b
+  * Save file using C-s
+  - Save file under different name using M-s
+  - Quick executing of methods in the current mode via C-x
+  - Live ruby console using M-x
+  * Copy and paste selections, start selection with v or V, copy with y, paste with p
+
+

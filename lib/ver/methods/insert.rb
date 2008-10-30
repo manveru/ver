@@ -73,13 +73,18 @@ module VER
       # Delete contents of buffer between cursor.pos and cursor.mark, stops selecting
       def delete
         buffer[cursor.to_range] = ''
-        cursor.pos -= cursor.delta
+        cursor.pos = cursor.mark
         stop_selection
+      end
+
+      def delete_line
+        temp = buffer.new_cursor(cursor.bol, cursor.eol)
+        buffer[temp.to_range] = ''
       end
 
       # Delete until the end of the current line
       def delete_to_end_of_line
-        temp = buffer.new_cursor(cursor.pos, cursor.eol)
+        temp = buffer.new_cursor(cursor.pos, (cursor.eol - 1))
         buffer[temp.to_range] = ''
       end
 
@@ -90,10 +95,12 @@ module VER
       end
 
       def delete_selection
-        if selection = view.selection
-          buffer[selection.to_range] = ''
-          cursor.pos -= selection.delta
-        end
+        return unless selection = view.selection
+
+        buffer[selection.to_range] = ''
+
+        cursor.pos = selection.mark
+        stop_selection
       end
     end
   end

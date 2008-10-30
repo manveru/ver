@@ -143,5 +143,9 @@ module VER
     def close
       @data = ''
     end
+
+    def to_s
+      self[0..-1].dup
+    end
   end
 end
