@@ -23,14 +23,13 @@ I tried to address these downsides:
 
 Current notable features:
 
-  * Fuzzy, project based file browser using M-o
-  * Normal, system-wide file browser using C-o
-  * Quick switching buffers using M-1 to M-9
+  * [M-o] Fuzzy, project based file browser
+  * [C-o] Normal, system-wide file browser
+  * [M-1] to [M-9] Quick switching buffers
   - Switching buffers by partial name using M-b
   * Save file using C-s
-  - Save file under different name using M-s
-  - Quick executing of methods in the current mode via C-x
-  - Live ruby console using M-x
+  - [M-s] : Save file under different name
+  * [C-x] : Quick executing of methods in the current mode
+  - [M-x] Live ruby console
   * Copy and paste selections, start selection with v or V, copy with y, paste with p
-
-
+  * Syntax highlighting (for .rb and Rakefile only for now)
