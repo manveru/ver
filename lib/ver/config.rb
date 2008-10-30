@@ -25,7 +25,7 @@ module VER
     FileUtils.cp_r File.join(DIR, '../keymap'),    Config[:rc_dir]
     FileUtils.cp_r File.join(DIR, '../help'),      Config[:rc_dir]
     FileUtils.cp_r File.join(DIR, '../blueprint'), Config[:rc_dir]
-    FileUtils.cp   File.join(DIR, '../ver.rb'),    Config[:rc_file]
+#     FileUtils.cp   File.join(DIR, '../ver.rb'),    Config[:rc_file]
   rescue Object => ex
     puts ex, *ex.backtrace
     exit!
