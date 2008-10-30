@@ -37,6 +37,7 @@ module VER
   require 'ver/color'
   require 'ver/config'
   require 'ver/clipboard'
+  require 'ver/syntax'
 
   require 'ver/view'
   require 'ver/view/file'

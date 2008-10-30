@@ -1,7 +1,10 @@
 module VER
   class MemoryBuffer < Buffer
+    attr_accessor :dirty
+
     def initialize(name, data = '')
       super name
+      @modified = false
       @dirty = false
       @data = data
     end
@@ -11,7 +14,7 @@ module VER
     end
 
     def size
-      return @data.size
+      @data.size
     end
 
     def index(pattern, s=nil, len=nil)
@@ -24,7 +27,7 @@ module VER
     end
 
     def rindex(pattern, s=nil, len=nil)
-      r   = range(s,len)
+      r = range(s,len)
 
       if substr = @data[range(s,len)]
         pos = substr.rindex(pattern)
@@ -34,6 +37,9 @@ module VER
 
     def <<(content)
       @data[@data.size,0] = content
+    ensure
+      @modified = true
+      @dirty = true
     end
 
     def [](s=nil, len=nil)
@@ -51,10 +57,16 @@ module VER
       end
 
       @data[range(s, len)] = replacement.to_s
+    ensure
+      @modified = true
       @dirty = true
     end
 
     def modified?
+      @modified
+    end
+
+    def dirty?
       @dirty
     end
 

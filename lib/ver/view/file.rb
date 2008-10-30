@@ -14,25 +14,37 @@ module VER
         :status_line => "%s [%s] (%s) %d,%d  Buffer %d/%d",
       }
 
-      attr_accessor :status_line, :selection
+      attr_accessor :status_line, :selection, :syntax, :redraw
 
       def initialize(*args)
         super
         @status_line = @options[:status_line]
+        @syntax = Syntax[:ruby].new
+        @redraw = true
       end
 
       def draw
         pos = adjust_pos
         window.move 0, 0
 
-        draw_visible
-        draw_padding
+        if @redraw or buffer.dirty?
+          draw_visible
+          draw_padding
+
+          highlight_syntax
+          highlight_selection
+          buffer.dirty = false
+        end
+
         draw_status_line
-        highlight_selection
       ensure
         refresh
-        Log.debug :pos => pos
         window.move(*pos) if pos
+        @redraw = false
+      end
+
+      def redraw?
+        @redraw
       end
 
       def draw_visible
@@ -62,6 +74,20 @@ module VER
         return unless selection
         selection.end_of_line if selection[:linewise]
         highlight(selection, Color[:white, :green])
+      end
+
+      def highlight_syntax
+        return unless @syntax
+
+        if @syntax.matches.empty? or buffer.dirty?
+          @syntax.parse(buffer)
+        end
+
+        @syntax.matches.each do |(color, cursors)|
+          cursors.each do |cursor|
+            highlight(cursor, color)
+          end
+        end
       end
 
       # TODO:

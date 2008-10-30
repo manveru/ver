@@ -24,7 +24,7 @@ module VER
 
     attr_reader :top, :left, :buffer, :buffers, :cursors
     attr_accessor :window, :keyhandler, :methods, :selection, :mode, :name,
-      :interactive, :options
+      :interactive, :options, :redraw
 
     def initialize(name, options = {})
       @name = name
@@ -39,6 +39,7 @@ module VER
         @options.values_at(:buffer, :interactive, :mode)
 
       @buffers = @buffer ? [@buffer] : []
+      @redraw = true
       @cursors = []
 
       @top = @left = 0
@@ -46,17 +47,24 @@ module VER
     end
 
     def open
-#       resize
       window.show
       draw
-#       refresh
-#       Ncurses.doupdate
 
       if interactive?
         Keyboard.focus = self
       else
         yield(self) if block_given?
       end
+    end
+
+    def top=(n)
+      @top = n
+      @redraw = true
+    end
+
+    def left=(n)
+      @left = n
+      @redraw = true
     end
 
     def close
@@ -73,7 +81,7 @@ module VER
     ensure
       # window.move *adjust_pos
       refresh
-      Ncurses.doupdate
+      Log.debug :update => Ncurses.doupdate
     end
 
     # FIXME:
@@ -143,23 +151,24 @@ module VER
       window_width  = window.width - border
 
       if view_y > window_height
-        @top += (view_y - window_height)
+        self.top += (view_y - window_height)
       elsif view_y < 0
-        @top += view_y
+        self.top += view_y
       end
 
       if view_x > window_width
-        @left += (view_x - window_width)
+        self.left += (view_x - window_width)
       elsif view_x < 0
-        @left += view_x
+        self.left += view_x
       end
 
       return y - @top, x - @left
     end
 
     def scroll(n)
-      @top += n
-      @top = 0 if @top < 0
+      @redraw = true
+      self.top += n
+      self.top = 0 if self.top < 0
     end
 
     def bottom
