@@ -48,6 +48,7 @@ module VER
         modified = buffer.modified? ? '+' : ' '
         file     = buffer.filename
         row, col = cursor.to_pos
+        row, col = row + top + 1, col + 1
         n, m     = buffers.index(buffer) + 1, buffers.size
 
         @status_line % [file, modified, mode, row + top, col, n, m]
