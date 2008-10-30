@@ -67,9 +67,9 @@ module VER
     def press(key)
       @keyhandler.press(key)
       draw
-#     rescue Object => ex
-#       VER.error(ex)
-#       raise(ex)
+    rescue ::Exception => ex
+      Log.debug :rescue
+      VER.error(ex)
     ensure
       # window.move *adjust_pos
       refresh

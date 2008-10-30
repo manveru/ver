@@ -10,9 +10,7 @@ module VER
   end
 
   def ask(question, completer, &block)
-    catch(:answer) do
-      @ask.open(question, completer, &block)
-    end
+    @ask.open(question, completer, &block)
   end
 
   def warn(message)

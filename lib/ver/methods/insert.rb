@@ -54,7 +54,8 @@ module VER
       end
 
       def replace(char)
-        buffer[cursor.pos, 1] = char
+        current = buffer[cursor.pos, 1]
+        buffer[cursor.pos, 1] = char unless current == "\n"
       end
 
       # Takes the name of another method, sets a temporary cursor and performs
@@ -65,8 +66,9 @@ module VER
         old = cursor
         buffer.cursor = buffer.new_cursor(old.pos, old.pos)
         send(movement, *args)
+        buffer.cursor.pos -= 1
         delete
-        old.pos = [old.pos, buffer.size - 1].min
+        old.rearrange
         buffer.cursor = old
       end
 
@@ -75,16 +77,20 @@ module VER
         buffer[cursor.to_range] = ''
         cursor.pos = cursor.mark
         stop_selection
+        cursor.rearrange
       end
 
       def delete_line
         temp = buffer.new_cursor(cursor.bol, cursor.eol)
         buffer[temp.to_range] = ''
+        cursor.rearrange
       end
 
       # Delete until the end of the current line
       def delete_to_end_of_line
-        temp = buffer.new_cursor(cursor.pos, (cursor.eol - 1))
+        temp = buffer.new_cursor(cursor.pos, cursor.pos)
+        temp.mark = temp.eol
+        Log.debug temp.to_range
         buffer[temp.to_range] = ''
       end
 

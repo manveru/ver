@@ -21,8 +21,9 @@ module VER
       # FIXME: don't assume View[:file]
       EXECUTE_PROC = lambda{|got|
         methods = View[:file].methods.singleton_methods.map{|m| m.to_s }
-        choices = methods.grep(/^#{got}/)
-        valid = methods.include?(got)
+        regex = /#{Regexp.escape(got.split.first)}/
+        choices = methods.grep(regex)
+        valid = choices.size == 1
         [valid, choices]
       }
 
@@ -35,6 +36,8 @@ module VER
             send(*cmd.split) if cmd
           end
         end
+      rescue ::Exception => ex
+        VER.error(ex)
       end
 
     end

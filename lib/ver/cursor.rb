@@ -161,6 +161,13 @@ module VER
       buffer[pos, 1] = ''
     end
 
+    # fix pos and mark to be within the bounds of the buffer
+    def rearrange
+      min, max = 0, buffer.size
+      self.pos = [min, pos, max].sort[1]
+      self.mark = [min, pos, max].sort[1]
+    end
+
     def normalize
       from, to = [pos, mark].sort
       yield(from..to)

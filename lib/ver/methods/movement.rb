@@ -39,6 +39,7 @@ module VER
       end
 
       def goto_line(number)
+        number = number.to_i
         line = buffer.line_range(number..number)
         cursor.pos = line.begin
       end

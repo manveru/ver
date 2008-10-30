@@ -31,7 +31,8 @@ module VER
         highlight_selection
       ensure
         refresh
-        window.move(*pos)
+        Log.debug :pos => pos
+        window.move(*pos) if pos
       end
 
       def draw_visible
