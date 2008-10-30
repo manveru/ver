@@ -58,6 +58,26 @@ module VER
         buffer[cursor.pos, 1] = char unless current == "\n"
       end
 
+      def delete_movement_then_insert(movement, *args)
+        delete_movement(movement, *args)
+        into_insert_mode
+      end
+
+      def delete_selection_then_insert
+        delete_selection
+        into_insert_mode
+      end
+
+      def delete_line_then_insert
+        delete_line
+        into_insert_mode
+      end
+
+      def delete_to_end_of_line_then_insert
+        delete_to_end_of_line
+        into_insert_mode
+      end
+
       # Takes the name of another method, sets a temporary cursor and performs
       # given movement, taking the delta between old and temporary cursor and
       # performing a delete on it.

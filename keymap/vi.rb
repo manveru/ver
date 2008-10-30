@@ -50,7 +50,6 @@ VER.map :control, :help do
   key :I,    :insert_at_beginning_of_line
   key :J,    :join_line_up
   key :a,    :append
-  key :s,    :delete_then_input
   key :O,    :insert_newline_above_then_insert
   key :o,    :insert_newline_below_then_insert
   # key(:d, :delete_selection){|view| view.selection }
@@ -73,6 +72,23 @@ VER.map :control, :help do
   key [:d, :d],     :delete_line
   key :D,           :delete_to_end_of_line
 
+  # Replacing then insert movements
+  key [:c, :h],     :delete_movement_then_insert, :left
+  key [:c, :j],     :delete_movement_then_insert, :down
+  key [:c, :k],     :delete_movement_then_insert, :up
+  key [:c, :l],     :delete_movement_then_insert, :right
+  key [:c, :up],    :delete_movement_then_insert, :up
+  key [:c, :down],  :delete_movement_then_insert, :down
+  key [:c, :left],  :delete_movement_then_insert, :left
+  key [:c, :right], :delete_movement_then_insert, :right
+  key [:c, :w],     :delete_movement_then_insert, :word_right
+  key [:c, :W],     :delete_movement_then_insert, :chunk_right
+  key [:c, :b],     :delete_movement_then_insert, :word_left
+  key [:c, :B],     :delete_movement_then_insert, :chunk_left
+  key [:c, :v],     :delete_selection_then_insert
+  key [:c, :V],     :delete_selection_then_insert
+  key [:c, :d],     :delete_line_then_insert
+  key :C,           :delete_to_end_of_line_then_insert
   # Replacing movements
 
   key [:r, :space],  :replace, ' '
