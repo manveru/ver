@@ -69,8 +69,11 @@ module VER
 
       def highlight_selection
         return unless selection
+
+        selection.pos = cursor.pos
         selection.end_of_line if selection[:linewise]
-        highlight(selection, Color[:white, :green])
+
+        highlight(selection)
       end
 
       def highlight_syntax
@@ -80,10 +83,9 @@ module VER
           @syntax.parse(buffer)
         end
 
-        @syntax.matches.each do |(color, cursors)|
-          cursors.each do |cursor|
-            highlight(cursor, color)
-          end
+        Log.debug @syntax.matches.size
+        @syntax.matches.each do |cursor|
+          highlight(cursor)
         end
       end
 
@@ -91,7 +93,7 @@ module VER
       #   * abstract the low level code a bit...
       #   * at the moment it only takes into account starting x and ending x, it
       #     should also respect the width of each line
-      def highlight(cursor, color)
+      def highlight(cursor)
         window = self.window # reduce lookups
 
         if cursor.mark >= cursor.pos
@@ -103,15 +105,15 @@ module VER
         from_y -= @top; from_x -= @left; to_y -= @top; to_x -= @left
 
         if from_y == to_y # only one line
-          highlight_line(color, from_y, from_x, to_x - from_x)
+          highlight_line(cursor.color, from_y, from_x, to_x - from_x)
         else
-          highlight_line(color, from_y, from_x)
+          highlight_line(cursor.color, from_y, from_x)
 
           (from_y + 1).upto(to_y - 1) do |y|
-            highlight_line(color, y)
+            highlight_line(cursor.color, y)
           end
 
-          highlight_line(color, to_y, 0, to_x)
+          highlight_line(cursor.color, to_y, 0, to_x)
         end
       end
 

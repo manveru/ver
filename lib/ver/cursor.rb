@@ -1,5 +1,5 @@
 module VER
-  class Cursor < Struct.new(:buffer, :pos, :mark, :meta)
+  class Cursor < Struct.new(:buffer, :pos, :mark, :color, :meta)
     def [](key, *keys)
       keys.empty? ? meta[key] : meta.values_at(key, *keys)
     end

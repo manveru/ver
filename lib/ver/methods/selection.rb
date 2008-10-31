@@ -2,15 +2,16 @@ module VER
   module Methods
     module Selection
       def start_selection
-        cursor.mark = cursor.pos
-        view.selection = cursor
+        sel = view.selection = cursor.dup
+        sel.mark = sel.pos
+        sel.color = Color[:white, :green]
       end
 
       def start_selecting_line
-        cursor.mark = cursor.bol
-        cursor.pos = cursor.eol
-        view.selection = cursor
-        view.selection[:linewise] = true
+        sel = view.selection = cursor.dup
+        sel.mark, sel.pos = sel.bol, sel.eol
+        sel[:linewise] = true
+        sel.color = Color[:white, :green]
       end
 
       def stop_selection
@@ -19,7 +20,7 @@ module VER
 
       # Copy current selection to clipboard and stop selecting
       def copy(cursor = cursor)
-        VER.clipboard << (string = cursor.to_s)
+        VER.clipboard << (string = view.selection.to_s)
         VER.info "Copied #{string.size} characters"
         stop_selection
       end

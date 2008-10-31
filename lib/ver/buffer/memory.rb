@@ -3,10 +3,10 @@ module VER
     attr_accessor :dirty
 
     def initialize(name, data = '')
-      super name
       @modified = false
       @dirty = false
       @data = data
+      super name
     end
 
     def filename

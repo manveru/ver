@@ -1,18 +1,15 @@
 module VER
   class Buffer
-    attr_accessor :name
+    attr_accessor :name, :cursor
     attr_writer :cursor
 
     def initialize(name)
       @name = name
+      @cursor = new_cursor
     end
 
-    def cursor
-      @cursor ||= new_cursor
-    end
-
-    def new_cursor(pos = 0, mark = size)
-      Cursor.new(self, pos, mark, {})
+    def new_cursor(pos = 0, mark = size, color = Color[:white], meta = {})
+      Cursor.new(self, pos, mark, color, meta)
     end
 
     def range(s=nil, len=nil)
