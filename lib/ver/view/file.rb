@@ -57,7 +57,7 @@ module VER
         modified = buffer.modified? ? '+' : ' '
         file     = buffer.filename
         row, col = cursor.to_pos
-        row, col = row + top + 1, col + 1
+        row, col = row + top + 1, col + left + 1
         n, m     = buffers.index(buffer) + 1, buffers.size
         syntax   = @syntax ? @syntax.name : 'Plain'
 
