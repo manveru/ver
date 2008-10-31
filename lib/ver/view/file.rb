@@ -83,7 +83,6 @@ module VER
           @syntax.parse(buffer)
         end
 
-        Log.debug @syntax.matches.size
         @syntax.matches.each do |cursor|
           highlight(cursor)
         end
