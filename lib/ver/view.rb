@@ -48,6 +48,7 @@ module VER
 
     def open
       window.show
+      @redraw = true
       draw
 
       if interactive?

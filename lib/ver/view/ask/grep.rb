@@ -91,22 +91,6 @@ module VER
       def pick
         @pick || @choices.first
       end
-
-      def select_above
-        if idx = @choices.index(@pick)
-          @pick = @choices[idx - 1]
-        end
-
-        @pick ||= @choices[0]
-      end
-
-      def select_below
-        if idx = @choices.index(@pick)
-          @pick = @choices[idx + 1]
-        end
-
-        @pick ||= @choices[0]
-      end
     end
   end
 end

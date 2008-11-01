@@ -10,34 +10,22 @@ module VER
       def initialize(*args)
         super
 
-        @buffer = MemoryBuffer.new(:ask_file)
+        @prompt = 'File:'
+        self.input = ''
         update_choices
       end
 
-      def draw
-        line = "File: #{buffer[0..-1]}"
-
-        window.move 1, 1
-        window.puts line
-
-        @choices[0...window.height].each do |choice|
-          draw_choice(choice)
-        end
-
-        draw_padding
-        window.move 1, line.size + 1
-        window.color = Color[:white]
-        window.box ?|, ?-
+      def draw_selected_choice(choice)
+        window.color = Color[:black, :white]
+        window.puts " #{choice[:path]}"
       end
 
       def draw_choice(choice)
-        bg = :white if choice == @pick
         fg = choice[:type] == :dir ? :blue : :green
 
-        window.color = Color[fg, bg]
+        window.color = Color[fg]
 
         window.puts " #{choice[:path]}"
-        window.color = Color[:white]
       end
 
       def update_choices
@@ -68,38 +56,17 @@ module VER
       end
 
       def pick
-        if found = @pick || @choices.first
-          if found[:type] == :file
-            return found[:path]
-          end
-        end
-
-        return nil
+        @pick || @choices.first
       end
 
+      # FIXME: only expand as much as reasonable
       def expand_input
-        if found = @pick || @choices.first
+        if found = @pick
           buffer[0..-1] = found[:path]
           buffer.cursor.pos = buffer.size
           update_choices
           draw
         end
-      end
-
-      def select_above
-        if idx = @choices.index(@pick)
-          @pick = @choices[idx - 1]
-        end
-
-        @pick ||= @choices[0]
-      end
-
-      def select_below
-        if idx = @choices.index(@pick)
-          @pick = @choices[idx + 1]
-        end
-
-        @pick ||= @choices[0]
       end
     end
   end

@@ -14,12 +14,17 @@ module VER
         :status_line => "%s [%s] (%s - %s) %d,%d  Buffer %d/%d",
       }
 
-      attr_accessor :status_line, :selection, :syntax, :redraw
+      attr_accessor :status_line, :redraw, :highlights
+      attr_reader :search, :colors
 
       def initialize(*args)
         super
         @status_line = @options[:status_line]
-        # @syntax = Syntax[:ruby].new
+        @highlights = { :search => [] }
+        @colors = {
+          :search    => Color[:white, :blue],
+          :selection => Color[:white, :green],
+        }
         @redraw = true
       end
 
@@ -32,8 +37,13 @@ module VER
           draw_padding
 
           highlight_syntax
-          highlight_selection
+          highlight_search if search
+          highlight_selection if selection
           buffer.dirty = false
+        elsif selection
+          draw_visible
+          draw_padding
+          highlight_selection
         end
 
         VER.status status_line
@@ -48,9 +58,7 @@ module VER
       end
 
       def draw_visible
-        visible_each do |line|
-          window.print line
-        end
+        visible_each{|line| window.print(line) }
       end
 
       def status_line
@@ -59,7 +67,7 @@ module VER
         row, col = cursor.to_pos
         row, col = row + top + 1, col + left + 1
         n, m     = buffers.index(buffer) + 1, buffers.size
-        syntax   = @syntax ? @syntax.name : 'Plain'
+        syntax   = syntax ? syntax.name : 'Plain'
 
         @status_line % [file, modified, syntax, mode, row + top, col, n, m]
       rescue ::Exception => ex
@@ -67,9 +75,24 @@ module VER
         ''
       end
 
-      def highlight_selection
-        return unless selection
+      def selection=(s)
+        @selection = s
+        @redraw = true unless s
+      end
 
+      def search=(regex)
+        @search = regex
+        cursors = buffer.grep_cursors(regex)
+        cursors.each{|c| c.color = @colors[:search] }
+
+        highlights[:search] = cursors
+      end
+
+      def highlight_search
+        highlights[:search].each{|cursor| highlight(cursor) }
+      end
+
+      def highlight_selection
         selection.pos = cursor.pos
         selection.end_of_line if selection[:linewise]
 
@@ -77,13 +100,13 @@ module VER
       end
 
       def highlight_syntax
-        return unless @syntax
+        return unless syntax
 
-        if @syntax.matches.empty? or buffer.dirty?
-          @syntax.parse(buffer)
+        if syntax.matches.empty? or buffer.dirty?
+          syntax.parse(buffer)
         end
 
-        @syntax.matches.each do |cursor|
+        syntax.matches.each do |cursor|
           highlight(cursor)
         end
       end
@@ -92,7 +115,7 @@ module VER
       #   * abstract the low level code a bit...
       #   * at the moment it only takes into account starting x and ending x, it
       #     should also respect the width of each line
-      def highlight(cursor)
+      def highlight(cursor, color = cursor.color)
         window = self.window # reduce lookups
 
         if cursor.mark >= cursor.pos
@@ -104,15 +127,15 @@ module VER
         from_y -= @top; from_x -= @left; to_y -= @top; to_x -= @left
 
         if from_y == to_y # only one line
-          highlight_line(cursor.color, from_y, from_x, to_x - from_x)
+          highlight_line(color, from_y, from_x, to_x - from_x)
         else
-          highlight_line(cursor.color, from_y, from_x)
+          highlight_line(color, from_y, from_x)
 
           (from_y + 1).upto(to_y - 1) do |y|
-            highlight_line(cursor.color, y)
+            highlight_line(color, y)
           end
 
-          highlight_line(cursor.color, to_y, 0, to_x)
+          highlight_line(color, to_y, 0, to_x)
         end
       end
 

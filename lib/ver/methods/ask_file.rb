@@ -24,9 +24,9 @@ module VER
       end
 
       def pick
-        if file = view.pick
+        if choice = view.pick
           view.close
-          View[:file].buffer = file
+          View[:file].buffer = choice[:path]
           View[:file].open
         end
       end

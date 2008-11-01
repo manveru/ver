@@ -71,7 +71,6 @@ module VER
     end
 
     def grep_cursors(regex, from_pos = 0, to_pos = size)
-      range = from_pos..to_pos
       cursors = []
 
       while from_pos < to_pos and idx = @data.index(regex, from_pos)
