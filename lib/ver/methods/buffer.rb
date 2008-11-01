@@ -81,7 +81,7 @@ module VER
       end
 
       BUFFER_FIND_PROC = lambda{|got|
-        buffer_names = View[:main].buffers.map{|b| b.filename }
+        buffer_names = View[:file].buffers.map{|b| b.filename }
         choices = buffer_names.grep(/#{got}/)
         [got, choices]
       }
