@@ -21,36 +21,6 @@ module VER
         buffer.cursor.pos = buffer.size
       end
 
-      # TODO: natural scrolling
-      def draw
-        window.move 1, 1
-        window.puts "#{@prompt} #{buffer}"
-        window.color = Color[:white]
-
-        current = @choices.index(@pick) || 0
-        from = 0
-        to = from + window.height
-        delta = current - (window.height - 6)
-
-        if delta > 1
-          from += delta
-          to += delta
-        end
-
-        @choices[from...to].each do |choice|
-          if choice == @pick
-            draw_selected_choice(choice)
-          else
-            draw_choice(choice)
-          end
-        end
-
-        draw_padding
-        window.move 1, (cursor.pos + @prompt.size + 2)
-        window.color = Color[:white]
-        window.box ?|, ?-
-      end
-
       def draw_choice(choice)
         window.puts " #{choice[:file]}(#{choice[:cursor].to_range}) : #{choice[:line]}"
       end

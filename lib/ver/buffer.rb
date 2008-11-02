@@ -137,9 +137,12 @@ module VER
       return
     end
 
-    def close
+    def clear
       @data = ''
+      @pos = @mark = 0
+      cursor.rearrange
     end
+    alias close clear
 
     def to_s
       self[0..-1].dup

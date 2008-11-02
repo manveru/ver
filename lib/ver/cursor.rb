@@ -8,6 +8,12 @@ module VER
       meta[key] = value
     end
 
+    def ==(other)
+      other.buffer == buffer &&
+        other.pos == pos &&
+        other.mark == mark
+    end
+
     def beginning_of_line
       self.pos = bol
     end
@@ -142,12 +148,11 @@ module VER
 
     def insert(string)
       buffer[pos, 0] = string
-      self.pos += 1
+      self.pos += string.size
     end
 
     def insert_newline
-      buffer[pos, 0] = "\n"
-      self.pos += 1
+      insert("\n")
     end
 
     def insert_backspace
@@ -159,6 +164,16 @@ module VER
 
     def insert_delete
       buffer[pos, 1] = ''
+    end
+
+    def delete_range
+      buffer[to_range] = ''
+    end
+
+    def virtual
+      cursor = clone
+      yield(cursor)
+      rearrange
     end
 
     # fix pos and mark to be within the bounds of the buffer

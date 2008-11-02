@@ -26,13 +26,14 @@ module VER
           :selection => Color[:white, :green],
         }
         @redraw = true
+        @threads = []
       end
 
       def draw
         pos = adjust_pos
         window.move 0, 0
 
-        if @redraw or buffer.dirty?
+        if @redraw or buffer.dirty? or selection
           draw_visible
           draw_padding
 
@@ -40,14 +41,10 @@ module VER
           highlight_search if search
           highlight_selection if selection
           buffer.dirty = false
-        elsif selection
-          draw_visible
-          draw_padding
-          highlight_selection
         end
 
         VER.status status_line
-      ensure
+
         refresh
         window.move(*pos) if pos
         @redraw = false
@@ -82,10 +79,15 @@ module VER
 
       def search=(regex)
         @search = regex
-        cursors = buffer.grep_cursors(regex)
-        cursors.each{|c| c.color = @colors[:search] }
+        if hl = buffer.grep_cursor(regex, cursor.pos)
+          hl.color = @colors[:search]
+          highlights[:search] = [hl]
 
-        highlights[:search] = cursors
+          @redraw = true
+          draw
+        else
+          highlights[:search].clear
+        end
       end
 
       def highlight_search
@@ -109,6 +111,18 @@ module VER
         syntax.matches.each do |cursor|
           highlight(cursor)
         end
+#         @threads.each{|t|
+#           t.kill unless visible_cursor?(t[:cursor])
+#         }
+#         @threads.delete_if{|t| not t.alive? }
+#
+#         @threads += syntax.matches.map{|cursor|
+#           Thread.new{
+#             Thread.current[:cursor] = cursor
+#             sleep 1
+#             highlight(cursor)
+#           }
+#         }
       end
 
       # TODO:

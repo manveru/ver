@@ -9,7 +9,7 @@ module VER
         valid = false
 
         unless got.empty?
-          view = View.active
+          view = View[:file]
 
           begin
             silently do
@@ -19,9 +19,8 @@ module VER
                 regex = /#{got}/
               end
 
-              cursors = view.buffer.grep_cursors(regex)
-              valid = true unless cursors.empty?
-              view.highlights = cursors
+              valid = true
+              view.search = regex
             end
           rescue RegexpError, SyntaxError => ex
             Log.error(ex)
@@ -37,21 +36,28 @@ module VER
 
       def search
         VER.ask('Search: ', SEARCH_PROC) do |regex|
-          # view.highlights = view.buffer.grep_cursors(/#{regex}/i)
-          next_highlight
-          View.active.draw
+          highlight_all_search_results
+          next_search
         end
       end
 
-      def next_highlight
-        sorted = view.highlights.sort_by{|c| [c.pos, c.mark].min }
+      def highlight_all_search_results
+        cursors = view.highlights[:search] = buffer.grep_successive_cursors(view.search)
+        cursors.each{|c| c.color = view.colors[:search] }
+      end
+
+      def next_search
+        highlights = view.highlights[:search]
+        sorted = highlights.sort_by{|c| [c.pos, c.mark].min }
+
         if coming = sorted.find{|c| c.pos > cursor.pos and c.mark > cursor.pos }
           view.cursor.pos = coming.pos
         end
       end
 
-      def previous_highlight
-        sorted = view.highlights.sort_by{|c| -[c.pos, c.mark].min }
+      def previous_search
+        highlights = view.highlights[:search]
+        sorted = highlights.sort_by{|c| -[c.pos, c.mark].min }
 
         if coming = sorted.find{|c| c.pos < cursor.pos and c.mark < cursor.pos }
           view.cursor.pos = coming.pos

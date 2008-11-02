@@ -14,16 +14,19 @@ module VER
         :mode => :ask
       }
 
-      attr_reader :question, :valid, :choices, :block
+      attr_reader :prompt, :valid, :choices, :block
 
       def initialize(*args)
         super
         @buffer = MemoryBuffer.new(:ask)
-        @question = '>'
+        @prompt = '>'
+        @history = {}
       end
 
-      def open(question, completer, &block)
-        @question, @completer, @block = question, completer, block
+      def open(prompt, completer, &block)
+        @prompt, @completer, @block = prompt, completer, block
+        @buffer.clear
+        @choices.clear if @choices
         super()
       end
 
@@ -36,14 +39,14 @@ module VER
         window.clear
         window.move 0, 0
         window.color = Color[:white]
-        window.print "#{@question}#{buffer}"
+        window.print "#{@prompt}#{buffer}"
 
         if @choices
           window.move 1, 0
           window.print @choices.join(' ')
         end
 
-        window.move 0, (cursor.pos + @question.size)
+        window.move 0, (cursor.pos + @prompt.size)
       end
 
       def update_choices

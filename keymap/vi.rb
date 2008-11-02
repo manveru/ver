@@ -1,3 +1,143 @@
+
+VER.let :general_movement do
+  # Movement
+  map('up'){ cursor.up }
+  map('down'){ cursor.down }
+  map('left'){ cursor.left }
+  map('right'){ cursor.right }
+end
+
+VER.let :general => :general_movement do
+  map(/C-f|npage/){ view.scroll(window.height / 2) and recenter }
+  map(/C-b|ppage/){ view.scroll(window.height / -2) and recenter }
+
+  # Function keys
+
+  map('F1'){ VER.doc(/ver/) }
+  map('F2'){ VER.help }
+
+  # seems to be triggered only on events, not the actual resize
+  map(/C-l|resize/){ View.resize }
+
+  # Switching buffers real fast
+  # (1..9).each{|n| key("M-#{n}", :buffer_jump, n - 1) }
+  map(/M-(\d)/){|m| view.buffer = view.buffers[m.to_i - 1] }
+end
+
+VER.let :control_movement => :general_movement do
+  map('0'){ cursor.beginning_of_line }
+  map('$'){ cursor.end_of_line }
+
+  map('w'){ jump_right(:word)  }
+  map('b'){ jump_left(:word)   }
+  map('W'){ jump_right(:chunk) }
+  map('B'){ jump_left(:chunk)  }
+
+  macro('h', 'left')
+  macro('j', 'down')
+  macro('k', 'up')
+  macro('l', 'right')
+end
+
+VER.let :control => [:general, :control_movement] do
+  macro('a', 'l i')
+  macro('A', '$ a')
+  macro('I', '0 i')
+  macro('O', "0 i return C-c k")
+  macro('o', "$ i return C-c j")
+
+#   map(/q ([[:print:]])/){|m| start_macro(m) }
+#   map(/q ([[:print:]])/){|m| play_macro(m) }
+
+  map('M-b'){ ask_buffer }
+  map('C-o'){ View::AskFile.open }
+  map('M-o'){ View::AskFuzzyFile.open }
+  map('C-q'){ VER.stop }
+  map('C-s'){ VER.info("Saved to: #{buffer.save_file}") }
+  map('C-w'){ buffer_close }
+  map('C-g'){ ask_grep }
+  map('C-x'){ ask_execute }
+
+  macro('D', 'd $')
+  macro('C', 'd $ i')
+
+  # TODO: should take other mode as list of mappings after prefix key
+  map(/d ([0wbWBhjkl$])/){|*m|
+    cursor.virtual{|c| self[*m].call; c.delete } }
+  map(/c ([0wbWBhjkl$])/){|*m|
+    cursor.virtual{|c| self[*m].call; c.delete } self['i'].call } }
+
+  map('v'){
+    sel = view.selection = cursor.dup
+    sel.mark = cursor.pos
+    sel.color = view.colors[:search]
+  }
+
+  map('V'){ self['v'].call; view.selection[:linewise] = true }
+
+  map('y'){
+    string = view.selection.to_s
+    VER.clipboard << string
+    VER.info("Copied #{string.size} characters")
+    view.selection = nil
+  }
+
+  map('p'){ cursor.insert(VER.clipboard.last) }
+  map('P'){ cursor.insert(VER.clipboard.last) }
+end
+
+VER.let :insert => :general do
+  map(/([[:print:]])/){|m| cursor.insert(m) }
+  map('backspace'    ){    cursor.insert_backspace }
+  map('dc'           ){    cursor.insert_delete }
+  map('return'       ){    cursor.insert_newline }
+  map('space'        ){    cursor.insert(' ') }
+end
+
+__END__
+
+pp Mode::LIST[:control]['h'].call
+pp Mode::LIST[:control]['c w'].call
+
+=begin
+  # Deleting movements
+  map(['d', mode[:control_movement]]){|m|
+    cursor.temp do |c|
+      m.call
+
+
+    mode[:control_movement][m]
+    delete_movement(mode[:control_movement][m])
+  }
+  map(['c', mode[:control_movement]]){|m| , :delete_movement_then_insert, "\1"
+=end
+
+
+mode :ask => :insert do
+end
+
+mode :ask_file => :insert do
+end
+
+mode :ask_grep => :insert do
+end
+
+VER.map :insert, :ask, :ask_file, :ask_grep do
+  VER::Keyboard::PRINTABLE.each do |char|
+    key(char, :insert_character, char)
+  end
+
+  key :space,     :insert_space
+  key :return,    :insert_return
+  key :backspace, :insert_backspace
+  key :dc,        :insert_delete
+
+  # Mode switches
+
+  key :esc,  :into_control_mode
+  key 'C-c', :into_control_mode # esc is slow due to timeout
+end
+
 VER.map :insert, :control, :replace, :ask, :help, :doc do
   # Basic Movement
 
@@ -93,9 +233,7 @@ VER.map :control, :help do
 
   key [:r, :space],  :replace, ' '
   key [:r, :return], :replace, "\n"
-  VER::Keyboard::PRINTABLE.each do |char|
-    key [:r, char], :replace, char
-  end
+  key /r ([[:print:]])/, :replace, "\1"
 
   key :v,       :start_selection
   key :V,       :start_selecting_line
@@ -109,12 +247,13 @@ VER.map :control, :help do
   key 'C-x',    :execute
   key 'F7',     :ruby_filter
   key :G,       :goto_end_of_buffer
-  key [:g, :g], :goto_line, 0
+  key /g g/,      :goto_line, 0
+  key /(\d+) g/,  :goto_line, "\1"
 
   # Searching
   key :/,    :search
-  key :n,    :next_highlight
-  key :N,    :previous_highlight
+  key :n,    :next_search
+  key :N,    :previous_search
 
   # Grepping
   key 'C-g', :ask_grep

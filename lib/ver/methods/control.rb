@@ -31,15 +31,18 @@ module VER
         if command
           send(*command.to_s.split)
         else
-          VER.ask('Execute: ', EXECUTE_PROC) do |cmd|
-            Log.debug :cmd => cmd
-            send(*cmd.split) if cmd
-          end
+          ask_execute
         end
       rescue ::Exception => ex
         VER.error(ex)
       end
 
+      def ask_execute
+        VER.ask('Execute: ', EXECUTE_PROC) do |cmd|
+          Log.debug :cmd => cmd
+          send(*cmd.split) if cmd
+        end
+      end
     end
   end
 end

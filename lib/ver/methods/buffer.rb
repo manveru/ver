@@ -10,11 +10,6 @@ module VER
         View.resize
       end
 
-      def buffer_persist(buffer = buffer)
-        filename = buffer.save_file
-        VER.info "Saved to: #{filename}"
-      end
-
       BUFFER_CLOSE_PROC = lambda{|got|
         options = %w[yes no cancel]
         valid = options.include?(got)
@@ -51,55 +46,16 @@ module VER
         end
       end
 
-      # real hardcore, gotta refine that once we have multiple important views
-      def window_close
-        VER.stop
-      end
-
-      BUFFER_OPEN_PROC = lambda{|got|
-        got = File.expand_path(got)
-        got << '/' if File.directory?(got)
-
-        choices = Dir["#{got}*"].map{|path|
-          File.directory?(path) ? path + '/' : path
-          path.gsub(Dir.pwd, '.')
-        }
-
-        valid = !File.directory?(got)
-
-        [valid, choices]
-      }
-
-      def ask_file
-        view = View::AskFile.new(:ask_file)
-        view.open
-      end
-
-      def ask_fuzzy_file
-        view = View::AskFuzzyFile.new(:ask_fuzzy_file)
-        view.open
-      end
-
-      BUFFER_FIND_PROC = lambda{|got|
+      ASK_BUFFER_PROC = lambda{|got|
         buffer_names = View[:file].buffers.map{|b| b.filename }
         choices = buffer_names.grep(/#{got}/)
         [got, choices]
       }
 
-      def buffer_select
-        VER.ask('Buffer: ', BUFFER_FIND_PROC) do |name|
+      def ask_buffer
+        VER.ask('Buffer: ', ASK_BUFFER_PROC) do |name|
           view.buffer = name if name
         end
-      end
-
-      def buffer_jump(n)
-        if found = view.buffers[n]
-          view.buffer = found if found
-        end
-      end
-
-      def resize
-        View.resize
       end
     end
   end

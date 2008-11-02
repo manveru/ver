@@ -9,7 +9,7 @@ module VER
 
       attr_accessor :selection, :choices
 
-      def initialize(*args)
+      def initialize(name = :ask_fuzzy_file, options = {})
         super
 
         @finder = FuzzyFileFinder.new
@@ -44,7 +44,7 @@ module VER
         format = "[%.2f] %s"
 
         @choices = @finder.find(input).sort_by{|m| [-m[:score], m[:path]] }
-      rescue Object => ex
+      rescue ::Exception => ex
         VER.error(ex)
         @choices = []
       ensure

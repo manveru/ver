@@ -4,14 +4,14 @@ module VER
       def start_selection
         sel = view.selection = cursor.dup
         sel.mark = sel.pos
-        sel.color = Color[:white, :green]
+        sel.color = view.colors[:search]
       end
 
       def start_selecting_line
         sel = view.selection = cursor.dup
         sel.mark, sel.pos = sel.bol, sel.eol
         sel[:linewise] = true
-        sel.color = Color[:white, :green]
+        sel.color = view.colors[:search]
       end
 
       def stop_selection

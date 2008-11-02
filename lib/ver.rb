@@ -1,8 +1,9 @@
-require 'fileutils'
 require 'abbrev'
-require 'tmpdir'
+require 'fileutils'
 require 'logger'
 require 'pp'
+require 'strscan'
+require 'tmpdir'
 
 begin; require 'rubygems'; rescue LoadError; end
 require 'ncurses'
@@ -29,9 +30,9 @@ module VER
 
   require 'ver/error'
   require 'ver/keyboard'
-  require 'ver/keymap'
-  require 'ver/methods'
-  require 'ver/mixer'
+#   require 'ver/keymap'
+#   require 'ver/methods'
+#   require 'ver/mixer'
   require 'ver/window'
   require 'ver/cursor'
   require 'ver/color'

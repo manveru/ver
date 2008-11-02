@@ -19,6 +19,10 @@ module VER
       Ncurses.doupdate
     end
 
+    def self.open
+      new.open
+    end
+
     LAYOUT = { :height => 0, :width => 0, :top => 0, :left => 0 }
     DEFAULT = { :mode => :control, :methods => [], :interactive => false }
 
@@ -112,6 +116,8 @@ module VER
     # Strings are assumed to be filenames
     def buffer=(buffer)
       case buffer
+      when nil, false, true
+        return
       when Buffer
         if found = buffers.find{|b| b == buffer }
           @buffer = found
@@ -197,6 +203,11 @@ module VER
 
     def visible_pos?(y, x)
       visible_y?(y + top) and visible_x?(x + left)
+    end
+
+    def visible_cursor?(cursor)
+      y, x = cursor.to_pos
+      visible_y?(y) and visible_x?(x)
     end
 
     def visible_each

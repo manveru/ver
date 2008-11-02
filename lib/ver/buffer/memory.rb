@@ -62,6 +62,15 @@ module VER
       @dirty = true
     end
 
+    def start_snapshot
+    end
+
+    def stop_snapshot
+    end
+
+    def undo
+    end
+
     def modified?
       @modified
     end
@@ -84,6 +93,45 @@ module VER
       end
 
       return cursors
+    end
+
+    def to_scanner(from = 0, to = size)
+      StringScanner.new(self[from, to])
+    end
+
+    # Avoid overlaps, pick regexps as they match with lowest possible delta in
+    # between them.
+    def grep_successive_cursors(*regexps)
+      cursors = []
+
+      scanner = StringScanner.new(@data)
+
+      until scanner.eos?
+        pos = scanner.pos
+
+        regexps.each do |regex|
+          if match = scanner.scan(regex)
+            cursors << new_cursor((scanner.pos - match.size), scanner.pos)
+          end
+        end
+
+        # nothing matches here, go forward one character
+        scanner.scan(/./um) if pos == scanner.pos
+      end
+
+      return cursors
+    end
+
+    def grep_cursor(regex, from_pos = 0, to_pos = size)
+      if idx = @data.index(regex, from_pos) and match = $~
+        from, to = match.offset(0)
+        if to <= to_pos
+          return new_cursor(from, to)
+        end
+      end
+
+      return nil if from_pos == 0
+      grep_cursor(regex, 0, to_pos) # wrap around
     end
   end
 end
