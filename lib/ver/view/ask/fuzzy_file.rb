@@ -1,10 +1,11 @@
 module VER
   class View
     class AskFuzzyFile < AskLarge
+      Methods = AskFile::Methods
+
       DEFAULT = {
         :interactive => true,
-        :methods => [Methods::Ask, Methods::AskFile],
-        :mode => :ask_file
+        :mode => :ask_fuzzy_file
       }
 
       attr_accessor :selection, :choices
@@ -15,8 +16,6 @@ module VER
         @finder = FuzzyFileFinder.new
         @prompt = 'Fuzzy File:'
         self.input = ''
-
-        update_choices
       end
 
       def draw_selected_choice(choice)
@@ -40,7 +39,6 @@ module VER
       end
 
       def update_choices
-        input = buffer[0..-1]
         format = "[%.2f] %s"
 
         @choices = @finder.find(input).sort_by{|m| [-m[:score], m[:path]] }

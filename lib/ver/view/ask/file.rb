@@ -1,13 +1,22 @@
 module VER
   class View
     class AskFile < AskLarge
+      module Methods
+        def pick
+          if choice = view.pick
+            view.close
+            View[:file].buffer = choice[:path]
+            View[:file].open
+          end
+        end
+      end
+
       DEFAULT = {
         :interactive => true,
-        :methods => [Methods::Ask, Methods::AskFile],
-        :mode => :ask_file
+        :mode => :ask_file,
       }
 
-      def initialize(*args)
+      def initialize(name = :ask_file, options = {})
         super
 
         @prompt = 'File:'
@@ -34,11 +43,20 @@ module VER
         @pick = nil
         @choices = []
 
-        input = ::File.expand_path(input)
-        input << '/' if ::File.directory?(input)
-        input.squeeze!('/')
+        glob = ::File.expand_path(input)
+        is_dir = ::File.directory?(glob)
 
-        Dir["#{input}*"].each do |path|
+        if is_dir and input[-1,1] == '/'
+          glob = "#{glob}/*"
+        elsif is_dir
+          glob = "{#{glob},#{glob}/}*"
+        else
+          glob = "#{glob}*"
+        end
+
+        Log.debug :glob => glob
+
+        Dir[glob].each do |path|
           stat = ::File.stat(path)
 
           path.gsub!(::File.expand_path('~'), '~')
@@ -62,12 +80,18 @@ module VER
       # FIXME: only expand as much as reasonable
       def expand_input
         if found = @pick
-          buffer[0..-1] = found[:path]
-          buffer.cursor.pos = buffer.size
-          update_choices
+          self.input = found[:path]
           draw
+        elsif @choices.size == 1
+          self.input = @choices.first[:path]
+          draw
+        elsif @choices.size > 1
+          require 'abbrev'
+          choices = @choices.map{|c| c[:path]}
+          self.input = choices.abbrev.keys.sort_by{|k| k.size }[0][0..-2]
         end
       end
+
     end
   end
 end

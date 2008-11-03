@@ -1,12 +1,14 @@
 module VER
   module_function
 
-  def info(message)
-    @info.change{|v| v.buffer[0..-1] = message }
+  def info(message = nil)
+    @info.change{|v| v.buffer[0..-1] = message } if message
+    return @info
   end
 
-  def status(message)
-    @status.change{|v| v.buffer[0..-1] = message }
+  def status(message = nil)
+    @status.change{|v| v.buffer[0..-1] = message } if message
+    return @status
   end
 
   def ask(question, completer, &block)

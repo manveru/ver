@@ -1,15 +1,14 @@
+chars = (0..255).map{|c| c.chr }.grep(/[[:print:]]/)
+chars_regex = Regexp.union(*chars)
 
 VER.let :general_movement do
   # Movement
-  map('up'){ cursor.up }
-  map('down'){ cursor.down }
-  map('left'){ cursor.left }
-  map('right'){ cursor.right }
+  map(/^(up|down|left|right)$/){ cursor.send(@arg) }
 end
 
 VER.let :general => :general_movement do
-  map(/C-f|npage/){ view.scroll(window.height / 2) and recenter }
-  map(/C-b|ppage/){ view.scroll(window.height / -2) and recenter }
+  map(/C-f|npage/){ methods.page_down }
+  map(/C-b|ppage/){ methods.page_up }
 
   # Function keys
 
@@ -17,7 +16,7 @@ VER.let :general => :general_movement do
   map('F2'){ VER.help }
 
   # seems to be triggered only on events, not the actual resize
-  map(/C-l|resize/){ View.resize }
+  map(/C-l|resize/){ VER::View.resize }
 
   # Switching buffers real fast
   # (1..9).each{|n| key("M-#{n}", :buffer_jump, n - 1) }
@@ -40,295 +39,84 @@ VER.let :control_movement => :general_movement do
 end
 
 VER.let :control => [:general, :control_movement] do
+  map(/q (#{chars_regex})/){ start_macro(@arg) }
+  map(/q (#{chars_regex})/){ play_macro(@arg) }
+
+  map('C-g'){ VER::View::AskGrep.open }
+  map('C-o'){ VER::View::AskFile.open }
+  map('C-q'){ VER.stop }
+  map('C-s'){ VER.info("Saved to: #{buffer.save_file}") }
+  map('C-w'){ methods.buffer_close }
+  map('C-x'){ methods.execute_ask }
+
+  map('M-b'){ methods.buffer_ask }
+  map('M-o'){ VER::View::AskFuzzyFile.open }
+
+  map('G'){
+    cursor.pos = buffer.size - 1
+    cursor.beginning_of_line
+  }
+  0.upto(7) do |n|
+    key = [/[1-9]/] + ([/\d/] * n) << 'g'
+    map(key){ methods.goto_line(@args.join.to_i) }
+  end
+
+  # TODO: should take other mode as list of mappings after prefix key
+  movement = /^(up|down|left|right|[0wbWBhjkl$])$/
+  map(["d", movement]){ cursor.virtual{ press(@arg); cursor.delete_range } }
+  map(["c", movement]){ cursor.virtual{ press(@arg); cursor.delete_range }; press('i') }
+
+  map('v'){ methods.start_selection }
+  map('V'){ press('v'); view.selection[:linewise] = true }
+
+  map('y'){ methods.copy }
+  map('Y'){ methods.copy_lines }
+
+  map('p'){ cursor.insert(VER.clipboard.last) }
+  map('P'){ cursor.insert(VER.clipboard.last) }
+
+  map('/'){ methods.search_ask }
+  map('n'){ methods.search_next }
+  map('N'){ methods.search_previous }
+
+  map('i'){ view.mode = :insert }
+
   macro('a', 'l i')
   macro('A', '$ a')
   macro('I', '0 i')
   macro('O', "0 i return C-c k")
   macro('o', "$ i return C-c j")
-
-#   map(/q ([[:print:]])/){|m| start_macro(m) }
-#   map(/q ([[:print:]])/){|m| play_macro(m) }
-
-  map('M-b'){ ask_buffer }
-  map('C-o'){ View::AskFile.open }
-  map('M-o'){ View::AskFuzzyFile.open }
-  map('C-q'){ VER.stop }
-  map('C-s'){ VER.info("Saved to: #{buffer.save_file}") }
-  map('C-w'){ buffer_close }
-  map('C-g'){ ask_grep }
-  map('C-x'){ ask_execute }
-
   macro('D', 'd $')
   macro('C', 'd $ i')
-
-  # TODO: should take other mode as list of mappings after prefix key
-  map(/d ([0wbWBhjkl$])/){|*m|
-    cursor.virtual{|c| self[*m].call; c.delete } }
-  map(/c ([0wbWBhjkl$])/){|*m|
-    cursor.virtual{|c| self[*m].call; c.delete } self['i'].call } }
-
-  map('v'){
-    sel = view.selection = cursor.dup
-    sel.mark = cursor.pos
-    sel.color = view.colors[:search]
-  }
-
-  map('V'){ self['v'].call; view.selection[:linewise] = true }
-
-  map('y'){
-    string = view.selection.to_s
-    VER.clipboard << string
-    VER.info("Copied #{string.size} characters")
-    view.selection = nil
-  }
-
-  map('p'){ cursor.insert(VER.clipboard.last) }
-  map('P'){ cursor.insert(VER.clipboard.last) }
+  macro('d d', '0 d $')
+  macro('g g', '1 g')
 end
 
 VER.let :insert => :general do
-  map(/([[:print:]])/){|m| cursor.insert(m) }
-  map('backspace'    ){    cursor.insert_backspace }
-  map('dc'           ){    cursor.insert_delete }
-  map('return'       ){    cursor.insert_newline }
-  map('space'        ){    cursor.insert(' ') }
+  map(/^(#{chars_regex})$/){ cursor.insert(@arg) }
+  map('backspace'){          cursor.insert_backspace }
+  map('dc'){                 cursor.insert_delete }
+  map('return'){             cursor.insert_newline }
+  map('space'){              cursor.insert(' ') }
+  map(/^(C-c|C-q|esc)$/){    view.mode = :control }
 end
 
-__END__
-
-pp Mode::LIST[:control]['h'].call
-pp Mode::LIST[:control]['c w'].call
-
-=begin
-  # Deleting movements
-  map(['d', mode[:control_movement]]){|m|
-    cursor.temp do |c|
-      m.call
-
-
-    mode[:control_movement][m]
-    delete_movement(mode[:control_movement][m])
-  }
-  map(['c', mode[:control_movement]]){|m| , :delete_movement_then_insert, "\1"
-=end
-
-
-mode :ask => :insert do
+VER.let :ask => [:insert, :general_movement] do
+  map('return'){              methods.pick }
+  map('tab'){                 view.update_choices; view.try_completion }
+  map('up'){                  methods.history_backward }
+  map('down'){                methods.history_forward }
+  map(/^(C-g|C-q|C-c|esc)$/){ view.close; VER::View[:file].open }
 end
 
-mode :ask_file => :insert do
+VER.let :ask_large => :ask do
+  map('up'){   view.select_above }
+  map('down'){ view.select_below }
+  map('tab'){  view.expand_input }
+
+  after(/^(#{chars_regex})$/, 'backspace', 'space', 'dc'){ view.update_choices }
 end
 
-mode :ask_grep => :insert do
-end
-
-VER.map :insert, :ask, :ask_file, :ask_grep do
-  VER::Keyboard::PRINTABLE.each do |char|
-    key(char, :insert_character, char)
-  end
-
-  key :space,     :insert_space
-  key :return,    :insert_return
-  key :backspace, :insert_backspace
-  key :dc,        :insert_delete
-
-  # Mode switches
-
-  key :esc,  :into_control_mode
-  key 'C-c', :into_control_mode # esc is slow due to timeout
-end
-
-VER.map :insert, :control, :replace, :ask, :help, :doc do
-  # Basic Movement
-
-  key :up,    :up
-  key :down,  :down
-  key :left,  :left
-  key :right, :right
-
-  key 'C-f', :page_down
-  key 'C-b', :page_up
-  key 'ppage', :page_up
-  key 'npage', :page_down
-
-  # Function keys
-
-  key 'F1',     :show_help
-  key 'F2',     :show_doc
-
-  # seems to be triggered only on events, not the actual resize...
-  key 'resize', :resize
-  key 'C-l',    :resize
-
-  # Switching buffers real fast
-  (1..9).each{|n| key("M-#{n}", :buffer_jump, n - 1) }
-end
-
-VER.map :insert, :ask, :ask_file, :ask_grep do
-  VER::Keyboard::PRINTABLE.each do |char|
-    key(char, :insert_character, char)
-  end
-
-  key :space,     :insert_space
-  key :return,    :insert_return
-  key :backspace, :insert_backspace
-  key :dc,        :insert_delete
-
-  # Mode switches
-
-  key :esc,  :into_control_mode
-  key 'C-c', :into_control_mode # esc is slow due to timeout
-end
-
-VER.map :control, :help do
-  word_break = VER::Config[:word_break].value
-  chunk_break = VER::Config[:chunk_break].value
-
-  key '$',   :end_of_line
-  key '0',   :beginning_of_line
-  key :A,    :append_at_end_of_line
-  key :I,    :insert_at_beginning_of_line
-  key :J,    :join_line_up
-  key :a,    :append
-  key :O,    :insert_newline_above_then_insert
-  key :o,    :insert_newline_below_then_insert
-  # key(:d, :delete_selection){|view| view.selection }
-
-  # Deleting movements
-  key [:d, :h],     :delete_movement, :left
-  key [:d, :j],     :delete_movement, :down
-  key [:d, :k],     :delete_movement, :up
-  key [:d, :l],     :delete_movement, :right
-  key [:d, :up],    :delete_movement, :up
-  key [:d, :down],  :delete_movement, :down
-  key [:d, :left],  :delete_movement, :left
-  key [:d, :right], :delete_movement, :right
-  key [:d, :w],     :delete_movement, :word_right
-  key [:d, :W],     :delete_movement, :chunk_right
-  key [:d, :b],     :delete_movement, :word_left
-  key [:d, :B],     :delete_movement, :chunk_left
-  key [:d, :v],     :delete_selection
-  key [:d, :V],     :delete_selection
-  key [:d, :d],     :delete_line
-  key :D,           :delete_to_end_of_line
-
-  # Replacing then insert movements
-  key [:c, :h],     :delete_movement_then_insert, :left
-  key [:c, :j],     :delete_movement_then_insert, :down
-  key [:c, :k],     :delete_movement_then_insert, :up
-  key [:c, :l],     :delete_movement_then_insert, :right
-  key [:c, :up],    :delete_movement_then_insert, :up
-  key [:c, :down],  :delete_movement_then_insert, :down
-  key [:c, :left],  :delete_movement_then_insert, :left
-  key [:c, :right], :delete_movement_then_insert, :right
-  key [:c, :w],     :delete_movement_then_insert, :word_right
-  key [:c, :W],     :delete_movement_then_insert, :chunk_right
-  key [:c, :b],     :delete_movement_then_insert, :word_left
-  key [:c, :B],     :delete_movement_then_insert, :chunk_left
-  key [:c, :v],     :delete_selection_then_insert
-  key [:c, :V],     :delete_selection_then_insert
-  key [:c, :d],     :delete_line_then_insert
-  key :C,           :delete_to_end_of_line_then_insert
-  # Replacing movements
-
-  key [:r, :space],  :replace, ' '
-  key [:r, :return], :replace, "\n"
-  key /r ([[:print:]])/, :replace, "\1"
-
-  key :v,       :start_selection
-  key :V,       :start_selecting_line
-  key :y,       :copy
-  key :Y,       :copy_line
-  key :p,       :paste_after
-  key :P,       :paste_before
-  key 'C-l',    :recenter_view
-  key :u,       :undo
-  key 'C-r',    :unundo
-  key 'C-x',    :execute
-  key 'F7',     :ruby_filter
-  key :G,       :goto_end_of_buffer
-  key /g g/,      :goto_line, 0
-  key /(\d+) g/,  :goto_line, "\1"
-
-  # Searching
-  key :/,    :search
-  key :n,    :next_search
-  key :N,    :previous_search
-
-  # Grepping
-  key 'C-g', :ask_grep
-  key [:g, :n], :next_grep
-  key [:g, :N], :previous_grep
-
-  # buffer state
-  key 'C-o', :ask_file
-  key 'M-o', :ask_fuzzy_file
-  key 'C-s', :buffer_persist
-  key 'M-b', :buffer_select
-  key 'C-w', :buffer_close
-  key 'C-q', :window_close
-
-  # mode switches
-
-  key :R,   :into_replace_mode
-  key :i,   :into_insert_mode
-  key :esc,  :into_control_mode
-  key 'C-c', :into_control_mode # esc is slow due to timeout
-
-  # move
-
-  key :h, :left
-  key :j, :down
-  key :k, :up
-  key :l, :right
-
-  key :w, :word_right
-  key :W, :chunk_right
-  key :b, :word_left
-  key :B, :chunk_left
-end
-
-VER.map :help do
-  key :q, :view_close
-  key :/, :help_grep
-end
-
-VER.map :doc do
-  key :q, :view_close
-  key :/, :doc_grep
-end
-
-VER.map :replace do
-  key :space,     :replace_space
-  key :return,    :replace_return
-  key :backspace, :replace_backspace
-  key :dc,        :replace_delete
-
-  # mode switches
-
-  key :esc,  :into_control_mode
-  key 'C-c', :into_control_mode # esc is slow due to timeout
-end
-
-VER.map :ask, :ask_file, :ask_grep do
-  key :return,    :pick
-  key :tab,       :completion
-
-  # mode switches
-
-  key 'C-q', :stop
-  key 'C-c', :stop
-  key :esc,  :stop
-end
-
-VER.map :ask_file do
-  key :up, :up
-  key :down, :down
-end
-
-VER.map :ask_grep do
-  key :up, :up
-  key :down, :down
-  key :left, :left
-  key :right, :right
-end
+VER.let :ask_file => :ask_large
+VER.let :ask_fuzzy_file => :ask_large
+VER.let :ask_grep => :ask_large

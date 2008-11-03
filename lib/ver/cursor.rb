@@ -167,13 +167,25 @@ module VER
     end
 
     def delete_range
+      Log.debug :range => to_range
       buffer[to_range] = ''
     end
 
     def virtual
-      cursor = clone
-      yield(cursor)
+      old = clone
+      self.mark = pos
+      yield
+      self.pos, self.mark = old.pos, old.mark
       rearrange
+    end
+
+    def invert
+      clone.invert!
+    end
+
+    def invert!
+      self.mark, self.pos = pos, mark
+      self
     end
 
     # fix pos and mark to be within the bounds of the buffer

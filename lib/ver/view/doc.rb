@@ -1,10 +1,5 @@
-require 'ver/methods/doc'
-
 module VER
   class DocView < MainView
-    METHODS = [Methods::Main, Methods::Doc]
-    INITIAL_MODE = :doc
-
     def show(regexp)
       found = query(regexp)
       file, name, doc = found.first

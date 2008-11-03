@@ -80,7 +80,7 @@ module VER
       @window.send(meth, *args)
     end
 
-    def print(string)
+    def print(string, width = width)
       return unless visible?
       @window.waddnstr(string.to_s, width)
     end
@@ -92,6 +92,10 @@ module VER
     def print_empty_line
       return unless visible?
       @window.printw(' ' * width)
+    end
+
+    def print_line(string)
+      print(string.ljust(width))
     end
 
     def show_colored_chunks(chunks)

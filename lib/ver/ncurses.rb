@@ -41,14 +41,14 @@ module VER
     # The differences are that in raw mode, the interrupt, quit, suspend, and
     # flow control characters are all passed through uninterpreted, instead of
     # generating a signal.
-    # The be‐havior of the BREAK key depends on other bits in the tty driver
+    # The behavior of the BREAK key depends on other bits in the tty driver
     # that are not set by curses.
     Ncurses.raw
 
     # Normally, the tty driver buffers typed characters until a newline or
     # carriage return is typed.
     # The cbreak routine disables line buffering and
-    # erase/kill character-processing (inter‐rupt and flow control characters
+    # erase/kill character-processing (interrupt and flow control characters
     # are unaffected), making characters typed by the user immediately
     # available to the program.
     Ncurses.cbreak
@@ -61,7 +61,7 @@ module VER
 
     # The curs_set routine sets the cursor state is set to invisible, normal,
     # or very visible for visibility equal to 0, 1, or 2 respectively.
-    # If the terminal supports the visibility re‐quested, the previous cursor
+    # If the terminal supports the visibility requested, the previous cursor
     # state is returned; otherwise, ERR is returned.
     Ncurses.curs_set(1)
 

@@ -2,6 +2,18 @@ require 'set'
 require 'pp'
 
 module VER
+  def self.let(*names, &block)
+    first, *rest = *names
+
+    if rest.empty? and first.respond_to?(:to_hash)
+      first.to_hash.each do |name, dependencies|
+        Mode.create(name, *dependencies, &block)
+      end
+    else
+      names.each{|name| Mode.create(name, &block) }
+    end
+  end
+
   # Mode contains one or more KeyMaps and maintains relationships between them,
   # so one Mode may inherit from another Mode which affects the lookup.
   # Don't make circular references!
@@ -24,10 +36,14 @@ module VER
 
     def initialize(name, *dependencies, &block)
       @name = name
-      @map = KeyMap.new(name)
+      @map = KeyMap.new(self, name)
       @dependencies = []
       add_dependencies(*dependencies)
       dsl(&block)
+    end
+
+    def keys
+      @map.keys
     end
 
     def dsl(&block)
@@ -39,14 +55,17 @@ module VER
       @dependencies.uniq!
     end
 
-    def [](input)
-      total =
-        [@map, *@dependencies].
-        map{|keymap| keymap[input] }.
-        flatten.compact
-
-      return total.first
+    def [](*expression)
+      [@map, *@dependencies].map{|keymap| keymap[*expression] }.flatten.uniq.compact
     end
+
+    def each(&block)
+      keys = [@map, *@dependencies].each do |keymap|
+        keymap.each(&block)
+      end
+    end
+
+    alias deep_each each
   end
 
   # ModeMapper is the instance in which keymapping configuration is executed
@@ -66,28 +85,52 @@ module VER
       if block_given?
         @keys << Key.new(*args, &block)
       else
-        self[args.first]
+        self[*args]
       end
     end
 
     # Assign a macro to a key or key-combination
     def macro(key, as, &block)
-      keys = as.split(/ +/)
-      map(key){|*m| keys.each{|k| self[k].call(*m) }}
+      expression = as.split(/ +/)
+      map(key.split(/ +/)){|*m| virtual{|kh| expression.each{|k| kh.press(k) }}}
     end
 
-    def [](exp)
-      @parent[exp]
+    def after(*keys, &block)
+      keys.each do |k|
+        @parent.deep_each do |key|
+          if key.expression == k
+            new = key.clone
+            new.after = block
+            @keys << new
+            next
+          end
+        end
+      end
+    end
+
+    def before(*keys, &block)
+      keys.each do |k|
+        @parent.deep_each do |key|
+          if key.expression == k
+            new = key.clone
+            new.before = block
+            @keys << new
+            next
+          end
+        end
+      end
+    end
+
+    def [](*expression)
+      @parent[*expression]
     end
   end
 
-  # KeyMap is a small wrapper around Hash and tries to incrementally match the
-  # given key combination until one or no matches are left.
   class KeyMap
     attr_reader :name, :keys
 
-    def initialize(name)
-      @name = name
+    def initialize(parent, name)
+      @parent, @name = parent, name
       @keys = Set.new
     end
 
@@ -95,81 +138,18 @@ module VER
       @keys += modemapper.keys
     end
 
-    def [](input)
-      @keys.map{|m| m === input }
-    end
-  end
-
-  # Holds name, documentation, key combinations
-  # Can be compared with other keys, but note that the assigned block will be
-  # ignored in the comparision since equality is not possible otherwise.
-  class Key
-    attr_accessor :exp, :name, :doc, :args, :block
-
-    def initialize(exp, name = nil, doc = nil, args = [], &block)
-      @exp, @name, @doc, @args, @block = exp, name, doc, args, block
+    def each(&block)
+      @keys.each(&block)
     end
 
-    def ===(input)
-      return unless @exp === input
-      k = dup
-      k.args = $~.captures if $~
-      return k
+    def deep_each(&block)
+      @parent.deep_each(&block)
     end
 
-    def ==(key)
-      return false unless key.is_a?(Key)
-      [@exp, @name, @doc] == [key.exp, key.name, key.doc]
-    end
+    include Enumerable
 
-    def eql?(key)
-      self == key
-    end
-
-    # Currying works over regular expressions, a mapping to
-    # /(\d) f/ would respond to the keys "1 f" and 1 would be put into @args
-    # Further args can be given here, which will be put afterwards
-    def call(*args)
-      @block.call(*(@args + args))
-    end
-  end
-
-  def self.let(*names, &block)
-    first, *rest = *names
-
-    if rest.empty? and first.respond_to?(:to_hash)
-      first.to_hash.each do |name, dependencies|
-        Mode.create(name, *dependencies, &block)
-      end
-    else
-      names.each{|name| Mode.create(name, &block) }
-    end
-  end
-end
-
-__END__
-
-module VER
-  MODES = {}
-
-  def VER.map(*modes, &block)
-    modes.map!{|name|
-      name = name.to_sym
-      MODES[name] ||= Mode.new(name) }
-
-    KeyMapper.new(*modes, &block)
-  end
-
-  class KeyMapper
-    def initialize(*modes, &block)
-      @modes = modes
-      instance_eval(&block)
-    end
-
-    def key(map, methods, *args, &block)
-      @modes.each do |mode|
-        mode.set_key(map, methods, *args, &block)
-      end
+    def [](*expression)
+      @keys.map{|key| key.match(*expression) }
     end
   end
 
@@ -183,145 +163,128 @@ module VER
 
     def press(key)
       keys << key
-      mode = MODES[view.mode]
+      @mode = Mode::LIST[view.mode]
 
-      findings = mode.get_key(*keys.dup)
+      first, *rest = all = @mode[*keys]
+#       Log.debug all
 
-      case findings
-      when Hash
-        pretty = findings.keys.sort_by{|k| k.to_s }.join(', ')
-        VER.info("Waiting for one of: %s" % pretty)
-        return false
-      when Key
-        if keys.size > 1
-          VER.info("Execute: %p" % findings)
-        end
+      unless first
+        VER.info("No mapping for: %p in %p" % [keys, view.mode])
         keys.clear
-        return findings.press(view.methods)
+        return
       end
+
+      if first.ready
+#         VER.info("Execute: %p in %p: %p" % [keys, view.mode, first])
+        first.handler = self
+        keys.clear
+        @args = first.args
+        @arg = @args.first
+
+        instance_eval(&first.before) if first.before
+        result = instance_eval(&first.block)
+        instance_eval(&first.after) if first.after
+
+        return result
+      else
+        VER.info("Waiting for completion of %p" % first.expression)
+      end
+    end
+
+    def [](*args)
+      @mode[*args]
+    end
+
+    def cursor; view.cursor; end
+    def buffer; view.buffer; end
+    def window; view.window; end
+    def methods; view.methods; end
+
+    def virtual
+      yield(clone)
     end
   end
 
-  Key = Struct.new(:map, :method, :block, :args)
-
+  # Holds name, documentation, key combinations
+  # Can be compared with other keys, but note that the assigned block will be
+  # ignored in the comparision since equality is not possible otherwise.
   class Key
-    def press(handler)
-      if block
-        handler.send(method, *args) if block.call(handler.view)
-      else
-        handler.send(method, *args)
-      end
-    rescue NoMethodError => ex
-      VER.error(ex)
+    attr_accessor :expression, :name, :doc, :args, :block, :handler, :ready,
+      :after, :before
+
+    def initialize(expression, name = nil, doc = nil, args = [], &block)
+      @expression, @name, @doc, @args, @block = expression, name, doc, args, block
     end
 
-    def profile
-      require 'ruby-prof'
+    # TODO: simplify that, i doubt i'll understand it in a few weeks...
+    def match(*input)
+      args = @args.dup
+      temp = input.dup
 
-      result = nil
-      profile = RubyProf.profile{ result = yield }
-      printer = RubyProf::GraphHtmlPrinter.new(profile)
-      location = File.expand_path('~/graph.html')
+      case @expression
+      when Array
+        @expression.each do |exp|
+          return dup_with(args, ready = false) if temp.empty?
 
-      ::File.open(location, 'w+') do |gr|
-        printer.print(gr, :min_percent => 1)
-      end
+          case exp
+          when String
+            return unless exp == temp.shift
+          when Regexp
+            if exp =~ temp.shift
+              captures = $~.captures
 
-      return result
-    end
-  end
-
-  class KeyMap
-    def initialize(name)
-      @name = name
-      @map = {}
-    end
-
-    def merge!(keymap)
-      @map.merge!(keymap.to_hash)
-    end
-
-    def to_hash
-      @map.dup
-    end
-
-    def [](exp)
-      matches = @map.select{|m| exp === m }
-
-      case matches.size
-      when 0
-        nil
-      when 1
-        matches.first
-      else
-        matches
-      end
-    end
-
-    def []=(exp, *args)
-      @map[exp] = args
-    end
-  end
-
-  # TODO:
-  #   * Having keys mapped into a hash of hashes makes iterating more
-  #     difficult, provide a simple #each
-  class Mode
-    attr_reader :name, :map
-
-    def initialize(name)
-      @name = name.to_sym
-      @map = {}
-    end
-
-    def each_key
-      @map.each do |key, value|
-      end
-    end
-
-    def unnest_keys(mapping, all = [], pre = [])
-      @map.each do |key, value|
-        case value
-        when Key
-          all << value
-        when Hash
-          unnest_keys(value, all, pre + [key])
+              add = captures.empty? ? [$&] : captures
+              args += add
+            else
+              return
+            end
+          end
         end
-      end
-
-      return all
-    end
-
-    def set_key(maps, method, *args, &block)
-      keys = [*maps].map{|m| m.to_s }
-      last = keys.pop
-      parent = @map
-
-      while key = keys.shift
-        case current = parent[key]
-        when Key
-          VER.warn("Remapping %p" % current)
-          parent = parent[key] = {}
-        when Hash
-          parent = current
+      when String
+        return unless temp.join == @expression
+      when Regexp
+        if temp.join =~ @expression
+          args += $~.captures
         else
-          parent = parent[key] = {}
+          return
         end
+      else
+        return
       end
 
-      parent[last] = Key.new(maps, method, block, args)
+      return dup_with(args)
     end
 
-    def get_key(*keys)
-      last = keys.pop
-      parent = @map
+    def dup_with(args, ready = true)
+      d = dup
+      d.ready = ready
+      d.args = args
+      d
+    end
 
-      while parent and key = keys.shift
-        current = parent[key]
-        parent = current if current
-      end
+    def hash
+      [expression, name, doc].hash
+    end
 
-      parent[last]
+    def ==(key)
+      return false unless key.is_a?(Key)
+      hash == key.hash
+    end
+    alias eql? ==
+
+    # Currying works over regular expressions, a mapping to
+    # /(\d) f/ would respond to the keys "1 f" and 1 would be put into @args
+    # Further args can be given here, which will be put afterwards
+    def call_signature(*args)
+      @args + args
+    end
+
+    def call(*args)
+      @block.call(*call_signature(*args))
+    end
+
+    def inspect
+      "Key %p" % [@expression]
     end
   end
 end

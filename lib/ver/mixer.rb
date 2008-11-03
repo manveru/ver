@@ -3,11 +3,11 @@ module VER
     attr_accessor :key
     attr_reader :view, :modules
 
-    def initialize(view, *modules)
-      @view, @modules = view, modules
+    def initialize(view)
+      @view = view
       @key = nil
 
-      modules.each{|mod| extend(mod) }
+      extend(view.class::Methods)
     end
 
     def mode
@@ -29,5 +29,11 @@ module VER
     def inspect
       "<Mixer for %p>" % [modules]
     end
+
+    def instance_eval(*args, &block)
+      super(*args, &block)
+    end
+
+    public :instance_eval
   end
 end

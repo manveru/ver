@@ -1,6 +1,9 @@
 module VER
   class View
     class Info < View
+      module Methods
+      end
+
       LAYOUT = {
         :height => 1,
         :top => lambda{|height| height - 1},
@@ -18,14 +21,9 @@ module VER
 
       def draw
         window.color = @color
-        pos = adjust_pos
         window.move 0, 0
-        window.print buffer[0..-1]
-      rescue Object => ex
-        Log.error ex
-      ensure
+        window.print_line buffer[0..-1]
         refresh
-        window.move(*pos)
       end
 
       def change

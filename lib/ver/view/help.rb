@@ -1,10 +1,5 @@
-require 'ver/methods/help'
-
 module VER
   class HelpView < MainView
-    METHODS = [Methods::Main, Methods::Help]
-    INITIAL_MODE = :help
-
     attr_reader :topic
 
     def topic=(name)

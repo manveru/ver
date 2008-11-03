@@ -1,6 +1,9 @@
 module VER
   class View
     class AskLarge < View
+      module Methods
+      end
+
       LAYOUT = {
         :width => lambda{|w| w },
         :height => lambda{|h| h * 0.8 }, # 80%
@@ -10,8 +13,7 @@ module VER
 
       DEFAULT = {
         :interactive => true,
-        :methods => [Methods::Ask, Methods::AskGrep],
-        :mode => :ask_grep
+        :mode => :ask_large,
       }
 
       def initialize(*args)
@@ -19,14 +21,16 @@ module VER
 
         buffer_name = self.class.name.split('::').last.downcase.to_sym
         @buffer = MemoryBuffer.new(buffer_name)
-#         @prompt = 'Default prompt:'
-#         self.input = '*'
-#         update_choices
       end
 
       def input=(string)
         buffer[0..-1] = string
         buffer.cursor.pos = buffer.size
+        update_choices
+      end
+
+      def input
+        buffer[0..-1]
       end
 
       # TODO: natural scrolling

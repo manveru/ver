@@ -24,7 +24,7 @@ module VER
     end
 
     LAYOUT = { :height => 0, :width => 0, :top => 0, :left => 0 }
-    DEFAULT = { :mode => :control, :methods => [], :interactive => false }
+    DEFAULT = { :mode => :control, :interactive => false }
 
     attr_reader :top, :left, :buffer, :buffers, :cursors
     attr_accessor :window, :keyhandler, :methods, :selection, :mode, :name,
@@ -35,7 +35,7 @@ module VER
       @options = DEFAULT.merge(self.class::DEFAULT.merge(options))
       @layout = options[:layout] || self.class::LAYOUT
 
-      @methods = Mixer.new(self, *@options[:methods])
+      @methods = Mixer.new(self)
       @window = Window.new(@layout)
       @keyhandler = KeyHandler.new(self)
 
@@ -81,7 +81,6 @@ module VER
       @keyhandler.press(key)
       draw
     rescue ::Exception => ex
-      Log.debug :rescue
       VER.error(ex)
     ensure
       refresh
@@ -146,7 +145,7 @@ module VER
     end
 
     def scroll_border
-      window.height / 10
+      window.height / 5
     end
 
     def adjust_pos(border = scroll_border)
@@ -160,6 +159,10 @@ module VER
         self.top += (view_y - window_height)
       elsif view_y < 0
         self.top += view_y
+      end
+
+      if y >= border and view_y > 0 and view_y <= border
+        self.top -= (border - view_y)
       end
 
       if view_x > window_width

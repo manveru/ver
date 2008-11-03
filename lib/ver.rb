@@ -30,9 +30,9 @@ module VER
 
   require 'ver/error'
   require 'ver/keyboard'
-#   require 'ver/keymap'
+  require 'ver/keymap'
 #   require 'ver/methods'
-#   require 'ver/mixer'
+  require 'ver/mixer'
   require 'ver/window'
   require 'ver/cursor'
   require 'ver/color'
@@ -44,7 +44,6 @@ module VER
   require 'ver/view/file'
   require 'ver/view/info'
   require 'ver/view/status'
-  require 'ver/view/ask'
   require 'ver/view/ask/small'
   require 'ver/view/ask/large'
   require 'ver/view/ask/file'
@@ -89,9 +88,7 @@ module VER
 
     VER.info "VER #{VERSION} -- F1 for help -- F12 to configure -- C-q to quit"
 
-    [@info, @status, @file].each do |view|
-      view.open
-    end
+    [@info, @status, @file].each{|view| view.open }
   end
 
   def clipboard

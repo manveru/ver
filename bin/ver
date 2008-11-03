@@ -3,13 +3,17 @@
 require 'optparse'
 
 ver = File.expand_path(File.join(File.dirname(__FILE__), '../lib/ver'))
+require ver
+config = VER::Config
 
 op = OptionParser.new do |o|
-  o.on('-h', '--help'){ puts o; exit }
-  o.on('-v', '--version'){ require ver; puts "VER: #{VER::VERSION}"; exit }
+  o.on('-h', '--help', "Display this help"){ puts o; exit }
+  o.on('-v', '--version', "Show version"){ puts "VER: #{VER::VERSION}"; exit }
+  o.on('-k', '--keymap STRING', "Use a different keymap: vi or diakonos"){|k|
+    config[:keymap] = File.join(config[:rc_dir], "keymap/#{k}")
+  }
 end
 
 op.parse!(ARGV)
 
-require ver
 VER.start(*ARGV)

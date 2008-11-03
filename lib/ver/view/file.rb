@@ -1,6 +1,174 @@
 module VER
   class View
     class File < View
+      module Methods
+        # NOTE:
+        #   * This takes the line number, but in the interface lines start at
+        #     1, not 0, that's why we decrement by one and check that we're not
+        #     getting a negative result.
+        def goto_line(number)
+          number = [0, number.to_i - 1].max
+          range = buffer.line_range(number..number)
+          cursor.pos = range.begin
+        end
+
+        BUFFER_ASK_PROC = lambda{|got|
+          buffer_names = View[:file].buffers.map{|b| b.filename }
+          choices = buffer_names.grep(/#{got}/)
+          [got, choices]
+        }
+
+        def buffer_ask
+          VER.ask('Buffer: ', BUFFER_ASK_PROC) do |name|
+            view.buffer = name if name
+          end
+        end
+
+        GOTO_LINE_ASK_PROC = lambda{|got|
+          [true, *(0..100)]
+        }
+
+        def goto_line_ask
+          VER.ask('Line: ', GOTO_LINE_ASK_PROC) do |line|
+            goto_line(line)
+          end
+        end
+
+        def execute_ask
+          VER.ask('Eval: ', method(:execute_ask_context)) do |line|
+            result = eval(line.to_s)
+            VER.info(result.inspect)
+          end
+        end
+
+        def execute_ask_context(got)
+          regex = Regexp.escape(got)
+          choices = methods.grep(/#{regex}/).sort
+
+          return true, choices
+        end
+
+        def search_ask
+          VER.ask('Search: ', method(:search_ask_context)) do |search|
+            search_results_highlight
+            search_next
+          end
+        end
+
+        def search_ask_context(got)
+          valid = false
+
+          return valid, [got] if got.empty?
+
+          silently do
+            if got == got.downcase
+              regex = /#{got}/i
+            else
+              regex = /#{got}/
+            end
+
+            valid = true
+            view.search = regex
+            VER.info(regex.inspect)
+          end
+
+          return valid, [got]
+        rescue RegexpError, SyntaxError => ex
+          VER.error(ex)
+          return valid, [got]
+        end
+
+        def search_results_highlight
+          cursors = view.highlights[:search] = buffer.grep_successive_cursors(view.search)
+          cursors.each{|c| c.color = view.colors[:search] }
+        end
+
+        def search_next
+          highlights = view.highlights[:search]
+          sorted = highlights.sort_by{|c| [c.pos, c.mark].min }
+
+          if coming = sorted.find{|c| c.pos > cursor.pos and c.mark > cursor.pos }
+            view.cursor.pos = coming.pos
+          end
+        end
+
+        def search_previous
+          highlights = view.highlights[:search]
+          sorted = highlights.sort_by{|c| -[c.pos, c.mark].min }
+
+          if coming = sorted.find{|c| c.pos < cursor.pos and c.mark < cursor.pos }
+            view.cursor.pos = coming.pos
+          end
+        end
+
+        def cut
+          string = view.selection.to_s
+          VER.clipboard << string
+          VER.info("Cut #{string.size} characters")
+          buffer[view.selection.to_range] = ''
+          cursor.pos = view.selection.mark
+          view.selection = nil
+        end
+
+        def copy
+          string = view.selection.to_s
+          VER.clipboard << string
+          VER.info("Copied #{string.size} characters")
+          view.selection = nil
+        end
+
+        def copy_lines
+          sel = view.selection ||= cursor.dup
+          sel.end_of_line
+          sel.invert!
+          sel.beginning_of_line
+          sel.invert!
+          copy
+        end
+
+        def page_down
+          view.scroll(window.height)
+          recenter_cursor
+        end
+
+        def page_up
+          if view.top == 0
+            cursor.pos = 0
+          else
+            view.scroll(-window.height)
+            recenter_cursor
+          end
+        end
+
+        def scroll(n)
+          view.scroll(n)
+          view.adjust_pos
+        end
+
+        def recenter_view
+          view.scroll(cursor.to_y - view.top - (window.height / 2))
+        end
+
+        # Recenter cursor into the middle of view
+        def recenter_cursor
+          center = view.top + (window.height / 2)
+          cursor = self.cursor
+          y = cursor.to_y
+
+          if y < center
+            (center - y).times{ cursor.down }
+          elsif y > center
+            (y - center).times{ cursor.up }
+          end
+        end
+
+        def start_selection
+          sel = view.selection = cursor.dup
+          sel.mark = cursor.pos
+          sel.color = view.colors[:search]
+        end
+      end
+
       LAYOUT = {
         :height => lambda{|height| height - 2 },
         :top => 0, :left => 0,
@@ -9,7 +177,6 @@ module VER
 
       DEFAULT = {
         :mode        => :control,
-        :methods     => [Methods::Control, Methods::Insert],
         :interactive => true,
         :status_line => "%s [%s] (%s - %s) %d,%d  Buffer %d/%d",
       }
@@ -44,9 +211,10 @@ module VER
         end
 
         VER.status status_line
+        VER.info(VER.info.buffer.to_s) # FIXME
 
-        refresh
         window.move(*pos) if pos
+        refresh
         @redraw = false
       end
 
@@ -65,6 +233,7 @@ module VER
         row, col = row + top + 1, col + left + 1
         n, m     = buffers.index(buffer) + 1, buffers.size
         syntax   = syntax ? syntax.name : 'Plain'
+#         objects = ObjectSpace.each_object{|o| }
 
         @status_line % [file, modified, syntax, mode, row + top, col, n, m]
       rescue ::Exception => ex
@@ -79,6 +248,7 @@ module VER
 
       def search=(regex)
         @search = regex
+
         if hl = buffer.grep_cursor(regex, cursor.pos)
           hl.color = @colors[:search]
           highlights[:search] = [hl]

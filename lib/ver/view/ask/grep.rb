@@ -1,13 +1,14 @@
 module VER
   class View
     class AskGrep < AskLarge
+      Methods = AskFile::Methods
+
       DEFAULT = {
         :interactive => true,
-        :methods => [Methods::Ask, Methods::AskGrep],
-        :mode => :ask_grep
+        :mode => :ask_grep,
       }
 
-      def initialize(*args)
+      def initialize(name = :ask_grep, options = {})
         super
 
         @buffer = MemoryBuffer.new(:ask_grep)
