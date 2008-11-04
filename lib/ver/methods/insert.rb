@@ -110,7 +110,6 @@ module VER
       def delete_to_end_of_line
         temp = buffer.new_cursor(cursor.pos, cursor.pos)
         temp.mark = temp.eol
-        Log.debug temp.to_range
         buffer[temp.to_range] = ''
       end
 

@@ -12,6 +12,17 @@ module VER
           cursor.pos = range.begin
         end
 
+        SAVE_AS_PROC = lambda{|got|
+          [true, [got]]
+        }
+
+        def save_as_ask(close = false)
+          VER.ask('Save as: ', SAVE_AS_PROC) do |path|
+            VER.info("Saved as: #{buffer.save_file(path)}")
+            view.buffer_close if close
+          end
+        end
+
         BUFFER_ASK_PROC = lambda{|got|
           buffer_names = View[:file].buffers.map{|b| b.filename }
           choices = buffer_names.grep(/#{got}/)
@@ -21,6 +32,55 @@ module VER
         def buffer_ask
           VER.ask('Buffer: ', BUFFER_ASK_PROC) do |name|
             view.buffer = name if name
+          end
+        end
+
+        # FIXME:
+        #   * should close buffer if modified scratch after asking for
+        #     saving, but we lose control
+        def buffer_close
+          if buffer.scratch? and buffer.modified?
+            file = buffer.short_filename
+
+            VER.choice("Save changes to #{file}? ", Y_N_C) do |choice|
+              case choice
+              when 'yes'
+                save_as_ask(close = true)
+              when 'no'
+                view.buffer_close
+                view.open
+              when 'cancel'
+                view.open
+              end
+            end
+          elsif buffer.modified?
+            file = buffer.short_filename
+
+            VER.choice("Save changes to #{file}? ", Y_N_C) do |choice|
+              case choice
+              when 'yes'
+                buffer.save_file
+                view.buffer_close
+                view.open
+              when 'no'
+                view.buffer_close
+                view.open
+              when 'cancel'
+                view.open
+              end
+            end
+          else
+            view.buffer_close
+          end
+        end
+
+        Y_N_C = %w[yes no cancel].abbrev
+
+        def buffer_close_context(got)
+          if choice = Y_N_C[got.to_s.strip]
+            return [true, [choice]]
+          else
+            return [false, %w[yes no cancel]]
           end
         end
 
@@ -107,6 +167,7 @@ module VER
           VER.info("Cut #{string.size} characters")
           buffer[view.selection.to_range] = ''
           cursor.pos = view.selection.mark
+          cursor.rearrange
           view.selection = nil
         end
 
@@ -162,10 +223,11 @@ module VER
           end
         end
 
-        def start_selection
-          sel = view.selection = cursor.dup
+        def start_selection(linewise = false)
+          sel = view.selection = cursor.clone
           sel.mark = cursor.pos
           sel.color = view.colors[:search]
+          sel[:linewise] = linewise
         end
 
         def ver_stop
@@ -174,6 +236,32 @@ module VER
 
         def close_buffer_ask
           VER.ask('Close')
+        end
+
+        def jump_right(regex)
+          buffer[cursor.pos..-1] =~ regex
+          unless match = $~
+            cursor.pos = buffer.size - 1
+            return
+          end
+
+          left, right = $~.offset(0)
+
+          if left == 0
+            cursor.pos += right
+            jump_right(regex)
+          else
+            cursor.pos += left
+          end
+        end
+
+        def jump_left(regex)
+          return if cursor.pos == 0
+          cursor.left
+
+          if jump = buffer[0...cursor.pos].rindex(regex)
+            cursor.pos = jump + 1
+          end
         end
       end
 
@@ -206,9 +294,9 @@ module VER
 
       def draw
         pos = adjust_pos
-        window.move 0, 0
 
         if @redraw or buffer.dirty? or selection
+          window.move 0, 0
           draw_visible
           draw_padding
 
@@ -216,13 +304,12 @@ module VER
           highlight_search if search
           highlight_selection if selection
           buffer.dirty = false
+          refresh
         end
 
-        VER.status status_line
-        VER.info(VER.info.buffer.to_s) # FIXME
+        draw_status_line
 
         window.move(*pos) if pos
-        refresh
         @redraw = false
       end
 
@@ -230,9 +317,21 @@ module VER
         visible_each{|line| window.print(line) }
       end
 
+      def draw_status_line
+        color =
+          case mode
+          when    :insert; Color[:white, :red]
+          when   :control; Color[:white, :blue]
+          when :selection; Color[:white, :magenta]
+          else           ; Color[:white, :black]
+          end
+
+        VER.status(status_line, color)
+      end
+
       def status_line
+        file     = buffer.short_filename
         modified = buffer.modified? ? '+' : ' '
-        file     = buffer.filename
         row, col = cursor.to_pos
         row, col = row + top + 1, col + left + 1
         n, m     = buffers.index(buffer) + 1, buffers.size
@@ -245,9 +344,27 @@ module VER
         ''
       end
 
+      def buffer_close
+        case @buffers.size
+        when 0
+          @buffers << @buffer = FileBuffer.new(:file, 'unnamed')
+        when 1
+          @buffers.delete(@buffer)
+          buffer_close
+        else
+          @buffers.delete(@buffer)
+          @buffer = @buffers.last
+        end
+      end
+
       def selection=(s)
-        @selection = s
-        @redraw = true unless s
+        if @selection = s
+          self.mode = :selection
+        else
+          self.mode = :control
+        end
+
+        @redraw = true
       end
 
       def search=(regex)
@@ -294,18 +411,6 @@ module VER
         syntax.matches.each do |cursor|
           highlight(cursor)
         end
-#         @threads.each{|t|
-#           t.kill unless visible_cursor?(t[:cursor])
-#         }
-#         @threads.delete_if{|t| not t.alive? }
-#
-#         @threads += syntax.matches.map{|cursor|
-#           Thread.new{
-#             Thread.current[:cursor] = cursor
-#             sleep 1
-#             highlight(cursor)
-#           }
-#         }
       end
 
       # TODO:

@@ -5,29 +5,44 @@ module VER
       end
 
       LAYOUT = {
-        :height => 1,
-        :top => lambda{|height| height - 1},
+        :height => 2,
+        :top => lambda{|height| height - 2},
         :left => 0,
         :width => lambda{|width| width }
       }
 
       DEFAULT = { :methods => [], :interactive => false }
 
+      attr_accessor :info_color, :status_color
+
       def initialize(*args)
         super
-        @buffer = MemoryBuffer.new(@name)
-        @color = Color[:black, :white]
+        @info = MemoryBuffer.new(:info_info)
+        @status = MemoryBuffer.new(:info_status)
+
+        @info_color = @status_color = Color[:black, :white]
+      end
+
+      def status=(message)
+        @status[0..-1] = message
+        draw
+      end
+
+      def info=(message)
+        @info[0..-1] = message
+        draw
       end
 
       def draw
-        window.color = @color
         window.move 0, 0
-        window.print_line buffer[0..-1]
+        window.color = @status_color
+        window.print_line(@status.to_s)
+        window.color = @info_color
+        window.print_line(@info.to_s)
         refresh
       end
 
       def change
-        window.clear
         yield(self)
         draw
       end

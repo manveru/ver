@@ -48,6 +48,7 @@ module VER
   require 'ver/view/ask/file'
   require 'ver/view/ask/fuzzy_file'
   require 'ver/view/ask/grep'
+  require 'ver/view/ask/choice'
 
   module_function
 
@@ -76,9 +77,9 @@ module VER
   end
 
   def setup(*args)
-    @info = View::Info.new(:info)
-    @status = View::Status.new(:status)
-    @ask = View::AskSmall.new(:ask)
+    @ask    = View::AskSmall.new(:ask)
+    @info   = View::Info.new(:info)
+    @choice = View::AskChoice.new(:ask_choice)
 
     @file = View::File.new(:file)
     if args.each{|a| @file.buffer = a }.empty?
@@ -87,7 +88,8 @@ module VER
 
     VER.info "VER #{VERSION} -- F1 for help -- F12 to configure -- C-q to quit"
 
-    [@info, @status, @file].each{|view| view.open }
+    @info.open
+    @file.open
   end
 
   def clipboard

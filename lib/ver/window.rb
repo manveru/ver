@@ -73,6 +73,8 @@ module VER
     def y=(n) move(n, x) end
 
     def move(y, x)
+      return unless @visible
+#       Log.debug([y, x] => caller[0,4])
       @window.move(y, x)
     end
 

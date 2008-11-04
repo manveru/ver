@@ -38,6 +38,9 @@ module VER
         window.puts " %d) %-#{window.width}s" % [score * 100, path]
       end
 
+      def expand_input
+      end
+
       def update_choices
         format = "[%.2f] %s"
 

@@ -44,7 +44,6 @@ module VER
 
       DEFAULT = {
         :interactive => true,
-        :methods => Methods,
         :mode => :ask
       }
 
@@ -63,11 +62,11 @@ module VER
         @buffer.clear
         @choices.clear if @choices
         @history_pick = @history.size
+
         super()
       end
 
       def answer
-        Log.debug :valid => @valid
         buffer.to_s if @valid
       end
 
@@ -82,8 +81,8 @@ module VER
           window.print_line @choices.join(' ')
         end
 
-#         refresh
         window.move 0, (cursor.pos + @prompt.size)
+        refresh
       end
 
       def update_choices
@@ -99,9 +98,11 @@ module VER
       def try_completion
         if @choices.size == 1
           self.input = @choices.first
+          return true
         elsif @choices.any?
           string = @choices.abbrev.keys.min_by{|k| k.size }[0..-2]
           self.input = string unless string.empty?
+          return false
         end
       end
     end

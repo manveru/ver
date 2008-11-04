@@ -197,6 +197,7 @@ module VER
       @mode[*args]
     end
 
+    def selection; view.selection; end
     def cursor; view.cursor; end
     def buffer; view.buffer; end
     def window; view.window; end

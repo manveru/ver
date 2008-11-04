@@ -58,6 +58,7 @@ module VER
         end
 
         draw_padding
+      ensure
         window.move 1, (cursor.pos + @prompt.size + 2)
         window.color = Color[:white]
         window.box ?|, ?-

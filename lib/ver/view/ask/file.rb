@@ -54,8 +54,6 @@ module VER
           glob = "#{glob}*"
         end
 
-        Log.debug :glob => glob
-
         Dir[glob].each do |path|
           stat = ::File.stat(path)
 
@@ -77,7 +75,6 @@ module VER
         @pick || @choices.first
       end
 
-      # FIXME: only expand as much as reasonable
       def expand_input
         if found = @pick
           self.input = found[:path]
@@ -86,12 +83,10 @@ module VER
           self.input = @choices.first[:path]
           draw
         elsif @choices.size > 1
-          require 'abbrev'
           choices = @choices.map{|c| c[:path]}
           self.input = choices.abbrev.keys.sort_by{|k| k.size }[0][0..-2]
         end
       end
-
     end
   end
 end

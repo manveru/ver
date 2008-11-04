@@ -39,7 +39,6 @@ module VER
 
       def ask_execute
         VER.ask('Execute: ', EXECUTE_PROC) do |cmd|
-          Log.debug :cmd => cmd
           send(*cmd.split) if cmd
         end
       end

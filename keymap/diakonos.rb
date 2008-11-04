@@ -17,17 +17,22 @@ VER.let :control => [:insert, :movement] do
   map('npage'){ page_down }
   map('ppage'){ page_up }
 
-  map('C-c'){ copy }
   map('C-g'){ goto_line_ask }
   map('C-q'){ ver_stop }
   map('C-w'){ buffer_close }
   map('C-space'){ start_selection }
   map('C-v'){ cursor.insert(VER.clipboard.last) }
-  map('C-x'){ cut }
   map('C-o'){ VER::View::AskFile.open }
   map('C-s'){ VER.info("Saved to: #{buffer.save_file}") }
   map('M-n'){ scroll(1) }
   map('M-p'){ scroll(-1) }
+  map(/M-(\d)/){ view.buffer = view.buffers[@arg.to_i - 1] }
+end
+
+VER.let :selection => :control do
+  map(/^(C-c|C-q|esc)$/){ view.selection = nil }
+  map('C-c'){ copy }
+  map('C-x'){ cut }
 end
 
 VER.let :ask => :insert do

@@ -20,17 +20,17 @@ VER.let :general => :general_movement do
 
   # Switching buffers real fast
   # (1..9).each{|n| key("M-#{n}", :buffer_jump, n - 1) }
-  map(/M-(\d)/){|m| view.buffer = view.buffers[m.to_i - 1] }
+  map(/M-(\d)/){ view.buffer = view.buffers[@arg.to_i - 1] }
 end
 
 VER.let :control_movement => :general_movement do
   map('0'){ cursor.beginning_of_line }
   map('$'){ cursor.end_of_line }
 
-  map('w'){ jump_right(:word)  }
-  map('b'){ jump_left(:word)   }
-  map('W'){ jump_right(:chunk) }
-  map('B'){ jump_left(:chunk)  }
+  map('w'){ jump_right(/[\w.-]+/)  }
+  map('b'){ jump_left(/[^\w.-]+/)   }
+  map('W'){ jump_right(/\S+/) }
+  map('B'){ jump_left(/\s+/)  }
 
   macro('h', 'left')
   macro('j', 'down')
@@ -46,6 +46,7 @@ VER.let :control => [:general, :control_movement] do
   map('C-o'){ VER::View::AskFile.open }
   map('C-q'){ VER.stop }
   map('C-s'){ VER.info("Saved to: #{buffer.save_file}") }
+  map('M-s'){ save_as_ask }
   map('C-w'){ buffer_close }
   map('C-x'){ execute_ask }
 
@@ -67,7 +68,7 @@ VER.let :control => [:general, :control_movement] do
   map(["c", movement]){ cursor.virtual{ press(@arg); cursor.delete_range }; press('i') }
 
   map('v'){ start_selection }
-  map('V'){ press('v'); view.selection[:linewise] = true }
+  map('V'){ start_selection(linewise = true) }
 
   map('y'){ copy }
   map('Y'){ copy_lines }
@@ -84,12 +85,17 @@ VER.let :control => [:general, :control_movement] do
   macro('a', 'l i')
   macro('A', '$ a')
   macro('I', '0 i')
-  macro('O', "0 i return C-c k")
-  macro('o', "$ i return C-c j")
+  macro('o', "$ i return")
+  macro('O', "0 i return up")
   macro('D', 'd $')
   macro('C', 'd $ i')
   macro('d d', '0 d $')
   macro('g g', '1 g')
+end
+
+VER.let :selection => :control do
+  map('d'){ cut }
+  map(/^(C-c|C-q|esc)$/){ view.selection = nil }
 end
 
 VER.let :insert => :general do
@@ -107,6 +113,11 @@ VER.let :ask => [:insert, :general_movement] do
   map('up'){                  history_backward }
   map('down'){                history_forward }
   map(/^(C-g|C-q|C-c|esc)$/){ view.close; VER::View[:file].open }
+end
+
+VER.let :ask_choice => [:insert, :general_movement] do
+  map(/^(C-g|C-q|C-c|esc)$/){ view.close; VER::View[:file].open }
+  map('return'){ pick }
 end
 
 VER.let :ask_large => :ask do

@@ -1,10 +1,29 @@
 module VER
   class FileBuffer < MemoryBuffer
-    attr_reader :filename
+    attr_reader :filename, :scratch
 
-    def initialize(name, file_or_filename)
+    def initialize(name, file_or_filename, scratch = false)
       super(name)
+      @scratch = scratch
 
+      if scratch
+        initialize_scratch
+      else
+        initialize_file(file_or_filename)
+      end
+    end
+
+    def scratch?
+      @scratch
+    end
+
+    def initialize_scratch
+      @data = ''
+      @scratch = @dirty = true
+      @modified = false
+    end
+
+    def initialize_file(file_or_filename)
       case file_or_filename
       when File
         load_file(file_or_filename)
@@ -28,18 +47,22 @@ module VER
       if File.file?(@filename)
         @data = File.read(@filename)
       else
-        @data = ''
-        @dirty = true
+        initialize_scratch
       end
     end
 
-    def save_file
+    def save_file(filename = filename)
       File.open(filename, 'w+') do |file|
         file.puts @data
       end
 
-      @dirty = false
-      return filename
+      @scratch = @modified = @dirty = false
+      @filename = filename
+    end
+
+    def short_filename
+      home = Regexp.escape(::File.expand_path('~/'))
+      filename.to_s.gsub(/^#{Dir.pwd}\//, './').gsub(/^#{home}\//, '~/')
     end
 
     def hash

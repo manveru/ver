@@ -1,18 +1,30 @@
 module VER
   module_function
 
-  def info(message = nil)
-    @info.change{|v| v.buffer[0..-1] = message } if message
-    return @info
+  def info(message = nil, color = nil)
+    return @info unless message and color
+    @info.info_color = color if color
+    @info.info = message
+    @info
   end
 
-  def status(message = nil)
-    @status.change{|v| v.buffer[0..-1] = message } if message
-    return @status
+  def status(message = nil, color = nil)
+    return @info unless message and color
+    @info.status_color = color if color
+    @info.status = message
+    @info
   end
 
-  def ask(question, completer, &block)
+  def ask(question = nil, completer = nil, &block)
+    return @ask unless question and completer
     @ask.open(question, completer, &block)
+    @info.open
+  end
+
+  def choice(question = nil, choices = nil, &block)
+    return @choice unless question and choices
+    @choice.open(question, choices, &block)
+    @info.open
   end
 
   def warn(message)

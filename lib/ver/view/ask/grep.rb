@@ -1,7 +1,18 @@
 module VER
   class View
     class AskGrep < AskLarge
-      Methods = AskFile::Methods
+      module Methods
+        def pick
+          if choice = view.pick
+            view.close
+            file = View[:file]
+            file.buffer = choice[:file]
+            file.cursor = choice[:cursor]
+            file.cursor.buffer = file.buffer
+            file.open
+          end
+        end
+      end
 
       DEFAULT = {
         :interactive => true,
@@ -34,7 +45,6 @@ module VER
 
       # TODO: make this more performant
       def update_choices
-        Log.debug :update
         input = buffer.to_s
 
         @pick = nil

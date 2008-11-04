@@ -80,12 +80,13 @@ module VER
     end
 
     def press(key)
-#       VER.bench("@keyhandler.press(%p)" % key) do
-        @keyhandler.press(key)
-        draw
-        refresh
-        Ncurses.doupdate
-#       end
+      # VER.bench("@keyhandler.press(%p)" % key) do
+
+      @keyhandler.press(key)
+      draw
+      refresh
+
+      # end
     rescue ::Exception => ex
       VER.error(ex)
     end

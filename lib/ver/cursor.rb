@@ -167,7 +167,6 @@ module VER
     end
 
     def delete_range
-      Log.debug :range => to_range
       buffer[to_range] = ''
     end
 
