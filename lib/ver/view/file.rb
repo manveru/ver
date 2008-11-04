@@ -270,7 +270,16 @@ module VER
 
       def highlight_selection
         selection.pos = cursor.pos
-        selection.end_of_line if selection[:linewise]
+
+        if selection[:linewise]
+          if selection.mark > selection.pos
+            selection.mark = selection.eol(selection.mark)
+            selection.pos = selection.bol(selection.pos)
+          else
+            selection.mark = selection.bol(selection.mark)
+            selection.pos = selection.eol(selection.pos)
+          end
+        end
 
         highlight(selection)
       end

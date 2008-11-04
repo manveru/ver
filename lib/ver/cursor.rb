@@ -22,11 +22,11 @@ module VER
       self.pos = eol
     end
 
-    def eol
+    def eol(pos = pos)
       buffer.index(/\n/, pos..buffer.size) || buffer.size
     end
 
-    def bol
+    def bol(pos = pos)
       max = [pos - 1, 0].max
       if pos = buffer.rindex(/\n/, 0..max)
         pos + 1
