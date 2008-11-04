@@ -31,7 +31,6 @@ module VER
   require 'ver/error'
   require 'ver/keyboard'
   require 'ver/keymap'
-#   require 'ver/methods'
   require 'ver/mixer'
   require 'ver/window'
   require 'ver/cursor'
@@ -56,7 +55,7 @@ module VER
     @last_error = nil
     start_config
 
-    Log.debug "Initializing VER"
+    Log.info "Initializing VER"
 
     start_ncurses
 
@@ -93,5 +92,21 @@ module VER
 
   def clipboard
     @clipboard ||= ClipBoard.new
+  end
+
+  def bench(name, &block)
+    Log.debug "let bench: #{name}"
+
+    require 'ruby-prof'
+
+    # Profile the code
+    result = RubyProf.profile(&block)
+
+    # Print a graph profile to text
+    printer = RubyProf::GraphHtmlPrinter.new(result)
+
+    File.open('bench.html', 'w+'){|io| printer.print(io, :min_percent => 0) }
+
+    Log.debug "end bench: #{name}"
   end
 end

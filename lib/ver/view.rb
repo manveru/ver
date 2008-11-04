@@ -54,6 +54,8 @@ module VER
       window.show
       @redraw = true
       draw
+      refresh
+      Ncurses.doupdate
 
       if interactive?
         Keyboard.focus = self
@@ -78,13 +80,14 @@ module VER
     end
 
     def press(key)
-      @keyhandler.press(key)
-      draw
+#       VER.bench("@keyhandler.press(%p)" % key) do
+        @keyhandler.press(key)
+        draw
+        refresh
+        Ncurses.doupdate
+#       end
     rescue ::Exception => ex
       VER.error(ex)
-    ensure
-      refresh
-      Ncurses.doupdate
     end
 
     def draw_padding
@@ -106,6 +109,10 @@ module VER
 
     def interactive?
       @interactive
+    end
+
+    def redraw?
+      @redraw
     end
 
     def refresh
@@ -141,11 +148,12 @@ module VER
 
       self.syntax = Syntax.find(self.buffer.filename)
 
+      @redraw = true
       draw
     end
 
     def scroll_border
-      window.height / 5
+      window.height / 10
     end
 
     def adjust_pos(border = scroll_border)

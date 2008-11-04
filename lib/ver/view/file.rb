@@ -167,6 +167,14 @@ module VER
           sel.mark = cursor.pos
           sel.color = view.colors[:search]
         end
+
+        def ver_stop
+          VER.stop
+        end
+
+        def close_buffer_ask
+          VER.ask('Close')
+        end
       end
 
       LAYOUT = {
@@ -204,7 +212,7 @@ module VER
           draw_visible
           draw_padding
 
-          highlight_syntax
+#           highlight_syntax
           highlight_search if search
           highlight_selection if selection
           buffer.dirty = false
@@ -216,10 +224,6 @@ module VER
         window.move(*pos) if pos
         refresh
         @redraw = false
-      end
-
-      def redraw?
-        @redraw
       end
 
       def draw_visible
