@@ -7,8 +7,8 @@ VER.let :general_movement do
 end
 
 VER.let :general => :general_movement do
-  map(/C-f|npage/){ methods.page_down }
-  map(/C-b|ppage/){ methods.page_up }
+  map(/C-f|npage/){ page_down }
+  map(/C-b|ppage/){ page_up }
 
   # Function keys
 
@@ -46,10 +46,10 @@ VER.let :control => [:general, :control_movement] do
   map('C-o'){ VER::View::AskFile.open }
   map('C-q'){ VER.stop }
   map('C-s'){ VER.info("Saved to: #{buffer.save_file}") }
-  map('C-w'){ methods.buffer_close }
-  map('C-x'){ methods.execute_ask }
+  map('C-w'){ buffer_close }
+  map('C-x'){ execute_ask }
 
-  map('M-b'){ methods.buffer_ask }
+  map('M-b'){ buffer_ask }
   map('M-o'){ VER::View::AskFuzzyFile.open }
 
   map('G'){
@@ -58,7 +58,7 @@ VER.let :control => [:general, :control_movement] do
   }
   0.upto(7) do |n|
     key = [/[1-9]/] + ([/\d/] * n) << 'g'
-    map(key){ methods.goto_line(@args.join.to_i) }
+    map(key){ goto_line(@args.join.to_i) }
   end
 
   # TODO: should take other mode as list of mappings after prefix key
@@ -66,18 +66,18 @@ VER.let :control => [:general, :control_movement] do
   map(["d", movement]){ cursor.virtual{ press(@arg); cursor.delete_range } }
   map(["c", movement]){ cursor.virtual{ press(@arg); cursor.delete_range }; press('i') }
 
-  map('v'){ methods.start_selection }
+  map('v'){ start_selection }
   map('V'){ press('v'); view.selection[:linewise] = true }
 
-  map('y'){ methods.copy }
-  map('Y'){ methods.copy_lines }
+  map('y'){ copy }
+  map('Y'){ copy_lines }
 
   map('p'){ cursor.insert(VER.clipboard.last) }
   map('P'){ cursor.insert(VER.clipboard.last) }
 
-  map('/'){ methods.search_ask }
-  map('n'){ methods.search_next }
-  map('N'){ methods.search_previous }
+  map('/'){ search_ask }
+  map('n'){ search_next }
+  map('N'){ search_previous }
 
   map('i'){ view.mode = :insert }
 
@@ -102,10 +102,10 @@ VER.let :insert => :general do
 end
 
 VER.let :ask => [:insert, :general_movement] do
-  map('return'){              methods.pick }
+  map('return'){              pick }
   map('tab'){                 view.update_choices; view.try_completion }
-  map('up'){                  methods.history_backward }
-  map('down'){                methods.history_forward }
+  map('up'){                  history_backward }
+  map('down'){                history_forward }
   map(/^(C-g|C-q|C-c|esc)$/){ view.close; VER::View[:file].open }
 end
 

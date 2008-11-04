@@ -14,27 +14,27 @@ VER.let :control => [:insert, :movement] do
   # Movement
   map(/^(up|down|left|right)$/){ cursor.send(@arg) }
 
-  map('npage'){ methods.page_down }
-  map('ppage'){ methods.page_up }
+  map('npage'){ page_down }
+  map('ppage'){ page_up }
 
-  map('C-c'){ methods.copy }
-  map('C-g'){ methods.goto_line_ask }
-  map('C-q'){ methods.ver_stop }
-  map('C-w'){ methods.buffer_close }
-  map('C-space'){ methods.start_selection }
+  map('C-c'){ copy }
+  map('C-g'){ goto_line_ask }
+  map('C-q'){ ver_stop }
+  map('C-w'){ buffer_close }
+  map('C-space'){ start_selection }
   map('C-v'){ cursor.insert(VER.clipboard.last) }
-  map('C-x'){ methods.cut }
+  map('C-x'){ cut }
   map('C-o'){ VER::View::AskFile.open }
   map('C-s'){ VER.info("Saved to: #{buffer.save_file}") }
-  map('M-n'){ methods.scroll(1) }
-  map('M-p'){ methods.scroll(-1) }
+  map('M-n'){ scroll(1) }
+  map('M-p'){ scroll(-1) }
 end
 
 VER.let :ask => :insert do
-  map('return'){ methods.pick }
+  map('return'){ pick }
   map('tab'){ view.update_choices; view.try_completion }
-  map('up'){ methods.history_backward }
-  map('down'){ methods.history_forward }
+  map('up'){ history_backward }
+  map('down'){ history_forward }
   map(/^(C-g|C-q|C-c|esc)$/){ view.close; VER::View[:file].open }
 end
 

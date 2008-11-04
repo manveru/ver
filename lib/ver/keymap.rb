@@ -166,7 +166,6 @@ module VER
       @mode = Mode::LIST[view.mode]
 
       first, *rest = all = @mode[*keys]
-#       Log.debug all
 
       unless first
         VER.info("No mapping for: %p in %p" % [keys, view.mode])
@@ -175,20 +174,23 @@ module VER
       end
 
       if first.ready
-#         VER.info("Execute: %p in %p: %p" % [keys, view.mode, first])
-        first.handler = self
         keys.clear
-        @args = first.args
-        @arg = @args.first
-
-        instance_eval(&first.before) if first.before
-        result = instance_eval(&first.block)
-        instance_eval(&first.after) if first.after
-
-        return result
+        execute_key(first)
       else
         VER.info("Waiting for completion of %p" % first.expression)
       end
+    end
+
+    def execute_key(key)
+      # VER.info("Execute: %p in %p: %p" % [keys, view.mode, first])
+      @args = key.args
+      @arg = @args.first
+
+      instance_eval(&key.before) if key.before
+      result = instance_eval(&key.block)
+      instance_eval(&key.after) if key.after
+
+      return result
     end
 
     def [](*args)
@@ -200,6 +202,10 @@ module VER
     def window; view.window; end
     def methods; view.methods; end
 
+    def method_missing(meth, *args, &block)
+      view.methods.send(meth, *args, &block)
+    end
+
     def virtual
       yield(clone)
     end
@@ -209,7 +215,7 @@ module VER
   # Can be compared with other keys, but note that the assigned block will be
   # ignored in the comparision since equality is not possible otherwise.
   class Key
-    attr_accessor :expression, :name, :doc, :args, :block, :handler, :ready,
+    attr_accessor :expression, :name, :doc, :args, :block, :ready,
       :after, :before
 
     def initialize(expression, name = nil, doc = nil, args = [], &block)
