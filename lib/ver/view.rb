@@ -89,6 +89,8 @@ module VER
       # end
     rescue ::Exception => ex
       VER.error(ex)
+    ensure
+      Ncurses.doupdate
     end
 
     def draw_padding
