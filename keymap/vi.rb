@@ -82,7 +82,7 @@ VER.let :control => [:general, :control_movement] do
   map('i'){ view.mode = :insert }
 
   macro('a', 'l i')
-  macro('A', '$ a')
+  macro('A', '$ i')
   macro('I', '0 i')
   macro('o', "$ i return")
   macro('O', "0 i return up")
