@@ -26,10 +26,14 @@ Current notable features:
   * [M-o] Fuzzy, project based file browser
   * [C-o] Normal, system-wide file browser
   * [M-1] to [M-9] Quick switching buffers
-  - Switching buffers by partial name using M-b
+  * Switching buffers by partial name using M-b
   * Save file using C-s
-  - [M-s] : Save file under different name
   * [C-x] : Quick executing of methods in the current mode
-  - [M-x] Live ruby console
+  * [C-x] : Eval a line of ruby
   * Copy and paste selections, start selection with v or V, copy with y, paste with p
   * Syntax highlighting (for .rb and Rakefile only for now)
+
+Todo:
+
+  - [M-s] : Save file under different name
+  - [M-x] : Live ruby console
