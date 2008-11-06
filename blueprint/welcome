@@ -21,6 +21,7 @@ I tried to address these downsides:
   * Make editing powerful without years of learning and remembering arcane shortcuts, and don't require users of the editor to sacrifice their wrists.
   * Allow project-based browsing and grepping right from the start.
 
+
 Current notable features:
 
   * [M-o] Fuzzy, project based file browser
@@ -30,8 +31,23 @@ Current notable features:
   * Save file using C-s
   * [C-x] : Quick executing of methods in the current mode
   * [C-x] : Eval a line of ruby
-  * Copy and paste selections, start selection with v or V, copy with y, paste with p
+  * Copy and paste selections, start selection with [v] or [V] (linewise), copy with [y] or [Y] (linewise), paste with [p]
   * Syntax highlighting (for .rb and Rakefile only for now)
+  * Start searching with [/], jump to next search result using [n], the previous with [N]
+
+
+How to run VER:
+
+First, make sure that you have the bin/ directory in your PATH.
+On startup you can choose which keymap to use, VER currently ships with two: vi and diakonos. The vi mapping is the default.
+
+  ver -k diakonos
+  ver -k vi
+
+
+Configuration:
+
+VER will
 
 Todo:
 
