@@ -69,14 +69,15 @@ VER.let :control => [:general, :control_movement] do
   map(/^(x|dc)$/){ cursor.insert_delete }
   map("X"){ cursor.insert_backspace }
 
-  map('v'){ start_selection }
-  map('V'){ start_selection(linewise = true) }
+  map('v'){   start_selection }
+  map('V'){   start_selection(:linewise) }
+  map('C-v'){ start_selection(:block) }
 
-  map('y'){ copy }
-  map('Y'){ copy_lines }
+  map('Y'){ press('V'); copy }
+  map(['y', movement]){ press('v'); press(@arg); press('y') }
 
-  map('p'){ cursor.insert(VER.clipboard.last) }
-  map('P'){ cursor.insert(VER.clipboard.last) }
+  map('p'){ paste_after }
+  map('P'){ paste_before }
 
   map('/'){ search_ask }
   map('n'){ search_next }
@@ -91,12 +92,19 @@ VER.let :control => [:general, :control_movement] do
   macro('O', "0 i return up")
   macro('D', 'd $')
   macro('C', 'd $ i')
+  macro('y y', 'Y')
   macro('d d', '0 d $')
   macro('g g', '1 g')
 end
 
 VER.let :selection => :control do
-  map('d'){ cut }
+  map('v'){   selection[:selecting] = nil }
+  map('V'){   selection[:selecting] = :linewise }
+  map('C-v'){ selection[:selecting] = :block }
+
+  map(/^[dxX]$/){ cut }
+  map('y'){ copy }
+  map('Y'){ press('V'); press('y') }
   map(/^(C-c|C-q|esc)$/){ view.selection = nil }
 end
 

@@ -156,31 +156,138 @@ module VER
           end
         end
 
-        def cut
-          string = view.selection.to_s
-          VER.clipboard << string
-          VER.info("Cut #{string.size} characters")
-          buffer[view.selection.to_range] = ''
-          cursor.pos = view.selection.mark
-          cursor.rearrange
-          view.selection = nil
+        # Selection
+
+        def start_selection(selecting = nil)
+          sel = view.selection = cursor.dup
+
+          sel.meta = {:selecting => selecting}
+          sel.pos = sel.mark = cursor.pos
+          sel.color = Color[:white, :blue]
         end
 
+        # Selection Copy
+
         def copy
-          string = view.selection.to_s
-          VER.clipboard << string
-          VER.info("Copied #{string.size} characters")
+          return unless selection
+          selection.pos = cursor.pos
+
+          case selection[:selecting]
+          when :linewise; copy_lines
+          when :block; copy_block
+          else; copy_selection; end
+
+          cursor.pos = selection.mark
           view.selection = nil
         end
 
         def copy_lines
-          sel = view.selection ||= cursor.dup
-          sel.end_of_line
-          sel.invert!
-          sel.beginning_of_line
-          sel.invert!
-          copy
+          selection.end_of_line
+          selection.invert!
+          selection.beginning_of_line
+          selection.invert!
+          copy_selection
         end
+
+        # NOTE:
+        #   * first line start can be cut off since the selection might not
+        #     cover it, so we handle that case as well
+        def copy_block
+          from_x, to_x = [selection.to_x, selection.to_x(true)].sort
+          lines = selection.to_s.split("\n")
+
+          chunks = [lines.shift[0..(to_x - from_x)]]
+          chunks.concat(lines.map{|l| l[from_x..to_x] })
+
+          VER.clipboard << chunks
+          VER.info("Copied #{chunks.size} chunks")
+        end
+
+        def copy_selection
+          VER.clipboard << selection.to_s
+          VER.info("Copied #{selection.delta} characters")
+        end
+
+        # Selection Cut
+
+        def cut
+          return unless selection
+          selection.pos = cursor.pos
+
+          case selection[:selecting]
+          when :linewise; cut_lines
+          when :block; cut_block
+          else; cut_selection; end
+
+          cursor.pos = selection.mark
+          view.selection = nil
+        end
+
+        def cut_selection
+          VER.clipboard << string = selection.to_s
+          buffer[selection.to_range] = ''
+
+          cursor.pos = selection.mark
+          cursor.rearrange
+
+          VER.info("Cut #{selection.delta} characters")
+        end
+
+        def cut_lines
+          selection.end_of_line
+          selection.invert!
+          selection.beginning_of_line
+          selection.invert!
+          cut_selection
+        end
+
+        # FIXME: Not so quick, but quite dirty
+        def cut_block
+          (pos_y, pos_x), (mark_y, mark_x) = selection.to_pos, selection.to_pos(true)
+          from_y, to_y = [pos_y, mark_y].sort
+          from_x, to_x = [pos_x, mark_x].sort
+          lines = (from_y..to_y)
+
+          chunks = []
+
+          buffer.map! do |line|
+            next unless lines.include?(line.number)
+
+            chunks << line.line[from_x..to_x]
+            line.line[from_x..to_x] = ''
+            line.range = (line.range.begin..(line.range.end - 1))
+            line.line
+          end
+
+          cursor.rearrange
+
+          VER.clipboard << chunks
+          VER.info("Cut #{chunks.size} chunks")
+        end
+
+        # Paste
+
+        def paste_after
+          case clip = VER.clipboard.last
+          when String
+            cursor.virtual{ cursor.insert(clip) }
+          when Array
+            cursor.virtual do
+              clip.each do |chunk|
+                cursor.virtual{ cursor.insert(chunk) }
+                cursor.down
+              end
+            end
+          else
+            VER.info("Nothing in clipboard")
+          end
+        end
+
+        def paste_before
+          paste_after
+        end
+
+        # </Paste>
 
         def page_down
           view.scroll(window.height)
@@ -216,13 +323,6 @@ module VER
           elsif y > center
             (y - center).times{ cursor.up }
           end
-        end
-
-        def start_selection(linewise = false)
-          sel = view.selection = cursor.clone
-          sel.mark = cursor.pos
-          sel.color = view.colors[:search]
-          sel[:linewise] = linewise
         end
 
         def ver_stop
@@ -332,7 +432,10 @@ module VER
         row, col = row + top + 1, col + left + 1
         n, m     = buffers.index(buffer) + 1, buffers.size
         syntax   = syntax ? syntax.name : 'Plain'
-#         objects = ObjectSpace.each_object{|o| }
+
+        mode = "#{self.mode} - #{selection[:selecting]}" if selection
+
+        # objects = ObjectSpace.each_object{|o| }
 
         @status_line % [file, modified, syntax, mode, row + top, col, n, m]
       rescue ::Exception => ex
@@ -353,9 +456,12 @@ module VER
         end
       end
 
-      def selection=(s)
-        if @selection = s
+      def selection=(selection)
+        @selection = selection
+
+        if selection
           self.mode = :selection
+          @selection.mark = @selection.pos
         else
           self.mode = :control
         end
@@ -387,16 +493,33 @@ module VER
       end
 
       def highlight_selection
+        selection = self.selection.dup
         selection.pos = cursor.pos
 
-        if selection[:linewise]
+        case selection[:selecting]
+        when :linewise
           if selection.mark > selection.pos
             selection.mark = selection.eol(selection.mark)
-            selection.pos = selection.bol(selection.pos)
+            selection.pos  = selection.bol(selection.pos)
           else
             selection.mark = selection.bol(selection.mark)
-            selection.pos = selection.eol(selection.pos)
+            selection.pos  = selection.eol(selection.pos)
           end
+        when :block
+          (pos_y, pos_x), (mark_y, mark_x) = selection.to_pos, selection.to_pos(true)
+
+          from_y, to_y = [pos_y, mark_y].sort
+          from_x, to_x = [pos_x, mark_x].sort
+          from_x -= @left; to_x -= @left
+          to_x -= from_x
+
+          color = selection.color
+
+          (from_y..to_y).each do |y|
+            highlight_line(color, y, from_x, to_x + 1)
+          end
+
+          return
         end
 
         highlight(selection)

@@ -20,7 +20,8 @@ module VER
         @info = MemoryBuffer.new(:info_info)
         @status = MemoryBuffer.new(:info_status)
 
-        @info_color = @status_color = Color[:black, :white]
+        @info_color = Color[:white, :black]
+        @status_color = Color[:black, :white]
       end
 
       def status=(message)
@@ -34,17 +35,15 @@ module VER
       end
 
       def draw
-        window.move 0, 0
         window.color = @status_color
+        window.move 0, 0
         window.print_line(@status.to_s)
-        window.color = @info_color
-        window.print_line(@info.to_s)
-        refresh
-      end
 
-      def change
-        yield(self)
-        draw
+        window.color = @info_color
+        window.move 1, 0
+        window.print_line(@info.to_s)
+
+        refresh
       end
     end
   end

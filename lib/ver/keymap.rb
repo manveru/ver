@@ -197,11 +197,11 @@ module VER
       @mode[*args]
     end
 
-    def selection; view.selection; end
-    def cursor; view.cursor; end
-    def buffer; view.buffer; end
-    def window; view.window; end
-    def methods; view.methods; end
+    def selection; view.selection end
+    def cursor;    view.cursor    end
+    def buffer;    view.buffer    end
+    def window;    view.window    end
+    def methods;   view.methods   end
 
     def method_missing(meth, *args, &block)
       view.methods.send(meth, *args, &block)

@@ -2,18 +2,18 @@ module VER
   class ClipBoard
     def initialize(*contents)
       @contents = contents
+      @limit = 100
     end
 
     def <<(text)
+      (@contents.size - @limit).times{ @contents.shift }
       @contents << text
     end
 
+    alias push <<
+
     def pop
       @contents.pop
-    end
-
-    def push(text)
-      @contents.push(text)
     end
 
     def last

@@ -10,21 +10,11 @@ module VER
       extend(view.class::Methods)
     end
 
-    def mode
-      view.mode
-    end
-
-    def cursor
-      view.cursor
-    end
-
-    def window
-      view.window
-    end
-
-    def buffer
-      view.buffer
-    end
+    def selection; view.selection end
+    def cursor;    view.cursor    end
+    def buffer;    view.buffer    end
+    def window;    view.window    end
+    def methods;   view.methods   end
 
     def inspect
       "<Mixer for %p>" % [modules]

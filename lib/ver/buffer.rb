@@ -18,12 +18,10 @@ module VER
       r = (s...size)  if s.is_a?(Numeric) && !len
       r = s           if s.is_a?(Range)
 
-      first = r.begin
-      last = r.end
-      last -= 1 if r.exclude_end?
+      r = (r.begin..([r.end - 1, 0].max)) if r.exclude_end?
 
-      if(first < 0 || last > size || last > size)
-        raise RangeError, "%p not within %p" % [r, (first..last)]
+      if r.begin < 0 || r.end > size
+        raise RangeError, "%p not within %p" % [r, (0..size)]
       end
 
       return r
@@ -75,8 +73,8 @@ module VER
       accum = 0
 
       list.each do |(r,s)|
-        r = (r.first+accum)..(r.last+accum)
-      accum += apply_delta(r, s)
+        r = ((r.first + accum)..(r.last + accum))
+        accum += apply_delta(r, s)
       end
     end
 
@@ -118,21 +116,22 @@ module VER
       @data.count("\n")
     end
 
+    # Gathering modifications then applying them makes life a lot
+    # easier.  We don't have to keep track of how changes alter where
+    # @pos and @mark should be.
     def map!
-      # Gathering modifications then applying them makes life a lot
-      # easier.  We don't have to keep track of how changes alter where
-      # @pos and @mark should be.
-
       a = []
-      each_line do |line, range|
-        replacement = yield(line, range)
-        a << [range, replacement]
+      each_line do |line|
+        if replacement = yield(line)
+          a << [line.range, replacement]
+        end
       end
 
-      @buffer.apply_deltas(a)
+      Log.debug a
+      apply_deltas(a)
 
-      @pos  = @buffer.size if @pos  > @buffer.size
-      @mark = @buffer.size if @mark > @buffer.size
+#       @pos  = [0, @pos, size].sort[1]
+#       @mark = [0, @mark, size].sort[1]
 
       return
     end

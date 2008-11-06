@@ -2,14 +2,14 @@ module VER
   module_function
 
   def info(message = nil, color = nil)
-    return @info unless message and color
+    return @info unless message
     @info.info_color = color if color
     @info.info = message
     @info
   end
 
   def status(message = nil, color = nil)
-    return @info unless message and color
+    return @info unless message
     @info.status_color = color if color
     @info.status = message
     @info
