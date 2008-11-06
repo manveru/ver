@@ -7,8 +7,8 @@ VER.let :general_movement do
 end
 
 VER.let :general => :general_movement do
-  map(/C-f|npage/){ page_down }
-  map(/C-b|ppage/){ page_up }
+  map(/^(C-f|npage)$/){ page_down }
+  map(/^(C-b|ppage)$/){ page_up }
 
   # Function keys
 
@@ -16,11 +16,10 @@ VER.let :general => :general_movement do
   map('F2'){ VER.help }
 
   # seems to be triggered only on events, not the actual resize
-  map(/C-l|resize/){ VER::View.resize }
+  map(/^(C-l|resize)$/){ VER::View.resize }
 
   # Switching buffers real fast
-  # (1..9).each{|n| key("M-#{n}", :buffer_jump, n - 1) }
-  map(/M-(\d)/){ view.buffer = view.buffers[@arg.to_i - 1] }
+  map(/^M-(\d)$/){ view.buffer = view.buffers[@arg.to_i - 1] }
 end
 
 VER.let :control_movement => :general_movement do
@@ -39,8 +38,8 @@ VER.let :control_movement => :general_movement do
 end
 
 VER.let :control => [:general, :control_movement] do
-  map(/q (#{chars_regex})/){ start_macro(@arg) }
-  map(/q (#{chars_regex})/){ play_macro(@arg) }
+  map(/^q (#{chars_regex})$/){ start_macro(@arg) }
+  map(/^q (#{chars_regex})$/){ play_macro(@arg) }
 
   map('C-g'){ VER::View::AskGrep.open }
   map('C-o'){ VER::View::AskFile.open }
@@ -58,7 +57,7 @@ VER.let :control => [:general, :control_movement] do
     cursor.beginning_of_line
   }
   0.upto(7) do |n|
-    key = [/[1-9]/] + ([/\d/] * n) << 'g'
+    key = [/^[1-9]$/] + ([/^\d$/] * n) << 'g'
     map(key){ goto_line(@args.join.to_i) }
   end
 
