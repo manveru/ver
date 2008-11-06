@@ -66,6 +66,9 @@ VER.let :control => [:general, :control_movement] do
   map(["d", movement]){ cursor.virtual{ press(@arg); cursor.delete_range } }
   map(["c", movement]){ cursor.virtual{ press(@arg); cursor.delete_range }; press('i') }
 
+  map(/^(x|dc)$/){ cursor.insert_delete }
+  map("X"){ cursor.insert_backspace }
+
   map('v'){ start_selection }
   map('V'){ start_selection(linewise = true) }
 
