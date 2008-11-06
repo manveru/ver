@@ -110,7 +110,7 @@ module VER
 
         def search_ask
           VER.ask('Search: ', method(:search_ask_context)) do |search|
-            search_results_highlight
+            view.refresh_search_highlight
             search_next
           end
         end
@@ -136,11 +136,6 @@ module VER
         rescue RegexpError, SyntaxError => ex
           VER.error(ex)
           return valid, [got]
-        end
-
-        def search_results_highlight
-          cursors = view.highlights[:search] = buffer.grep_successive_cursors(view.search)
-          cursors.each{|c| c.color = view.colors[:search] }
         end
 
         def search_next
@@ -301,6 +296,7 @@ module VER
           draw_padding
 
 #           highlight_syntax
+          refresh_search_highlight if search and buffer.dirty?
           highlight_search if search
           highlight_selection if selection
           buffer.dirty = false
@@ -379,6 +375,11 @@ module VER
         else
           highlights[:search].clear
         end
+      end
+
+      def refresh_search_highlight
+        cursors = highlights[:search] = buffer.grep_successive_cursors(search)
+        cursors.each{|c| c.color = colors[:search] }
       end
 
       def highlight_search
