@@ -18,19 +18,18 @@ module VER
     end
 
     def index(pattern, s=nil, len=nil)
-      r = range(s,len)
-
-      if substr = @data[range(s,len)]
-        pos = substr.index(pattern)
-        pos += r.first if pos
-      end
+      common_index(pattern, s, len){|substr, pattern| substr.index(pattern) }
     end
 
     def rindex(pattern, s=nil, len=nil)
+      common_index(pattern, s, len){|substr, pattern| substr.rindex(pattern) }
+    end
+
+    def common_index(pattern, s, len)
       r = range(s,len)
 
       if substr = @data[range(s,len)]
-        pos = substr.rindex(pattern)
+        pos = yield(substr, pattern)
         pos += r.first if pos
       end
     end

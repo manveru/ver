@@ -96,24 +96,19 @@ module VER
     end
 
     def after(*keys, &block)
-      keys.each do |k|
-        @parent.deep_each do |key|
-          if key.expression == k
-            new = key.clone
-            new.after = block
-            @keys << new
-            next
-          end
-        end
-      end
+      add_aspect(:after, *keys, &block)
     end
 
     def before(*keys, &block)
+      add_aspect(:before, *keys, &block)
+    end
+
+    def add_aspect(name, *keys, &block)
       keys.each do |k|
         @parent.deep_each do |key|
           if key.expression == k
             new = key.clone
-            new.before = block
+            new.send("#{name}=", block)
             @keys << new
             next
           end

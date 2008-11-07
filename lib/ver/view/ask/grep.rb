@@ -24,13 +24,8 @@ module VER
 
         @buffer = MemoryBuffer.new(:ask_grep)
         @prompt = 'Grep [glob] pattern:'
-        self.glob = '*'
+        self.input = '*'
         update_choices
-      end
-
-      def glob=(string)
-        buffer[0..-1] = string
-        buffer.cursor.pos = buffer.size
       end
 
       def draw_choice(choice)
@@ -50,15 +45,15 @@ module VER
         @pick = nil
         @choices = []
 
-        glob, query = input.split(/ /, 2)
-        glob, query = nil, glob unless query
-        glob ||= '*'
+        input, query = input.split(/ /, 2)
+        input, query = nil, input unless query
+        input ||= '*'
 
         return if query.size < 3 # protect a little
 
         regex = /#{Regexp.escape(query)}/
 
-        files = Dir[glob].select{|f| ::File.file?(f) }
+        files = Dir[input].select{|f| ::File.file?(f) }
 
         files.each do |file|
           buffer = FileBuffer.new(:temp, file)

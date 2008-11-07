@@ -27,28 +27,14 @@ module VER
       @window.mvwin(top, left)
     end
 
-    def width=(w)
-      return if w == width
-      @layout[:width] = w
-      resize_with @layout
-    end
-
-    def height=(h)
-      return if h == height
-      @layout[:height] = h
-      resize_with @layout
-    end
-
-    def top=(t)
-      return if t == top
-      @layout[:top] = t
-      resize_with @layout
-    end
-
-    def left=(l)
-      return if l == left
-      @layout[:left] = l
-      resize_with @layout
+    %w[width height top left].each do |side|
+      eval(
+      "def #{side}=(n)
+         return if n == #{side}
+         @layout[:#{side}] = n
+         resize_with @layout
+       end"
+      )
     end
 
     def resize

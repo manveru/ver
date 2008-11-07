@@ -155,6 +155,11 @@ module VER
       draw
     end
 
+    def input=(string)
+      buffer[0..-1] = string
+      buffer.cursor.pos = buffer.size
+    end
+
     def scroll_border
       window.height / 10
     end

@@ -4,13 +4,15 @@ module VER
       module Methods
 
         def history_backward
-          view.history_pick = [0, view.history_pick - 1, view.history.size].sort[1]
-          view.input = view.history[view.history_pick]
+          view.input = view.history[history_pick]
         end
 
         def history_forward
+          view.input = view.history[history_pick]
+        end
+
+        def history_pick
           view.history_pick = [0, view.history_pick + 1, view.history.size].sort[1]
-          view.input = view.history[view.history_pick]
         end
 
         def pick
@@ -87,11 +89,6 @@ module VER
 
       def update_choices
         @valid, @choices = @completer.call(buffer.to_s)
-      end
-
-      def input=(string)
-        buffer[0..-1] = string
-        buffer.cursor.pos = buffer.size
       end
 
       # FIXME: improve completion to me useful instead of annoying

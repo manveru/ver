@@ -42,7 +42,6 @@ module VER
   require 'ver/view'
   require 'ver/view/file'
   require 'ver/view/info'
-  require 'ver/view/status'
   require 'ver/view/ask/small'
   require 'ver/view/ask/large'
   require 'ver/view/ask/file'
