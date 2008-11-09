@@ -435,9 +435,9 @@ module VER
           refresh
         end
 
-        draw_status_line
-
         window.move(*pos) if pos
+
+        draw_status_line
         @redraw = false
       end
 
@@ -458,14 +458,23 @@ module VER
       end
 
       def status_line
-        file     = buffer.short_filename
-        modified = buffer.modified? ? '+' : ' '
-        row, col = cursor.to_pos
-        row, col = row + top + 1, col + left + 1
+        case buffer
+        when FileBuffer
+          file     = buffer.short_filename
+          modified = buffer.modified? ? '+' : ' '
+        when MemoryBuffer
+          file = '<MemoryBuffer>'
+          modified = '+'
+        else
+          file, modified = '', '+'
+        end
+
+        row, col = window.y + 1, (@left + window.x + 1)
         n, m     = buffers.index(buffer) + 1, buffers.size
         syntax   = syntax ? syntax.name : 'Plain'
 
-        mode = "#{self.mode} - #{selection[:selecting]}" if selection
+        mode = "#{self.mode}"
+        mode = "#{mode} - #{selection[:selecting]}" if selection
 
         # objects = ObjectSpace.each_object{|o| }
 
