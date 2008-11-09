@@ -2,13 +2,19 @@ Welcome to VER, the Vim & Emacs in Ruby editor.
 
 This project can be found at: http://github.com/manveru/ver
 
-Note that M usually stands for the alt key on your keyboard
+Notes:
+  * M usually stands for the alt key on your keyboard.
+  * It seems that some terminals (especially on OS X) need some configuration
+    to let [esc] work, it's mapped to Meta by default, I'm not sure how to
+    change this configuration, if you know, please update this file.
 
-Various help commands:
+
+Various help commands (all not implemented yet):
   [M-h h] : Open help browser
   [M-h k] : Query help for key
   [M-h g] : Grep help
   [M-h t] : Open tutorial
+
 
 Quick intro:
 
@@ -20,20 +26,67 @@ I tried to address these downsides:
   * I don't intend this editor to be everything for everybody, it's just useful for myself for now.
   * Make editing powerful without years of learning and remembering arcane shortcuts, and don't require users of the editor to sacrifice their wrists.
   * Allow project-based browsing and grepping right from the start.
+  * Easily identify the mode you are in by looking at the color of the status line.
 
+Currently working:
 
-Current notable features:
-
-  * [M-o] Fuzzy, project based file browser
-  * [C-o] Normal, system-wide file browser
-  * [M-1] to [M-9] Quick switching buffers
-  * Switching buffers by partial name using M-b
-  * Save file using C-s
-  * [C-x] : Quick executing of methods in the current mode
   * [C-x] : Eval a line of ruby
-  * Copy and paste selections, start selection with [v] or [V] (linewise), copy with [y] or [Y] (linewise), paste with [p]
+  * Buffers
+    * [C-s] : Save buffer contents to file
+  * Opening new buffers
+    * [M-o] : Fuzzy file browser (only use for projects)
+    * [C-o] : Normal file browser (fast for anything, but less magic)
+    * [C-g] : Grep browser, grep all files and jump to matches
+  * Switching buffers
+    * [M-1] to [M-9] : Quick switching buffers
+    * [M-b]          : Switching buffers by partial name
+  * [C-q] : Exit current mode or close VER
+  * [C-w] : Close current buffer (requires confirmation if buffer was modified)
+  * Selection, Copy, Paste
+    * Starting selection
+      * [v]   : charwise
+      * [V]   : linewise
+      * [C-v] : blockwise
+      * Once selection is active, you can switch between these selection modes
+        with the same keys.
+        So, if you started charwise selection but would like to select
+        blockwise instead, just hit [C-v]
+    * Copy to clipboard
+      * [y] : copy current selection
+      * [Y] : copy the full lines touched by current selection
+    * Paste from clipboard
+      * [p] : paste after current cursor position
+      * [P] : paste before current cursor position
+    * Indent
+      * [>] : Indent selection
+      * [<] : Unindent selection
   * Syntax highlighting (for .rb and Rakefile only for now)
-  * Start searching with [/], jump to next search result using [n], the previous with [N]
+    - This has been disabled due to speed problems, working on it.
+  * Searching
+    * [/] : Start searching by regular expression
+    * [n] : Jump to next search result
+    * [N] : Jump to previous search result
+  * Indentation
+    * [>] : Indent line
+    * [<] : Unindent line
+  * Movement
+    * Basic
+      * [j] : Line down
+      * [k] : Line up
+      * [h] : Char left
+      * [l] : Char right
+    * Jumps
+      * [w] : Word right
+      * [W] : Chunk right
+      * [b] : Word left
+      * [B] : Chunk left
+      * [0] : Beginning of line
+      * [$] : End of line
+      * [G] : Last line
+      * [g g] : First line
+      * [C-f] or [npage] : One page down
+      * [C-b] or [ppage] : One page up
+      * [0 g], [50 g], [100 g], ... : Jump to given line
 
 
 How to run VER:
@@ -45,11 +98,8 @@ On startup you can choose which keymap to use, VER currently ships with two: vi 
   ver -k vi
 
 
-Configuration:
-
-VER will
-
 Todo:
 
   - [M-s] : Save file under different name
-  - [M-x] : Live ruby console
+  - [M-x] : Live ruby console (figure out some nice way)
+  - Handling tabs
