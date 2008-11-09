@@ -166,8 +166,13 @@ module VER
       buffer[pos, 1] = ''
     end
 
+    def replace(string)
+      buffer[pos, string.size] = string
+    end
+
     def delete_range
-      buffer[to_range] = ''
+      range = to_range
+      buffer[range.begin...range.end] = ''
     end
 
     def virtual

@@ -69,6 +69,14 @@ VER.let :control => [:general, :control_movement] do
   map(/^(x|dc)$/){ cursor.insert_delete }
   map("X"){ cursor.insert_backspace }
 
+  map(["r", /^[[:print:]]$/]){ cursor.replace(@arg) }
+  map(["r", "return"]){ cursor.replace("\n") }
+
+  map('~'){ toggle_case }
+
+  map('>'){ indent_line }
+  map('<'){ unindent_line }
+
   map('v'){   start_selection }
   map('V'){   start_selection(:linewise) }
   map('C-v'){ start_selection(:block) }
@@ -106,6 +114,10 @@ VER.let :selection => :control do
   map('y'){ copy }
   map('Y'){ press('V'); press('y') }
   map(/^(C-c|C-q|esc)$/){ view.selection = nil }
+
+  map('~'){ toggle_selection_case }
+  map('>'){ indent_selection }
+  map('<'){ unindent_selection }
 end
 
 VER.let :insert => :general do

@@ -127,11 +127,7 @@ module VER
         end
       end
 
-      Log.debug a
       apply_deltas(a)
-
-#       @pos  = [0, @pos, size].sort[1]
-#       @mark = [0, @mark, size].sort[1]
 
       return
     end

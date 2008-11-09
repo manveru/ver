@@ -2,6 +2,21 @@ module VER
   class View
     class File < View
       module Methods
+
+        def toggle_case
+          buffer[cursor.pos, 1] = buffer[cursor.pos, 1].tr('A-Za-z', 'a-zA-Z')
+        end
+
+        def indent_line
+          range = (cursor.bol..cursor.eol)
+          buffer[range] = buffer[range].gsub(/^/, '  ')
+        end
+
+        def unindent_line
+          range = (cursor.bol..cursor.eol)
+          buffer[range] = buffer[range].gsub(/^  /, '')
+        end
+
         # NOTE:
         #   * This takes the line number, but in the interface lines start at
         #     1, not 0, that's why we decrement by one and check that we're not
@@ -84,6 +99,7 @@ module VER
           end
         end
 
+        # FIXME: true number of lines
         GOTO_LINE_ASK_PROC = lambda{|got|
           [true, *(0..100)]
         }
@@ -166,27 +182,58 @@ module VER
           sel.color = Color[:white, :blue]
         end
 
-        # Selection Copy
+        def operate_on_selection
+          return unless prepare_selection
 
-        def copy
-          return unless selection
-          selection.pos = cursor.pos
-
-          case selection[:selecting]
-          when :linewise; copy_lines
-          when :block; copy_block
-          else; copy_selection; end
+          yield(selection[:selecting])
 
           cursor.pos = selection.mark
           view.selection = nil
         end
 
-        def copy_lines
-          selection.end_of_line
-          selection.invert!
-          selection.beginning_of_line
-          selection.invert!
-          copy_selection
+        def prepare_selection
+          return unless selection
+          selection.pos = cursor.pos
+
+          if selection[:selecting] == :linewise
+            selection.end_of_line
+            selection.invert!
+            selection.beginning_of_line
+            selection.invert!
+          end
+
+          return true
+        end
+
+        # General Selection operations
+
+        def toggle_selection_case
+          operate_on_selection do |selecting|
+            range = selection.to_range
+            buffer[range] = buffer[range].tr('A-Za-z', 'a-zA-Z')
+          end
+        end
+
+        def indent_selection
+          operate_on_selection do |selecting|
+            range = selection.to_range
+            buffer[range] = buffer[range].gsub(/^/, '  ')
+          end
+        end
+
+        def unindent_selection
+          operate_on_selection do |selecting|
+            range = selection.to_range
+            buffer[range] = buffer[range].gsub(/^  /, '')
+          end
+        end
+
+        # Selection Copy
+
+        def copy
+          operate_on_selection do |selecting|
+            selecting == :block ? copy_block : copy_selection
+          end
         end
 
         # NOTE:
@@ -211,34 +258,9 @@ module VER
         # Selection Cut
 
         def cut
-          return unless selection
-          selection.pos = cursor.pos
-
-          case selection[:selecting]
-          when :linewise; cut_lines
-          when :block; cut_block
-          else; cut_selection; end
-
-          cursor.pos = selection.mark
-          view.selection = nil
-        end
-
-        def cut_selection
-          VER.clipboard << string = selection.to_s
-          buffer[selection.to_range] = ''
-
-          cursor.pos = selection.mark
-          cursor.rearrange
-
-          VER.info("Cut #{selection.delta} characters")
-        end
-
-        def cut_lines
-          selection.end_of_line
-          selection.invert!
-          selection.beginning_of_line
-          selection.invert!
-          cut_selection
+          operate_on_selection do |selecting|
+            selecting == :block ? cut_block : cut_selection
+          end
         end
 
         # FIXME: Not so quick, but quite dirty
@@ -263,6 +285,16 @@ module VER
 
           VER.clipboard << chunks
           VER.info("Cut #{chunks.size} chunks")
+        end
+
+        def cut_selection
+          VER.clipboard << string = selection.to_s
+          buffer[selection.to_range] = ''
+
+          cursor.pos = selection.mark
+          cursor.rearrange
+
+          VER.info("Cut #{selection.delta} characters")
         end
 
         # Paste
