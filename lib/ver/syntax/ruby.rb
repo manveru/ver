@@ -9,21 +9,22 @@ module VER
         @name = 'Ruby'
       end
 
-      KEYWORDS = %w[ alias begin class def do else end ensure if unless module
+      KEYWORDS = %w[ alias begin class def do else elsif end ensure if unless module
       rescue return super until while true false __FILE__ __LINE__ ]
 
       # TODO: make this a lot more performant.
       def compile
         keywords = /\b#{Regexp.union(*KEYWORDS)}\b/
         let :yellow,  keywords
-#         let :magenta, /::[A-Z]\w+/     # ::AbsoluteConstant
-#         let :magenta, /[A-Z]\w+/       # RelativeConstant
-#         let :blue,    /\$\w+/          # $global_variable
-#         let :blue,    /@?@\w+/         # @instance_var and @@class_var
-#         let :blue,    /:\w+/           # :symbol
+        let :magenta, /::[A-Z]\w+/     # ::AbsoluteConstant
+        let :magenta, /[A-Z]\w+/       # RelativeConstant
+        let :blue,    /\$\w+/          # $global_variable
+        let :blue,    /@?@\w+/         # @instance_var and @@class_var
+        let :white,   /(\.|::)[a-z]\w+/ # methods
+        let :blue,    /:(@|@@|\$)?\w+/           # :symbol
         let :red,     /(['"])([^\1]*?)\1/ # 'string' and "string"
-#         let :red,     /%w\[[^\]]*\]/m  # %w[array]
-        let :magenta, /\/[^\/]*\//     # /regexp/
+        let :red,     /%w\[[^\]]*\]/m  # %w[array]
+#         let :magenta, /(^\s*|,\s*|\(\s*)\/[^\/]*\//     # /regexp/
         let :green,   /#.*$/           # comment
       end
 
@@ -31,25 +32,30 @@ module VER
         @syntax << [Color[color], regex]
       end
 
-      def parse(buffer)
+      def parse(buffer, range)
         compile if @syntax.empty?
+
         @matches.clear
 
-        scanner = buffer.to_scanner
+        from = range.begin
+        scanner = buffer.to_scanner(range)
 
         until scanner.eos?
-          pos = scanner.pos
+          spos = scanner.pos
 
           @syntax.each do |color, regex|
             if match = scanner.scan(regex)
-              cursor = buffer.new_cursor((scanner.pos - match.size), scanner.pos)
+              pos = from + (scanner.pos - match.size)
+              mark = from + scanner.pos
+
+              cursor = buffer.new_cursor(pos, mark)
               cursor.color = color
               @matches << cursor
             end
           end
 
           # nothing matches here, go forward one character
-          scanner.scan(/./um) if pos == scanner.pos
+          scanner.scan(/./um) if spos == scanner.pos
         end
 
         return @matches

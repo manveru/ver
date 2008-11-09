@@ -113,6 +113,10 @@ module VER
       @window.color_set(color, nil)
     end
 
+    def highlight_line(color, y, x, max)
+      @window.mvchgat(y, x, max, Ncurses::A_NORMAL, color, nil)
+    end
+
     def getch
       @window.getch
     rescue Interrupt => ex

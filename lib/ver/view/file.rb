@@ -560,12 +560,28 @@ module VER
       def highlight_syntax
         return unless syntax
 
+        visible = buffer.line_range(top..bottom)
+        from, to = visible.begin, visible.end
+
         if syntax.matches.empty? or buffer.dirty?
-          syntax.parse(buffer)
+          Log.debug "Start parsing syntax"
+
+          syntax.parse(buffer, (0..buffer.size))
+
+          cursor_count = syntax.matches.size
+          memory_count = Marshal.dump(syntax).size / 1000.0
+          Log.debug "Syntax parsed: #{cursor_count} cursors, #{memory_count} KiB"
+
+          GC.start
         end
 
-        syntax.matches.each do |cursor|
-          highlight(cursor)
+        syntax.matches.each do |match|
+          next unless from <= match.pos and to >= match.mark
+
+          (from_y, from_x), (to_y, to_x) = match.to_pos, match.to_pos(true)
+          from_y -= @top; from_x -= @left; to_y -= @top; to_x -= @left
+
+          window.highlight_line(match.color, from_y, from_x, to_x - from_x)
         end
       end
 
@@ -599,8 +615,7 @@ module VER
 
       def highlight_line(color, y, x = 0, max = -1)
         return unless visible_pos?(y, x)
-        window.move(y, x)
-        window.wchgat(max, Ncurses::A_NORMAL, color, nil)
+        window.highlight_line(color, y, x, max)
       end
     end
   end

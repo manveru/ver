@@ -94,8 +94,8 @@ module VER
       return cursors
     end
 
-    def to_scanner(from = 0, to = size)
-      StringScanner.new(self[from, to])
+    def to_scanner(range)
+      StringScanner.new(self[range])
     end
 
     # Avoid overlaps, pick regexps as they match with lowest possible delta in
