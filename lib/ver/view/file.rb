@@ -401,7 +401,7 @@ module VER
       DEFAULT = {
         :mode        => :control,
         :interactive => true,
-        :status_line => "%s [%s] (%s - %s) %d,%d  Buffer %d/%d",
+        :status_line => "%s (%s) [%s] (%s - %s)  -  %d,%d  -  Buffer %d/%d",
       }
 
       attr_accessor :status_line, :redraw, :highlights
@@ -462,6 +462,7 @@ module VER
         when FileBuffer
           file     = buffer.short_filename
           modified = buffer.modified? ? '+' : ' '
+          eol = buffer.eol_name
         when MemoryBuffer
           file = '<MemoryBuffer>'
           modified = '+'
@@ -469,6 +470,7 @@ module VER
           file, modified = '', '+'
         end
 
+        eol ||= 'unix'
         row, col = window.y + 1, (@left + window.x + 1)
         n, m     = buffers.index(buffer) + 1, buffers.size
         syntax   = syntax ? syntax.name : 'Plain'
@@ -478,7 +480,7 @@ module VER
 
         # objects = ObjectSpace.each_object{|o| }
 
-        @status_line % [file, modified, syntax, mode, row + top, col, n, m]
+        @status_line % [file, eol, modified, syntax, mode, row + top, col, n, m]
       rescue ::Exception => ex
         VER.error(ex)
         ''

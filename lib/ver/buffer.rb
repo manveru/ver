@@ -1,6 +1,6 @@
 module VER
   class Buffer
-    attr_accessor :name, :cursor
+    attr_accessor :name, :cursor, :eol
     attr_writer :cursor
 
     def initialize(name)
@@ -141,6 +141,17 @@ module VER
 
     def to_s
       self[0..-1].dup
+    end
+
+    def eol_name
+      case eol
+      when "\n"
+        'unix'
+      when "\r\n"
+        'dos'
+      when "\r"
+        'mac'
+      end
     end
   end
 end

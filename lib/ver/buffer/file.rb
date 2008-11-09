@@ -23,6 +23,11 @@ module VER
       @modified = false
     end
 
+    # TODO: make this bulletproof
+    def guess_eol
+      @eol = @data.scan(/\n|\r\n|\r/).first
+    end
+
     def initialize_file(file_or_filename)
       case file_or_filename
       when File
@@ -32,6 +37,10 @@ module VER
       else
         raise ArgumentError, "Not a File or String: %p" % file_or_filename
       end
+
+      guess_eol
+
+      @data.gsub!(/#{@eol}/, "\n") unless @eol == "\n"
     end
 
     # TODO: should it close?
@@ -53,7 +62,7 @@ module VER
 
     def save_file(filename = filename)
       File.open(filename, 'w+') do |file|
-        file.puts @data
+        file.puts @data.gsub("\n", @eol)
       end
 
       @scratch = @modified = @dirty = false
