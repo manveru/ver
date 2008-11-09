@@ -51,7 +51,7 @@ module VER
 
   module_function
 
-  def start(*args)
+  def start(context = {})
     @last_error = nil
     start_config
 
@@ -59,7 +59,7 @@ module VER
 
     start_ncurses
 
-    catch(:close){ setup(*args) }
+    catch(:close){ setup(context) }
   rescue ::Exception => ex
     error(ex)
   ensure
@@ -75,20 +75,42 @@ module VER
     @stop
   end
 
-  def setup(*args)
+  def setup(context)
     @ask    = View::AskSmall.new(:ask)
     @info   = View::Info.new(:info)
     @choice = View::AskChoice.new(:ask_choice)
 
     @file = View::File.new(:file)
-    if args.each{|a| @file.buffer = a }.empty?
-      @file.buffer = File.join(Config[:blueprint_dir], 'welcome')
-    end
+    setup_context(context)
 
-    VER.info "VER #{VERSION} -- F1 for help -- F12 to configure -- C-q to quit"
+    VER.info "VER #{VERSION} -- C-q to quit"
 
     @info.open
     @file.open
+  end
+
+  def setup_context(context = {})
+    files, temp = context.values_at(:files, :temp)
+
+    if files
+      if files.empty?
+        @file.buffer = File.join(Config[:blueprint_dir], 'welcome')
+      else
+        files.each do |hash|
+          @file.buffer = hash[:file]
+
+          if line = hash[:line]
+            @file.methods.goto_line(line)
+          elsif regex = hash[:regex]
+            @file.search = regex
+            @file.buffer.dirty = true
+            @file.methods.search_next
+          end
+        end
+      end
+    elsif temp
+      @file.buffer = MemoryBuffer.new(:file, temp)
+    end
   end
 
   def clipboard
