@@ -65,6 +65,11 @@ VER.let :control => [:general, :control_movement] do
     map(key){ goto_line(@args.join.to_i) }
   end
 
+  0.upto(2) do |n|
+    key = [/^[1-9]$/] + ([/^\d$/] * n) << '%'
+    map(key){ goto_percent(@args.join.to_i) }
+  end
+
   # TODO: should take other mode as list of mappings after prefix key
   movement = /^(up|down|left|right|[0wbWBhjkl$])$/
   map(["d", movement]){ cursor.virtual{ press(@arg); cursor.delete_range } }

@@ -27,6 +27,14 @@ module VER
           cursor.pos = range.begin
         end
 
+        # same as N% in VIM (0 is beginning of line already)
+        def goto_percent(number)
+          number = [0, number.to_i, 100].sort[1]
+          ln = (number * buffer.line_count + 99) / 100
+          goto_line(ln)
+          recenter_view
+        end
+
         SAVE_AS_PROC = lambda{|got|
           [true, [got]]
         }
