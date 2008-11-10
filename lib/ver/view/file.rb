@@ -393,10 +393,6 @@ module VER
           VER.stop
         end
 
-        def close_buffer_ask
-          VER.ask('Close')
-        end
-
         def jump_right(regex)
           buffer[cursor.pos..-1] =~ regex
           unless match = $~
