@@ -236,6 +236,30 @@ module VER
           end
         end
 
+        FILTER_SELECTION_ASK_PROC = lambda{|got|
+          [true, [got]]
+        }
+
+        def filter_selection_ask
+          VER.ask(
+            'Filter selection through external program: ',
+            FILTER_SELECTION_ASK_PROC
+          ) do |cmd|
+            operate_on_selection do |selecting|
+              range = selection.to_range
+              range = (range.begin..-1) if range.end >= (buffer.size - 1)
+              Log.debug :range => range, :buffer_size => buffer.size
+
+              Open3.popen3(cmd){|stdin, stdout, stderr|
+                stdin.print(buffer[range])
+                stdin.close
+                output = stdout.read
+                buffer[range] = output
+              }
+            end
+          end
+        end
+
         # Selection Copy
 
         def copy

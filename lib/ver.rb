@@ -2,6 +2,7 @@ require 'abbrev'
 require 'fileutils'
 require 'logger'
 require 'pp'
+require 'open3'
 require 'strscan'
 require 'tmpdir'
 

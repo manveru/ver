@@ -60,6 +60,8 @@ Currently working:
     * Indent
       * [>] : Indent selection
       * [<] : Unindent selection
+    * Filter
+      * [!] : Filter selection through external program
   * Syntax highlighting (for .rb and Rakefile only for now)
     - This has been disabled due to speed problems, working on it.
   * Searching

@@ -129,6 +129,7 @@ VER.let :selection => :control do
   map('~'){ toggle_selection_case }
   map('>'){ indent_selection }
   map('<'){ unindent_selection }
+  map('!'){ filter_selection_ask }
 end
 
 VER.let :insert => :general do
