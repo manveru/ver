@@ -409,7 +409,7 @@ module VER
       DEFAULT = {
         :mode        => :control,
         :interactive => true,
-        :status_line => "%s (%s) [%s] (%s - %s)  -  %d,%d  -  Buffer %d/%d",
+        :status_line => "%s (%s) [%s] (%s - %s)  -  %d,%d  -  Buffer %d/%d  -  %.0f%%"
       }
 
       attr_accessor :status_line, :redraw, :highlights
@@ -479,16 +479,17 @@ module VER
         end
 
         eol ||= 'unix'
-        row, col = window.y + 1, (@left + window.x + 1)
+        row, col = (window.y + 1 + top), (@left + window.x + 1)
         n, m     = buffers.index(buffer) + 1, buffers.size
         syntax   = syntax ? syntax.name : 'Plain'
+        percent  = (100.0 / buffer.line_count) * row
 
         mode = "#{self.mode}"
         mode = "#{mode} - #{selection[:selecting]}" if selection
 
         # objects = ObjectSpace.each_object{|o| }
 
-        @status_line % [file, eol, modified, syntax, mode, row + top, col, n, m]
+        @status_line % [ file, eol, modified, syntax, mode, row, col, n, m, percent ]
       rescue ::Exception => ex
         VER.error(ex)
         ''
