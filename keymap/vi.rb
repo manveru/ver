@@ -31,10 +31,14 @@ VER.let :control_movement => :general_movement do
   map('W'){ jump_right(/\S+/) }
   map('B'){ jump_left(/\s+/)  }
 
-  macro('h', 'left')
-  macro('j', 'down')
-  macro('k', 'up')
-  macro('l', 'right')
+  macro('h',    'left')
+  macro('j',    'down')
+  macro('k',    'up')
+  macro('l',    'right')
+  macro('home', '0')
+  macro('end',  '$')
+  macro('C-right', 'W')
+  macro('C-left', 'B')
 end
 
 VER.let :control => [:general, :control_movement] do
