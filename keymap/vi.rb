@@ -31,14 +31,22 @@ VER.let :control_movement => :general_movement do
   map('W'){ jump_right(/\S+/) }
   map('B'){ jump_left(/\s+/)  }
 
-  macro('h',    'left')
-  macro('j',    'down')
-  macro('k',    'up')
-  macro('l',    'right')
-  macro('home', '0')
-  macro('end',  '$')
+  macro('h',       'left')
+  macro('j',       'down')
+  macro('k',       'up')
+  macro('l',       'right')
+  macro('home',    '0')
+  macro('end',     '$')
   macro('C-right', 'W')
-  macro('C-left', 'B')
+  macro('C-left',  'B')
+
+  # optimized countmaps for basic movement
+  count_map(7, /^up|j$/){ @count.times{ cursor.down } }
+  count_map(7, /^down|k$/){ @count.times{ cursor.up } }
+  count_map(7, /^left|h$/){ @count.times{ cursor.left } }
+  count_map(7, /^right|l$/){ @count.times{ cursor.right } }
+
+  count_map(7, /^[wbWB]$/){ press(@trigger, @count) }
 end
 
 VER.let :control => [:general, :control_movement] do
@@ -60,20 +68,14 @@ VER.let :control => [:general, :control_movement] do
     cursor.pos = buffer.size - 1
     cursor.beginning_of_line
   }
-  0.upto(7) do |n|
-    key = [/^[1-9]$/] + ([/^\d$/] * n) << 'g'
-    map(key){ goto_line(@args.join.to_i) }
-  end
-
-  0.upto(2) do |n|
-    key = [/^[1-9]$/] + ([/^\d$/] * n) << '%'
-    map(key){ goto_percent(@args.join.to_i) }
-  end
 
   # TODO: should take other mode as list of mappings after prefix key
   movement = /^(up|down|left|right|[0wbWBhjkl$])$/
   map(["d", movement]){ cursor.virtual{ press(@arg); cursor.delete_range } }
   map(["c", movement]){ cursor.virtual{ press(@arg); cursor.delete_range }; press('i') }
+
+  count_map(7, 'g'){ goto_line(@count) }
+  count_map(2, '%'){ goto_percent(@count) }
 
   map(/^(x|dc)$/){ cursor.insert_delete }
   map("X"){ cursor.insert_backspace }

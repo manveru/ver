@@ -95,6 +95,17 @@ module VER
       map(key.split(/ +/)){|*m| virtual{|kh| expression.each{|k| kh.press(k) }}}
     end
 
+    def count_map(count, trigger, &block)
+      0.upto(count) do |n|
+        key = [/^[1-9]$/] + ([/^\d$/] * n) << trigger
+        map(key){
+          @trigger = @args.last
+          @count = @args.join.to_i
+          instance_eval(&block)
+        }
+      end
+    end
+
     def after(*keys, &block)
       add_aspect(:after, *keys, &block)
     end
@@ -156,7 +167,7 @@ module VER
       @keys = []
     end
 
-    def press(key)
+    def press(key, times = 1)
       keys << key
       @mode = Mode::LIST[view.mode]
 
@@ -170,7 +181,7 @@ module VER
 
       if first.ready
         keys.clear
-        execute_key(first)
+        times.times{ execute_key(first) }
       else
         VER.info("Waiting for completion of %p" % first.expression)
       end
