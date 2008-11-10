@@ -34,7 +34,7 @@ module VER
       @stack << char
 
       if @stack.first == ESC
-        MOD_KEYS[@stack] || SPECIAL_KEYS[@stack]
+        SPECIAL_KEYS[@stack] || MOD_KEYS[@stack]
       else
         NCURSES_KEYS[char] || CONTROL_KEYS[char] || PRINTABLE_KEYS[char]
       end
@@ -56,6 +56,10 @@ module VER
       [27, 79, 81]                  => 'F2',
       [27, 79, 82]                  => 'F3',
       [27, 79, 83]                  => 'F4',
+      [27, 79, 97]                  => 'C-up',
+      [27, 79, 98]                  => 'C-down',
+      [27, 79, 99]                  => 'C-right',
+      [27, 79, 100]                 => 'C-left',
       [27, 91, 49, 126]             => 'end',
       [27, 91, 49, 126]             => 'home',
       [27, 91, 49, 49, 126]         => 'F1',
@@ -131,10 +135,15 @@ module VER
     PRINTABLE_KEYS = {}
     MOD_KEYS = {}
 
+    # don't map esc
+    # M-O is predecessor of M-left and M-right
+    MOD_EXCLUDE = ['[', 'O']
+
     PRINTABLE.each do |key|
       code = key.unpack('c')[0] # using unpack to be compatible with 1.9
       PRINTABLE_KEYS[code] = key
-      MOD_KEYS[[ESC, code]] = "M-#{key}" unless key == '[' # don't map esc
+      next if MOD_EXCLUDE.include?(key)
+      MOD_KEYS[[ESC, code]] = "M-#{key}"
     end
 
     NCURSES_KEYS = {}
