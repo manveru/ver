@@ -61,7 +61,7 @@ module VER
       ensure
         window.move 1, (cursor.pos + @prompt.size + 2)
         window.color = Color[:white]
-        window.box ?|, ?-
+        window.box 124, 45
       end
 
       def pick
