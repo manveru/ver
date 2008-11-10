@@ -130,6 +130,10 @@ module VER
       # 27  => 'esc',
       32  => 'space',
       127 => 'backspace',
+      514 => 'C-down',
+      516 => 'C-left',
+      518 => 'C-right',
+      521 => 'C-up',
     }
 
     PRINTABLE_KEYS = {}
