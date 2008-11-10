@@ -27,7 +27,11 @@ module VER
     def guess_eol
       count = Hash.new(0)
       @data.scan(/\n|\r\n|\r/){|e| count[e] += 1 }
-      @eol = count.invert.max[1]
+      if max = count.invert.max
+        @eol = max[1]
+      else
+        @eol = "\n"
+      end
     end
 
     def initialize_file(file_or_filename)
