@@ -139,8 +139,12 @@ module VER
     end
     alias close clear
 
+    def scan(regex, &block)
+      @data.scan(regex, &block)
+    end
+
     def to_s
-      self[0..-1].dup
+      self[0..-1]
     end
 
     def eol_name

@@ -47,6 +47,7 @@ module VER
       guess_eol
 
       @data.gsub!(/#{@eol}/, "\n") unless @eol == "\n"
+#       @data.gsub!(/\t/, '  ')
     end
 
     # TODO: should it close?
