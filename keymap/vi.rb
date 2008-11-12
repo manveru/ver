@@ -41,8 +41,8 @@ VER.let :control_movement => :general_movement do
   macro('C-left',  'B')
 
   # optimized countmaps for basic movement
-  count_map(7, /^up|j$/){ @count.times{ cursor.down } }
-  count_map(7, /^down|k$/){ @count.times{ cursor.up } }
+  count_map(7, /^down|j$/){ @count.times{ cursor.down } }
+  count_map(7, /^up|k$/){ @count.times{ cursor.up } }
   count_map(7, /^left|h$/){ @count.times{ cursor.left } }
   count_map(7, /^right|l$/){ @count.times{ cursor.right } }
 
@@ -112,7 +112,7 @@ VER.let :control => [:general, :control_movement] do
   macro('D', 'd $')
   macro('C', 'd $ i')
   macro('y y', 'Y')
-  macro('d d', '0 d $')
+  macro('d d', '0 d $ d l')
   macro('g g', '1 g')
 end
 
@@ -139,13 +139,21 @@ VER.let :insert => :general do
   map('return'){             cursor.insert_newline }
   map('space'){              cursor.insert(' ') }
   map(/^(C-c|C-q|esc)$/){    view.mode = :control }
+
+  # should be smart and stick to last chosen completion
+  map('tab'){ complete(:word) }
+  map(['C-x', 'C-w']){ complete(:word) }
+  map(['C-x', 'C-l']){ complete(:line) }
+  map(['C-x', 'C-o']){ complete(:omni) }
+  map(['C-x', 'C-f']){ complete(:file) }
+  map(['C-x', 'C-s']){ complete(:spell) }
 end
 
 VER.let :ask => [:insert, :general_movement] do
-  map('return'){              pick }
-  map('tab'){                 view.update_choices; view.try_completion }
-  map('up'){                  history_backward }
-  map('down'){                history_forward }
+  map('return'){ pick }
+  map('tab'){ view.update_choices; view.try_completion }
+  map('up'){ history_backward }
+  map('down'){ history_forward }
   map(/^(C-g|C-q|C-c|esc)$/){ view.close; VER::View[:file].open }
 end
 
