@@ -56,7 +56,13 @@ module VER
     end
 
     def fetch(name)
-      NAME_COLOR[name.to_s.downcase] or raise("No color for: %p" % name)
+      if found = NAME_COLOR[name.to_s.downcase]
+        return found
+      elsif name.respond_to?(:to_i)
+        return name.to_i
+      end
+
+      raise("No color for: %p" % name)
     end
   end
 end
