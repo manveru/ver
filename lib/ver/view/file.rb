@@ -127,7 +127,7 @@ module VER
 
         def execute_ask_context(got)
           regex = Regexp.escape(got)
-          choices = methods.grep(/#{regex}/).sort
+          choices = self.class.methods.grep(/#{regex}/).sort
 
           return true, choices
         end
