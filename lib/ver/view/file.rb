@@ -600,7 +600,7 @@ module VER
         eol ||= 'unix'
         row, col = (window.y + 1 + top), (@left + window.x + 1)
         n, m     = buffers.index(buffer) + 1, buffers.size
-        syntax   = self.syntax.name
+        syntax   = self.syntax ? self.syntax.name : 'Plain'
         percent  = (100.0 / buffer.line_count) * row
 
         mode = "#{self.mode}"
