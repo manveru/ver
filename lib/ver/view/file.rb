@@ -455,7 +455,7 @@ module VER
           draw_visible
           draw_padding
 
-#           highlight_syntax
+          # highlight_syntax
           refresh_search_highlight if search and buffer.dirty?
           highlight_search if search
           highlight_selection if selection
@@ -501,7 +501,7 @@ module VER
         eol ||= 'unix'
         row, col = (window.y + 1 + top), (@left + window.x + 1)
         n, m     = buffers.index(buffer) + 1, buffers.size
-        syntax   = syntax ? syntax.name : 'Plain'
+        syntax   = self.syntax.name
         percent  = (100.0 / buffer.line_count) * row
 
         mode = "#{self.mode}"
@@ -600,19 +600,17 @@ module VER
       def highlight_syntax
         return unless syntax
 
-        visible = buffer.line_range(top..bottom)
-        from, to = visible.begin, visible.end
+        center = cursor.pos
 
-        if syntax.matches.empty? or buffer.dirty?
-          Log.debug "Start parsing syntax"
+        if @last_range and @last_range.include?(center) and not buffer.dirty?
+          visible = buffer.line_range(top..bottom)
+          from, to = visible.begin, visible.end
+        else
+          offset = (window.height * window.width) / 2
+          from, to = (center - offset), (center + offset)
+          @last_range = ([0, from].max..[buffer.size, to].min)
 
-          syntax.parse(buffer, (0..buffer.size))
-
-          cursor_count = syntax.matches.size
-          memory_count = Marshal.dump(syntax).size / 1000.0
-          Log.debug "Syntax parsed: #{cursor_count} cursors, #{memory_count} KiB"
-
-          GC.start
+          syntax.parse(buffer, @last_range)
         end
 
         syntax.matches.each do |match|
@@ -625,10 +623,6 @@ module VER
         end
       end
 
-      # TODO:
-      #   * abstract the low level code a bit...
-      #   * at the moment it only takes into account starting x and ending x, it
-      #     should also respect the width of each line
       def highlight(cursor, color = cursor.color)
         window = self.window # reduce lookups
 

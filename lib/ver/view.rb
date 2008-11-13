@@ -143,13 +143,11 @@ module VER
           @buffer = FileBuffer.new(@name, buffer)
           buffers << @buffer
         end
-      when IO
-        raise(ArgumentError, "Not a buffer: %p" % buffer)
       else
         raise(ArgumentError, "Not a buffer: %p" % buffer)
       end
 
-      self.syntax = Syntax.find(self.buffer.filename)
+      self.syntax = Syntax.from_filename(self.buffer.filename)
 
       @redraw = true
       draw
