@@ -102,10 +102,10 @@ VER.let :control => [:general, :control_movement] do
   map('N'){ search_previous }
 
   map('i'){ view.mode = :insert }
+  map('I'){ cursor.beginning_of_line; view.mode = :insert }
 
   macro('a', 'l i')
   macro('A', '$ i')
-  macro('I', '0 i')
   macro('o', "$ i return")
   macro('O', "0 i return up")
   macro('D', 'd $')
