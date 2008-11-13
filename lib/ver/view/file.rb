@@ -2,6 +2,41 @@ module VER
   class View
     class File < View
       module Methods
+        # Completion
+
+        def complete(what)
+          VER.complete.open("Complete #{what}", "complete_#{what}", view)
+        end
+
+        def complete_line
+          chunk = nil
+          cursor.virtual do
+            cursor.mark = cursor.bol
+            cursor.pos = (cursor.eol - 1)
+            chunk = cursor.to_s
+          end
+
+          regex = /^.*#{Regexp.escape(chunk)}.*$/
+          lines = []
+          buffer.scan(regex) do |line|
+            lines << line.gsub(/\n/, '')
+          end
+
+          return chunk, lines
+        end
+
+        def complete_word
+          chunk = nil
+          cursor.virtual do
+            cursor.mark = cursor.bol
+            chunk = cursor.to_s[/\w+$/] || ''
+          end
+
+          regex = /#{Regexp.escape(chunk)}\w*/
+          words = ([chunk] + buffer.to_s.scan(regex).sort).uniq
+
+          return chunk, words
+        end
 
         def toggle_case
           buffer[cursor.pos, 1] = buffer[cursor.pos, 1].tr('A-Za-z', 'a-zA-Z')

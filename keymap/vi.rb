@@ -173,3 +173,12 @@ end
 VER.let :ask_file => :ask_large
 VER.let :ask_fuzzy_file => :ask_large
 VER.let :ask_grep => :ask_large
+
+VER.let :complete => :ask_large do
+  map(/^(C-c|C-q|esc)$/){ view.close; VER::View[:file].open }
+
+  map(/^C-(p|k)$/){ view.select_above }
+  map(/^C-(n|j)$/){ view.select_below }
+
+  after(/^(#{chars_regex})$/, 'backspace', 'space', 'dc'){ view.update_choices }
+end

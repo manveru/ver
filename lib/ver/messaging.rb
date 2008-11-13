@@ -27,6 +27,8 @@ module VER
     @info.open
   end
 
+  def complete; @complete end
+
   def warn(message)
     # info(message)
     Log.warn(message)

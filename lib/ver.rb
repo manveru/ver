@@ -49,6 +49,7 @@ module VER
   require 'ver/view/ask/fuzzy_file'
   require 'ver/view/ask/grep'
   require 'ver/view/ask/choice'
+  require 'ver/view/ask/complete'
 
   module_function
 
@@ -80,6 +81,7 @@ module VER
     @ask    = View::AskSmall.new(:ask)
     @info   = View::Info.new(:info)
     @choice = View::AskChoice.new(:ask_choice)
+    @complete = View::Complete.new(:complete)
 
     @file = View::File.new(:file)
     setup_context(context)
