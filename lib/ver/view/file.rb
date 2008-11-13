@@ -4,8 +4,9 @@ module VER
       module Methods
         # Completion
 
-        def complete(what)
-          VER.complete.open("Complete #{what}", "complete_#{what}", view)
+        def complete(what = nil)
+          what ||= VER.complete.what || :word
+          VER.complete.open(what, view)
         end
 
         def complete_line
@@ -32,10 +33,73 @@ module VER
             chunk = cursor.to_s[/\w+$/] || ''
           end
 
-          regex = /#{Regexp.escape(chunk)}\w*/
-          words = ([chunk] + buffer.to_s.scan(regex).sort).uniq
+          regex = /\b#{Regexp.escape(chunk)}\w*/
+          words = buffer.to_s.scan(regex).uniq
 
           return chunk, words
+        end
+
+        def complete_omni
+        end
+
+        def complete_file
+          chunk = nil
+          cursor.virtual do
+            cursor.mark = cursor.bol
+            chunk = cursor.to_s[/\S+$/] || ''
+          end
+
+          glob = "#{chunk}*"
+          words = Dir[glob]
+          words.map! do |word|
+            if ::File.directory?(word)
+              "#{word}/".squeeze('/')
+            else
+              word
+            end
+          end
+
+          return chunk, words
+        end
+
+        def complete_spell
+          word, range = cursor.current_word
+
+          spelling = aspell_word(word)
+          spelling.map! do |spell|
+            { :string => spell, :range => range }
+          end
+
+          return word, spelling, skip = true
+        end
+
+        def aspell_word(word)
+          if result = aspell(word)[word.strip]
+            result[:suggestions]
+          else
+            [word]
+          end
+        end
+
+        ASPELL_PARSE = /^& (.*?) (\d+) (\d+): (.*)$/
+
+        def aspell(string)
+          results = {}
+
+          Open3.popen3("aspell pipe"){|stdin, stdout, stderr|
+            stdin.print("^#{string}")
+            stdin.close
+            result = stdout.read
+            result.scan(ASPELL_PARSE) do |original, count, offset, suggestions|
+              results[original] = {
+                :count => count.to_i,
+                :offset => offset.to_i,
+                :suggestions => suggestions.split(', '),
+              }
+            end
+          }
+
+          return results
         end
 
         def toggle_case

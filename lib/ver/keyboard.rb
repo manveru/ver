@@ -45,6 +45,7 @@ module VER
     ASCII     = (0..255).map{|c| c.chr }
     CONTROL   = ASCII.grep(/[[:cntrl:]]/)
     PRINTABLE = ASCII.grep(/[[:print:]]/)
+    PRINTABLE_REGEX = Regexp.union(*PRINTABLE)
 
     SPECIAL_KEYS = {
       [27, 79, 50, 81]              => 'F14',

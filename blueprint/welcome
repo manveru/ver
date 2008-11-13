@@ -89,6 +89,12 @@ Currently working:
       * [C-f] or [npage] : One page down
       * [C-b] or [ppage] : One page up
       * [0 g], [50 g], [100 g], ... : Jump to given line
+  * Completion
+    * [tab]     : Last used completion, if first time it defaults to word completion
+    * [C-x C-w] : Word completion
+    * [C-x C-l] : Full line completion
+    * [C-x C-f] : Filename completion
+    * [C-x C-s] : spelling completion (needs aspell)
 
 
 How to run VER:

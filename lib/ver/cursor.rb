@@ -212,5 +212,28 @@ module VER
       normalize{|range| buffer.index(pattern, range) }
     end
     alias find index
+
+    WORD = /[A-Za-z0-9'-]+/
+    LEFT_CHUNK = /#{WORD}\z/
+    RIGHT_CHUNK = /\A#{WORD}/
+
+    # FIXME:
+    #   * use index/rindex?
+    #   * assume default range, all the buffer is way too large
+    def current_word
+      left, right = buffer[0...pos], buffer[pos..-1]
+      left_chunk, right_chunk = left[LEFT_CHUNK], right[RIGHT_CHUNK]
+
+      if left_chunk and right_chunk
+        word = left_chunk + right_chunk
+        range = (pos - left_chunk.size)...(pos + right_chunk.size)
+      elsif word = left_chunk
+        range = (pos - word.size)...pos
+      elsif word = right_chunk
+        range = pos...(pos + word.size)
+      end
+
+      return word, range if word
+    end
   end
 end

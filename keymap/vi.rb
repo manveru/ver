@@ -1,5 +1,4 @@
-chars = (0..255).map{|c| c.chr }.grep(/[[:print:]]/)
-chars_regex = Regexp.union(*chars)
+chars_regex = VER::Keyboard::PRINTABLE_REGEX
 
 VER.let :general_movement do
   # Movement
@@ -141,12 +140,7 @@ VER.let :insert => :general do
   map(/^(C-c|C-q|esc)$/){    view.mode = :control }
 
   # should be smart and stick to last chosen completion
-  map('tab'){ complete(:word) }
-  map(['C-x', 'C-w']){ complete(:word) }
-  map(['C-x', 'C-l']){ complete(:line) }
-  map(['C-x', 'C-o']){ complete(:omni) }
-  map(['C-x', 'C-f']){ complete(:file) }
-  map(['C-x', 'C-s']){ complete(:spell) }
+  map('tab'){ complete }
 end
 
 VER.let :ask => [:insert, :general_movement] do
@@ -175,10 +169,30 @@ VER.let :ask_fuzzy_file => :ask_large
 VER.let :ask_grep => :ask_large
 
 VER.let :complete => :ask_large do
-  map(/^(C-c|C-q|esc)$/){ view.close; VER::View[:file].open }
+  map(/^C-(p|k)$/){ select_above }
+  map(/^C-(n|j)$/){ select_below }
+  map('tab'){ select_below }
 
-  map(/^C-(p|k)$/){ view.select_above }
-  map(/^C-(n|j)$/){ view.select_below }
+  map(/^(C-g|C-q|C-c|esc)$/){
+    view.close
+    VER::View[:file].mode = :insert
+    VER::View[:file].open
+  }
+end
 
-  after(/^(#{chars_regex})$/, 'backspace', 'space', 'dc'){ view.update_choices }
+completions = {
+  'C-w' => :word,
+  'C-l' => :line,
+  'C-o' => :omni,
+  'C-f' => :file,
+  'C-s' => :spell,
+}
+
+completions.each do |key, value|
+  VER.let(:insert){
+    map(['C-x', key]){ complete(value) }
+  }
+  VER.let("complete_#{value}".to_sym => :complete){
+    map(['C-x', key]){ select_below }
+  }
 end
