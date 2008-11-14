@@ -28,9 +28,10 @@ module VER
 
         def complete_word
           word, range = cursor.current_word
+          word ||= ''
 
           regex = /\b#{Regexp.escape(word)}\w*/
-          words = buffer.to_s.scan(regex).uniq
+          words = buffer.to_s.scan(regex).uniq.grep(/\S/)
 
           return word, words
         end
