@@ -46,11 +46,11 @@ module VER
         @what, @view = what, view
         @prompt, @completer = "Complete #{what}:", "complete_#{what}"
         @mode = @completer.to_sym
-        @pick = nil
 
         update_choices
-        self.input = @chunk
-        cursor.pos = @view.cursor.to_x
+        @pick = @choices.first
+        self.input = @pick ? @pick.dup[:string] : ''
+        cursor.pos = self.input.size
 
         super()
 
@@ -126,12 +126,12 @@ module VER
 
       def draw_choice(choice)
         window.color = Color[:white]
-        window.puts " #{choice[:string]}"
+        window.puts "  #{choice[:string]}"
       end
 
       def draw_selected_choice(choice)
         window.color = Color[:blue]
-        window.puts " #{choice[:string]}"
+        window.puts "  #{choice[:string]}"
       end
     end
   end
