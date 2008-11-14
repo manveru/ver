@@ -159,24 +159,34 @@ module VER
       insert("\n")
     end
 
-    def insert_backspace
+    def delete_left
       return if pos == 0 or pos - 1 < 0
 
       self.pos -= 1
+      deleted = buffer[pos, 1]
       buffer[pos, 1] = ''
+      return deleted
     end
 
-    def insert_delete
+    def delete_right
+      deleted = buffer[pos, 1]
       buffer[pos, 1] = ''
+      return deleted
     end
 
     def replace(string)
+      deleted = buffer[pos, string.size]
       buffer[pos, string.size] = string
+      return deleted
     end
 
     def delete_range
       range = to_range
-      buffer[range.begin...range.end] = ''
+      range = (range.begin...range.end)
+
+      deleted = buffer[range]
+      buffer[range] = ''
+      return deleted
     end
 
     def virtual

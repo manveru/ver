@@ -25,10 +25,10 @@ VER.let :control_movement => :general_movement do
   map('0'){ cursor.beginning_of_line }
   map('$'){ cursor.end_of_line }
 
-  map('w'){ jump_right(/[\w.-]+/)  }
-  map('b'){ jump_left(/[^\w.-]+/)   }
+  map('w'){ jump_right(/[\w-]+/) }
+  map('b'){ jump_left(/[^\w-]+/) }
   map('W'){ jump_right(/\S+/) }
-  map('B'){ jump_left(/\s+/)  }
+  map('B'){ jump_left(/\s+/) }
 
   macro('h',       'left')
   macro('j',       'down')
@@ -70,17 +70,17 @@ VER.let :control => [:general, :control_movement] do
 
   # TODO: should take other mode as list of mappings after prefix key
   movement = /^(up|down|left|right|[0wbWBhjkl$])$/
-  map(["d", movement]){ cursor.virtual{ press(@arg); cursor.delete_range } }
-  map(["c", movement]){ cursor.virtual{ press(@arg); cursor.delete_range }; press('i') }
+  map(['d', movement]){ cursor.virtual{ press(@arg); delete_range } }
+  map(['c', movement]){ cursor.virtual{ press(@arg); delete_range }; press('i') }
 
   count_map(7, 'g'){ goto_line(@count) }
   count_map(2, '%'){ goto_percent(@count) }
 
-  map(/^(x|dc)$/){ cursor.insert_delete }
-  map("X"){ cursor.insert_backspace }
+  map(/^(x|dc)$/){ delete_right }
+  map('X'){ delete_left }
 
-  map(["r", /^[[:print:]]$/]){ cursor.replace(@arg) }
-  map(["r", "return"]){ cursor.replace("\n") }
+  map(['r', /^[[:print:]]$/]){ cursor.replace(@arg) }
+  map(['r', 'return']){ cursor.replace("\n") }
 
   map('~'){ toggle_case }
 
@@ -106,8 +106,8 @@ VER.let :control => [:general, :control_movement] do
 
   macro('a', 'l i')
   macro('A', '$ i')
-  macro('o', "$ i return")
-  macro('O', "0 i return up")
+  macro('o', '$ i return')
+  macro('O', '0 i return up')
   macro('D', 'd $')
   macro('C', 'd $ i')
   macro('y y', 'Y')
@@ -133,8 +133,8 @@ end
 
 VER.let :insert => :general do
   map(/^(#{chars_regex})$/){ cursor.insert(@arg) }
-  map('backspace'){          cursor.insert_backspace }
-  map('dc'){                 cursor.insert_delete }
+  map('backspace'){          delete_left }
+  map('dc'){                 delete_right }
   map('return'){             cursor.insert_newline }
   map('space'){              cursor.insert(' ') }
   map(/^(C-c|C-q|esc)$/){    view.mode = :control }
