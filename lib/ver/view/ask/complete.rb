@@ -26,10 +26,7 @@ module VER
       end
 
       LAYOUT = {
-        :width => lambda{|w| w },
-        :height => 20,
-        :top => 0,
-        :left => 0
+        :width => 0, :height => 0, :top => 0, :left => 0
       }
 
       DEFAULT = {
@@ -47,16 +44,13 @@ module VER
 
       def open(what, view)
         @what, @view = what, view
-        @prompt, @completer = "Complete #{what}: ", "complete_#{what}"
+        @prompt, @completer = "Complete #{what}:", "complete_#{what}"
         @mode = @completer.to_sym
         @pick = nil
 
         update_choices
         self.input = @chunk
         cursor.pos = @view.cursor.to_x
-
-        window.top = (@view.cursor.to_y + 1)
-        window.left = @view.cursor.to_x
 
         super()
 
@@ -74,38 +68,41 @@ module VER
         super
       end
 
-      def draw
+      def cast_box(want_height, want_width)
         win = @view.window
 
+        left = @view.cursor.to_x
+        top  = ((@view.cursor.to_y + 1) - @view.top)
+
+        possible_height = (@view.window.height - top) - 3
+        height = [possible_height, want_height].min + 3
+
+        possible_width = (@view.window.width - left)
+        width = [possible_width, want_width].min
+
+        confines = { :left => left, :width => width, :top => top, :height => height }
+        Log.debug @view.cursor.to_pos => confines
+        return confines
+      end
+
+      def draw
         @choices ||= []
-        want_height = @choices.size
 
         max = @choices.sort_by{|k,v| -k[:string].size }[0]
         max_choice = max ? max[:string].size : 0
+        input_width = @prompt.size + max_choice + 4
 
-        want_width = @prompt.size + max_choice + 4
+        want_width = [input_width, max_choice].max
+        want_height = @choices.size
 
-        max_height = (win.height - @view.cursor.to_y)
-        max_width = win.width - 10
-
-        window.height = [max_height, [want_height, 10].max].min
-        window.width  = [max_width,  [want_width,  20].max].min
-        window.resize
+        confines = cast_box(want_height, want_width)
+        window.resize_with(confines)
 
         super
       end
 
       def pick
         @pick || @choices[1..-1].first
-      end
-
-      def complete_line
-      end
-
-      def complete_word
-      end
-
-      def complete_omni
       end
 
       def update_choices

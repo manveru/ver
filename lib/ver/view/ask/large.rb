@@ -33,35 +33,43 @@ module VER
         buffer[0..-1]
       end
 
-      # TODO: natural scrolling
       def draw
         window.move 1, 1
         window.puts "#{@prompt} #{buffer}"
         window.color = Color[:white]
 
         current = @choices.index(@pick) || 0
-        from = 0
-        to = from + window.height
-        delta = current - (window.height - 6)
+        height = [window.height - 3, 5].max
+        count = @choices.size
 
-        if delta > 1
-          from += delta
-          to += delta
+        top_half = bottom_half = (height / 2)
+        bottom_half -= 1 if height % bottom_half == 0
+
+        if current < top_half
+          range = (0...height)
+        elsif current >= (count - bottom_half)
+          range = ((count - height)..count)
+        else
+          range = ((current - top_half)..(current + bottom_half))
         end
 
-        @choices[from...to].each do |choice|
-          if choice == @pick
-            draw_selected_choice(choice)
-          else
-            draw_choice(choice)
-          end
-        end
+        draw_cons(@choices[range])
 
         draw_padding
       ensure
         window.move 1, (cursor.pos + @prompt.size + 2)
         window.color = Color[:white]
         window.box 124, 45
+      end
+
+      def draw_cons(cons)
+        cons.each do |choice|
+          if choice == @pick
+            draw_selected_choice(choice)
+          else
+            draw_choice(choice)
+          end
+        end
       end
 
       def pick

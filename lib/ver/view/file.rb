@@ -27,16 +27,12 @@ module VER
         end
 
         def complete_word
-          chunk = nil
-          cursor.virtual do
-            cursor.mark = cursor.bol
-            chunk = cursor.to_s[/\w+$/] || ''
-          end
+          word, range = cursor.current_word
 
-          regex = /\b#{Regexp.escape(chunk)}\w*/
+          regex = /\b#{Regexp.escape(word)}\w*/
           words = buffer.to_s.scan(regex).uniq
 
-          return chunk, words
+          return word, words
         end
 
         def complete_omni
