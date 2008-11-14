@@ -173,7 +173,7 @@ VER.let :complete => :ask_large do
   map(/^C-(n|j)$/){ select_below }
   map('tab'){ select_below }
 
-  map(/^(C-g|C-q|C-c|esc)$/){
+  map(/^(C-g|C-q|C-c|esc|left|right)$/){
     view.close
     VER::View[:file].mode = :insert
     VER::View[:file].open
