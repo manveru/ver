@@ -109,6 +109,8 @@ module VER
     def to_y(from_mark = false)
       max = from_mark ? mark : pos
       y = buffer[0...max].count("\n")
+    rescue RangeError
+      return 0
     end
 
     def to_x(from_mark = false)
@@ -132,6 +134,8 @@ module VER
       end
 
       return x
+    rescue RangeError
+      return 0
     end
 
     def to_s
