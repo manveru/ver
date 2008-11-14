@@ -81,7 +81,6 @@ module VER
         width = [possible_width, want_width].min
 
         confines = { :left => left, :width => width, :top => top, :height => height }
-        Log.debug @view.cursor.to_pos => confines
         return confines
       end
 
