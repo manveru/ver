@@ -224,16 +224,16 @@ module VER
     # FIXME:
     #   * use index/rindex?
     #   * assume default range, all the buffer is way too large
-    def current_word
+    def current_word(left_chunk = LEFT_CHUNK, right_chunk = RIGHT_CHUNK)
       left, right = buffer[0...pos], buffer[pos..-1]
-      left_chunk, right_chunk = left[LEFT_CHUNK], right[RIGHT_CHUNK]
+      left_match, right_match = left[left_chunk], right[right_chunk]
 
-      if left_chunk and right_chunk
-        word = left_chunk + right_chunk
-        range = (pos - left_chunk.size)...(pos + right_chunk.size)
-      elsif word = left_chunk
+      if left_match and right_match
+        word = left_match + right_match
+        range = (pos - left_match.size)...(pos + right_match.size)
+      elsif word = left_match
         range = (pos - word.size)...pos
-      elsif word = right_chunk
+      elsif word = right_match
         range = pos...(pos + word.size)
       end
 

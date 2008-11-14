@@ -39,23 +39,23 @@ module VER
         end
 
         def complete_file
-          chunk = nil
-          cursor.virtual do
-            cursor.mark = cursor.bol
-            chunk = cursor.to_s[/\S+$/] || ''
-          end
+          word, range = cursor.current_word(/\S+\z/, /\A\S+/)
+          word, range = '', (cursor.pos...cursor.pos) unless word
 
-          glob = "#{chunk}*"
-          words = Dir[glob]
-          words.map! do |word|
-            if ::File.directory?(word)
-              "#{word}/".squeeze('/')
-            else
-              word
+          glob = "#{word}*"
+          matches = Dir[glob]
+          paths = []
+
+          matches.map! do |match|
+            if ::File.directory?(match)
+              match = "#{match}/".squeeze('/')
             end
+
+            paths << {:string => match, :range => range}
           end
 
-          return chunk, words
+          Log.debug word => paths
+          return word, paths, skip = true
         end
 
         def complete_spell
