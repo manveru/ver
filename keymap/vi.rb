@@ -70,14 +70,14 @@ VER.let :control => [:general, :control_movement] do
 
   # TODO: should take other mode as list of mappings after prefix key
   movement = /^(up|down|left|right|[0wbWBhjkl$])$/
-  map(['d', movement]){ cursor.virtual{ press(@arg); delete_range } }
-  map(['c', movement]){ cursor.virtual{ press(@arg); delete_range }; press('i') }
+  map(['d', movement]){ cursor.virtual{ press(@arg); VER.clipboard << delete_range } }
+  map(['c', movement]){ cursor.virtual{ press(@arg); VER.clipboard << delete_range }; press('i') }
 
   count_map(7, 'g'){ goto_line(@count) }
   count_map(2, '%'){ goto_percent(@count) }
 
-  map(/^(x|dc)$/){ delete_right }
-  map('X'){ delete_left }
+  map(/^(x|dc)$/){ VER.clipboard << delete_right }
+  map('X'){        VER.clipboard << delete_left }
 
   map(['r', /^[[:print:]]$/]){ cursor.replace(@arg) }
   map(['r', 'return']){ cursor.replace("\n") }
@@ -133,10 +133,10 @@ end
 
 VER.let :insert => :general do
   map(/^(#{chars_regex})$/){ cursor.insert(@arg) }
-  map('backspace'){          delete_left }
-  map('dc'){                 delete_right }
-  map('return'){             cursor.insert_newline }
-  map('space'){              cursor.insert(' ') }
+  map('backspace'){ VER.clipboard << cursor.delete_left }
+  map('dc'){        VER.clipboard << cursor.delete_right }
+  map('return'){    cursor.insert_newline }
+  map('space'){     cursor.insert(' ') }
   map(/^(C-c|C-q|esc)$/){    view.mode = :control }
 
   # should be smart and stick to last chosen completion
@@ -144,6 +144,8 @@ VER.let :insert => :general do
 end
 
 VER.let :ask => [:insert, :general_movement] do
+  map('backspace'){ cursor.delete_left }
+  map('dc'){ cursor.delete_right }
   map('return'){ pick }
   map('tab'){ view.update_choices; view.try_completion }
   map('up'){ history_backward }
@@ -152,6 +154,8 @@ VER.let :ask => [:insert, :general_movement] do
 end
 
 VER.let :ask_choice => [:insert, :general_movement] do
+  map('backspace'){ cursor.delete_left }
+  map('dc'){ cursor.delete_right }
   map(/^(C-g|C-q|C-c|esc)$/){ view.close; VER::View[:file].open }
   map('return'){ pick }
 end

@@ -99,18 +99,6 @@ module VER
           return results
         end
 
-        def delete_left
-          VER.clipboard << cursor.delete_left
-        end
-
-        def delete_right
-          VER.clipboard << cursor.delete_right
-        end
-
-        def delete_range
-          VER.clipboard << cursor.delete_range
-        end
-
         def toggle_case
           buffer[cursor.pos, 1] = buffer[cursor.pos, 1].tr('A-Za-z', 'a-zA-Z')
         end
