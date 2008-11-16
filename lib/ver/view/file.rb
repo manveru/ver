@@ -104,13 +104,15 @@ module VER
         end
 
         def indent_line
-          range = (cursor.bol..cursor.eol)
-          buffer[range] = buffer[range].gsub(/^/, '  ')
+          change_indent(cursor.bol..cursor.eol, /^/, '  ')
         end
 
         def unindent_line
-          range = (cursor.bol..cursor.eol)
-          buffer[range] = buffer[range].gsub(/^  /, '')
+          change_indent(cursor.bol..cursor.eol, /^  /, '')
+        end
+
+        def change_indent(range, from, to)
+          buffer[range] = buffer[range].gsub(from, to)
         end
 
         # NOTE:
@@ -262,18 +264,19 @@ module VER
           highlights = view.highlights[:search]
           sorted = highlights.sort_by{|c| [c.pos, c.mark].min }
 
-          if coming = sorted.find{|c| c.pos > cursor.pos and c.mark > cursor.pos }
-            view.cursor.pos = coming.pos
-          end
+          post_search(sorted){|c| c.pos > cursor.pos and c.mark > cursor.pos }
         end
 
         def search_previous
           highlights = view.highlights[:search]
           sorted = highlights.sort_by{|c| -[c.pos, c.mark].min }
 
-          if coming = sorted.find{|c| c.pos < cursor.pos and c.mark < cursor.pos }
-            view.cursor.pos = coming.pos
-          end
+          post_search(sorted){|c| c.pos < cursor.pos and c.mark < cursor.pos }
+        end
+
+        def post_search(sorted, &block)
+          return unless coming = sorted.find(&block)
+          view.cursor.pos = coming.pos
         end
 
         # Selection
@@ -320,15 +323,13 @@ module VER
 
         def indent_selection
           operate_on_selection do |selecting|
-            range = selection.to_range
-            buffer[range] = buffer[range].gsub(/^/, '  ')
+            change_indent(selection.to_range, /^/, '  ')
           end
         end
 
         def unindent_selection
           operate_on_selection do |selecting|
-            range = selection.to_range
-            buffer[range] = buffer[range].gsub(/^  /, '')
+            change_indent(selection.to_range, /^  /, '')
           end
         end
 
