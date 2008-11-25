@@ -206,11 +206,19 @@ module VER
       self
     end
 
-    # fix pos and mark to be within the bounds of the buffer
+    # cast pos and mark into the buffer boundaries
     def rearrange
       min, max = 0, buffer.size
-      self.pos = [min, pos, max].sort[1]
-      self.mark = [min, pos, max].sort[1]
+      @pos  = boundary_sort(min, pos, max)
+      @mark = boundary_sort(min, mark, max)
+    end
+
+    def pos=(n)
+      @pos = n > 0 ? (b = buffer.size; n < b ? n : b) : 0
+    end
+
+    def mark=(n)
+      @mark = n > 0 ? (b = buffer.size; n < b ? n : b) : 0
     end
 
     def normalize
@@ -248,6 +256,13 @@ module VER
       end
 
       return word, range if word
+    end
+
+    # this is a faster version of
+    #   [min, want, max].sort[1]
+    # even when taking in account the method dispatch it's still a speedup
+    def boundary_sort(min, want, max)
+      want > min ? (want < max ? want : max) : min
     end
   end
 end
