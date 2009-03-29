@@ -28,7 +28,7 @@ module VER
 
     attr_reader :top, :left, :buffer, :buffers, :cursors
     attr_accessor :window, :keyhandler, :methods, :selection, :mode, :name,
-      :interactive, :options, :redraw, :syntax
+      :interactive, :options, :redraw, :syntax, :previous_buffer
 
     def initialize(name, options = {})
       @name = name
