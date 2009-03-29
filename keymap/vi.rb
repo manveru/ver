@@ -115,6 +115,8 @@ VER.let :control => [:general, :control_movement] do
   map('i'){ view.mode = :insert }
   map('I'){ cursor.beginning_of_line; view.mode = :insert }
 
+  map('!'){ press('V'); filter_selection_ask }
+
   macro('a', 'l i')
   macro('A', '$ i')
   macro('o', '$ i return')
