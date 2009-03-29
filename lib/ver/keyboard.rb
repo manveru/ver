@@ -135,6 +135,7 @@ module VER
       25  => 'C-y',
       26  => 'C-z', # FIXME: is usually suspend in shell job control
       # 27  => 'esc',
+      30  => 'C-^',
       32  => 'space',
       127 => 'backspace',
       514 => 'C-down',
