@@ -194,7 +194,6 @@ module VER
       self.mark = pos
       yield
       self.pos, self.mark = old.pos, old.mark
-      rearrange
     end
 
     def invert
@@ -206,19 +205,12 @@ module VER
       self
     end
 
-    # cast pos and mark into the buffer boundaries
-    def rearrange
-      min, max = 0, buffer.size
-      @pos  = boundary_sort(min, pos, max)
-      @mark = boundary_sort(min, mark, max)
-    end
-
     def pos=(n)
-      @pos = n > 0 ? (b = buffer.size; n < b ? n : b) : 0
+      super(n > 0 ? (b = buffer.size; n < b ? n : b) : 0)
     end
 
     def mark=(n)
-      @mark = n > 0 ? (b = buffer.size; n < b ? n : b) : 0
+      super(n > 0 ? (b = buffer.size; n < b ? n : b) : 0)
     end
 
     def normalize
