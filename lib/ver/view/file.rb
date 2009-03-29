@@ -410,8 +410,6 @@ module VER
             line.line
           end
 
-          cursor.rearrange
-
           VER.clipboard << chunks
           VER.info("Cut #{chunks.size} chunks")
         end
@@ -421,7 +419,6 @@ module VER
           buffer[selection.to_range] = ''
 
           cursor.pos = selection.mark
-          cursor.rearrange
 
           VER.info("Cut #{selection.delta} characters")
         end

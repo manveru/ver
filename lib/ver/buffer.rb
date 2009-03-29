@@ -133,9 +133,9 @@ module VER
     end
 
     def clear
+      cursor.pos, cursor.mark = 0, 0
       @data = ''
       @pos = @mark = 0
-      cursor.rearrange
     end
     alias close clear
 
