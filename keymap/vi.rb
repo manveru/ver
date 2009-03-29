@@ -70,8 +70,18 @@ VER.let :control => [:general, :control_movement] do
 
   # TODO: should take other mode as list of mappings after prefix key
   movement = /^(up|down|left|right|[0wbWBhjkl$])$/
-  map(['d', movement]){ cursor.virtual{ press(@arg); VER.clipboard << delete_range } }
-  map(['c', movement]){ cursor.virtual{ press(@arg); VER.clipboard << delete_range }; press('i') }
+  map(['d', movement]){
+    cursor.virtual{
+      start_selection
+      press(@arg)
+      VER.clipboard << cut
+    }
+  }
+  map(['c', movement]){
+    press 'd'
+    press @arg
+    press 'i'
+  }
 
   count_map(7, 'g'){ goto_line(@count) }
   count_map(2, '%'){ goto_percent(@count) }
@@ -111,7 +121,7 @@ VER.let :control => [:general, :control_movement] do
   macro('D', 'd $')
   macro('C', 'd $ i')
   macro('y y', 'Y')
-  macro('d d', '0 d $ d l')
+  macro('d d', '0 d $')
   macro('g g', '1 g')
 end
 
