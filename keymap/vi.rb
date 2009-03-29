@@ -18,15 +18,8 @@ VER.let :general => :general_movement do
   map(/^(C-l|resize)$/){ VER::View.resize }
 
   # Switching buffers real fast
-  map(/^M-(\d)$/){
-    view.previous_buffer = view.buffer
-    view.buffer = view.buffers[@arg.to_i - 1]
-  }
-  map('C-^'){
-    if previous_buffer = view.previous_buffer
-      view.buffer, view.previous_buffer = previous_buffer, view.buffer
-    end
-  }
+  map(/^M-(\d)$/){ view.buffer = view.buffers[@arg.to_i - 1] }
+  map('C-^'){ view.switch_to_previous_buffer }
 end
 
 VER.let :control_movement => :general_movement do

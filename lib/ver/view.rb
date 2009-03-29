@@ -124,6 +124,8 @@ module VER
 
     # Strings are assumed to be filenames
     def buffer=(buffer)
+      previous_buffer = self.buffer
+
       case buffer
       when nil, false, true
         return
@@ -147,10 +149,16 @@ module VER
         raise(ArgumentError, "Not a buffer: %p" % buffer)
       end
 
+      self.previous_buffer = previous_buffer
       self.syntax = Syntax.from_filename(self.buffer.filename)
 
       @redraw = true
       draw
+    end
+
+    def switch_to_previous_buffer
+      return unless previous_buffer
+      self.buffer = previous_buffer
     end
 
     def input=(string)
