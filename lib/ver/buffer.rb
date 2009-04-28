@@ -147,15 +147,14 @@ module VER
       self[0..-1]
     end
 
+    EOL_NAMES = {
+      "\n" => 'unix',
+      "\r\n" => 'dos',
+      "\r" => 'mac',
+    }
+
     def eol_name
-      case eol
-      when "\n"
-        'unix'
-      when "\r\n"
-        'dos'
-      when "\r"
-        'mac'
-      end
+      EOL_NAMES[eol]
     end
   end
 end
