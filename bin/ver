@@ -1,8 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
+require 'pathname'
 
-ver = File.expand_path(File.join(File.dirname(__FILE__), '../lib/ver'))
+file = Pathname(__FILE__)
+file = file.readlink if file.symlink?
+
+ver = file.parent.parent + 'lib/ver'
 require ver
 config = VER::Config
 
