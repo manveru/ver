@@ -111,6 +111,7 @@ VER.let :control => [:general, :control_movement] do
   map('/'){ search_ask }
   map('n'){ search_next }
   map('N'){ search_previous }
+  map('*'){ search_word }
 
   map('i'){ view.mode = :insert }
   map('I'){ cursor.beginning_of_line; view.mode = :insert }

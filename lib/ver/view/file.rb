@@ -260,6 +260,15 @@ module VER
           return valid, [got]
         end
 
+        def search_word
+          word, range = cursor.current_word
+          if word
+            view.search = /#{Regexp.escape(word)}/
+            view.refresh_search_highlight
+            search_next
+          end
+        end
+
         def search_next
           highlights = view.highlights[:search]
           sorted = highlights.sort_by{|c| [c.pos, c.mark].min }
@@ -277,6 +286,8 @@ module VER
         def post_search(sorted, &block)
           return unless coming = sorted.find(&block)
           view.cursor.pos = coming.pos
+          view.adjust_pos
+          view.refresh
         end
 
         # Selection
