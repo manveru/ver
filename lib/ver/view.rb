@@ -15,7 +15,7 @@ module VER
     end
 
     def self.refresh
-      List.each{|name, view| view.refresh }
+      LIST.each{|name, view| view.refresh }
       Ncurses.doupdate
     end
 
