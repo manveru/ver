@@ -1,138 +1,164 @@
-require 'abbrev'
-require 'fileutils'
+require 'curses'
 require 'logger'
-require 'pp'
-require 'open3'
-require 'strscan'
-require 'tmpdir'
-
-begin; require 'rubygems'; rescue LoadError; end
-require 'ncurses'
 
 module VER
-  VERSION = "2008.10.30"
+  autoload :Client,   'ver/client'
+  autoload :Frame,    'ver/frame'
+  autoload :Log,      'ver/log'
+  autoload :Protocol, 'ver/protocol'
+  autoload :Server,   'ver/server'
+  autoload :VERSION,  'ver/version'
+  autoload :Keyboard, 'ver/keyboard'
+  autoload :Editor,   'ver/editor'
+end
 
-  DIR = File.expand_path(File.dirname(__FILE__))
-  FatalLog = Logger.new(File.join(Dir.tmpdir, 'ver-fatal.log'), 5, (2 << 20))
+__END__
 
-  $LOAD_PATH.unshift(DIR)
+class Edit
+  def edit(file)
+    start
 
-  require 'vendor/silence'
-  require 'vendor/fuzzy_file_finder'
+    screen = Curses.stdscr
 
-  require 'ver/log'
-  require 'ver/messaging'
-  require 'ver/ncurses'
+    @status = Curses::Window.new(1, 0, screen.maxy - 1, 0)
 
-  require 'ver/buffer'
-  require 'ver/buffer/line'
-  require 'ver/buffer/memory'
-  require 'ver/buffer/file'
+    @window = Curses::Window.new(screen.maxy - 1, 0, 0, 0)
+    @window.scrollok true
+    @window.setscrreg(0, @window.maxy)
+    @window.idlok true
 
-  require 'ver/error'
-  require 'ver/keyboard'
-  require 'ver/keymap'
-  require 'ver/mixer'
-  require 'ver/window'
-  require 'ver/cursor'
-  require 'ver/color'
-  require 'ver/config'
-  require 'ver/clipboard'
-  require 'ver/syntax'
+    @window.setpos(0, 0)
 
-  require 'ver/view'
-  require 'ver/view/file'
-  require 'ver/view/info'
-  require 'ver/view/ask/small'
-  require 'ver/view/ask/large'
-  require 'ver/view/ask/file'
-  require 'ver/view/ask/fuzzy_file'
-  require 'ver/view/ask/grep'
-  require 'ver/view/ask/choice'
-  require 'ver/view/ask/complete'
+    @lines = File.readlines(file)
+    @line = 0
 
-  module_function
+    replace_buffer(@window, @lines)
+    show_status
+    @window.refresh
+    @line = @col = 0
 
-  def start(context = {})
-    @last_error = nil
-    start_config
-
-    Log.info "Initializing VER"
-
-    start_ncurses
-
-    catch(:close){ setup(context) }
-  rescue ::Exception => ex
-    error(ex)
-  ensure
-    stop_ncurses # do this, or the world implodes
-  end
-
-  def stop
-    @stop = true
-    throw(:close)
-  end
-
-  def stopping?
-    @stop
-  end
-
-  def setup(context)
-    @ask    = View::AskSmall.new(:ask)
-    @info   = View::Info.new(:info)
-    @choice = View::AskChoice.new(:ask_choice)
-    @complete = View::Complete.new(:complete)
-
-    @file = View::File.new(:file)
-    setup_context(context)
-
-    VER.info "VER #{VERSION} -- C-q to quit"
-
-    @info.open
-    @file.open
-  end
-
-  def setup_context(context = {})
-    files, temp = context.values_at(:files, :temp)
-
-    if files
-      if files.empty?
-        @file.buffer = File.join(Config[:blueprint_dir], 'welcome')
+    while command = Keyboard.new.receive(@window)
+      case command
+      when 'C-q'
+        exit
+      when 'C-f', 'page-down'
+        page_down
+      when 'C-b', 'page-up'
+        page_up
+      when 'up', 'k'
+        cursor_up
+      when 'down', 'j'
+        cursor_down
+      when 'left', 'h'
+        cursor_left
+      when 'right', 'l'
+        cursor_right
+      when 'resize'
+        # screen.resize(Curses.lines, Curses.cols)
       else
-        files.each do |hash|
-          @file.buffer = hash[:file]
-
-          if line = hash[:line]
-            @file.methods.goto_line(line)
-          elsif regex = hash[:regex]
-            @file.search = regex
-            @file.buffer.dirty = true
-            @file.methods.search_next
-          end
-        end
+        @window.addstr(command.inspect)
       end
-    elsif temp
-      @file.buffer = MemoryBuffer.new(:file, temp)
+
+      show_status
+
+      @window.refresh
     end
+  ensure
+    stop
   end
 
-  def clipboard
-    @clipboard ||= ClipBoard.new
+  def replace_buffer(window, lines)
+    width = window.maxx - window.begx
+
+    (window.begy..(window.maxy - 2)).each do |y|
+      next unless line = lines[y]
+
+      if line.size > width
+        window.addstr(line[0...width])
+      else
+        window.addstr(line)
+      end
+    end
+
+    window.setpos(0, 0)
   end
 
-  def bench(name, &block)
-    Log.debug "let bench: #{name}"
+  def page_down
+    (@window.maxy - 1).times{ break unless cursor_down }
+  end
 
-    require 'ruby-prof'
+  def page_up
+    (@window.maxy - 1).times{ break unless cursor_up }
+  end
 
-    # Profile the code
-    result = RubyProf.profile(&block)
+  def cursor_left
+    return if @col - 1 < 0
+    return unless line = @lines[@line]
 
-    # Print a graph profile to text
-    printer = RubyProf::GraphHtmlPrinter.new(result)
+    @col -= 1
+    @window.setpos(@window.cury, @window.curx - 1)
+  end
 
-    File.open('bench.html', 'w+'){|io| printer.print(io, :min_percent => 0) }
+  def cursor_right
+    return unless line = @lines[@line]
+    return unless line[@col + 1]
 
-    Log.debug "end bench: #{name}"
+    @col += 1
+    @window.setpos(@window.cury, @window.curx + 1)
+  end
+
+  def cursor_up
+    return unless @line > 0
+
+    @line -= 1
+    y, x = @window.cury, @window.curx
+
+    if y <= 0
+      @window.scrl -1
+      @window.setpos(0, 0)
+      @window.addstr(@lines[@line])
+      @window.setpos(0, x)
+    else
+      @window.setpos(y - 1, x)
+    end
+
+    true
+  end
+
+  def cursor_down
+    return unless (@line + 1) < @lines.size
+
+    @line += 1
+    y, x = @window.cury, @window.curx
+
+    if y >= (@window.maxy - 1)
+      @window.scrl 1
+      @window.setpos(y, 0)
+      @window.addstr(@lines[@line].chomp)
+      @window.setpos(y, x)
+    else
+      @window.setpos(y + 1, x)
+    end
+
+    true
+  end
+
+  def show_status
+    line = {
+      :y => @window.cury,
+      :x => @window.curx,
+      :begy => @window.begy,
+      :maxy => @window.maxy,
+      :begx => @window.begx,
+      :maxx => @window.maxx,
+      :line => @line,
+      :lines => @lines.size,
+    }
+    @status.setpos(0, 0)
+    @status.deleteln
+    @status.addstr(line.inspect)
+    @status.refresh
   end
 end
+
+Edit.new.edit(ARGV[0])

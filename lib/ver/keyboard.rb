@@ -1,169 +1,209 @@
 module VER
-  module Keyboard # avoid initialize
-    ESC         = 27 # keycode
-    @polling = false
-
-    module_function
-
-    def focus=(receiver)
-      @stack = []
-      @focus = receiver
-      poll unless @polling
+  class Keyboard < Struct.new(:focus, :stack)
+    def initialize(focus)
+      self.focus = focus
+      self.stack = []
     end
 
     def poll
-      @polling = true
-
-      while char = @focus.window.getch
-        break if VER.stopping?
-
-        if char == Ncurses::ERR # timeout or signal
-          @focus.press('esc') if @stack == [ESC]
-          @stack.clear
-        elsif ready = resolve(char)
-          @stack.clear
-          @focus.press(ready)
+      while char = focus.getch
+        if key = resolve(char)
+          CHANNEL << {:key => key}
+          stack.clear
+        elsif stack.size > 5
+          stack.clear
         end
       end
-
-    ensure
-      @polling = false
     end
 
     def resolve(char)
-      @stack << char
+      stack << char
 
-      if @stack.first == ESC
-        SPECIAL_KEYS[@stack] || MOD_KEYS[@stack]
+      if stack.size == 1 && char.is_a?(String)
+        char
       else
-        NCURSES_KEYS[char] || CONTROL_KEYS[char] || PRINTABLE_KEYS[char]
+        found = stack.inject(KEYS){|keys, key|
+          keys.fetch(key, {})
+        }
+        found if found && found.is_a?(String)
       end
     end
 
-    # TODO: make this section sane
-
-    ASCII     = (0..255).map{|c| c.chr }
-    CONTROL   = ASCII.grep(/[[:cntrl:]]/)
-    PRINTABLE = ASCII.grep(/[[:print:]]/)
-    PRINTABLE_REGEX = Regexp.union(*PRINTABLE)
-
-    SPECIAL_KEYS = {
-      [27, 79, 50, 81]              => 'F14',
-      [27, 79, 50, 82]              => 'F15',
-      [27, 79, 70]                  => 'end',
-      [27, 79, 70]                  => 'end',
-      [27, 79, 72]                  => 'home',
-      [27, 79, 80]                  => 'F1',
-      [27, 79, 81]                  => 'F2',
-      [27, 79, 82]                  => 'F3',
-      [27, 79, 83]                  => 'F4',
-      [27, 79, 97]                  => 'C-up',
-      [27, 79, 98]                  => 'C-down',
-      [27, 79, 99]                  => 'C-right',
-      [27, 79, 100]                 => 'C-left',
-      [27, 91, 49, 126]             => 'end',
-      [27, 91, 49, 126]             => 'home',
-      [27, 91, 49, 49, 126]         => 'F1',
-      [27, 91, 49, 50, 126]         => 'F2',
-      [27, 91, 49, 51, 126]         => 'F3',
-      [27, 91, 49, 52, 126]         => 'F4',
-      [27, 91, 49, 52, 126]         => 'F4',
-      [27, 91, 49, 53, 126]         => 'F5',
-      [27, 91, 49, 55, 126]         => 'F6',
-      [27, 91, 49, 56, 59, 50, 126] => 'F19',
-      [27, 91, 49, 56, 59, 51, 126] => 'F7',
-      [27, 91, 49, 59, 51, 65]      => 'M-up',
-      [27, 91, 49, 59, 51, 66]      => 'M-down',
-      [27, 91, 49, 59, 51, 67]      => 'M-right',
-      [27, 91, 49, 59, 51, 68]      => 'M-left',
-      [27, 91, 49, 59, 53, 65]      => 'ppage',
-      [27, 91, 49, 59, 53, 66]      => 'npage',
-      [27, 91, 49, 59, 53, 70]      => 'M-<',
-      [27, 91, 49, 59, 53, 72]      => 'M->',
-      [27, 91, 50, 54, 126]         => 'F14',
-      [27, 91, 50, 56, 126]         => 'F15',
-      [27, 91, 51, 59, 51, 126]     => 'del',
-      [27, 91, 52, 126]             => 'end',
-      [27, 91, 55, 126]             => 'home',
-      [27, 91, 55, 126]             => 'home',
-      [27, 91, 56, 126]             => 'end',
-      [27, 91, 56, 126]             => 'end',
-      [27, 91, 65]                  => 'up',
-      [27, 91, 66]                  => 'down',
-      [27, 91, 67]                  => 'right',
-      [27, 91, 68]                  => 'left',
-      [27, 91, 70]                  => 'end',
-      [27, 91, 72]                  => 'end',
-      [27, 91, 72]                  => 'home',
-      [27, 91, 91, 65]              => 'F1',
-      [27, 91, 91, 66]              => 'F2',
-      [27, 91, 91, 67]              => 'F3',
-      [27, 91, 91, 68]              => 'F4',
-      [27, 91, 91, 69]              => 'F5',
-      [27, 259]                     => 'M-up',
-      [27, 261]                     => 'M-right',
-      [27, 258]                     => 'M-down',
-      [27, 260]                     => 'M-left',
-    }
-
-    CONTROL_KEYS = {
-      0   => 'C-space',
-      1   => 'C-a',
-      2   => 'C-b',
-      3   => 'C-c',
-      4   => 'C-d',
-      5   => 'C-e',
-      6   => 'C-f',
-      7   => 'C-g',
-      8   => 'C-h',
-      9   => 'tab',
-      10  => 'return', # C-j
-      11  => 'C-k',
-      12  => 'C-l',
-      13  => 'return', # C-m
-      14  => 'C-n',
-      15  => 'C-o',
-      16  => 'C-p',
-      17  => 'C-q',
-      18  => 'C-r',
-      19  => 'C-s',
-      20  => 'C-t',
-      21  => 'C-u',
-      22  => 'C-v',
-      23  => 'C-w',
-      24  => 'C-x',
-      25  => 'C-y',
-      26  => 'C-z', # FIXME: is usually suspend in shell job control
-      # 27  => 'esc',
-      30  => 'C-^',
-      32  => 'space',
+    KEYS = {
+      0  => 'C-space',
+      1  => 'C-a',
+      2  => 'C-b',
+      3  => 'C-c',
+      4  => 'C-d',
+      5  => 'C-e',
+      6  => 'C-f',
+      7  => 'C-g',
+      8  => 'C-h',
+      9  => 'C-i', # tab
+      10 => 'C-j',
+      11 => 'C-k',
+      12 => 'C-l',
+      13 => 'C-m', # return
+      14 => 'C-n',
+      15 => 'C-o',
+      16 => 'C-p',
+      17 => 'C-q',
+      18 => 'C-r',
+      19 => 'C-s',
+      20 => 'C-t',
+      21 => 'C-u',
+      22 => 'C-v',
+      23 => 'C-w',
+      24 => 'C-x',
+      25 => 'C-y',
+      26 => 'C-z',
+      # 27 => 'C-[', # esc
+      28 => 'C-\\',
+      29 => 'C-]',
+      30 => 'C-6',
+      31 => 'C-/',
       127 => 'backspace',
-      514 => 'C-down',
-      516 => 'C-left',
-      518 => 'C-right',
-      521 => 'C-up',
+      410 => 'resize',
+      27 => {
+        0 => 'M-C-space',
+        8 => 'M-C-backspace',
+        9 => 'M-tab',
+        13 => 'M-return',
+        29 => 'M-C-]',
+        27 => {
+          '[' => {
+            'A' => 'M-up',
+            'B' => 'M-down',
+            'C' => 'M-right',
+            'D' => 'M-left',
+            '2' => { '~' => 'M-insert' },
+            '3' => { '~' => 'M-delete' },
+          },
+        },
+        " " => "M-space",
+        "'" => "M-'",
+        '!' => 'M-!',
+        '"' => 'M-"',
+        '#' => 'M-"',
+        '$' => 'M-$',
+        '%' => 'M-%',
+        '&' => 'M-&',
+        '(' => 'M-(',
+        ')' => 'M-)',
+        '+' => 'M-+',
+        ',' => 'M-,',
+        '-' => 'M--',
+        '.' => 'M-.',
+        '/' => 'M-/',
+        '0' => 'M-0',
+        '1' => 'M-1',
+        '2' => 'M-2',
+        '3' => 'M-3',
+        '4' => 'M-4',
+        '5' => 'M-5',
+        '6' => 'M-6',
+        '7' => 'M-7',
+        '8' => 'M-8',
+        '9' => 'M-9',
+        ':' => 'M-:',
+        ';' => 'M-;',
+        '<' => 'M-<',
+        '=' => 'M-=',
+        '>' => 'M->',
+        '?' => 'M-?',
+        '@' => 'M-@',
+        # '[' => 'M-[', # used as prefix for other keys
+        '\\' => 'M-\\',
+        ']' => 'M-]',
+        '_' => 'M-_',
+        'A' => 'M-A',
+        'B' => 'M-B',
+        'C' => 'M-C',
+        'D' => 'M-D',
+        'E' => 'M-E',
+        'F' => 'M-F',
+        'G' => 'M-G',
+        'H' => 'M-H',
+        'I' => 'M-I',
+        'J' => 'M-J',
+        'K' => 'M-K',
+        'L' => 'M-L',
+        'M' => 'M-M',
+        'N' => 'M-N',
+        'O' => 'M-O',
+        'P' => 'M-P',
+        'Q' => 'M-Q',
+        'R' => 'M-R',
+        'S' => 'M-S',
+        'T' => 'M-T',
+        'U' => 'M-U',
+        'V' => 'M-V',
+        'W' => 'M-W',
+        'X' => 'M-X',
+        'Y' => 'M-Y',
+        'Z' => 'M-Z',
+        'a' => 'M-a',
+        'b' => 'M-b',
+        'c' => 'M-c',
+        'd' => 'M-d',
+        'e' => 'M-e',
+        'f' => 'M-f',
+        'g' => 'M-g',
+        'h' => 'M-h',
+        'i' => 'M-i',
+        'j' => 'M-j',
+        'k' => 'M-k',
+        'l' => 'M-l',
+        'm' => 'M-m',
+        'n' => 'M-n',
+        'o' => 'M-o',
+        'p' => 'M-p',
+        'q' => 'M-q',
+        'r' => 'M-r',
+        's' => 'M-s',
+        't' => 'M-t',
+        'u' => 'M-u',
+        'v' => 'M-v',
+        'w' => 'M-w',
+        'x' => 'M-x',
+        'y' => 'M-y',
+        'z' => 'M-z',
+        '{' => 'M-{',
+        '|' => 'M-|',
+        '}' => 'M-}',
+        '~' => 'M-~',
+        '[' => {
+          '1' => {
+             '1' => {'~' => 'F1'},
+             '2' => {'~' => 'F2'},
+             '3' => {'~' => 'F3'},
+             '4' => {'~' => 'F4'},
+             '5' => {'~' => 'F5'},
+             '7' => {'~' => 'F6'},
+             '8' => {'~' => 'F7'},
+             '9' => {'~' => 'F8'},
+          },
+          "2" => {
+            "0" => {"~" => 'F9'},
+            "1" => {"~" => 'F10'},
+            "3" => {"~" => 'F11'},
+            "4" => {"~" => 'F12'},
+            '9' => {'~' => 'menu'},
+            "~" => 'insert',
+          },
+
+          "3" => {"~" => 'delete'},
+          "5" => {'~' => 'page-up'},
+          "6" => {'~' => 'page-down'},
+          "7" => {'~' => 'home'},
+          "8" => {'~' => 'end'},
+
+          "A" => 'up',
+          "B" => 'down',
+          "C" => 'right',
+          "D" => 'left',
+        }
+      }
     }
-
-    PRINTABLE_KEYS = {}
-    MOD_KEYS = {}
-
-    # don't map esc
-    # M-O is predecessor of M-left and M-right
-    MOD_EXCLUDE = ['[', 'O']
-
-    PRINTABLE.each do |key|
-      code = key.unpack('c')[0] # using unpack to be compatible with 1.9
-      PRINTABLE_KEYS[code] = key
-      next if MOD_EXCLUDE.include?(key)
-      MOD_KEYS[[ESC, code]] = "M-#{key}"
-    end
-
-    NCURSES_KEYS = {}
-    Ncurses.constants.grep(/^KEY_/).each do |const|
-      value = Ncurses.const_get(const)
-      key = const[/^KEY_(.*)/, 1]
-      key = key =~ /^F/ ? key : key.downcase # function keys
-      NCURSES_KEYS[value] = key
-    end
   end
 end

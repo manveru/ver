@@ -1,9 +1,19 @@
-require 'logger'
+module VER
+  Log = Logger.new('/tmp/ver.log')
 
-class Logger
-  class Formatter
-    def call(severity, time, progname, msg)
-      "[%d | %s] %s: %s\n" % [$$, time.strftime("%H:%M:%S"), severity, msg2str(msg)]
-    end
+  def self.debug(*args)
+    Log.debug(*args)
+  end
+
+  def self.info(*args)
+    Log.info(*args)
+  end
+
+  def self.warn(*args)
+    Log.warn(*args)
+  end
+
+  def self.error(*args)
+    Log.error(*args)
   end
 end
