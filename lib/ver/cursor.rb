@@ -250,6 +250,10 @@ module VER
       return word, range if word
     end
 
+    def current_line
+      buffer[bol..eol]
+    end
+
     # this is a faster version of
     #   [min, want, max].sort[1]
     # even when taking in account the method dispatch it's still a speedup

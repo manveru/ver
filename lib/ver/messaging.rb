@@ -34,16 +34,18 @@ module VER
     Log.warn(message)
   end
 
+  # F1
   def help(topic = 'index')
     help = View[:help]
     help.topic = topic
     View.active = help
   end
 
+  # F2
   def doc(regexp)
-    doc = View[:doc]
-    doc.show(regexp)
-    View.active = doc
+    require 'ver/view/doc'
+    doc = View::Doc.new(:doc)
+    doc.open(regexp)
   end
 
   def error(exception, message = nil)

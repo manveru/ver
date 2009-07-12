@@ -11,8 +11,8 @@ VER.let :general => :general_movement do
 
   # Function keys
 
-  map('F1'){ VER.doc(/ver/) }
-  map('F2'){ VER.help }
+  map('F1'){ VER.help }
+  map('F2'){ VER.doc(/ver/) }
 
   # seems to be triggered only on events, not the actual resize
   map(/^(C-l|resize)$/){ VER::View.resize }
@@ -196,6 +196,10 @@ VER.let :complete => :ask_large do
     VER::View[:file].mode = :insert
     VER::View[:file].open
   }
+end
+
+VER.let :doc => :control do
+  map('return'){ show_doc }
 end
 
 completions = {

@@ -1,75 +1,92 @@
 module VER
-  class DocView < MainView
-    def show(regexp)
-      found = query(regexp)
-      file, name, doc = found.first
+  class View
+    class Doc < View
+      module Methods
+        def show_doc
+          return unless string = cursor.current_line.strip
+          return unless found = view.list.assoc(string)
+          return unless method = found[1]
 
-      text = "#{file} : #{name} : #{doc * "\n"}"
-
-      buffer[0..-1] = text
-    end
-
-    def show_doc(file, method, doc)
-      text = "#{file} : #{name} : #{doc * "\n"}"
-      buffer[0..-1] = text
-      draw
-    end
-
-    def query(regexp)
-      docs = parse_docs
-
-      found = []
-
-      docs.each do |file, methods|
-        methods.each do |name, doc|
-          found << [file, name, doc]
+          VER.warn string
+          VER.warn method
+          VER.warn method.source_location
+          VER.warn method.parameters
         end
       end
 
-      return found
-    end
+      LAYOUT = {
+        :width => lambda{|w| w },
+        :height => lambda{|h| h },
+        :top => 0,
+        :left => 0
+      }
 
-    def parse_docs
-      @docs = {}
-      doc = []
+      DEFAULT = {
+        :interactive => true,
+        :mode => :doc,
+      }
 
-      glob = File.join(DIR, 'ver/methods/*.rb')
+      attr_reader :list
 
-      Dir[glob].each do |file|
-        current = @docs[file] = {}
+      def initialize(*args)
+        super
 
-        File.open(file) do |io|
-          while line = io.gets
-            case line
-            when /^\s*#(.*)/
-              doc << $1.strip
-            when /^\s*def\s*(\w+)/
-              current[$1] = doc
-              doc = []
-            end
+        buffer_name = self.class.name.split('::').last.downcase.to_sym
+        @buffer = MemoryBuffer.new(buffer_name)
+      end
+
+      def open(regexp)
+        @list = methods_of(VER)
+
+        @list.each do |string, meta|
+          buffer << "#{string}\n"
+        end
+
+        super()
+      end
+
+      def draw
+        pos = adjust_pos
+        y = 0
+
+        visible_each do |line|
+          window.move(y, 0)
+          window.print line
+          y += 1
+        end
+
+        window.move(*pos) if pos
+      end
+
+      def methods_of(namespace, seen = [])
+        methods = []
+        return methods if seen.include?(namespace)
+        seen << namespace
+
+        if namespace.respond_to?(:instance_methods)
+          namespace.instance_methods(false).each do |name|
+            method = namespace.instance_method(name)
+            string = "#{namespace}##{name}"
+            methods << [string, method]
           end
         end
+
+        if namespace.respond_to?(:singleton_methods)
+          namespace.singleton_methods(false).each do |name|
+            method = namespace.method(name)
+            string = "#{namespace}::#{name}"
+            methods << [string, method]
+          end
+        end
+
+        if namespace.respond_to?(:constants)
+          namespace.constants.each do |name|
+            methods += methods_of(namespace.const_get(name), seen)
+          end
+        end
+
+        methods
       end
-
-      return @docs
-    end
-
-    def draw
-      super
-    ensure
-      window.refresh
-    end
-
-    def activate
-      window.show
-      window.color_set Color[:white]
-      draw
-      focus_input
-    end
-
-    def deactivate
-      window.hide
     end
   end
 end
-

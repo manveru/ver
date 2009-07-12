@@ -20,8 +20,8 @@ module VER
     end
 
     register :Ruby, /\.rb$/, /^rakefile(\.rb)?$/i
-    register :Haml, /\.haml$/
-    register :Markdown, /\.mk?d/, /\.markdown/i
+#     register :Haml, /\.haml$/
+#     register :Markdown, /\.mk?d/, /\.markdown/i
 
     class Common
       attr_reader :matches, :syntax, :name
