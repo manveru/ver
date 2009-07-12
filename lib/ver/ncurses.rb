@@ -53,7 +53,7 @@ module VER
     # erase/kill character-processing (interrupt and flow control characters
     # are unaffected), making characters typed by the user immediately
     # available to the program.
-    Ncurses.cbreak
+    # Ncurses.cbreak
 
     # The echo and noecho routines control whether characters typed by the user
     # are echoed by getch as they are typed.
@@ -74,12 +74,12 @@ module VER
     # nothing has been typed.
     # The value of tenths must be a number between 1 and 255.
     # Use nocbreak to leave half-delay mode.
-    Ncurses::halfdelay(tenths = 10)
+    Ncurses::halfdelay(tenths = 1)
 
     # The nodelay option causes getch to be a non-blocking call. If no input is
     # ready, getch returns ERR. If disabled (bf is FALSE), getch waits until a
     # key is pressed.
-    # Ncurses::nodelay(Ncurses::stdscr, bf = true)
+    # Ncurses::nodelay(Ncurses::stdscr, 1)
   end
 
   def stop_ncurses

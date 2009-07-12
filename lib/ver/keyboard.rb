@@ -8,7 +8,7 @@ module VER
     def focus=(receiver)
       @stack = []
       @focus = receiver
-      Thread.new{ poll } unless @polling
+      EM.defer{ poll } unless @polling
     end
 
     def poll
@@ -20,9 +20,11 @@ module VER
         if char == Ncurses::ERR # timeout or signal
           @focus.press('esc') if @stack == [ESC]
           @stack.clear
+          Ncurses.doupdate
         elsif ready = resolve(char)
           @stack.clear
           @focus.press(ready)
+          Ncurses.doupdate
         end
       end
 

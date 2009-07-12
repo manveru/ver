@@ -62,9 +62,8 @@ module VER
 
     Log.info "Initializing VER"
 
-    start_ncurses
-
     EM.run do
+      start_ncurses
       start_editor(context)
     end
   ensure
@@ -72,10 +71,7 @@ module VER
   end
 
   def start_editor(context)
-    EM.add_periodic_timer(1){
-      Ver.warn(:update)
-      Ncurses.doupdate
-    }
+    EM.error_handler{|ex| error(ex) }
     setup(context)
   rescue ::Exception => ex
     error(ex)
@@ -92,9 +88,9 @@ module VER
   end
 
   def setup(context)
-    @ask    = View::AskSmall.new(:ask)
-    @info   = View::Info.new(:info)
-    @choice = View::AskChoice.new(:ask_choice)
+    @ask      = View::AskSmall.new(:ask)
+    @info     = View::Info.new(:info)
+    @choice   = View::AskChoice.new(:ask_choice)
     @complete = View::Complete.new(:complete)
 
     @file = View::File.new(:file)

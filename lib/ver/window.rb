@@ -96,7 +96,7 @@ module VER
 
     def getch
       wgetch
-    rescue Interrupt => ex
+    rescue Interrupt
       3 # is C-c
     end
 
