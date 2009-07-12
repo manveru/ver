@@ -1,4 +1,6 @@
 module VER
+  Ncurses = FFI::NCurses
+
   module_function
 
   # Setup ncurses, nicely documented by the curses manpages
@@ -10,7 +12,7 @@ module VER
     # error and exits; otherwise, a pointer is returned to stdscr.
     stdscr = Ncurses.initscr
 
-    Color.start if Ncurses.has_colors?
+    Color.start if Ncurses.has_colors
 
     # The keypad option enables the keypad of the user's terminal.
     # If enabled (bf is TRUE), the user can press a function key (such as an
@@ -22,7 +24,7 @@ module VER
     # (made to work locally), turning on this option causes the terminal keypad
     # to be turned on when wgetch is called.
     # The default value for keypad is false.
-    Ncurses.keypad(stdscr, bf = true)
+    Ncurses.keypad(stdscr, 1)
 
     # The nl and nonl routines control whether the underlying display device
     # translates the return key into newline on input, and whether it

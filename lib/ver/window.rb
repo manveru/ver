@@ -1,13 +1,9 @@
 module VER
   # Responsibilities:
-  # * Interface to Ncurses::WINDOW and Ncurses::Panel
-  # * behave IO like: (print puts write read readline)
+  # * Interface to Ncurses::Window and Ncurses::Panel
   # * hide and show itself
 
-  # There's a very strange bug when i tried subclassing this, as Ncurses seems
-  # to overwrite WINDOW::new, which will not return the Window instance we
-  # want. So we have to wrap instead of subclass.
-  class Window # < Ncurses::WINDOW
+  class Window < Ncurses::Window
     attr_reader :width, :height, :top, :left
     attr_accessor :layout
 
@@ -15,16 +11,16 @@ module VER
       @visible = true
       reset_layout(layout)
 
-      @window = Ncurses::WINDOW.new(height, width, top, left)
-      @panel = Ncurses::Panel.new_panel(@window)
+      super(height, width, top, left)
+      @panel = Ncurses::Panel.new(self)
 
-      Ncurses::keypad(@window, true)
+      keypad true
     end
 
     def resize_with(layout)
       reset_layout(layout)
-      @window.wresize(height, width)
-      @window.mvwin(top, left)
+      wresize(height, width)
+      mvwin(top, left)
     end
 
     %w[width height top left].each do |side|
@@ -43,43 +39,27 @@ module VER
 
     # Ncurses
 
-    def pos
-      return y, x
-    end
-
-    def y
-      Ncurses.getcury(@window)
-    end
-
-    def x
-      Ncurses.getcurx(@window)
-    end
+    alias pos getyx
+    alias y getcury
+    alias x getcurx
 
     def x=(n) move(y, n) end
     def y=(n) move(n, x) end
 
     def move(y, x)
-      return unless @visible
-#       Log.debug([y, x] => caller[0,4])
-      @window.move(y, x)
-    end
-
-    def method_missing(meth, *args)
-      @window.send(meth, *args)
+      super if visible?
     end
 
     def print(string, width = width)
-      return unless visible?
-      @window.waddnstr(string.to_s, width)
+      waddnstr(string.to_s, width) if visible?
     end
 
     def print_yx(string, y = 0, x = 0)
-      @window.mvwaddnstr(y, x, string, width)
+      mvwaddnstr(y, x, string, width)
     end
 
     def print_empty_line
-      return unless visible?
-      @window.printw(' ' * width)
+      printw(' ' * width) if visible?
     end
 
     def print_line(string)
@@ -89,7 +69,7 @@ module VER
     def show_colored_chunks(chunks)
       return unless visible?
       chunks.each do |color, chunk|
-        color_set(color)
+        wcolor_set(color)
         print_line(chunk)
       end
     end
@@ -99,34 +79,29 @@ module VER
     end
 
     def refresh
-      return unless visible?
-      @window.refresh
+      Ncurses::Panel.update_panels if visible?
     end
 
     def wnoutrefresh
-      return unless visible?
-      @window.wnoutrefresh
+      Ncurses::Panel.update_panels if visible?
     end
 
     def color=(color)
-      @color = color
-      @window.color_set(color, nil)
+      wcolor_set @color = color
     end
 
     def highlight_line(color, y, x, max)
-      @window.mvchgat(y, x, max, Ncurses::A_NORMAL, color, nil)
+      Ncurses.mvchgat(y, x, max, Ncurses::A_NORMAL, color, nil)
     end
 
     def getch
-      @window.getch
+      wgetch
     rescue Interrupt => ex
       3 # is C-c
     end
 
     def clear
-      # return unless visible?
-      move 0, 0
-      puts *Array.new(height){ ' ' * (width - 1) }
+      wclear if visible?
     end
 
     # setup and reset
@@ -150,9 +125,9 @@ module VER
     def default_for(name)
       case name
       when :height, :top
-        Ncurses.stdscr.getmaxy
+        Ncurses.getmaxy(Ncurses.stdscr)
       when :width, :left
-        Ncurses.stdscr.getmaxx
+        Ncurses.getmaxx(Ncurses.stdscr)
       else
         0
       end
@@ -161,20 +136,20 @@ module VER
     # Ncurses panel
 
     def hide
-      Ncurses::Panel.hide_panel @panel
-      Ncurses.refresh # wnoutrefresh
+      @panel.hide
+      Ncurses::Panel.update_panels
       @visible = false
     end
 
     def show
-      Ncurses::Panel.show_panel @panel
-      Ncurses.refresh # wnoutrefresh
+      @panel.show
+      Ncurses::Panel.update_panels
       @visible = true
     end
 
     def on_top
-      Ncurses::Panel.top_panel @panel
-      wnoutrefresh
+      @panel.top
+      Ncurses::Panel.update_panels
     end
 
     def visible?

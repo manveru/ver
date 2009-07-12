@@ -7,7 +7,8 @@ require 'strscan'
 require 'tmpdir'
 
 begin; require 'rubygems'; rescue LoadError; end
-require 'ncurses'
+require 'ffi-ncurses'
+require 'eventmachine'
 
 module VER
   VERSION = "2008.10.30"
@@ -23,6 +24,8 @@ module VER
   require 'ver/log'
   require 'ver/messaging'
   require 'ver/ncurses'
+  require 'ver/ncurses/window'
+  require 'ver/ncurses/panel'
 
   require 'ver/buffer'
   require 'ver/buffer/line'
@@ -61,16 +64,27 @@ module VER
 
     start_ncurses
 
-    catch(:close){ setup(context) }
-  rescue ::Exception => ex
-    error(ex)
+    EM.run do
+      start_editor(context)
+    end
   ensure
     stop_ncurses # do this, or the world implodes
   end
 
+  def start_editor(context)
+    EM.add_periodic_timer(1){
+      Ver.warn(:update)
+      Ncurses.doupdate
+    }
+    setup(context)
+  rescue ::Exception => ex
+    error(ex)
+  end
+
   def stop
     @stop = true
-    throw(:close)
+    stop_ncurses
+    exit!
   end
 
   def stopping?

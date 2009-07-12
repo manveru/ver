@@ -1,6 +1,6 @@
 module VER
   module Keyboard # avoid initialize
-    ESC         = 27 # keycode
+    ESC = 27 # keycode
     @polling = false
 
     module_function
@@ -8,7 +8,7 @@ module VER
     def focus=(receiver)
       @stack = []
       @focus = receiver
-      poll unless @polling
+      Thread.new{ poll } unless @polling
     end
 
     def poll

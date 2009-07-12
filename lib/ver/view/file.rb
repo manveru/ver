@@ -100,7 +100,12 @@ module VER
         end
 
         def toggle_case
-          buffer[cursor.pos, 1] = buffer[cursor.pos, 1].tr('A-Za-z', 'a-zA-Z')
+          chunk = buffer[cursor.pos, 1]
+          toggled = chunk.each_char.map{|char|
+            downcased = char.downcase
+            downcased == char ? char.upcase : downcased
+          }
+          buffer[cursor.pos, 1] = toggled.join
         end
 
         def indent_line

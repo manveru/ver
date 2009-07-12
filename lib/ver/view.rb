@@ -55,7 +55,6 @@ module VER
       @redraw = true
       draw
       refresh
-      Ncurses.doupdate
 
       if interactive?
         Keyboard.focus = self
@@ -89,8 +88,6 @@ module VER
       # end
     rescue ::Exception => ex
       VER.error(ex)
-    ensure
-      Ncurses.doupdate
     end
 
     def draw_padding
