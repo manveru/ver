@@ -75,7 +75,7 @@ VER.let :control => [:general, :control_movement] do
     cursor.virtual{
       start_selection
       press(@arg)
-      VER.clipboard << cut
+      VER.clipboard.copy cut
     }
   }
   map(['c', movement]){
@@ -87,8 +87,8 @@ VER.let :control => [:general, :control_movement] do
   count_map(7, 'g'){ goto_line(@count) }
   count_map(2, '%'){ goto_percent(@count) }
 
-  map(/^(x|dc)$/){ VER.clipboard << delete_right }
-  map('X'){        VER.clipboard << delete_left }
+  map(/^(x|dc)$/){ VER.clipboard.copy delete_right }
+  map('X'){        VER.clipboard.copy delete_left }
 
   map(['r', /^[[:print:]]$/]){ cursor.replace(@arg) }
   map(['r', 'return']){ cursor.replace("\n") }
@@ -147,8 +147,8 @@ end
 
 VER.let :insert => :general do
   map(/^(#{chars_regex})$/){ cursor.insert(@arg) }
-  map('backspace'){ VER.clipboard << cursor.delete_left }
-  map('dc'){        VER.clipboard << cursor.delete_right }
+  map('backspace'){ VER.clipboard.copy cursor.delete_left }
+  map('dc'){        VER.clipboard.copy cursor.delete_right }
   map('return'){    cursor.insert_newline }
   map('space'){     cursor.insert(' ') }
   map(/^(C-c|C-q|esc)$/){    view.mode = :control }
