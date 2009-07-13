@@ -14,6 +14,8 @@ module VER
     def poll
       @polling = true
 
+      Ncurses.doupdate
+
       while char = @focus.window.getch
         break if VER.stopping?
 
