@@ -391,12 +391,12 @@ module VER
           chunks = [lines.shift[0..(to_x - from_x)]]
           chunks.concat(lines.map{|l| l[from_x..to_x] })
 
-          VER.clipboard << chunks
+          VER.clipboard.copy chunks
           VER.info("Copied #{chunks.size} chunks")
         end
 
         def copy_selection
-          VER.clipboard << selection.to_s
+          VER.clipboard.copy selection.to_s
           VER.info("Copied #{selection.delta} characters")
         end
 
@@ -426,12 +426,12 @@ module VER
             line.line
           end
 
-          VER.clipboard << chunks
+          VER.clipboard.copy chunks
           VER.info("Cut #{chunks.size} chunks")
         end
 
         def cut_selection
-          VER.clipboard << string = selection.to_s
+          VER.clipboard.copy string = selection.to_s
           buffer[selection.to_range] = ''
 
           cursor.pos = selection.mark
