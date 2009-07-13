@@ -23,10 +23,13 @@ module VER
           @focus.press('esc') if @stack == [ESC]
           @stack.clear
           Ncurses.doupdate
-        elsif ready = resolve(char)
+        elsif ready = resolve(char) # found a key to press
           @stack.clear
           @focus.press(ready)
           Ncurses.doupdate
+        elsif @stack.size > MAX_STACK
+          # last resort if someone presses esc, then C-c
+          @stack.clear
         end
       end
 
@@ -169,5 +172,8 @@ module VER
       key = key =~ /^F/ ? key : key.downcase # function keys
       NCURSES_KEYS[value] = key
     end
+
+    MAX_STACK = [SPECIAL_KEYS, MOD_KEYS].
+      map{|h| h.keys.max_by{|a| a.size }.size }.max
   end
 end
