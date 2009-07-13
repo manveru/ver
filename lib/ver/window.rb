@@ -91,7 +91,7 @@ module VER
     end
 
     def highlight_line(color, y, x, max)
-      Ncurses.mvchgat(y, x, max, Ncurses::A_NORMAL, color, nil)
+      mvwchgat(y, x, max, Ncurses::A_STANDOUT, 0)
     end
 
     def getch

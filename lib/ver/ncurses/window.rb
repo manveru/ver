@@ -631,6 +631,10 @@ module VER
         Ncurses.box(pointer, ver, hor)
       end
 
+      def mvwchgat(y, x, n, attr, color)
+        Ncurses.mvwchgat(pointer, y, x, n, attr, color, nil)
+      end
+
       def method_missing(name, *args)
         File.open('missing', 'a+'){|io|
           io.puts '=' * 80
