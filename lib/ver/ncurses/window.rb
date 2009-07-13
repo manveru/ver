@@ -635,6 +635,16 @@ module VER
         Ncurses.mvwchgat(pointer, y, x, n, attr, color, nil)
       end
 
+      # Reallocate storage for the window to adjust its dimensions to the
+      # specified values.
+      #
+      # If either dimension islarger than the current values, the window's data
+      # is filled with blanks that have the current background rendition (as
+      # set by {wbkgndset} merged into them.
+      def wresize(lines, cols)
+        Ncurses.wresize(pointer, lines, cols)
+      end
+
       def method_missing(name, *args)
         File.open('missing', 'a+'){|io|
           io.puts '=' * 80
