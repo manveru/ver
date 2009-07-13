@@ -185,6 +185,7 @@ end
 VER.let :ask_file => :ask_large
 VER.let :ask_fuzzy_file => :ask_large
 VER.let :ask_grep => :ask_large
+VER.let :ask_doc => :ask_large
 
 VER.let :complete => :ask_large do
   map(/^C-(p|k)$/){ select_above }
@@ -196,10 +197,6 @@ VER.let :complete => :ask_large do
     VER::View[:file].mode = :insert
     VER::View[:file].open
   }
-end
-
-VER.let :doc => :control do
-  map('return'){ show_doc }
 end
 
 completions = {

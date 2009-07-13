@@ -36,10 +36,16 @@ module VER
 
   # F1
   def help(topic = 'index')
+    require 'ver/view/ask/doc'
+    doc = View::AskDoc.new
+    doc.open
+  end
+
+=begin
     help = View[:help]
     help.topic = topic
     View.active = help
-  end
+=end
 
   # F2
   def doc(regexp)
