@@ -45,49 +45,58 @@ module VER
       buffer[0..pos].count(/\n/)
     end
 
+    # go up one line
     def up
-      return unless bol = buffer.rindex(/\n/, (0...pos))
-      prebol = buffer.rindex(/\n/, (0...bol))
+      return if pos == 0
+      bol_pos = buffer.rindex(/\n/, 0..(pos - 1))
+      return unless bol_pos
 
-      target = pos - bol
+      indent = pos - (bol_pos + 1)
 
-      if prebol # not second line
-        pre_size = bol - prebol
+      # now we get the length of the previous line and try to fit inside
+      prev_bol_pos = buffer.rindex(/\n/, 0..(bol_pos - 1))
 
-        self.pos =
-          if target == 0
-            prebol + 1
-          elsif pre_size == 1 # previous line is empty
-            bol
-          elsif prebol + target < bol
-            prebol + target
-          else
-            bol - 1
-          end
+      if prev_bol_pos
+        if bol_pos - prev_bol_pos > indent
+          self.pos = prev_bol_pos + indent + 1
+        else
+          self.pos = bol_pos
+        end
+      elsif bol_pos >= indent
+        self.pos = indent
       else
-        self.pos = target - 1
+        self.pos = bol_pos
       end
     end
 
+    # go down one line
     def down
-      return unless eol = buffer.index(/\n/, pos..buffer.size)
-      bol = buffer.rindex(/\n/, 0..pos) || -1
-      posteol = buffer.index(/\n/, (eol + 1)..buffer.size)
+      eol_pos = buffer.index(/\n/, pos..buffer.size)
+      return unless eol_pos
 
-      target = eol + (pos - bol)
+      if pos == 0 # first line
+        bol_pos = 0
+        indent = pos
+      elsif bol_pos = buffer.rindex(/\n/, 0..(pos - 1))
+        indent = pos - (bol_pos + 1)
+      else # first line
+        bol_pos = 0
+        indent = pos
+      end
 
-      self.pos =
-        if not posteol
-          buffer.size - 1
-        elsif posteol - 1 == eol # coming is empty line
-          posteol
-        elsif bol == eol # on empty line
-          pos + 1
-        elsif target >= posteol
-          posteol - 1
-        else
-          target
-        end
+      # now we get the length of the following line and try to fit inside
+      next_eol_pos = buffer.index(/\n/, (eol_pos + 1)..buffer.size)
+
+      return unless next_eol_pos
+
+      # length of next line
+      next_length = next_eol_pos - (eol_pos + 1)
+
+      if next_length >= indent
+        self.pos = eol_pos + indent + 1
+      else
+        self.pos = eol_pos + next_length + 1
+      end
     end
 
     def left(boundary = 0)
