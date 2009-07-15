@@ -110,4 +110,6 @@ Todo:
 
   - [M-s] : Save file under different name
   - [M-x] : Live ruby console (figure out some nice way)
+  - FFI bindings for X11 so we can communicate with it and have a proper clipboard (xclip is weak)
+  - Proper handling of [esc], halfdelay works if it's called later, but makes other control characters send signals.
   - Handling tabs
