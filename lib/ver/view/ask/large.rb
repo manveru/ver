@@ -23,6 +23,11 @@ module VER
         @buffer = MemoryBuffer.new(buffer_name)
       end
 
+      def close
+        super
+        View[:file].open
+      end
+
       def input=(string)
         buffer.replace string
         buffer.cursor.pos = buffer.size

@@ -13,8 +13,10 @@ module VER
       def initialize(name = :ask_fuzzy_file, options = {})
         super
 
-        @finder = FuzzyFileFinder.new
         @prompt = 'Fuzzy File:'
+        @finder = nil
+        @choices = []
+
         self.input = ''
       end
 
@@ -44,7 +46,12 @@ module VER
       def update_choices
         format = "[%.2f] %s"
 
+        @finder ||= FuzzyFileFinder.new
         @choices = @finder.find(input).sort_by{|m| [-m[:score], m[:path]] }
+      rescue FuzzyFileFinder::TooManyEntries
+        VER.info "Too many entries for fuzzy file match"
+        close
+        @choices = []
       rescue ::Exception => ex
         VER.error(ex)
         @choices = []
