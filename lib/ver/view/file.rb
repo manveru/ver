@@ -151,12 +151,16 @@ module VER
 
         BUFFER_ASK_PROC = lambda{|got|
           buffer_names = View[:file].buffers.map{|b| b.filename }
+
           if got =~ /^\s+$/
             choices = buffer_names
-          else
-            choices = buffer_names.grep(/#{got}/)
+          elsif got
+            choices = buffer_names.grep(/#{Regexp.escape(got)}/)
           end
-          [got, choices]
+
+          valid = buffer_names.include?(got)
+
+          [valid, choices]
         }
 
         def buffer_ask

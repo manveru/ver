@@ -70,6 +70,10 @@ module VER
         super()
       end
 
+      def press(key)
+        super{|key| update_choices }
+      end
+
       def answer
         buffer.to_s if @valid
       end

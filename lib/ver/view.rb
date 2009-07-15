@@ -82,6 +82,7 @@ module VER
       # VER.bench("@keyhandler.press(%p)" % key) do
 
       @keyhandler.press(key)
+      yield(key) if block_given?
       draw
       refresh
 
