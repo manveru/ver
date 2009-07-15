@@ -19,7 +19,8 @@ module VER
     def resize_with(layout)
       reset_layout(layout)
       wresize(height, width)
-      mvwin(top, left)
+      wmove(top, left)
+      replace_panel
     end
 
     %w[width height top left].each do |side|
@@ -151,6 +152,19 @@ module VER
 
     def on_bottom
       @panel.bottom
+      Ncurses::Panel.update_panels
+    end
+
+    def move_panel(y, x)
+      @panel.move(y, x)
+      Ncurses::Panel.update_panels
+    end
+    # making sure that we use the right method.
+    alias wmove move_panel
+
+    def replace_panel(pointer = nil)
+      pointer ||= self.pointer
+      @panel.replace_panel(pointer)
       Ncurses::Panel.update_panels
     end
 

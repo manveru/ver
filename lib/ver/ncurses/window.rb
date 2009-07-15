@@ -653,6 +653,12 @@ module VER
         Ncurses.wdeleteln(pointer)
       end
 
+      # Insert an empty line above the cursor in the window.
+      # The bottom line in the window is lost.
+      def winsertln
+        Ncurses.winsertln(pointer)
+      end
+
       def method_missing(name, *args)
         File.open('missing', 'a+'){|io|
           io.puts '=' * 80

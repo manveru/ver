@@ -196,7 +196,7 @@ VER.let :complete => :ask_large do
   map('tab'){ select_below }
 
   map(/^(C-g|C-q|C-c|esc|left|right)$/){
-    VER::View[:file].mode = :insert
+    view.close
   }
 end
 

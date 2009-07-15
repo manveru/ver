@@ -52,9 +52,14 @@ module VER
         self.input = @pick ? @pick.dup[:string] : ''
         cursor.pos = self.input.size
 
+        draw # make sure the size is correct
         super()
+        draw # draw for real
+      end
 
-        draw
+      def close
+        View[:file].mode = :insert
+        super
       end
 
       # FIXME: this shouldn't be necessary
