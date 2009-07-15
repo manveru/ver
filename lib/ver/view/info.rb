@@ -35,6 +35,8 @@ module VER
       end
 
       def draw
+        return unless window.visible?
+
         window.color = @status_color
         window.move 0, 0
         window.print_line(@status.to_s)

@@ -54,7 +54,7 @@ module VER
     end
 
     def print_yx(string, y = 0, x = 0)
-      mvwaddnstr(y, x, string, width)
+      mvwaddnstr(y, x, string, width) if visible?
     end
 
     def print_empty_line
@@ -62,7 +62,7 @@ module VER
     end
 
     def print_line(string)
-      print(string.ljust(width))
+      print(string.ljust(width)) if visible?
     end
 
     def show_colored_chunks(chunks)

@@ -167,13 +167,13 @@ VER.let :ask => [:insert, :general_movement] do
   map('tab'){ view.update_choices; view.try_completion }
   map('up'){ history_backward }
   map('down'){ history_forward }
-  map(/^(C-g|C-q|C-c|esc)$/){ view.close; VER::View[:file].open }
+  map(/^(C-g|C-q|C-c|esc)$/){ view.close }
 end
 
 VER.let :ask_choice => [:insert, :general_movement] do
   map('backspace'){ cursor.delete_left }
   map('dc'){ cursor.delete_right }
-  map(/^(C-g|C-q|C-c|esc)$/){ view.close; VER::View[:file].open }
+  map(/^(C-g|C-q|C-c|esc)$/){ view.close }
   map('return'){ pick }
 end
 
@@ -196,9 +196,7 @@ VER.let :complete => :ask_large do
   map('tab'){ select_below }
 
   map(/^(C-g|C-q|C-c|esc|left|right)$/){
-    view.close
     VER::View[:file].mode = :insert
-    VER::View[:file].open
   }
 end
 

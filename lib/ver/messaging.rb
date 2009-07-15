@@ -18,13 +18,11 @@ module VER
   def ask(question = nil, completer = nil, &block)
     return @ask unless question and completer
     @ask.open(question, completer, &block)
-    @info.open
   end
 
   def choice(question = nil, choices = nil, &block)
     return @choice unless question and choices
     @choice.open(question, choices, &block)
-    @info.open
   end
 
   def complete; @complete end

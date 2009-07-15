@@ -74,7 +74,7 @@ module VER
     end
 
     def close
-      window.clear
+      window.werase
       window.hide
     end
 

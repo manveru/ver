@@ -22,13 +22,11 @@ module VER
             view.block.call(answer)
             view.history << answer unless view.history.last == answer
             view.close
-            View[:file].open
           end
         end
 
         def stop
           view.close
-          View[:file].open
         end
 
         def completion
@@ -65,6 +63,7 @@ module VER
         @choices.clear if @choices
         @history_pick = @history.size
 
+        VER.info.close
         update_choices
 
         super()
@@ -74,14 +73,19 @@ module VER
         super{|key| update_choices }
       end
 
+      def close
+        super
+        VER.info.open
+        View[:file].open
+      end
+
       def answer
         buffer.to_s if @valid
       end
 
       def draw
+        window.werase
         window.move 0, 0
-        window.wdeleteln
-        window.wdeleteln
         window.color = Color[:white]
         window.print "#{@prompt}#{buffer}"
 
