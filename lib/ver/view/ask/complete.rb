@@ -77,10 +77,10 @@ module VER
         win = @view.window
 
         left = @view.cursor.to_x
-        top  = ((@view.cursor.to_y + 1) - @view.top)
+        top  = (@view.cursor.to_y - @view.top)
 
-        possible_height = (@view.window.height - top) - 3
-        height = [possible_height, want_height].min + 3
+        possible_height = (@view.window.height - top) - 1
+        height = [possible_height, want_height].min + 1
 
         possible_width = (@view.window.width - left)
         width = [possible_width, want_width].min
@@ -94,7 +94,7 @@ module VER
 
         max = @choices.sort_by{|k,v| -k[:string].size }[0]
         max_choice = max ? max[:string].size : 0
-        input_width = @prompt.size + max_choice + 4
+        input_width = @prompt.size + max_choice + 2
 
         want_width = [input_width, max_choice].max
         want_height = @choices.size
@@ -102,7 +102,29 @@ module VER
         confines = cast_box(want_height, want_width)
         window.resize_with(confines)
 
-        super
+        window.move 0, 0
+        window.color = Color[:white]
+
+        current = @choices.index(@pick) || 0
+        height = [window.height - 1, 5].max
+        count = @choices.size
+
+        top_half = bottom_half = (height / 2)
+        bottom_half -= 1 if height % bottom_half == 0
+
+        if current < top_half
+          range = (0...height)
+        elsif current >= (count - bottom_half)
+          range = ((count - height)..count)
+        else
+          range = ((current - top_half)..(current + bottom_half))
+        end
+
+        draw_cons(@choices[range])
+      ensure
+        window.color = Color[:white]
+        window.move 0, 0
+        refresh
       end
 
       def pick
@@ -130,12 +152,12 @@ module VER
 
       def draw_choice(choice)
         window.color = Color[:white]
-        window.puts "  #{choice[:string]}"
+        window.puts choice[:string]
       end
 
       def draw_selected_choice(choice)
         window.color = Color[:blue]
-        window.puts "  #{choice[:string]}"
+        window.puts choice[:string]
       end
     end
   end
