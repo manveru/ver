@@ -151,7 +151,11 @@ module VER
 
         BUFFER_ASK_PROC = lambda{|got|
           buffer_names = View[:file].buffers.map{|b| b.filename }
-          choices = buffer_names.grep(/#{got}/)
+          if got =~ /^\s+$/
+            choices = buffer_names
+          else
+            choices = buffer_names.grep(/#{got}/)
+          end
           [got, choices]
         }
 

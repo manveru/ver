@@ -65,6 +65,8 @@ module VER
         @choices.clear if @choices
         @history_pick = @history.size
 
+        update_choices
+
         super()
       end
 
@@ -73,8 +75,9 @@ module VER
       end
 
       def draw
-        window.clear
         window.move 0, 0
+        window.wdeleteln
+        window.wdeleteln
         window.color = Color[:white]
         window.print "#{@prompt}#{buffer}"
 
@@ -84,14 +87,15 @@ module VER
         end
 
         window.move 0, (cursor.pos + @prompt.size)
-        refresh
+        window.refresh
       end
 
       def update_choices
         @valid, @choices = @completer.call(buffer.to_s)
+        @choices.map!{|c| c.to_s }
       end
 
-      # FIXME: improve completion to me useful instead of annoying
+      # FIXME: improve completion to be useful instead of annoying
       def try_completion
         if @choices.size == 1
           self.input = @choices.first

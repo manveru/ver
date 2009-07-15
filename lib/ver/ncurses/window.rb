@@ -645,6 +645,14 @@ module VER
         Ncurses.wresize(pointer, lines, cols)
       end
 
+      # Delete the line under the cursor in the window.
+      # All lines below the current line are moved up one line.
+      # The bottom line of the window is cleared.
+      # The cursor position does not change.
+      def wdeleteln
+        Ncurses.wdeleteln(pointer)
+      end
+
       def method_missing(name, *args)
         File.open('missing', 'a+'){|io|
           io.puts '=' * 80

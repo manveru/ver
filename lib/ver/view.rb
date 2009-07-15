@@ -159,7 +159,7 @@ module VER
     end
 
     def input=(string)
-      buffer[0..-1] = string
+      buffer.replace string
       buffer.cursor.pos = buffer.size
     end
 
