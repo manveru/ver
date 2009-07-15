@@ -659,6 +659,10 @@ module VER
         Ncurses.winsertln(pointer)
       end
 
+      def mvwaddnstr(y, x, string, width)
+        Ncurses.mvwaddnstr(pointer, y, x, string, width)
+      end
+
       def method_missing(name, *args)
         File.open('missing', 'a+'){|io|
           io.puts '=' * 80
