@@ -2,10 +2,12 @@ module VER
   class Buffer
     attr_accessor :name, :cursor, :eol
     attr_writer :cursor
+    attr_reader :data
 
     def initialize(name)
       @name = name
       @cursor = new_cursor
+      @history = VER::Undo::Tree.new(self)
     end
 
     def new_cursor(pos = 0, mark = size, color = Color[:white], meta = {})
@@ -58,6 +60,22 @@ module VER
     # This should set a substring of the buffer.
     def []=(s, len, replacement)
       raise NotImplementedError
+    end
+
+    def undo
+      @history.compact!
+      @history.undo
+
+      @modified = true
+      @dirty = true
+    end
+
+    def redo
+      @history.compact!
+      @history.redo
+
+      @modified = true
+      @dirty = true
     end
 
     def apply_delta(range, replacement)
@@ -155,6 +173,13 @@ module VER
 
     def eol_name
       EOL_NAMES[eol]
+    end
+
+    def ==(buffer)
+      return false unless buffer.is_a?(self.class)
+      buffer.name == name &&
+        buffer.eol == eol &&
+        buffer.data == data
     end
   end
 end

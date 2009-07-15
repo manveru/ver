@@ -38,6 +38,7 @@ module VER
   require 'ver/mixer'
   require 'ver/window'
   require 'ver/cursor'
+  require 'ver/undo'
   require 'ver/color'
   require 'ver/config'
   require 'ver/clipboard'

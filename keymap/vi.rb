@@ -118,6 +118,9 @@ VER.let :control => [:general, :control_movement] do
 
   map('!'){ press('V'); filter_selection_ask }
 
+  map('u'){ undo }
+  map('C-r'){ self.redo }
+
   macro('a', 'l i')
   macro('A', '$ i')
   macro('o', '$ i return')

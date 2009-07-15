@@ -41,33 +41,30 @@ module VER
       @dirty = true
     end
 
-    def [](s=nil, len=nil)
-      @data[range(s,len)]
-    end
+    def replace(string)
+      @data[range(0, size)] = string
 
-    def []=(*args)
-      case args.size
-      when 2
-        s, replacement = args
-      when 3
-        s, len, replacement = args
-      else
-        raise ArgumentError
-      end
-
-      @data[range(s, len)] = replacement.to_s
-    ensure
       @modified = true
       @dirty = true
     end
 
-    def start_snapshot
+    def [](s=nil, len=nil)
+      @data[range(s,len)]
     end
 
-    def stop_snapshot
-    end
+    def []=(pos, len, string = nil)
+      VER.warn :[]= => {:pos => pos, :len => len, :string => string}
 
-    def undo
+      @history.record do |r|
+        if string.nil?
+          r.replace(pos.begin, pos.end, len)
+        else
+          r.replace(pos, len, string)
+        end
+      end
+
+      @modified = true
+      @dirty = true
     end
 
     def modified?

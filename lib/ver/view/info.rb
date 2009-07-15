@@ -25,12 +25,12 @@ module VER
       end
 
       def status=(message)
-        @status[0..-1] = message
+        @status.replace message
         draw
       end
 
       def info=(message)
-        @info[0..-1] = message
+        @info.replace message
         draw
       end
 

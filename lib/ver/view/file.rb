@@ -466,6 +466,14 @@ module VER
 
         # </Paste>
 
+        def undo
+          buffer.undo
+        end
+
+        def redo
+          buffer.redo
+        end
+
         def page_down
           view.scroll(window.height)
           recenter_cursor
