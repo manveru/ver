@@ -43,7 +43,7 @@ module VER
 
       # Puts panel below all other panels.
       def bottom_panel
-        Panel.bottom_panel pointer
+        Panel.bottom_panel(pointer)
       end
       alias bottom bottom_panel
 
@@ -52,7 +52,7 @@ module VER
       # To ensure compatibility across platforms, use this method instead of
       # {show_panel} when the panel is shown.
       def top_panel
-        Panel.top_panel pointer
+        Panel.top_panel(pointer)
       end
       alias top top_panel
 
@@ -61,7 +61,7 @@ module VER
       # To ensure compatibility across platforms, use this method instead of
       # {top_panel} when the panel is hidden.
       def show_panel
-        Panel.show_panel pointer
+        Panel.show_panel(pointer)
       end
       alias show show_panel
 
@@ -69,13 +69,13 @@ module VER
       # view.
       # The PANEL structure is not lost, merely removed from the stack.
       def hide_panel
-        Panel.hide_panel pointer
+        Panel.hide_panel(pointer)
       end
       alias hide hide_panel
 
       # Returns a pointer to the window of the given panel.
       def panel_window
-        Panel.panel_window pointer
+        Panel.panel_window(pointer)
       end
       alias window panel_window
 
@@ -100,13 +100,13 @@ module VER
       # Returns true if the panel is in the panel stack, false if not.
       # Returns ERR if the panel pointer is a null pointer.
       def panel_hidden
-        Panel.panel_hidden pointer
+        Panel.panel_hidden(pointer) == 0
       end
-      alias hidden panel_hidden
+      alias hidden? panel_hidden
 
       # Returns pointer to the panel above.
       def panel_above
-        Panel.panel_above pointer
+        Panel.panel_above(pointer)
       end
       alias above panel_above
 
@@ -114,26 +114,26 @@ module VER
       # If the panel argument is a pointer to 0, it returns a pointer to the
       # top panel in the stack.
       def panel_below
-        Panel.panel_below pointer
+        Panel.panel_below(pointer)
       end
       alias below panel_below
 
       # Returns the user pointer for a given panel.
       def panel_userptr
-        Panel.panel_userptr pointer
+        Panel.panel_userptr(pointer)
       end
       alias userptr panel_userptr
 
       # sets the panel's user pointer.
       def set_panel_userptr(user_pointer)
-        Panel.set_panel_userptr pointer, user_pointer
+        Panel.set_panel_userptr(pointer, user_pointer)
       end
       alias userptr= set_panel_userptr
 
       # Remove the panel from the stack and deallocate the PANEL structure.
       # Doesn't remove the associated window.
       def del_panel
-        Panel.del_panel pointer
+        Panel.del_panel(pointer)
       end
       alias del del_panel
       alias delete del_panel

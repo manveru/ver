@@ -8,7 +8,6 @@ module VER
     attr_accessor :layout
 
     def initialize(layout)
-      @visible = true
       reset_layout(layout)
 
       super(height, width, top, left)
@@ -75,7 +74,7 @@ module VER
     end
 
     def puts(*strings)
-      print(strings.join("\n") << "\n")
+      print(strings.join("\n") << "\n") if visible?
     end
 
     def refresh
@@ -87,11 +86,11 @@ module VER
     end
 
     def color=(color)
-      wcolor_set @color = color
+      wcolor_set @color = color if visible?
     end
 
     def highlight_line(color, y, x, max)
-      mvwchgat(y, x, max, Ncurses::A_STANDOUT, 0)
+      mvwchgat(y, x, max, Ncurses::A_NORMAL, color) if visible?
     end
 
     def getch
@@ -138,13 +137,11 @@ module VER
     def hide
       @panel.hide
       Ncurses::Panel.update_panels
-      @visible = false
     end
 
     def show
       @panel.show
       Ncurses::Panel.update_panels
-      @visible = true
     end
 
     def on_top
@@ -152,8 +149,13 @@ module VER
       Ncurses::Panel.update_panels
     end
 
+    def on_bottom
+      @panel.bottom
+      Ncurses::Panel.update_panels
+    end
+
     def visible?
-      @visible
+      @panel.hidden?
     end
   end
 end
