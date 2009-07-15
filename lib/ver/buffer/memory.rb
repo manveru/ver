@@ -50,14 +50,22 @@ module VER
       @data[range(s,len)]
     end
 
-    def []=(pos, len, string = nil)
-      @history.record do |r|
-        if string.nil?
-          r.replace(pos.begin, pos.end, len)
-        else
-          r.replace(pos, len, string)
-        end
+    def []=(*args)
+      case args.size
+      when 2
+        s, replacement = args
+      when 3
+        s, len, replacement = args
+      else
+        raise ArgumentError
       end
+
+      range = range(s, len)
+
+      @history.record do |r|
+        r.replace(range.begin, range.end - range.begin + 1, replacement.to_s)
+      end
+
     ensure
       @modified = @dirty = true
     end
