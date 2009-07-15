@@ -55,7 +55,6 @@ module VER
             paths << {:string => match, :range => range}
           end
 
-          Log.debug word => paths
           return word, paths, skip = true
         end
 
@@ -369,7 +368,6 @@ module VER
             operate_on_selection do |selecting|
               range = selection.to_range
               range = (range.begin..-1) if range.end >= (buffer.size - 1)
-              Log.debug :range => range, :buffer_size => buffer.size
 
               Open3.popen3(cmd){|stdin, stdout, stderr|
                 stdin.print(buffer[range])
