@@ -62,6 +62,10 @@ module VER
       raise NotImplementedError
     end
 
+    def insert(pos, string)
+      raise NotImplementedError
+    end
+
     def undo
       @history.compact!
       @history.undo

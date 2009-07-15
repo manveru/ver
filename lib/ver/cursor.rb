@@ -156,11 +156,11 @@ module VER
     end
 
     def delta
-       [pos, mark].max - [pos, mark].min
+      [pos, mark].max - [pos, mark].min
     end
 
     def insert(string)
-      buffer[pos, 0] = string
+      buffer.insert(pos, string)
       self.pos += string.size
     end
 

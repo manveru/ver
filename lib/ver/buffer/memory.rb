@@ -37,15 +37,13 @@ module VER
     def <<(content)
       @data[@data.size,0] = content
     ensure
-      @modified = true
-      @dirty = true
+      @modified = @dirty = true
     end
 
     def replace(string)
       @data[range(0, size)] = string
-
-      @modified = true
-      @dirty = true
+    ensure
+      @modified = @dirty = true
     end
 
     def [](s=nil, len=nil)
@@ -53,8 +51,6 @@ module VER
     end
 
     def []=(pos, len, string = nil)
-      VER.warn :[]= => {:pos => pos, :len => len, :string => string}
-
       @history.record do |r|
         if string.nil?
           r.replace(pos.begin, pos.end, len)
@@ -62,9 +58,16 @@ module VER
           r.replace(pos, len, string)
         end
       end
+    ensure
+      @modified = @dirty = true
+    end
 
-      @modified = true
-      @dirty = true
+    def insert(pos, string)
+      @history.record do |r|
+        r.insert(pos, string)
+      end
+    ensure
+      @modified = @dirty = true
     end
 
     def modified?

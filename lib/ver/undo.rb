@@ -56,7 +56,9 @@ module VER
       # data consecutive.
       # This rewrites already applied history only.
       def compact!
-        applied.compact! if applied
+        return unless applied
+        applied.compact!
+        self.pending = applied.next
       end
     end
 
@@ -154,7 +156,7 @@ module VER
           predo_pos, predo_string = predo_args
           sredo_pos, sredo_string = sredo_args
 
-          return unless predo_pos + 1 == sredo_pos
+          return parent.compact! unless predo_pos + 1 == sredo_pos
 
           redo_pos = predo_pos
           redo_string = predo_string + sredo_string
@@ -169,14 +171,17 @@ module VER
           self.parent = grandparent = parent.parent
 
           # recurse into a new compact cycle if we have a grandparent
-          compact! if grandparent
+          if grandparent
+            grandparent.next = self
+            compact!
+          end
         when :replace
           predo_pos, predo_len, predo_string = predo_args
           sredo_pos, sredo_len, sredo_string = sredo_args
 
           # the records have to be consecutive so they can still be applied by a
           # single undo/redo
-          return unless predo_pos + 1 == sredo_pos
+          return parent.compact! unless predo_pos + 1 == sredo_pos
 
           redo_pos = predo_pos
           redo_len = predo_len + sredo_len
@@ -192,7 +197,10 @@ module VER
           self.parent = grandparent = parent.parent
 
           # recurse into a new compact cycle if we have a grandparent
-          compact! if grandparent
+          if grandparent
+            grandparent.next = self
+            compact!
+          end
         end
       end
 
