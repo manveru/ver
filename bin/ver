@@ -30,6 +30,8 @@ end
 
 op.parse!(ARGV)
 
+ENV['ESCDELAY'] ||= '1'
+
 if ARGV.include?('-')
   text = $stdin.readlines.join("\n")
 

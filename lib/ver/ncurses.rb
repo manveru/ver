@@ -39,7 +39,7 @@ module VER
     # nothing has been typed.
     # The value of tenths must be a number between 1 and 255.
     # Use nocbreak to leave half-delay mode.
-    Ncurses::halfdelay(tenths = 1)
+    # Ncurses::halfdelay(tenths = 1)
 
     # The nodelay option causes getch to be a non-blocking call. If no input is
     # ready, getch returns ERR. If disabled (bf is FALSE), getch waits until a
@@ -69,7 +69,7 @@ module VER
     # erase/kill character-processing (interrupt and flow control characters
     # are unaffected), making characters typed by the user immediately
     # available to the program.
-    Ncurses.cbreak
+    # Ncurses.cbreak
 
     # The raw and noraw routines place the terminal into or out of raw mode.
     # Raw mode is similar to cbreak mode, in that characters typed are

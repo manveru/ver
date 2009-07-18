@@ -14,6 +14,7 @@ module VER
       @panel = Ncurses::Panel.new(self)
 
       keypad true
+      nodelay true
     end
 
     def resize_with(layout)
