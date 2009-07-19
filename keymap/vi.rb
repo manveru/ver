@@ -123,6 +123,8 @@ VER.let :control => [:general, :control_movement] do
 
   map('C-e'){ eval_current_line }
 
+  map('C-n'){ open_new_file }
+
   macro('a', 'l i')
   macro('A', '$ i')
   macro('o', '$ i return')

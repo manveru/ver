@@ -137,6 +137,11 @@ module VER
           recenter_view
         end
 
+        # Open an empty file (in memory), called 'unnamed'.
+        def open_new_file
+          View[:file].buffer = FileBuffer.new(:file, 'unnamed')
+        end
+
         SAVE_AS_PROC = lambda{|got|
           [true, [got]]
         }
