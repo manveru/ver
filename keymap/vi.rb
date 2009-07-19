@@ -87,8 +87,8 @@ VER.let :control => [:general, :control_movement] do
   count_map(7, 'g'){ goto_line(@count) }
   count_map(2, '%'){ goto_percent(@count) }
 
-  map(/^(x|dc)$/){ VER.clipboard.copy delete_right }
-  map('X'){        VER.clipboard.copy delete_left }
+  map(/^(x|dc)$/){ VER.clipboard.copy cursor.delete_right }
+  map('X'){        VER.clipboard.copy cursor.delete_left }
 
   map(['r', /^[[:print:]]$/]){ cursor.replace(@arg) }
   map(['r', 'return']){ cursor.replace("\n") }
