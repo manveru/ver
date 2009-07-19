@@ -356,6 +356,31 @@ module VER
           end
         end
 
+        def eval_current_line
+          output = eval(cursor.current_line)
+          buffer[cursor.eol, 0] = "\n# => #{output.inspect}"
+        end
+
+        def eval_selection
+          operate_on_selection do |selecting|
+            if selecting == :linewise
+              if selection.mark > selection.pos
+                selection.mark = selection.eol(selection.mark)
+                selection.pos  = selection.bol(selection.pos)
+              else
+                selection.mark = selection.bol(selection.mark)
+                selection.pos  = selection.eol(selection.pos)
+              end
+            end
+
+            code = selection.to_s
+            output = eval(code)
+
+            pos = [selection.pos, selection.mark].max
+            buffer.insert(pos, "\n# => #{output.inspect}")
+          end
+        end
+
         FILTER_SELECTION_ASK_PROC = lambda{|got|
           [true, [got]]
         }

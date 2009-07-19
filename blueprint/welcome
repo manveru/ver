@@ -15,7 +15,6 @@ Various help commands (all not implemented yet):
   [M-h g] : Grep help
   [M-h t] : Open tutorial
 
-
 Quick intro:
 
 VER is a modal editor, drawing from both Emacs and Vim for inspiration, as they are both excellent projects but have very different downsides.
@@ -31,6 +30,7 @@ I tried to address these downsides:
 Currently working:
 
   * [C-x] : Eval a line of ruby
+  * [C-e] : Eval current line and output result below
   * Buffers
     * [C-s] : Save buffer contents to file
   * Opening new buffers
@@ -62,6 +62,7 @@ Currently working:
       * [<] : Unindent selection
     * Filter
       * [!] : Filter selection through external program
+      * [C-e] : Eval selection and output result below
   * Syntax highlighting (for .rb and Rakefile only for now)
     - This has been disabled due to speed problems, working on it.
   * Searching

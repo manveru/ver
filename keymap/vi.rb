@@ -121,6 +121,8 @@ VER.let :control => [:general, :control_movement] do
   map('u'){ undo }
   map('C-r'){ self.redo }
 
+  map('C-e'){ eval_current_line }
+
   macro('a', 'l i')
   macro('A', '$ i')
   macro('o', '$ i return')
@@ -146,6 +148,7 @@ VER.let :selection => :control do
   map('>'){ indent_selection }
   map('<'){ unindent_selection }
   map('!'){ filter_selection_ask }
+  map('C-e'){ eval_selection }
 end
 
 VER.let :insert => :general do
@@ -155,6 +158,8 @@ VER.let :insert => :general do
   map('return'){    cursor.insert_newline }
   map('space'){     cursor.insert(' ') }
   map(/^(C-c|C-q|esc)$/){    view.mode = :control }
+
+  map('C-e'){ eval_current_line }
 
   # should be smart and stick to last chosen completion
   map('tab'){ complete }
