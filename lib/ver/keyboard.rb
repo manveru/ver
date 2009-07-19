@@ -259,6 +259,12 @@ module VER
 
     # special
     key 127, 'backspace'
+
+    # screen function keys
+    key 265, 'F1'
+    key 266, 'F2'
+    key 267, 'F3'
+    key 268, 'F4'
     key 269, 'F5'
     key 270, 'F6'
     key 271, 'F7'
@@ -267,6 +273,7 @@ module VER
     key 274, 'F10'
     key 275, 'F11'
     key 276, 'F12'
+
     key 338, 'npage'
     key 339, 'ppage'
     key 514, 'C-down'
