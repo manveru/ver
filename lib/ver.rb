@@ -20,6 +20,7 @@ module VER
 
   require 'vendor/silence'
   require 'vendor/fuzzy_file_finder'
+  require 'vendor/textpow'
 
   require 'ver/log'
   require 'ver/messaging'

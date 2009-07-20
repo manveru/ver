@@ -612,7 +612,7 @@ module VER
           draw_visible
           draw_padding
 
-          # highlight_syntax
+          highlight_syntax
           refresh_search_highlight if search and buffer.dirty?
           highlight_search if search
           highlight_selection if selection
@@ -757,27 +757,18 @@ module VER
       def highlight_syntax
         return unless syntax
 
-        center = cursor.pos
+        visible = buffer.line_range(top..bottom)
+        from, to = visible.begin, visible.end
+        syntax.highlight(self, from, to)
 
-        if @last_range and @last_range.include?(center) and not buffer.dirty?
-          visible = buffer.line_range(top..bottom)
-          from, to = visible.begin, visible.end
-        else
-          offset = (window.height * window.width) / 2
-          from, to = (center - offset), (center + offset)
-          @last_range = ([0, from].max..[buffer.size, to].min)
-
-          syntax.parse(buffer, @last_range)
-        end
-
-        syntax.matches.each do |match|
-          next unless from <= match.pos and to >= match.mark
-
-          (from_y, from_x), (to_y, to_x) = match.to_pos, match.to_pos(true)
-          from_y -= @top; from_x -= @left; to_y -= @top; to_x -= @left
-
-          window.highlight_line(match.color, from_y, from_x, to_x - from_x)
-        end
+#         do |match|
+#           # next unless from <= match.pos and to >= match.mark
+#
+#           (from_y, from_x), (to_y, to_x) = match.to_pos, match.to_pos(true)
+#           from_y -= @top; from_x -= @left; to_y -= @top; to_x -= @left
+#
+#           window.highlight_line(match.color, from_y, from_x, to_x - from_x)
+#         end
       end
 
       def highlight(cursor, color = cursor.color)

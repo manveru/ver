@@ -3,7 +3,6 @@ module VER
     EXT_NAME = {}
 
     def self.register(name, *extensions)
-      autoload name, "ver/syntax/#{name}".downcase
       extensions.each{|ext| EXT_NAME[ext] = name }
     end
 
@@ -13,151 +12,66 @@ module VER
       base = File.basename(filename.to_str)
 
       EXT_NAME.each do |ext, name|
-        return const_get(name).new(name) if base =~ ext
+        return Common.new(name) if base =~ ext
       end
 
       return nil
     end
 
-    register :Ruby, /\.rb$/, /^rakefile(\.rb)?$/i
-#     register :Haml, /\.haml$/
-#     register :Markdown, /\.mk?d/, /\.markdown/i
+    register :ruby, /\.rb$/, /^rakefile(\.rb)?$/i
+    register :haml, /\.haml$/
+    register :markdown, /\.mk?d/, /\.markdown/i
 
     class Common
-      attr_reader :matches, :syntax, :name
+      attr_reader :syntax, :name
 
       def initialize(name)
-        @name = name.to_s
-
-        @syntax = {
-          :matches => [],
-          :regions => [],
-        }
-
-        @matches = []
-        @compiled = false
+        @name = name
+        file = ::File.expand_path("../syntax/#{name}.syntax", __FILE__)
+        @syntax = Textpow::SyntaxNode.load(file)
       end
 
-      def let(color, regex)
-        @syntax << [Color[color], regex]
-      end
-
-      def region(name, from, to, options = {})
-        @syntax[:regions] << [name, from, to, options]
-      end
-
-      def match(name, regexp, options = {})
-        @syntax[:matches] << [name, regexp, options]
-      end
-
-      def color(name)
-        case @highlights[name] || name
-        when :string
-          Color[:blue]
-        when :comment
-          Color[68]
-        when :identifier
-          Color[:yellow]
-        when :italic
-          Color[:green]
-        when :bold
-          Color[:black, :white]
-        else
-          Color[:magenta]
-        end
-      end
-
-      def parse(buffer, range)
-        compile unless compiled?
-
-        @matches.clear
-
-        @from = range.begin
-        @scanner = buffer.to_scanner(range)
-
-        until @scanner.eos?
-          pos = @scanner.pos
-          step(buffer)
-          @scanner.scan(/./um) if pos == @scanner.pos
+      class Processor < Struct.new(:window, :buffer, :theme, :lineno)
+        def initialize(window, buffer, theme)
+          self.buffer, self.window, self.theme =
+            buffer, window, theme
+          self.lineno = 0
         end
 
-        @scanner = nil
-
-        return @matches
-      end
-
-      def step(buffer)
-        return unless found = step_regions || step_matches
-
-        name, pos, mark = *found
-
-        cursor = buffer.new_cursor(pos, mark)
-        cursor.color = color(name)
-        @matches << cursor
-      end
-
-      def step_matches
-        @syntax[:matches].each do |m|
-          found = step_match(*m)
-          return found if found
+        def color(name)
+          theme[name]
         end
 
-        return nil
-      end
-
-      def step_regions
-        @syntax[:regions].each do |r|
-          found = step_region(*r)
-          return found if found
+        def start_parsing(name)
         end
 
-        return nil
-      end
+        def end_parsing(name)
+        end
 
-      def step_region(name, from, to, options)
-        return if options[:bol] and not @scanner.bol?
+        def new_line(line)
+          self.lineno += 1
+        end
 
-        debug = name == :mkd_blockquote
-        to, backoff = /\n/, 1 if to == :eol
+        def open_tag(name, pos)
+          @pos = pos
+        end
 
-        if from_str = @scanner.scan(from)
-          pos = @from + (@scanner.pos - from_str.size)
-
-          if to_str = @scanner.scan_until(to)
-            @scanner.pos -= backoff if backoff
-            mark = @from + @scanner.pos
-
-            return name, pos, mark
+        def close_tag(name, mark)
+          if color(name) != Color[:white]
+            # VER.warn [color(name), lineno - 1, @pos, mark]
           end
+
+          window.highlight_line(color(name), lineno - 1, @pos, mark - @pos)
         end
-
-        return
       end
 
-      def step_match(name, regexp, options)
-        return if options[:bol] and not @scanner.bol?
+      def highlight(view, top, bottom)
+        require 'ver/theme/murphy'
+        theme = Theme::Murphy
+        pr = Processor.new(view.window, view.buffer, theme)
+        code = view.buffer[top..bottom]
 
-        if str = @scanner.scan(regexp)
-          pos = @from + (@scanner.pos - str.size)
-          mark = @from + @scanner.pos
-
-          return name, pos, mark
-        end
-
-        return
-      end
-
-      def highlights(hash)
-        @highlights = hash
-      end
-
-      def compile
-        spec
-        @compiled = true
-      end
-
-      def compiled?
-        @compiled
+        syntax.parse(code, pr)
       end
     end
   end
