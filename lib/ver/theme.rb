@@ -1,27 +1,31 @@
 module VER
-  class Theme
-    # Ported from VIMs murphy theme
-    Murphy = Theme.new{|s|
-      on :default, '90ee90'
+  class Theme < Struct.new(:colors)
+    def initialize(colors = {}, &block)
+      self.colors = colors
+      instance_eval(&block) if block_given?
+    end
 
-      on /comment/, 'ffa500'
-      on /string/, 'ff00ff'
-      on /numeric/, 'ffffff'
-      on /constant\.language/, 'bebebe'
-      on /constant\.numeric/, 'ffffff'
-      on /constant\.other\.symbol/, 'ffff00'
-      on /support\.class/, 'bebebe'
-      on /keyword\.other\.special-method/, 'f5deb3'
-      on /keyword\.control/, 'ffff00'
-      on /variable/, '00ffff'
-    }
+    def on(match, color)
+      colors[match] = Color[color]
+    end
+    alias []= on
+
+    def [](name)
+      colors.each do |match, color|
+        case match
+        when Symbol
+          return color if match == name
+        else
+          return color if match =~ name
+        end
+      end
+
+      colors[:default]
+    end
   end
 end
 
 __END__
-These stay here for future reference, for most of them I have no idea what
-they're supposed to match.
-
 /comment\.line\.number-sign/
 /constant\.language/
 /constant\.numeric/

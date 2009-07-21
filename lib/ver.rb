@@ -45,6 +45,7 @@ module VER
   require 'ver/clipboard'
   require 'ver/clipboard/xclip'
   require 'ver/syntax'
+  require 'ver/theme'
 
   require 'ver/view'
   require 'ver/view/file'
