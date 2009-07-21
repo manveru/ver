@@ -260,6 +260,11 @@ module VER
     # special
     key 127, 'backspace'
 
+    key 258, 'down'
+    key 259, 'up'
+    key 260, 'left'
+    key 261, 'right'
+
     # screen function keys
     key 265, 'F1'
     key 266, 'F2'
