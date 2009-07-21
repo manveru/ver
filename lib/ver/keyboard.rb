@@ -66,10 +66,82 @@ module VER
 
     KEYS = {}
 
-    key 27, 258, 'M-down'
-    key 27, 259, 'M-up'
-    key 27, 260, 'M-left'
-    key 27, 261, 'M-right'
+    key 0, 'C-space'
+    key 1, 'C-a'
+    key 2, 'C-b'
+    key 3, 'C-c'
+    key 4, 'C-d'
+    key 5, 'C-e'
+    key 6, 'C-f'
+    key 7, 'C-g'
+    key 8, 'C-h'
+    key 9, 'tab'
+    key 10, 'return' # C-j
+    key 11, 'C-k'
+    key 12, 'C-l'
+    key 13, 'return' # C-m
+    key 14, 'C-n'
+    key 15, 'C-o'
+    key 16, 'C-p'
+    key 17, 'C-q'
+    key 18, 'C-r'
+    key 19, 'C-s'
+    key 20, 'C-t'
+    key 21, 'C-u'
+    key 22, 'C-v'
+    key 23, 'C-w'
+    key 24, 'C-x'
+    key 25, 'C-y'
+    key 26, 'C-z'
+    # key 27, 'esc' # prefix for following keys
+    key 27, 32, "M-space"
+    key 27, 33, "M-!"
+    key 27, 34, "M-\""
+    key 27, 35, "M-#"
+    key 27, 36, "M-$"
+    key 27, 37, "M-%"
+    key 27, 38, "M-&"
+    key 27, 39, "M-'"
+    key 27, 40, "M-("
+    key 27, 41, "M-)"
+    key 27, 42, "M-*"
+    key 27, 43, "M-+"
+    key 27, 44, "M-,"
+    key 27, 45, "M--"
+    key 27, 46, "M-."
+    key 27, 47, "M-/"
+    key 27, 48, "M-0"
+    key 27, 49, "M-1"
+    key 27, 50, "M-2"
+    key 27, 51, "M-3"
+    key 27, 52, "M-4"
+    key 27, 53, "M-5"
+    key 27, 54, "M-6"
+    key 27, 55, "M-7"
+    key 27, 56, "M-8"
+    key 27, 57, "M-9"
+    key 27, 58, "M-:"
+    key 27, 59, "M-;"
+    key 27, 60, "M-<"
+    key 27, 61, "M-="
+    key 27, 62, "M->"
+    key 27, 63, "M-?"
+    key 27, 64, "M-@"
+    key 27, 65, "M-A"
+    key 27, 66, "M-B"
+    key 27, 67, "M-C"
+    key 27, 68, "M-D"
+    key 27, 69, "M-E"
+    key 27, 70, "M-F"
+    key 27, 71, "M-G"
+    key 27, 72, "M-H"
+    key 27, 73, "M-I"
+    key 27, 74, "M-J"
+    key 27, 75, "M-K"
+    key 27, 76, "M-L"
+    key 27, 77, "M-M"
+    key 27, 78, "M-N"
+    # key 27, 79, "M-O" # prefix for following keys
     key 27, 79, 100, 'C-left'
     key 27, 79, 50, 81, 'F14'
     key 27, 79, 50, 82, 'F15'
@@ -82,6 +154,18 @@ module VER
     key 27, 79, 97, 'C-up'
     key 27, 79, 98, 'C-down'
     key 27, 79, 99, 'C-right'
+    key 27, 80, "M-P"
+    key 27, 81, "M-Q"
+    key 27, 82, "M-R"
+    key 27, 83, "M-S"
+    key 27, 84, "M-T"
+    key 27, 85, "M-U"
+    key 27, 86, "M-V"
+    key 27, 87, "M-W"
+    key 27, 88, "M-X"
+    key 27, 89, "M-Y"
+    key 27, 90, "M-Z"
+    # key 27, 91, "M-[" # prefix for following keys
     key 27, 91, 49, 126, 'end'
     key 27, 91, 49, 126, 'home'
     key 27, 91, 49, 49, 126, 'F1'
@@ -114,8 +198,6 @@ module VER
     key 27, 91, 51, 59, 51, 126, 'del'
     key 27, 91, 52, 126, 'end'
     key 27, 91, 55, 126, 'home'
-    key 27, 91, 55, 126, 'home'
-    key 27, 91, 56, 126, 'end'
     key 27, 91, 56, 126, 'end'
     key 27, 91, 65, 'up'
     key 27, 91, 66, 'down'
@@ -129,38 +211,46 @@ module VER
     key 27, 91, 91, 67, 'F3'
     key 27, 91, 91, 68, 'F4'
     key 27, 91, 91, 69, 'F5'
-
-    key 0,   'C-space'
-    key 1,   'C-a'
-    key 2,   'C-b'
-    key 3,   'C-c'
-    key 4,   'C-d'
-    key 5,   'C-e'
-    key 6,   'C-f'
-    key 7,   'C-g'
-    key 8,   'C-h'
-    key 9,   'tab'
-    key 10,  'return' # C-j
-    key 11,  'C-k'
-    key 12,  'C-l'
-    key 13,  'return' # C-m
-    key 14,  'C-n'
-    key 15,  'C-o'
-    key 16,  'C-p'
-    key 17,  'C-q'
-    key 18,  'C-r'
-    key 19,  'C-s'
-    key 20,  'C-t'
-    key 21,  'C-u'
-    key 22,  'C-v'
-    key 23,  'C-w'
-    key 24,  'C-x'
-    key 25,  'C-y'
-    key 26,  'C-z'
-    # key 27, 'esc'
+    key 27, 92, "M-\\"
+    key 27, 93, "M-]"
+    key 27, 94, "M-^"
+    key 27, 95, "M-_"
+    key 27, 96, "M-`"
+    key 27, 97, "M-a"
+    key 27, 98, "M-b"
+    key 27, 99, "M-c"
+    key 27, 100, "M-d"
+    key 27, 101, "M-e"
+    key 27, 102, "M-f"
+    key 27, 103, "M-g"
+    key 27, 104, "M-h"
+    key 27, 105, "M-i"
+    key 27, 106, "M-j"
+    key 27, 107, "M-k"
+    key 27, 108, "M-l"
+    key 27, 109, "M-m"
+    key 27, 110, "M-n"
+    key 27, 111, "M-o"
+    key 27, 112, "M-p"
+    key 27, 113, "M-q"
+    key 27, 114, "M-r"
+    key 27, 115, "M-s"
+    key 27, 116, "M-t"
+    key 27, 117, "M-u"
+    key 27, 118, "M-v"
+    key 27, 119, "M-w"
+    key 27, 120, "M-x"
+    key 27, 121, "M-y"
+    key 27, 122, "M-z"
+    key 27, 123, "M-{"
+    key 27, 124, "M-|"
+    key 27, 125, "M-}"
+    key 27, 126, "M-~"
+    key 27, 258, 'M-down'
+    key 27, 259, 'M-up'
+    key 27, 260, 'M-left'
+    key 27, 261, 'M-right'
     key 30,  'C-^'
-
-    # ASCII
     key 32,  'space'
     key 33,  "!"
     key 34,  "\""
@@ -285,103 +375,6 @@ module VER
     key 516, 'C-left'
     key 518, 'C-right'
     key 521, 'C-up'
-
-    # Mod keys
-    key 27, 32, "M- "
-    key 27, 33, "M-!"
-    key 27, 34, "M-\""
-    key 27, 35, "M-#"
-    key 27, 36, "M-$"
-    key 27, 37, "M-%"
-    key 27, 38, "M-&"
-    key 27, 39, "M-'"
-    key 27, 40, "M-("
-    key 27, 41, "M-)"
-    key 27, 42, "M-*"
-    key 27, 43, "M-+"
-    key 27, 44, "M-,"
-    key 27, 45, "M--"
-    key 27, 46, "M-."
-    key 27, 47, "M-/"
-    key 27, 48, "M-0"
-    key 27, 49, "M-1"
-    key 27, 50, "M-2"
-    key 27, 51, "M-3"
-    key 27, 52, "M-4"
-    key 27, 53, "M-5"
-    key 27, 54, "M-6"
-    key 27, 55, "M-7"
-    key 27, 56, "M-8"
-    key 27, 57, "M-9"
-    key 27, 58, "M-:"
-    key 27, 59, "M-;"
-    key 27, 60, "M-<"
-    key 27, 61, "M-="
-    key 27, 62, "M->"
-    key 27, 63, "M-?"
-    key 27, 64, "M-@"
-    key 27, 65, "M-A"
-    key 27, 66, "M-B"
-    key 27, 67, "M-C"
-    key 27, 68, "M-D"
-    key 27, 69, "M-E"
-    key 27, 70, "M-F"
-    key 27, 71, "M-G"
-    key 27, 72, "M-H"
-    key 27, 73, "M-I"
-    key 27, 74, "M-J"
-    key 27, 75, "M-K"
-    key 27, 76, "M-L"
-    key 27, 77, "M-M"
-    key 27, 78, "M-N"
-    key 27, 79, "M-O"
-    key 27, 80, "M-P"
-    key 27, 81, "M-Q"
-    key 27, 82, "M-R"
-    key 27, 83, "M-S"
-    key 27, 84, "M-T"
-    key 27, 85, "M-U"
-    key 27, 86, "M-V"
-    key 27, 87, "M-W"
-    key 27, 88, "M-X"
-    key 27, 89, "M-Y"
-    key 27, 90, "M-Z"
-    # key 27, 91, "M-[" # prefix for lots of keys
-    key 27, 92, "M-\\"
-    key 27, 93, "M-]"
-    key 27, 94, "M-^"
-    key 27, 95, "M-_"
-    key 27, 96, "M-`"
-    key 27, 97, "M-a"
-    key 27, 98, "M-b"
-    key 27, 99, "M-c"
-    key 27, 100, "M-d"
-    key 27, 101, "M-e"
-    key 27, 102, "M-f"
-    key 27, 103, "M-g"
-    key 27, 104, "M-h"
-    key 27, 105, "M-i"
-    key 27, 106, "M-j"
-    key 27, 107, "M-k"
-    key 27, 108, "M-l"
-    key 27, 109, "M-m"
-    key 27, 110, "M-n"
-    key 27, 111, "M-o"
-    key 27, 112, "M-p"
-    key 27, 113, "M-q"
-    key 27, 114, "M-r"
-    key 27, 115, "M-s"
-    key 27, 116, "M-t"
-    key 27, 117, "M-u"
-    key 27, 118, "M-v"
-    key 27, 119, "M-w"
-    key 27, 120, "M-x"
-    key 27, 121, "M-y"
-    key 27, 122, "M-z"
-    key 27, 123, "M-{"
-    key 27, 124, "M-|"
-    key 27, 125, "M-}"
-    key 27, 126, "M-~"
 
     ASCII     = (0..255).map{|c| c.chr }
     CONTROL   = ASCII.grep(/[[:cntrl:]]/)
