@@ -31,11 +31,10 @@ module VER
         @syntax = Textpow::SyntaxNode.load(file)
       end
 
-      class Processor < Struct.new(:window, :buffer, :theme, :lineno)
+      class Processor < Struct.new(:window, :buffer, :theme, :lineno, :stack)
         def initialize(window, buffer, theme)
           self.buffer, self.window, self.theme =
             buffer, window, theme
-          self.lineno = 0
         end
 
         def color(name)
@@ -43,9 +42,12 @@ module VER
         end
 
         def start_parsing(name)
+          self.lineno = -1
+          self.stack = []
         end
 
         def end_parsing(name)
+          stack.clear
         end
 
         def new_line(line)
@@ -53,7 +55,7 @@ module VER
         end
 
         def open_tag(name, pos)
-          @pos = pos
+          stack << [name, pos]
         end
 
         def close_tag(name, mark)
@@ -61,7 +63,13 @@ module VER
             # VER.warn [color(name), lineno - 1, @pos, mark]
           end
 
-          window.highlight_line(color(name), lineno - 1, @pos, mark - @pos)
+          sname, pos = stack.pop
+
+          if name == sname
+            window.highlight_line(color(name), lineno, pos, mark - pos)
+          else
+            VER.warn("Nesting mismatch: #{name} != #{sname}")
+          end
         end
       end
 

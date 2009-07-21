@@ -346,7 +346,7 @@ module VER
     key 27, 88, "M-X"
     key 27, 89, "M-Y"
     key 27, 90, "M-Z"
-    key 27, 91, "M-["
+    # key 27, 91, "M-[" # prefix for lots of keys
     key 27, 92, "M-\\"
     key 27, 93, "M-]"
     key 27, 94, "M-^"
