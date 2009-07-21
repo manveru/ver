@@ -371,6 +371,7 @@ module VER
 
     key 338, 'npage'
     key 339, 'ppage'
+    key 410, 'resize'
     key 514, 'C-down'
     key 516, 'C-left'
     key 518, 'C-right'
