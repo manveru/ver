@@ -372,7 +372,7 @@ module VER
           sorted = highlights.sort_by{|c| [c.pos, c.mark].min }
 
           found = post_search(sorted){|c|
-            c.pos >= cursor.pos and c.mark >= cursor.pos
+            c.pos > cursor.pos and c.mark > cursor.pos
           }
 
           if wraparound && !found
@@ -797,6 +797,8 @@ module VER
         else
           highlights[:search].clear
         end
+
+        @redraw = true
       end
 
       def refresh_search_highlight
