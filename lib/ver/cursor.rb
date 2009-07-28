@@ -236,7 +236,7 @@ module VER
     end
     alias find index
 
-    WORD = /[A-Za-z0-9'-]+/
+    WORD = /[A-Za-z0-9'_-]+/
     LEFT_CHUNK = /#{WORD}\z/
     RIGHT_CHUNK = /\A#{WORD}/
 

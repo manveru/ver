@@ -2,6 +2,27 @@ module VER
   class View
     class File < View
       module Methods
+        # Insertion
+        def insert(string)
+          cursor.insert(string)
+        end
+
+        def insert_newline
+          cursor.insert_newline
+        end
+
+        def auto_indent
+          indent = ''
+
+          cursor.virtual do
+            cursor.up
+            line = cursor.current_line
+            indent = line[/^\s*/]
+          end
+
+          insert(indent)
+        end
+
         # Movement
         def go_line_up
           cursor.up

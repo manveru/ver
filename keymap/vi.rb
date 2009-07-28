@@ -157,11 +157,11 @@ VER.let :selection => :control do
 end
 
 VER.let :insert => :general do
-  map(/^(#{chars_regex})$/){ cursor.insert(@arg) }
+  map(/^(#{chars_regex})$/){ insert(@arg) }
   map('backspace'){ VER.clipboard.copy cursor.delete_left }
   map('dc'){        VER.clipboard.copy cursor.delete_right }
-  map('return'){    cursor.insert_newline }
-  map('space'){     cursor.insert(' ') }
+  map('return'){    insert_newline; auto_indent }
+  map('space'){     insert(' ') }
   map(/^(C-c|C-q|esc)$/){    view.mode = :control }
 
   map('C-e'){ eval_current_line }
