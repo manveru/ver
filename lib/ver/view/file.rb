@@ -771,10 +771,8 @@ module VER
 
         if hl = buffer.grep_cursor(regex, cursor.pos)
           hl.color = @colors[:search]
-          highlights[:search] = [hl]
-
-          @redraw = true
-          draw
+          highlight hl
+          refresh
         else
           highlights[:search].clear
         end
