@@ -58,6 +58,7 @@ class FuzzyFileFinder
         string
       end
     end
+    alias to_str to_s
   end
 
   # Used internally to represent a file within the directory tree.
