@@ -346,11 +346,18 @@ module VER
           end
         end
 
-        def search_next
+        def search_next(wraparound = true)
           highlights = view.highlights[:search]
           sorted = highlights.sort_by{|c| [c.pos, c.mark].min }
 
-          post_search(sorted){|c| c.pos > cursor.pos and c.mark > cursor.pos }
+          found = post_search(sorted){|c|
+            c.pos >= cursor.pos and c.mark >= cursor.pos
+          }
+
+          if wraparound && !found
+            post_search(sorted){ true }
+            VER.info("End of buffer, wrap search")
+          end
         end
 
         def search_previous
@@ -365,6 +372,7 @@ module VER
           view.cursor.pos = coming.pos
           view.adjust_pos
           view.refresh
+          true
         end
 
         # Selection
