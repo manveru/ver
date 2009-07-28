@@ -2,7 +2,10 @@ chars_regex = VER::Keyboard::PRINTABLE_REGEX
 
 VER.let :general_movement do
   # Movement
-  map(/^(up|down|left|right)$/){ cursor.send(@arg) }
+  map('up'){ go_line_up }
+  map('down'){ go_line_down }
+  map('left'){ go_char_left }
+  map('right'){ go_char_right }
 end
 
 VER.let :general => :general_movement do
@@ -18,18 +21,18 @@ VER.let :general => :general_movement do
   map(/^(C-l|resize)$/){ VER::View.resize }
 
   # Switching buffers real fast
-  map(/^M-(\d)$/){ view.buffer = view.buffers[@arg.to_i - 1] }
-  map('C-^'){ view.switch_to_previous_buffer }
+  map(/^M-(\d)$/){ switch_to_buffer_number(@arg) }
+  map('C-^'){ switch_to_previous_buffer }
 end
 
 VER.let :control_movement => :general_movement do
-  map('0'){ cursor.beginning_of_line }
-  map('$'){ cursor.end_of_line }
+  map('0'){ go_beginning_of_line }
+  map('$'){ go_end_of_line }
 
-  map('w'){ jump_right(/[\w-]+/) }
-  map('b'){ jump_left(/[^\w-]+/) }
-  map('W'){ jump_right(/\S+/) }
-  map('B'){ jump_left(/\s+/) }
+  map('w'){ go_word_right } # jump_right(/[\w-]+/) }
+  map('b'){ go_word_left } # jump_left(/[^\w-]+/) }
+  map('W'){ go_chunk_right } # jump_right(/\S+/) }
+  map('B'){ go_chunk_left } # jump_left(/\s+/) }
 
   macro('h',       'left')
   macro('j',       'down')

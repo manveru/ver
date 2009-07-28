@@ -2,6 +2,66 @@ module VER
   class View
     class File < View
       module Methods
+        # Movement
+        def go_line_up
+          cursor.up
+        end
+
+        def go_line_down
+          cursor.down
+        end
+
+        def go_char_left
+          cursor.left
+        end
+
+        def go_char_right
+          cursor.right
+        end
+
+        def go_beginning_of_line
+          cursor.beginning_of_line
+        end
+
+        def go_end_of_line
+          cursor.end_of_line
+        end
+
+        GO_WORD = /[\w]/
+        def go_word_right
+          return unless match = buffer[cursor.pos..-1].match(/.\b([^\s])/)
+          # VER.warn match => match.offset(1)
+          cursor.pos += match.offset(1)[0]
+        end
+
+        def go_word_left
+          buffer[0..(cursor.pos - 1)].rindex(/.\b([^\s])/)
+          return unless match = $~
+          # VER.warn match => match.offset(1)
+          cursor.pos = match.offset(1)[0]
+        end
+
+        def go_chunk_right
+          return unless match = buffer[cursor.pos..-1].match(/\S+\s+(\S)/)
+          # VER.warn match => match.offset(1)
+          cursor.pos += match.offset(1)[0]
+        end
+
+        def go_chunk_left
+          buffer[0..(cursor.pos - 1)].rindex(/\S+\s+(\S+)/)
+          return unless match = $~
+          # VER.warn match => match.offset(1)
+          cursor.pos = match.offset(1)[0]
+        end
+
+        def switch_to_previous_buffer
+          view.switch_to_previous_buffer
+        end
+
+        def switch_to_buffer_number(number)
+          view.buffer = view.buffers[number.to_i - 1]
+        end
+
         # Completion
 
         def complete(what = nil)
