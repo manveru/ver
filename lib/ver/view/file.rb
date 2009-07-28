@@ -678,7 +678,7 @@ module VER
         if @redraw or buffer.dirty? or selection
           window.move 0, 0
           draw_visible
-          draw_padding
+          window.wclrtobot
 
           highlight_syntax
           refresh_search_highlight if search and buffer.dirty?
