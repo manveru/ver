@@ -709,6 +709,7 @@ module VER
           refresh
         end
 
+        highlight_trailing_whitespace
         window.move(*pos) if pos
 
         draw_status_line
@@ -808,6 +809,14 @@ module VER
 
       def highlight_search
         highlights[:search].each{|cursor| highlight(cursor) }
+      end
+
+      def highlight_trailing_whitespace
+        errors = highlights[:error] = buffer.grep_successive_cursors(/[ \t]+$/)
+        errors.each{|e|
+          e.color = Color['000000', 'ff0000'] # trailing whitespace doesn't need fg
+          highlight e
+        }
       end
 
       def highlight_selection
