@@ -2,6 +2,10 @@ module VER
   class View
     class AskChoice < View
       module Methods
+        def insert(string)
+          cursor.insert(string)
+        end
+
         def stop
           view.close
           View[:file].open

@@ -121,8 +121,8 @@ VER.let :control => [:general, :control_movement] do
 
   map('!'){ press('V'); filter_selection_ask }
 
-  map('u'){ undo }
-  map('C-r'){ self.redo }
+  map('u'){ buffer.undo }
+  map('C-r'){ buffer.redo }
 
   map('C-e'){ eval_current_line }
 

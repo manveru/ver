@@ -1,7 +1,9 @@
 module VER
   class View
     class AskFuzzyFile < AskLarge
-      Methods = AskFile::Methods
+      module Methods
+        include AskFile::Methods
+      end
 
       DEFAULT = {
         :interactive => true,
@@ -37,15 +39,14 @@ module VER
           when 0.75..1    ; Color[:green]
           end
 
-        window.puts " %d) %-#{window.width}s" % [score * 100, path]
+        VER.warn @choices
+        window.puts(" %d) %-#{window.width}s" % [score * 100, path])
       end
 
       def expand_input
       end
 
       def update_choices
-        format = "[%.2f] %s"
-
         @finder ||= FuzzyFileFinder.new
         @choices = @finder.find(input).sort_by{|m| [-m[:score], m[:path]] }
       rescue FuzzyFileFinder::TooManyEntries

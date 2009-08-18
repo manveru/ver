@@ -2,6 +2,9 @@ module VER
   class View
     class AskSmall < View
       module Methods
+        def insert(string)
+          cursor.insert(string)
+        end
 
         def history_backward
           view.input = view.history[history_pick]

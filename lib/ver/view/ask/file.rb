@@ -2,6 +2,8 @@ module VER
   class View
     class AskFile < AskLarge
       module Methods
+        include AskLarge::Methods
+
         def pick
           if choice = view.pick
             view.close

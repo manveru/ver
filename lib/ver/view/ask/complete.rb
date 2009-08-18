@@ -2,6 +2,8 @@ module VER
   class View
     class Complete < AskLarge
       module Methods
+        include AskLarge::Methods
+
         def select_below
           view.select_below
           view.input = view.pick[:string]
