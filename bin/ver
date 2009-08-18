@@ -1,54 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'optparse'
-require 'pathname'
-
-file = Pathname(__FILE__)
-file = file.readlink if file.symlink?
-
-ver = file.parent.parent + 'lib/ver'
-require ver
-config = VER::Config
-
-op = OptionParser.new do |o|
-  version = "VER - VIM & Emacs in Ruby #{VER::VERSION}"
-
-  o.banner = version
-  o.define_head [
-      "",
-      "Usage: ver [arguments] [file ..]     edit specified file(s)",
-      "   or: ver [arguments] -             read text from stdin",
-      "",
-  ].join("\n")
-
-  o.on('-h', '--help', "Display this help"){ puts o; exit }
-  o.on('-v', '--version', "Show version"){ puts version exit }
-  o.on('-k', '--keymap STRING', "Use a different keymap: vi or diakonos"){|k|
-    config[:keymap] = File.join(config[:rc_dir], "keymap/#{k}")
-  }
-end
-
-op.parse!(ARGV)
-
-ENV['ESCDELAY'] ||= '1'
-
-if ARGV.include?('-')
-  text = $stdin.readlines.join("\n")
-
-  VER.start(:temp => text)
+if File.symlink?(__FILE__)
+  require File.expand_path('../../lib/ver', File.readlink(__FILE__))
 else
-  files = []
-
-  ARGV.each do |arg|
-    case arg
-    when /^\+(\d+)$/
-      files.last[:line] = $1.to_i
-    when /^\+\/(.*)$/
-      files.last[:regex] = Regexp.new($1)
-    when String
-      files << {:file => arg}
-    end
-  end
-
-  VER.start(:files => files)
+  require File.expand_path('../../lib/ver', __FILE__)
 end
+
+VER.run

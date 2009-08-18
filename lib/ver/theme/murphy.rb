@@ -1,71 +1,84 @@
 module VER
   class Theme
     # Ported from VIMs murphy theme
-    Murphy = Theme.new{|s|
-      on :default, '90ee90'
+    Murphy = Theme.new{
+      self.configuration = {
+        background: '#000000',
+        foreground: '#90ee90',
+        insertbackground: '#90ee90',
+        selectbackground: '#006400',
+        selectforeground: '#ffffff'
+      }
 
-      on /comment/, 'ffa500'
-      on /string/, 'ff00ff'
-      on /numeric/, 'ffffff'
-      on /constant\.language/, 'bebebe'
-      on /constant\.numeric/, 'ffffff'
-      on /constant\.other\.symbol/, 'ffff00'
-      on /support\.class/, 'bebebe'
-      on /keyword\.other\.special-method/, 'f5deb3'
-      on /keyword\.control/, 'ffff00'
-      on /variable/, '00ffff'
-      on /punctuation\.section\.embedded/, '0000ff'
+      set 'comment.block.documentation',                 foreground: 'red'
+      set 'comment.line.number-sign',                    foreground: '#ffa500'
+      set 'constant.character.escape',                   foreground: 'red'
+      set 'constant.language',                           foreground: '#ffffff'
+      set 'constant.numeric',                            foreground: '#ffffff'
+      set 'constant.other.symbol',                       foreground: '#ffffff'
+      set 'entity.name.function',                        foreground: 'red'
+      set 'entity.name.type.class',                      foreground: 'red'
+      set 'entity.name.type.module',                     foreground: 'red'
+      set 'entity.other.inherited-class',                foreground: 'red'
+      set 'keyword.control',                             foreground: '#f5deb3'
+      set 'keyword.control.class',                       foreground: 'red'
+      set 'keyword.control.def',                         foreground: 'red'
+      set 'keyword.control.module',                      foreground: 'red'
+      set 'keyword.operator.arithmetic',                 foreground: '#90ee90'
+      set 'keyword.operator.assignment',                 foreground: '#90ee90'
+      set 'keyword.operator.comparison',                 foreground: '#90ee90'
+      set 'keyword.operator.logical',                    foreground: '#90ee90'
+      set 'keyword.operator.other',                      foreground: 'red'
+      set 'keyword.other.special-method',                foreground: '#ffff00'
+      set 'meta.class',                                  foreground: '#f5deb3'
+      set 'meta.environment-variable',                   foreground: '#ff00ff'
+      set 'meta.function-call',                          foreground: '#90ee90'
+      set 'meta.function-call.method.with-arguments',    foreground: 'red'
+      set 'meta.function-call.method.without-arguments', foreground: 'red'
+      set 'meta.function.method.with-arguments',         foreground: '#f5deb3'
+      set 'meta.function.method.without-arguments',      foreground: '#f5deb3'
+      set 'meta.module',                                 foreground: '#f5deb3'
+      set 'meta.require',                                foreground: '#f5deb3'
+      set 'meta.syntax.ruby.start-block',                foreground: 'red'
+      set 'punctuation.definition.character-class',      foreground: 'red'
+      set 'punctuation.definition.comment',              foreground: '#ffa500'
+      set 'punctuation.definition.constant',             foreground: '#ffffff'
+      set 'punctuation.definition.group',                foreground: 'red'
+      set 'punctuation.definition.parameters',           foreground: '#90ee90'
+      set 'punctuation.definition.string',               foreground: '#ffffff'
+      set 'punctuation.definition.string.begin',         foreground: 'red'
+      set 'punctuation.definition.string.end',           foreground: 'red'
+      set 'punctuation.definition.variable',             foreground: 'red'
+      set 'punctuation.section.array',                   foreground: '#90ee90'
+      set 'punctuation.section.embedded',                foreground: 'red'
+      set 'punctuation.section.function',                foreground: '#90ee90'
+      set 'punctuation.section.scope',                   foreground: '#90ee90'
+      set 'punctuation.separator.inheritance',           foreground: '#90ee90'
+      set 'punctuation.separator.key-value',             foreground: '#90ee90'
+      set 'punctuation.separator.method',                foreground: '#90ee90'
+      set 'punctuation.separator.object',                foreground: '#90ee90'
+      set 'punctuation.separator.other',                 foreground: '#90ee90'
+      set 'punctuation.separator.statement',             foreground: '#90ee90'
+      set 'punctuation.separator.variable',              foreground: '#90ee90'
+      set 'source.ruby.embedded.source',                 foreground: '#90ee90'
+      set 'string.quoted.double',                        foreground: '#ffffff'
+      set 'string.quoted.other.literal.upper',           foreground: '#ffffff'
+      set 'string.quoted.single',                        foreground: '#ffffff'
+      set 'string.regexp.character-class',               foreground: 'red'
+      set 'string.regexp.classic',                       foreground: '#ff00ff'
+      set 'string.regexp.group',                         foreground: '#ff00ff'
+      set 'string.regexp.mod-r',                         foreground: '#ff00ff'
+      set 'string.unquoted.program-block',               foreground: '#ff00ff'
+      set 'support.class',                               foreground: '#bebebe'
+      set 'variable.language',                           foreground: '#ffffff'
+      set 'variable.other.block',                        foreground: '#00ffff'
+      set 'variable.other.constant',                     foreground: '#bebebe'
+      set 'variable.other.object',                       foreground: '#ffffff'
+      set 'variable.other.readwrite.class',              foreground: '#00ffff'
+      set 'variable.other.readwrite.global',             foreground: '#00ffff'
+      set 'variable.other.readwrite.global.pre-defined', foreground: 'red'
+      set 'variable.other.readwrite.instance',           foreground: '#00ffff'
+      set 'variable.parameter.function',                 foreground: '#90ee90'
     }
   end
 end
-
-__END__
-These stay here for future reference, for most of them I have no idea what
-they're supposed to match.
-
-/comment\.line\.number-sign/
-/constant\.language/
-/constant\.numeric/
-/constant\.other\.symbol/
-/entity\.name\.function/
-/entity\.name\.type\.module/
-/keyword\.control\.def/
-/keyword\.control/
-/keyword\.control\.start-block/
-/keyword\.operator\.arithmetic/
-/keyword\.operator\.assignment\.augmented/
-/keyword\.operator\.assignment/
-/keyword\.other\.special-method/
-/meta\.function-call\.method\.with-arguments/
-/meta\.function-call\.method\.without-arguments/
-/meta\.function-call/
-/meta\.function\.method\.with-arguments/
-/meta\.function\.method\.without-arguments/
-/meta\.require/
-/meta\.module/
-/punctuation\.definition\.comment/
-/punctuation\.definition\.constant/
-/punctuation\.definition\.parameters/
-/punctuation\.definition\.string\.begin/
-/punctuation\.definition\.string\.end/
-/punctuation\.definition\.variable/
-/punctuation\.section\.array/
-/punctuation\.section\.embedded/
-/punctuation\.section\.function/
-/punctuation\.section\.scope/
-/punctuation\.separator\.key-value/
-/punctuation\.separator\.method/
-/punctuation\.separator\.object/
-/punctuation\.separator\.variable/
-/punctuation\.separator\.statement/
-/source\.embedded\.source/
-/source\..+\.embedded\.source/
-/string\.quoted\.double/
-/string\.quoted\.single/
-/support\.class/
-/variable\.language/
-/variable\.other\.block/
-/variable\.other\.constant/
-/variable\.other\.readwrite\.global/
-/variable\.other\.readwrite\.instance/
-/variable\.parameter\.function/

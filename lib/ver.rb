@@ -1,152 +1,189 @@
-require 'abbrev'
-require 'fileutils'
-require 'logger'
-require 'pp'
-require 'open3'
-require 'strscan'
-require 'tmpdir'
+$LOAD_PATH.unshift File.expand_path('../', __FILE__)
 
-begin; require 'rubygems'; rescue LoadError; end
-require 'ffi-ncurses'
-require 'eventmachine'
+# stdlib
+require 'tk'
+require 'yaml'
+
+# lib
+require 'ver/view'
+require 'ver/layout'
+require 'ver/syntax'
+require 'ver/textpow'
+require 'ver/theme'
+require 'ver/keymap'
+require 'ver/keymap/vim'
+require 'ver/text'
+require 'ver/theme/murphy'
 
 module VER
-  VERSION = "2008.10.30"
-
-  DIR = File.expand_path(File.dirname(__FILE__))
-  FatalLog = Logger.new(File.join(Dir.tmpdir, 'ver-fatal.log'), 5, (2 << 20))
-
-  $LOAD_PATH.unshift(DIR)
-
-  require 'vendor/silence'
-  require 'vendor/fuzzy_file_finder'
-  require 'vendor/textpow'
-
-  require 'ver/log'
-  require 'ver/messaging'
-  require 'ver/ncurses'
-  require 'ver/ncurses/window'
-  require 'ver/ncurses/panel'
-
-  require 'ver/buffer'
-  require 'ver/buffer/line'
-  require 'ver/buffer/memory'
-  require 'ver/buffer/file'
-
-  require 'ver/error'
-  require 'ver/keyboard'
-  require 'ver/keymap'
-  require 'ver/mixer'
-  require 'ver/window'
-  require 'ver/cursor'
-  require 'ver/undo'
-  require 'ver/color'
-  require 'ver/config'
-  require 'ver/clipboard'
-  require 'ver/clipboard/xclip'
-  require 'ver/syntax'
-  require 'ver/theme'
-
-  require 'ver/view'
-  require 'ver/view/file'
-  require 'ver/view/info'
-  require 'ver/view/ask/small'
-  require 'ver/view/ask/large'
-  require 'ver/view/ask/file'
-  require 'ver/view/ask/fuzzy_file'
-  require 'ver/view/ask/grep'
-  require 'ver/view/ask/choice'
-  require 'ver/view/ask/complete'
-
   module_function
 
-  def start(context = {})
-    @last_error = nil
-    start_config
+  def status
+    @status
+  end
 
-    Log.info "Initializing VER"
+  def run
+    # p Tk::Tile.themes
+    Tk::Tile.set_theme('clam')
 
-    EM.run do
-      start_ncurses
-      start_editor(context)
+    root = TkRoot.new
+    win = Layout.new(root)
+
+    ARGV.each do |arg|
+      win.create_view{|view| view.file_open(arg) }
     end
-  ensure
-    stop_ncurses # do this, or the world implodes
+
+    win.horizontal_tiling top: 1
+
+    @status = Ttk::Entry.new(root, font: 'Terminus 9', takefocus: 0)
+    @status.pack(side: :bottom, fill: :x)
+    @status.value = 'Welcome to VER - Quit with Control-q'
+
+    Tk.bind :all, 'Control-q', proc{ exit }
+
+    Tk.mainloop
   end
+end
 
-  def start_editor(context)
-    EM.error_handler{|ex| error(ex) }
-    setup(context)
-  rescue ::Exception => ex
-    error(ex)
-  end
+__END__
 
-  def stop
-    @stop = true
-    stop_ncurses
-    exit!
-  end
+  def setup_input_mode
+    input = text_frame.modes[:input]
 
-  def stopping?
-    @stop
-  end
-
-  def setup(context)
-    @ask      = View::AskSmall.new(:ask)
-    @info     = View::Info.new(:info)
-    @choice   = View::AskChoice.new(:ask_choice)
-    @complete = View::Complete.new(:complete)
-
-    @file = View::File.new(:file)
-    setup_context(context)
-
-    VER.info "VER #{VERSION} -- C-q to quit"
-
-    @info.open
-    @file.open
-  end
-
-  def setup_context(context = {})
-    files, temp = context.values_at(:files, :temp)
-
-    if files
-      if files.empty?
-        @file.buffer = File.join(Config[:blueprint_dir], 'welcome')
+    input.bind('Key'){|key|
+      p key
+      case keysym = key.keysym
+      when /^.$/
+        char = keysym
       else
-        files.each do |hash|
-          @file.buffer = hash[:file]
-
-          if line = hash[:line]
-            @file.methods.goto_line(line)
-          elsif regex = hash[:regex]
-            @file.search = regex
-            @file.buffer.dirty = true
-            @file.methods.search_next
-          end
+        unless char = key.char
+          status_frame.value = "Nothing mapped to: #{key.keysym}"
         end
       end
-    elsif temp
-      @file.buffer = MemoryBuffer.new(:file, temp)
+
+      text_frame.insert(:insert, char)
+      Tk.callback_break
+    }
+
+    input.bind_key :Left,       :go_char_left
+    input.bind_key :Right,      :go_char_right
+    input.bind_key :Up,         :go_line_up
+    input.bind_key :Down,       :go_line_down
+
+    input.bind_key :BackSpace,  :delete_char_left
+    input.bind_key :Delete,     :delete_char_right
+
+    input.bind_key :Return,     :insert_newline
+    input.bind_key :space,      :insert_space
+    input.bind_key :Tab,        :insert_tab
+
+    input.bind_key :Escape,     :start_control_mode
+    input.bind_key 'Control-c', :start_control_mode
+
+    input.bind_key :Prior,      :go_page_up
+    input.bind_key 'Control-b', :go_page_up
+
+    input.bind_key :Next,       :go_page_down
+    input.bind_key 'Control-f', :go_page_down
+
+    input.bind_key 'Control-z', :undo
+    input.bind_key 'Control-Z', :redo
+
+    input.bind_key :Home,       :go_beginning_of_file
+    input.bind_key :End,        :go_end_of_file
+
+    input.bind 'Control-q', proc{ exit }
+  end
+
+  def setup_control_mode
+    control = text_frame.modes[:control]
+
+    control.bind('Key'){|key|
+      status_frame.value = "Nothing mapped to: #{key.keysym}"
+      Tk.callback_break
+    }
+
+    control.bind_key :i, :start_input_mode
+    control.bind_key :v, :start_visual_char_mode
+    control.bind_key :V, :start_visual_line_mode
+    control.bind_key 'Control-v', :start_visual_block_mode
+
+    control.bind_key :Left,  :go_char_left
+    control.bind_key :h,     :go_char_left
+    control.bind_key :Right, :go_char_right
+    control.bind_key :l,     :go_char_right
+    control.bind_key :Up,    :go_line_up
+    control.bind_key :k,     :go_line_up
+    control.bind_key :Down,  :go_line_down
+    control.bind_key :j,     :go_line_down
+
+    control.bind_key :w,     :go_word_right
+    control.bind_key :b,     :go_word_left
+
+    control.bind_key :o,     :insert_newline_below
+    control.bind_key :O,     :insert_newline_above
+
+    control.bind_key :BackSpace, :go_char_left
+    control.bind_key :Delete,    :delete_char_right
+    control.bind_key :x,         :delete_char_right
+
+    control.bind_key 'Control-b', :go_page_up
+    control.bind_key :Prior, :go_page_up
+
+    control.bind_key 'Control-f', :go_page_down
+    control.bind_key :Next,  :go_page_down
+
+    control.bind_key :Home,  :go_beginning_of_file
+    control.bind_key :End,   :go_end_of_file
+    control.bind_key :G,   :go_end_of_file
+
+    control.bind_key 'u', :undo
+    control.bind_key 'Control-r', :redo
+
+    control.bind 'Control-q', proc{ exit }
+  end
+
+  def setup_visual_mode
+    visual_char  = text_frame.modes[:visual_char]
+    visual_line  = text_frame.modes[:visual_line]
+    visual_block = text_frame.modes[:visual_block]
+
+    [visual_char, visual_line, visual_block].each do |v|
+      v.bind_key :v, :start_visual_char_mode
+      v.bind_key :V, :start_visual_line_mode
+      v.bind_key 'Control-v', :start_visual_block_mode
+
+      v.bind_key :Left,  :go_char_left
+      v.bind_key :h,     :go_char_left
+      v.bind_key :Right, :go_char_right
+      v.bind_key :l,     :go_char_right
+      v.bind_key :Up,    :go_line_up
+      v.bind_key :k,     :go_line_up
+      v.bind_key :Down,  :go_line_down
+      v.bind_key :j,     :go_line_down
+
+      v.bind_key :w,     :go_word_right
+      v.bind_key :b,     :go_word_left
+
+      v.bind_key 'Control-b', :go_page_up
+      v.bind_key :Prior, :go_page_up
+
+      v.bind_key 'Control-f', :go_page_down
+      v.bind_key :Next,  :go_page_down
+
+      v.bind_key :Escape,     :start_control_mode
+      v.bind_key 'Control-c', :start_control_mode
+
+      v.bind 'Control-q', proc{ exit }
     end
   end
 
-  def clipboard
-    @clipboard ||= ClipBoard.new
-  end
-
-  def bench(name, &block)
-    Log.debug "let bench: #{name}"
-
-    require 'ruby-prof'
-
-    # Profile the code
-    result = RubyProf.profile(&block)
-
-    # Print a graph profile to text
-    printer = RubyProf::GraphHtmlPrinter.new(result)
-
-    File.open('bench.html', 'w+'){|io| printer.print(io, :min_percent => 0) }
-
-    Log.debug "end bench: #{name}"
+  def font
+    case Tk::PLATFORM['os']
+    when 'Linux'
+      TkFont.new(['Terminus', -9])
+    else
+      TkFont.new(['Monospace', -10])
+    end
   end
 end

@@ -1,26 +1,24 @@
 module VER
-  class Theme < Struct.new(:colors)
+  class Theme < Struct.new(:colors, :configuration)
     def initialize(colors = {}, &block)
       self.colors = colors
       instance_eval(&block) if block_given?
     end
 
-    def on(match, color)
-      colors[match] = Color[color]
+    def set(match, options)
+      colors[match] = options
     end
-    alias []= on
 
-    def [](name)
-      colors.each do |match, color|
-        case match
-        when Symbol
-          return color if match == name
-        else
-          return color if match =~ name
-        end
+    def get(name)
+      colors.each do |syntax_name, options|
+        return syntax_name if name.start_with?(syntax_name)
       end
 
-      colors[:default]
+      nil
+    end
+
+    def apply_config(widget)
+      widget.configure(configuration)
     end
   end
 end

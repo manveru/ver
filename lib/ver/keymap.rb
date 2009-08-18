@@ -1,303 +1,168 @@
-require 'set'
-require 'pp'
-
 module VER
-  def self.let(*names, &block)
-    first, *rest = *names
-
-    if rest.empty? and first.respond_to?(:to_hash)
-      first.to_hash.each do |name, dependencies|
-        Mode.create(name, *dependencies, &block)
-      end
-    else
-      names.each{|name| Mode.create(name, &block) }
-    end
-  end
-
-  # Mode contains one or more KeyMaps and maintains relationships between them,
-  # so one Mode may inherit from another Mode which affects the lookup.
-  # Don't make circular references!
-  class Mode
-    LIST = {}
-
-    def self.create(name, *dependencies, &block)
-      if mode = LIST[name]
-        mode.add_dependencies(*dependencies)
-        mode.dsl(&block)
-      else
-        mode = LIST[name] = new(name, *dependencies, &block)
+  class Keymap < Struct.new(:callback, :name, :modes, :current_mode, :bindtag, :stack)
+    class Mode < Struct.new(:keymap, :name, :chains, :ancestors)
+      def initialize(*args)
+        super
+        setup
       end
 
-      return mode
-    end
-
-    attr_accessor :name
-    attr_reader :dependencies, :map
-
-    def initialize(name, *dependencies, &block)
-      @name = name
-      @map = KeyMap.new(self, name)
-      @dependencies = []
-      add_dependencies(*dependencies)
-      dsl(&block)
-    end
-
-    def keys
-      @map.keys
-    end
-
-    def dsl(&block)
-      @map.merge!(ModeMapper.new(self, &block)) if block
-    end
-
-    def add_dependencies(*deps)
-      @dependencies += deps.map{|d| Mode.create(d) }
-      @dependencies.uniq!
-    end
-
-    def [](*expression)
-      [@map, *@dependencies].map{|keymap| keymap[*expression] }.flatten.uniq.compact
-    end
-
-    def each(&block)
-      keys = [@map, *@dependencies].each do |keymap|
-        keymap.each(&block)
+      def setup
+        self.chains ||= {}
+        self.ancestors ||= []
       end
-    end
 
-    alias deep_each each
-  end
-
-  # ModeMapper is the instance in which keymapping configuration is executed
-  # Every #mode either creates a new mode or retrieves an existing one based on
-  # the names given
-
-  class ModeMapper
-    attr_reader :name, :keys
-
-    def initialize(parent, &block)
-      @parent = parent
-      @keys = Set.new
-      instance_eval(&block)
-    end
-
-    def map(*args, &block)
-      if block_given?
-        @keys << Key.new(*args, &block)
-      else
-        self[*args]
-      end
-    end
-
-    # Assign a macro to a key or key-combination
-    def macro(key, as, &block)
-      expression = as.split(/ +/)
-      map(key.split(/ +/)){|*m| virtual{|kh| expression.each{|k| kh.press(k) }}}
-    end
-
-    def count_map(count, trigger, &block)
-      0.upto(count) do |n|
-        key = [/^[1-9]$/] + ([/^\d$/] * n) << trigger
-        map(key){
-          @trigger = @args.last
-          @count = @args.join.to_i
-          instance_eval(&block)
-        }
-      end
-    end
-
-    def after(*keys, &block)
-      add_aspect(:after, *keys, &block)
-    end
-
-    def before(*keys, &block)
-      add_aspect(:before, *keys, &block)
-    end
-
-    def add_aspect(name, *keys, &block)
-      keys.each do |k|
-        @parent.deep_each do |key|
-          if key.expression == k
-            new = key.clone
-            new.send("#{name}=", block)
-            @keys << new
-            next
-          end
+      def to(method_or_block, *keychains)
+        keymap.register_keys(*keychains.flatten)
+        keychains.each do |keychain|
+          chains[keychain] = method_or_block
         end
       end
-    end
 
-    def [](*expression)
-      @parent[*expression]
-    end
-  end
+      def resolve(keychain)
+        argument, input = extract_argument(keychain)
 
-  class KeyMap
-    attr_reader :name, :keys
+        state = false
 
-    def initialize(parent, name)
-      @parent, @name = parent, name
-      @keys = Set.new
-    end
+        ancestral_chains = [chains] + ancestors.map{|a| keymap.mode(a){|m| m.chains } }
+        ancestral_chains.each do |chains|
+          chains.each do |chain, cmd|
+            if chain == input
+              if cmd.respond_to?(:call)
+                if argument && cmd.arity != 0
+                  return cmd argument
+                else
+                  return cmd
+                end
+              elsif cmd
+                return argument ? [cmd, argument] : cmd
+              end
+            elsif chain.size == input.size
+              chain_tail, input_tail = chain[-1], input[-1]
 
-    def merge!(modemapper)
-      @keys += modemapper.keys
-    end
+              if chain_tail.is_a?(Symbol)
+                keymap.mode(chain_tail){|m|
+                  if found = m.resolve([input_tail])
+                    return cmd, found
+                  end
+                }
+              end
 
-    def each(&block)
-      @keys.each(&block)
-    end
-
-    def deep_each(&block)
-      @parent.deep_each(&block)
-    end
-
-    include Enumerable
-
-    def [](*expression)
-      @keys.map{|key| key.match(*expression) }
-    end
-  end
-
-  class KeyHandler
-    attr_accessor :view, :keys
-
-    def initialize(view)
-      @view = view
-      @keys = []
-    end
-
-    def press(key, times = 1)
-      keys << key
-      @mode = Mode::LIST[view.mode]
-
-      first, *rest = all = @mode[*keys]
-
-      unless first
-        VER.info("No mapping for: %p in %p" % [keys, view.mode])
-        keys.clear
-        return
-      end
-
-      if first.ready
-        keys.clear
-        times.times{ execute_key(first) }
-      else
-        VER.info("Waiting for completion of %p" % first.expression)
-      end
-    end
-
-    def execute_key(key)
-      # VER.info("Execute: %p in %p: %p" % [keys, view.mode, first])
-      @args = key.args
-      @arg = @args.first
-
-      instance_eval(&key.before) if key.before
-      result = instance_eval(&key.block)
-      instance_eval(&key.after) if key.after
-
-      return result
-    end
-
-    def [](*args)
-      @mode[*args]
-    end
-
-    def selection; view.selection end
-    def cursor;    view.cursor    end
-    def buffer;    view.buffer    end
-    def window;    view.window    end
-    def methods;   view.methods   end
-
-    def method_missing(meth, *args, &block)
-      view.methods.send(meth, *args, &block)
-    end
-
-    def virtual
-      yield(clone)
-    end
-  end
-
-  # Holds name, documentation, key combinations
-  # Can be compared with other keys, but note that the assigned block will be
-  # ignored in the comparision since equality is not possible otherwise.
-  class Key
-    attr_accessor :expression, :name, :doc, :args, :block, :ready,
-      :after, :before
-
-    def initialize(expression, name = nil, doc = nil, args = [], &block)
-      @expression, @name, @doc, @args, @block = expression, name, doc, args, block
-    end
-
-    # TODO: simplify that, i doubt i'll understand it in a few weeks...
-    def match(*input)
-      args = @args.dup
-      temp = input.dup
-
-      case @expression
-      when Array
-        @expression.each do |exp|
-          return dup_with(args, ready = false) if temp.empty?
-
-          case exp
-          when String
-            return unless exp == temp.shift
-          when Regexp
-            if exp =~ temp.shift
-              captures = $~.captures
-
-              add = captures.empty? ? [$&] : captures
-              args += add
-            else
-              return
+            elsif chain.size > input.size
+              if chain[0, input.size] == input
+                state = nil
+              end
             end
           end
         end
-      when String
-        return unless temp.join == @expression
-      when Regexp
-        if temp.join =~ @expression
-          args += $~.captures
-        else
-          return
-        end
-      else
-        return
+
+        return state
       end
 
-      return dup_with(args)
+      def extract_argument(keychain)
+        left, right = keychain.partition{|key| key =~ /^\d+$/ }
+
+        unless left.empty?
+          return left.join.to_i, right
+        else
+          return nil, right
+        end
+      end
+
+      def uses(*names)
+        self.ancestors |= names.map(&:to_sym)
+      end
     end
 
-    def dup_with(args, ready = true)
-      d = dup
-      d.ready = ready
-      d.args = args
-      d
+    def initialize(*args)
+      super
+      setup
     end
 
-    def hash
-      [expression, name, doc].hash
+    def setup
+      self.modes ||= {}
+      self.stack = []
+
+      # self.bindtag = TkBindTag.new
+      #
+      # bindtag.bind 'i' do |key|
+      #   p :i
+      # end
+      #
+      # tags = callback.text.bindtags
+      # tags.unshift bindtag
+      # callback.text.bindtags = tags
+      #
+      # bindtag.bind 'a' do |key|
+      #   p :a
+      # end
     end
 
-    def ==(key)
-      return false unless key.is_a?(Key)
-      hash == key.hash
-    end
-    alias eql? ==
-
-    # Currying works over regular expressions, a mapping to
-    # /(\d) f/ would respond to the keys "1 f" and 1 would be put into @args
-    # Further args can be given here, which will be put afterwards
-    def call_signature(*args)
-      @args + args
+    def new(callback)
+      instance = clone
+      instance.callback = callback
+      instance
     end
 
-    def call(*args)
-      @block.call(*call_signature(*args))
+    def register_keys(*keys)
+      keys.each do |key|
+        register_key(key)
+      end
     end
 
-    def inspect
-      "Key %p" % [@expression]
+    def register_key(keyname)
+      return unless keyname.respond_to?(:to_str)
+
+      callback.bind(keyname.to_str){|key|
+        try(keyname) and Tk.callback_break
+      }
+    end
+
+    def try(key)
+      stack << key
+      handle(stack)
+    end
+
+    # answers with action if found,
+    # nil if none matches yet,
+    # false if none will ever match
+    def resolve(keychain)
+      mode current_mode do |mode|
+        case result = mode.resolve(keychain)
+        when nil # wait for more
+          p 'wait for more'
+          return mode, nil
+        when false # fail
+          return mode, false, keychain
+        else
+          return mode, *result
+        end
+      end
+    end
+
+    def handle(keychain)
+      mode, handler, args = resolve(keychain)
+
+      case handler
+      when nil # wait for more
+        true
+      when false # fail and abort
+        stack.clear
+        false
+      else
+        p handler: handler, args: args
+        callback.send(handler, *args)
+        stack.clear
+        true
+      end
+    end
+
+    def event(name, arg = nil)
+      p :event => [name, arg]
+    end
+
+    def mode(name)
+      mode = modes[name] ||= Mode.new(self, name)
+      yield mode
     end
   end
 end

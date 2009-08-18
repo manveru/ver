@@ -117,8 +117,6 @@ module Textpow
       processor
     end
 
-    protected
-
     def parse_repository repository
       @repository = {}
       repository.each do |key, value|

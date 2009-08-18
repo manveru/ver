@@ -31,18 +31,9 @@ module VER
         @syntax = Textpow::SyntaxNode.load(file)
       end
 
-      class Processor < Struct.new(:window, :buffer, :theme, :lineno, :stack)
-        def initialize(window, buffer, theme)
-          self.buffer, self.window, self.theme =
-            buffer, window, theme
-        end
-
-        def color(name)
-          theme[name]
-        end
-
+      class Processor < Struct.new(:textarea, :theme, :lineno, :stack)
         def start_parsing(name)
-          self.lineno = -1
+          self.lineno = 0
           self.stack = []
         end
 
@@ -59,25 +50,30 @@ module VER
         end
 
         def close_tag(name, mark)
-          if color(name) != Color[:white]
-            # VER.warn [color(name), lineno - 1, @pos, mark]
-          end
-
           sname, pos = stack.pop
 
           if name == sname
-            window.highlight_line(color(name), lineno, pos, mark - pos)
+            if tag_name = theme.get(name)
+              textarea.tag_add(tag_name, "#{lineno}.#{pos}", "#{lineno}.#{mark}")
+            else
+              p name
+            end
           else
-            VER.warn("Nesting mismatch: #{name} != #{sname}")
+            warn("Nesting mismatch: #{name} != #{sname}")
           end
         end
       end
 
-      def highlight(view, top, bottom)
-        require 'ver/theme/murphy'
+      def highlight(textarea, code)
         theme = Theme::Murphy
-        pr = Processor.new(view.window, view.buffer, theme)
-        code = view.buffer[top..bottom]
+        theme.apply_config(textarea)
+
+        theme.colors.each do |name, options|
+          textarea.tag_delete name.to_s
+          TktNamedTag.new(textarea, name.to_s, options)
+        end
+
+        pr = Processor.new(textarea, theme)
 
         syntax.parse(code, pr)
       end
