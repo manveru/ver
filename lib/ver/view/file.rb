@@ -701,7 +701,7 @@ module VER
           draw_visible
           window.wclrtobot
 
-          highlight_syntax
+          # highlight_syntax
           refresh_search_highlight if search and buffer.dirty?
           highlight_search if search
           highlight_selection if selection

@@ -2,6 +2,9 @@ module VER
   class View
     class AskLarge < View
       module Methods
+        def insert(string)
+          cursor.insert(string)
+        end
       end
 
       LAYOUT = {
@@ -59,8 +62,7 @@ module VER
         end
 
         draw_cons(@choices[range])
-
-        draw_padding
+        window.wclrtobot
       ensure
         window.move 1, (cursor.pos + @prompt.size + 2)
         window.color = Color[:white]

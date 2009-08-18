@@ -7,6 +7,8 @@ module VER
     # TODO: handle C and evaled methods.
     class AskDoc < AskLarge
       module Methods
+        include AskLarge::Methods
+
         def pick
           return unless choice = view.pick
           return unless method = choice[:method]

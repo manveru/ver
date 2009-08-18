@@ -14,6 +14,7 @@ module VER
       on /keyword\.other\.special-method/, 'f5deb3'
       on /keyword\.control/, 'ffff00'
       on /variable/, '00ffff'
+      on /punctuation\.section\.embedded/, '0000ff'
     }
   end
 end
