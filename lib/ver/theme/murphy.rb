@@ -62,6 +62,7 @@ module VER
       set 'punctuation.separator.variable',              foreground: '#90ee90'
       set 'source.ruby.embedded.source',                 foreground: '#90ee90'
       set 'string.quoted.double',                        foreground: '#ffffff'
+      set 'string.quoted.other.literal.lower',           foreground: '#ffffff'
       set 'string.quoted.other.literal.upper',           foreground: '#ffffff'
       set 'string.quoted.single',                        foreground: '#ffffff'
       set 'string.regexp.character-class',               foreground: 'red'
