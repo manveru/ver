@@ -9,19 +9,22 @@ module VER
         map.to :file_save_popup,    %w[Control-Alt-s]
         map.to :quit,               %w[Control-q]
         map.to :start_control_mode, %w[Escape]
+        map.to :number,             *('1'..'9').map{|n| [n] }
       end
 
       map.mode :move do |map|
-        map.to :go_char_left,  %w[h], %w[Left]
-        map.to :go_char_right, %w[l], %w[Right]
-        map.to :go_line_down,  %w[j], %w[Down]
-        map.to :go_line_up,    %w[k], %w[Up]
         map.to :go_beginning_of_file, %w[g g]
-        map.to :go_end_of_file, %w[G]
-        map.to :go_word_right, %w[w]
-        map.to :go_word_left, %w[b]
-        map.to :go_page_down, %w[Control-f], %w[Next]
-        map.to :go_page_up,   %w[Control-b], %w[Prior]
+        map.to :go_char_left,         %w[h], %w[Left]
+        map.to :go_char_right,        %w[l], %w[Right]
+        map.to :go_end_of_file,       %w[G]
+        map.to :go_end_of_line,       %w[dollar]
+        map.to :go_line_down,         %w[j], %w[Down]
+        map.to :go_line_up,           %w[k], %w[Up]
+        map.to :go_page_down,         %w[Control-f], %w[Next]
+        map.to :go_page_up,           %w[Control-b], %w[Prior]
+        map.to :go_start_of_line,     %w[0]
+        map.to :go_word_left,         %w[b]
+        map.to :go_word_right,        %w[w]
       end
 
       map.mode :control do |map|
@@ -29,7 +32,7 @@ module VER
 
         map.to :delete_right, %w[x]
         map.to :delete_left,  %w[X]
-        map.to :replace_with_char, ['r', :insert]
+        # map.to :replace_with_char, ['r', :insert]
         map.to :delete_movement, ['d', :move]
         map.to :delete_movement_then_insert, ['c', :move]
         map.to :start_replace_mode, %w[R]
@@ -42,7 +45,7 @@ module VER
       end
 
       map.mode :insert do |map|
-        map.uses :basic, :complete
+        map.uses :basic #, :complete
       end
 
       map.mode :select_char do |map|

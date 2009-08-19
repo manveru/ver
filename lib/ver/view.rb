@@ -46,14 +46,18 @@ module VER
       @text.status = @status
       @text.view = self
 
+      @text.bind('<Movement>'){|e|
+        @text.status_projection(@status)
+      }
+
       TkGrid.grid @text,   row: 0, column: 0, sticky: :nsew
       TkGrid.grid @ybar,   row: 0, column: 1, sticky: :ns
       TkGrid.grid @xbar,   row: 1, column: 0, sticky: :ew
       TkGrid.grid @status, row: 2, column: 0, columnspan: 2, sticky: :ew
 
-      TkGrid.columnconfigure self, 0,    weight: 1
+      TkGrid.columnconfigure self, 0, weight: 1
       TkGrid.columnconfigure self, 1, weight: 0
-      TkGrid.rowconfigure    self, 0,    weight: 1
+      TkGrid.rowconfigure    self, 0, weight: 1
       TkGrid.rowconfigure    self, 1, weight: 0
     end
 

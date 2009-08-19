@@ -81,26 +81,10 @@ module VER
     def setup
       self.modes ||= {}
       self.stack = []
-
-      # self.bindtag = TkBindTag.new
-      #
-      # bindtag.bind 'i' do |key|
-      #   p :i
-      # end
-      #
-      # tags = callback.text.bindtags
-      # tags.unshift bindtag
-      # callback.text.bindtags = tags
-      #
-      # bindtag.bind 'a' do |key|
-      #   p :a
-      # end
     end
 
     def new(callback)
-      instance = clone
-      instance.callback = callback
-      instance
+      clone.tap{|instance| instance.callback = callback }
     end
 
     def register_keys(*keys)

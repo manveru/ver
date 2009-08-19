@@ -19,46 +19,46 @@ module VER
       self.mode = :insert
     end
 
-    def go_char_left
-      mark_set :insert, 'insert - 1 char'
-      see :insert
+    def go_char_left(count = 1)
+      mark_set :insert, "insert - #{count} char"
     end
 
-    def go_char_right
-      mark_set :insert, 'insert + 1 char'
-      see :insert
+    def go_char_right(count = 1)
+      mark_set :insert, "insert + #{count} char"
     end
 
-    def go_line_up
-      mark_set :insert, 'insert - 1 line'
-      see :insert
+    def go_line_up(count = 1)
+      mark_set :insert, "insert - #{count} line"
     end
 
-    def go_line_down
-      mark_set :insert, 'insert + 1 line'
-      see :insert
+    def go_line_down(count = 1)
+      mark_set :insert, "insert + #{count} line"
     end
 
     def go_word_left
       mark_set :insert, 'insert - 1 char'
       mark_set :insert, 'insert wordstart'
-      see :insert
     end
 
     def go_word_right
       mark_set :insert, 'insert + 1 char'
       mark_set :insert, 'insert wordend'
-      see :insert
+    end
+
+    def go_beginning_of_line
+      mark_set :insert, 'insert linestart'
+    end
+
+    def go_end_of_line
+      mark_set :insert, 'insert lineend'
     end
 
     def go_beginning_of_file
       mark_set :insert, '0.0'
-      see :insert
     end
 
     def go_end_of_file
       mark_set :insert, :end
-      see :insert
     end
 
     def go_page_up
@@ -182,6 +182,8 @@ module VER
       return if fpath.empty?
 
       save_to(fpath)
+
+      VER.status.value = "Saved to #{path}"
     end
 
     def save_to(to)
@@ -226,20 +228,39 @@ module VER
       view.file_open(fpath)
     end
 
+    # lines start from 1
+    # end is maximum lines + 1
+    def status_projection(into)
+      format = "%d,%d  %d%%"
+
+      insert_y, insert_x = index(:insert).split('.').map(&:to_i)
+      end_y, end_x       = index(:end   ).split('.').map(&:to_i)
+
+      percent = (100.0 / (end_y - 2)) * (insert_y - 1)
+
+      values = [
+        insert_y, insert_x,
+        percent,
+      ]
+
+      into.value = format % values
+    end
+
     # Wrap Tk methods to behave as we want and to generate events
 
     def mark_set(mark_name, index)
-      Tk.event_generate(self, '<Movement>')
-
       super
+
+      Tk.event_generate(self, '<Movement>')
 
       if @mode =~ /^select/ && start = @selection_start
         now = index(:insert).split('.').map(&:to_i)
-        p start: start, now: now
         left, right = [start, now].sort.map{|pos| pos.join('.') }
         tag_remove :sel, '0.0', 'end'
         tag_add :sel, left, right
       end
+
+      see :insert if mark_name == :insert
     end
 
     def undo
