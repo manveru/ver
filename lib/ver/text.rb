@@ -148,7 +148,69 @@ module VER
     def save
     end
 
-    def save_as
+    # Some strategies are discussed at:
+    #
+    # http://bitworking.org/news/390/text-editor-saving-routines
+    #
+    # I try another, "wasteful" approach, copying the original file to a
+    # temporary location, overwriting the contents in the copy, then moving the
+    # file to the location of the original file.
+    #
+    # This way all permissions should be kept identical without any effort, but
+    # it will take up additional disk space.
+    #
+    # If there is some failure during the normal saving procedure, we will
+    # simply overwrite the original file in place, make sure you have good insurance ;)
+    def file_save_popup
+      filetypes = [
+        ['ALL Files',  '*'    ],
+        ['Text Files', '*.txt'],
+      ]
+
+      path = view.file_path
+      filename  = ::File.basename path
+      extension = ::File.extname  path
+      directory = ::File.dirname  path
+
+      fpath = Tk.getSaveFile(
+        initialfile: filename,
+        initialdir: directory,
+        defaultextension: extension,
+        filetypes: filetypes
+      )
+
+      return if fpath.empty?
+
+      save_to(fpath)
+    end
+
+    def save_to(to)
+      from = view.file_path
+      save_smart(from, to)
+    rescue => ex
+      puts ex, *ex.backtrace
+      save_dumb(from, to)
+    end
+
+    def save_smart(from, to)
+      sha1 = Digest::SHA1.hexdigest([from, to].join)
+      temp_path = File.join(Dir.tmpdir, 'ver', sha1)
+      temp_dir = File.dirname(temp_path)
+
+      FileUtils.mkdir_p(temp_dir)
+      FileUtils.cp(from, temp_path)
+      File.open(temp_path, 'w+') do |io|
+        io.write(self.value)
+      end
+      FileUtils.mv(temp_path, to)
+
+      # p [from, temp_path, to]
+    end
+
+    def save_dumb(from, to)
+      File.open(to, 'w+') do |io|
+        io.write(self.value)
+      end
     end
 
     def file_open_popup

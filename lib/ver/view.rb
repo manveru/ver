@@ -1,6 +1,6 @@
 module VER
   class View < TkFrame
-    attr_reader :text, :status
+    attr_reader :text, :status, :file_path
 
     def initialize(parent, options = {})
       super
