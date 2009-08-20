@@ -225,7 +225,7 @@ module VER
 
       return if fpath.empty?
 
-      view.file_open(fpath)
+      VER.file_open(fpath)
     end
 
     # lines start from 1
