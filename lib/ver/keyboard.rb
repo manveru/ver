@@ -1,5 +1,8 @@
 module VER
   module Keyboard # avoid initialize
+    # cheap hack to make this compatible with 1.8
+    KeyError = IndexError unless defined?(::KeyError)
+
     ESC = 27 # keycode
     @polling = false
 
