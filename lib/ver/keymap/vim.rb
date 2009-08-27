@@ -49,6 +49,7 @@ module VER
 
       map.mode :select_char do |map|
         map.uses :basic, :move
+        map.to :copy_selection, %w[y]
       end
 
       map.mode :complete do |map|

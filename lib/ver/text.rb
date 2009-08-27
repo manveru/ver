@@ -145,6 +145,13 @@ module VER
       Tk.exit
     end
 
+    def copy_selection
+      text = get(*tag_ranges(:sel).first)
+
+      TkClipboard.clear
+      TkClipboard.append(text)
+    end
+
     def save
     end
 
