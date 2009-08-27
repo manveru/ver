@@ -18,44 +18,41 @@ module VER
         end
       end
 
-      def resolve(keychain)
+      def handle(keychain, &block)
         argument, input = extract_argument(keychain)
-
-        state = false
 
         ancestral_chains = [chains] + ancestors.map{|a| keymap.mode(a){|m| m.chains } }
         ancestral_chains.each do |chains|
           chains.each do |chain, cmd|
-            if chain == input
-              if cmd.respond_to?(:call)
-                if argument && cmd.arity != 0
-                  return cmd argument
-                else
-                  return cmd
-                end
-              elsif cmd
-                return argument ? [cmd, argument] : cmd
-              end
-            elsif chain.size == input.size
-              chain_tail, input_tail = chain[-1], input[-1]
-
-              if chain_tail.is_a?(Symbol)
-                keymap.mode(chain_tail){|m|
-                  if found = m.resolve([input_tail])
-                    return cmd, found
-                  end
-                }
-              end
-
-            elsif chain.size > input.size
-              if chain[0, input.size] == input
-                state = nil
-              end
-            end
+            handle_chain(input, chain, cmd, argument, &block)
           end
         end
+      end
 
-        return state
+      def handle_chain(input, pattern, cmd, argument)
+        if input == pattern
+          yield cmd, [argument].compact
+        elsif input.first == pattern.first
+          pattern_head, pattern_tail = pattern[0..-2], pattern[-1]
+          input_head, input_tail = input[0, pattern_head.size], input[pattern_head.size..-1]
+
+          if pattern_head == input_head
+            handle_nested_chain(pattern_tail, input_tail, cmd, argument, &Proc.new)
+          else
+            # no match
+          end
+        else
+          # no match
+        end
+      end
+
+      def handle_nested_chain(mode_name, input, cmd, argument)
+        keymap.mode mode_name do |mode|
+          mode.handle input do |command|
+            keymap.callback.send cmd, [argument, command]
+            keymap.stack.clear
+          end
+        end
       end
 
       def extract_argument(keychain)
@@ -75,12 +72,15 @@ module VER
 
     def initialize(*args)
       super
-      setup
-    end
 
-    def setup
       self.modes ||= {}
       self.stack = []
+
+      prepare if callback
+    end
+
+    def prepare
+      0.upto(9){|n| register_key(n.to_s) }
     end
 
     def new(callback)
@@ -89,14 +89,21 @@ module VER
 
     def register_keys(*keys)
       keys.each do |key|
-        register_key(key)
+        register_key(key) if key.respond_to?(:to_str)
       end
     end
 
     def register_key(keyname)
-      return unless keyname.respond_to?(:to_str)
+      keyname = keyname.to_str
 
-      callback.bind(keyname.to_str){|key|
+      case keyname
+      when /^(Control-|Alt-)+(.*)/
+        bindname = "#$1KeyPress-#$2"
+      else
+        bindname = "KeyPress-#{keyname}"
+      end
+
+      callback.bind(bindname){|key|
         try(keyname) and Tk.callback_break
       }
     end
@@ -109,39 +116,13 @@ module VER
     # answers with action if found,
     # nil if none matches yet,
     # false if none will ever match
-    def resolve(keychain)
+    def handle(keychain)
       mode current_mode do |mode|
-        case result = mode.resolve(keychain)
-        when nil # wait for more
-          p 'wait for more'
-          return mode, nil
-        when false # fail
-          return mode, false, keychain
-        else
-          return mode, *result
+        mode.handle keychain do |command, argument|
+          callback.send command, *argument
+          stack.clear
         end
       end
-    end
-
-    def handle(keychain)
-      mode, handler, args = resolve(keychain)
-
-      case handler
-      when nil # wait for more
-        true
-      when false # fail and abort
-        stack.clear
-        false
-      else
-        p handler: handler, args: args
-        callback.send(handler, *args)
-        stack.clear
-        true
-      end
-    end
-
-    def event(name, arg = nil)
-      p :event => [name, arg]
     end
 
     def mode(name)

@@ -9,7 +9,6 @@ module VER
         map.to :file_save_popup,    %w[Control-Alt-s]
         map.to :quit,               %w[Control-q]
         map.to :start_control_mode, %w[Escape]
-        map.to :number,             *('1'..'9').map{|n| [n] }
       end
 
       map.mode :move do |map|
@@ -22,7 +21,7 @@ module VER
         map.to :go_line_up,           %w[k], %w[Up]
         map.to :go_page_down,         %w[Control-f], %w[Next]
         map.to :go_page_up,           %w[Control-b], %w[Prior]
-        map.to :go_start_of_line,     %w[0]
+        map.to :go_beginning_of_line, %w[0]
         map.to :go_word_left,         %w[b]
         map.to :go_word_right,        %w[w]
       end
