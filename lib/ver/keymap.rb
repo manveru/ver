@@ -31,7 +31,7 @@ module VER
 
       def handle_chain(input, pattern, cmd, argument)
         if input == pattern
-          yield cmd, [argument].compact
+          yield cmd, argument
         elsif input.first == pattern.first
           pattern_head, pattern_tail = pattern[0..-2], pattern[-1]
           input_head, input_tail = input[0, pattern_head.size], input[pattern_head.size..-1]
@@ -49,7 +49,12 @@ module VER
       def handle_nested_chain(mode_name, input, cmd, argument)
         keymap.mode mode_name do |mode|
           mode.handle input do |command|
-            keymap.callback.send cmd, [argument, command]
+            if argument
+              keymap.callback.send cmd, [command, argument]
+            else
+              keymap.callback.send cmd, command
+            end
+
             keymap.stack.clear
           end
         end
@@ -119,7 +124,12 @@ module VER
     def handle(keychain)
       mode current_mode do |mode|
         mode.handle keychain do |command, argument|
-          callback.send command, *argument
+          if argument
+            callback.send command, argument
+          else
+            callback.send command
+          end
+
           stack.clear
         end
       end
