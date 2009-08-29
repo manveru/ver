@@ -152,6 +152,10 @@ module VER
       TkClipboard.append(text)
     end
 
+    def paste
+      text = TkClipboard.get
+    end
+
     def save
     end
 

@@ -73,8 +73,6 @@ module VER
 
       highlight_syntax
 
-      # @text.bind 'Control-l', proc{ refresh }
-
       # @text.bind '<Modified>',       proc{|e| refresh; p :modified }
       # @text.bind '<Undo>',           proc{|e| refresh; p :undo }
       # @text.bind '<Redo>',           proc{|e| refresh; p :redo }
@@ -92,10 +90,8 @@ module VER
     end
 
     def highlight_syntax
-      Thread.new{
-        syntax = Syntax.from_filename(@file_path)
-        syntax.highlight(@text, @text.value)
-      }
+      syntax = Syntax.from_filename(@file_path)
+      syntax.highlight(@text, @text.value)
     end
 
     def display_stat
