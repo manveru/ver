@@ -21,7 +21,6 @@ module VER
       end
 
       def handle(keychain, &block)
-        p name => keychain
         argument, input = extract_argument(keychain)
 
         partial_match = false
@@ -35,8 +34,6 @@ module VER
           end
         end
 
-        # FIXME: this is not nice, but well...
-        p partial_match: partial_match
         keymap.stack.clear unless partial_match
       end
 

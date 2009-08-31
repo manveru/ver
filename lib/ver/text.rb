@@ -100,19 +100,16 @@ module VER
 
     def search_next
       from, to = tag_nextrange('search', 'insert + 1 chars', 'end')
-      p [from, to]
       mark_set(:insert, from) if from
     end
 
     def search_prev
       from, to = tag_prevrange('search', 'insert - 1 chars', '0.0')
-      p [from, to]
       mark_set(:insert, from) if from
     end
 
     def status_evaluate
       status_ask 'Eval expression: ' do |term|
-        p eval: term
         eval(term)
       end
     end
@@ -266,8 +263,6 @@ module VER
         io.write(self.value)
       end
       FileUtils.mv(temp_path, to)
-
-      # p [from, temp_path, to]
     end
 
     def save_dumb(from, to)
@@ -344,7 +339,6 @@ module VER
     end
 
     def delete_movement(movement)
-      p :delete_movement => movement
     end
 
     def insert(*args)
