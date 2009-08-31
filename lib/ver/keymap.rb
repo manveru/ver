@@ -1,5 +1,7 @@
 module VER
   class Keymap < Struct.new(:callback, :name, :modes, :current_mode, :bindtag, :stack)
+    require 'ver/keymap/vim'
+
     class Mode < Struct.new(:keymap, :name, :chains, :ancestors)
       def initialize(*args)
         super
@@ -19,19 +21,29 @@ module VER
       end
 
       def handle(keychain, &block)
+        p name => keychain
         argument, input = extract_argument(keychain)
+
+        partial_match = false
 
         ancestral_chains = [chains] + ancestors.map{|a| keymap.mode(a){|m| m.chains } }
         ancestral_chains.each do |chains|
           chains.each do |chain, cmd|
-            handle_chain(input, chain, cmd, argument, &block)
+            if handle_chain(input, chain, cmd, argument, &block)
+              partial_match = true
+            end
           end
         end
+
+        # FIXME: this is not nice, but well...
+        p partial_match: partial_match
+        keymap.stack.clear unless partial_match
       end
 
       def handle_chain(input, pattern, cmd, argument)
         if input == pattern
           yield cmd, argument
+          true
         elsif input.first == pattern.first
           pattern_head, pattern_tail = pattern[0..-2], pattern[-1]
           input_head, input_tail = input[0, pattern_head.size], input[pattern_head.size..-1]
@@ -39,7 +51,8 @@ module VER
           if pattern_head == input_head
             handle_nested_chain(pattern_tail, input_tail, cmd, argument, &Proc.new)
           else
-            # no match
+            # no match (yet?)
+            true
           end
         else
           # no match
@@ -49,13 +62,13 @@ module VER
       def handle_nested_chain(mode_name, input, cmd, argument)
         keymap.mode mode_name do |mode|
           mode.handle input do |command|
-            if argument
-              keymap.callback.send cmd, [command, argument]
-            else
-              keymap.callback.send cmd, command
-            end
-
             keymap.stack.clear
+
+            if argument
+              return keymap.callback.send(cmd, [command, argument])
+            else
+              return keymap.callback.send(cmd, command)
+            end
           end
         end
       end
@@ -98,15 +111,35 @@ module VER
       end
     end
 
+    # names on the same line are aliases (starting from Meta)
+    MODIFIERS = %w[
+    Control Alt Shift Lock Extended
+    Double Triple Quadruple
+    Meta M
+    Mod1 M1 Command
+    Mod2 M2 Option
+    Mod3 M3
+    Mod5 M5
+    Mod4 M4
+    Button1 B1
+    Button2 B2
+    Button3 B3
+    Button4 B4
+    Button5 B5
+    ]
+
+    MODIFIERS_UNION = Regexp.union(MODIFIERS.map{|m| m + '-'})
+    MODIFIERS_MATCH = /^(#{MODIFIERS_UNION})+(.*)/
+
     def register_key(keyname)
       keyname = keyname.to_str
 
-      case keyname
-      when /^(Control-|Alt-)+(.*)/
-        bindname = "#$1KeyPress-#$2"
-      else
-        bindname = "KeyPress-#{keyname}"
-      end
+      bindname =
+        if keyname =~ MODIFIERS_MATCH
+          "#$1KeyPress-#$2"
+        else
+          "KeyPress-#{keyname}"
+        end
 
       callback.bind(bindname){|key|
         try(keyname) and Tk.callback_break
@@ -124,20 +157,28 @@ module VER
     def handle(keychain)
       mode current_mode do |mode|
         mode.handle keychain do |command, argument|
+          stack.clear
+
           if argument
-            callback.send command, argument
+            callback.send(command, argument)
           else
-            callback.send command
+            callback.send(command)
           end
 
-          stack.clear
+          return true
         end
       end
+
+      false
     end
 
     def mode(name)
       mode = modes[name] ||= Mode.new(self, name)
       yield mode
+    end
+
+    def current_mode=(cm)
+      self[:current_mode] = cm
     end
   end
 end

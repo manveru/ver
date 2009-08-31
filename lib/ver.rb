@@ -6,18 +6,16 @@ require 'yaml'
 require 'tmpdir'
 require 'digest/sha1'
 
-# lib
-require 'ver/view'
-require 'ver/layout'
-require 'ver/syntax'
-require 'ver/textpow'
-require 'ver/theme'
-require 'ver/keymap'
-require 'ver/keymap/vim'
-require 'ver/text'
-require 'ver/theme/murphy'
-
 module VER
+  autoload :Keymap,  'ver/keymap'
+  autoload :Layout,  'ver/layout'
+  autoload :Status,  'ver/status'
+  autoload :Syntax,  'ver/syntax'
+  autoload :Text,    'ver/text'
+  autoload :Textpow, 'ver/textpow'
+  autoload :Theme,   'ver/theme'
+  autoload :View,    'ver/view'
+
   module_function
 
   class << self
@@ -31,11 +29,11 @@ module VER
     @root = TkRoot.new
     @win = Layout.new(@root)
 
-    ARGV.each{|arg| file_open(arg) }
-
-    @status = Ttk::Entry.new(@root, font: 'Terminus 9', takefocus: 0)
+    @status = Status.new(@root, font: 'Terminus 9', takefocus: 0)
     @status.pack(side: :bottom, fill: :x)
     @status.value = 'Welcome to VER - Quit with Control-q'
+
+    ARGV.each{|arg| file_open(arg) }
 
     Tk.bind :all, 'Control-q', proc{ exit }
 

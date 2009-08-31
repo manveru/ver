@@ -1,5 +1,7 @@
 module VER
   class Theme < Struct.new(:colors, :configuration)
+    autoload :Murphy, 'ver/theme/murphy'
+
     def initialize(colors = {}, &block)
       self.colors = colors
       instance_eval(&block) if block_given?

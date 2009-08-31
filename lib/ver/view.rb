@@ -42,7 +42,7 @@ module VER
       @text.xscrollbar(@xbar)
 
       # status field
-      @status = Ttk::Entry.new(self, font: 'Terminus 9', takefocus: 0)
+      @status = Status.new(self, font: 'Terminus 9', takefocus: 0)
       @text.status = @status
       @text.view = self
 
@@ -65,7 +65,7 @@ module VER
       @file_path = file_path
       @text.value = File.read(file_path)
 
-      @status.value = "Opened #@file_path"
+      VER.status.value = "Opened #@file_path"
 
       @text.edit_reset
       @text.focus
@@ -84,14 +84,16 @@ module VER
     end
 
     def refresh
-      load 'lib/ver/theme/murphy.rb'
       highlight_syntax
       display_stat
     end
 
     def highlight_syntax
       syntax = Syntax.from_filename(@file_path)
-      syntax.highlight(@text, @text.value)
+
+      if syntax
+        syntax.highlight(@text, @text.value)
+      end
     end
 
     def display_stat

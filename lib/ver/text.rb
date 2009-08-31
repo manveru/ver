@@ -8,14 +8,14 @@ module VER
       :select_block => {insertbackground: 'yellow', blockcursor: true},
     }
 
-    attr_accessor :mode, :keymap, :syntax_highlight_in_sync, :status, :view
+    attr_accessor :mode, :keymap, :view, :status
 
-    def initialize(*args)
+    def initialize(view, options = {})
       super
 
-      @syntax_highlight_in_sync = false
       @keymap = Keymap.vim(self)
 
+      self.view = view
       self.mode = :insert
     end
 
@@ -77,6 +77,56 @@ module VER
 
       mark_set :insert, "insert + #{diff} line"
       see :insert
+    end
+
+    def status_search
+      status_ask 'Search term: ' do |term|
+        regex = Regexp.new(term)
+
+        tag_delete 'search'
+        TktNamedTag.new(self, 'search', foreground: '#f00', background: '#00f')
+
+        start = 'insert'
+        while result = search_with_length(regex, "#{start} + 1 chars", 'end - 1 chars')
+          pos, len, match = result
+          break if !result || len == 0
+
+          tag_add :search, pos, "#{pos} + #{len} chars"
+
+          start = pos
+        end
+      end
+    end
+
+    def search_next
+      from, to = tag_nextrange('search', 'insert + 1 chars', 'end')
+      p [from, to]
+      mark_set(:insert, from) if from
+    end
+
+    def search_prev
+      from, to = tag_prevrange('search', 'insert - 1 chars', '0.0')
+      p [from, to]
+      mark_set(:insert, from) if from
+    end
+
+    def status_evaluate
+      status_ask 'Eval expression: ' do |term|
+        p eval: term
+        eval(term)
+      end
+    end
+
+    def status_ask(prompt, &callback)
+      VER.status.ask(prompt){|*args|
+        begin
+          callback.call(*args)
+        rescue => ex
+          p ex
+        ensure
+          focus
+        end
+      }
     end
 
     def delete_char_left
@@ -145,7 +195,7 @@ module VER
       Tk.exit
     end
 
-    def copy_selection
+    def copy_selection(name = :sel)
       text = get(*tag_ranges(:sel).first)
 
       TkClipboard.clear
@@ -324,6 +374,7 @@ module VER
       cursor = MODE_CURSOR[@mode]
 
       configure cursor
+      @selection_start = nil
       # status.configure(background: cursor[:insertbackground])
     end
   end
