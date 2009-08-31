@@ -38,7 +38,7 @@ module VER
         map.to :start_insert_mode, %w[i]
         map.to :start_select_char_mode, %w[v]
 
-        map.to :status_evaluate,    %w[Alt-e]
+        map.to :smart_evaluate, %w[Alt-e]
         map.to :status_search,      %w[slash]
         map.to :search_next, %w[n]
         map.to :search_prev, %w[N]
@@ -50,11 +50,13 @@ module VER
 
       vim.mode :insert do |map|
         map.uses :basic #, :complete
+        map.to :smart_evaluate, %w[Alt-e]
       end
 
       vim.mode :select_char do |map|
         map.uses :basic, :move
         map.to :copy_selection, %w[y]
+        map.to :smart_evaluate, %w[Alt-e]
       end
 
       vim.mode :complete do |map|

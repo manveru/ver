@@ -126,6 +126,22 @@ module VER
       }
     end
 
+    def smart_evaluate
+      from, to = tag_ranges(:sel).first
+
+      if from && to
+        selection_evaluate
+      else
+        line_evaluate
+      end
+    end
+
+    def line_evaluate
+      text = get('insert linestart', 'insert lineend')
+      result = eval(text)
+      insert("insert lineend", "\n#{result.inspect}")
+    end
+
     def delete_char_left
       delete 'insert - 1 char'
     end
@@ -190,6 +206,15 @@ module VER
 
     def quit
       Tk.exit
+    end
+
+    def selection_evaluate(name = :sel)
+      from, to = tag_ranges(name).first
+      text = get(from, to)
+
+      result = eval(text)
+
+      insert("#{to} lineend", "\n#{result.inspect}")
     end
 
     def copy_selection(name = :sel)
