@@ -39,9 +39,11 @@ module VER
         map.to :start_select_char_mode, %w[v]
 
         map.to :smart_evaluate, %w[Alt-e]
-        map.to :status_search,      %w[slash]
+        map.to :status_search, %w[slash]
         map.to :search_next, %w[n]
         map.to :search_prev, %w[N]
+        map.to :insert_indented_newline_above, %w[O]
+        map.to :insert_indented_newline_below, %w[o]
       end
 
       vim.mode :replace do |map|
@@ -51,6 +53,7 @@ module VER
       vim.mode :insert do |map|
         map.uses :basic #, :complete
         map.to :smart_evaluate, %w[Alt-e]
+        map.to :insert_indented_newline, %w[Return]
       end
 
       vim.mode :select_char do |map|

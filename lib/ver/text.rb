@@ -150,13 +150,13 @@ module VER
       delete 'insert'
     end
 
-    def insert_newline_below
+    def insert_indented_newline_below
       mark_set :insert, 'insert lineend'
       insert :insert, "\n"
       start_insert_mode
     end
 
-    def insert_newline_above
+    def insert_indented_newline_above
       mark_set :insert, 'insert linestart'
       insert :insert, "\n"
       mark_set :insert, 'insert - 1 char'
@@ -165,6 +165,21 @@ module VER
 
     def insert_newline
       insert :insert, "\n"
+    end
+
+    def insert_indented_newline
+      line1 = get('insert linestart', 'insert lineend')
+      indentation1 = line1[/^\s+/] || ''
+      insert :insert, "\n"
+
+      line2 = get('insert linestart', 'insert lineend')
+      indentation2 = line2[/^\s+/] || ''
+
+      replace(
+        'insert linestart',
+        "insert linestart + #{indentation2.size} chars",
+        indentation1
+      )
     end
 
     def insert_space
