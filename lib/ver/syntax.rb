@@ -26,9 +26,9 @@ module VER
       return nil
     end
 
-    register :ruby, /\.rb$/, /^rakefile(\.rb)?$/i
-    register :haml, /\.haml$/
-    register :markdown, /\.mk?d/, /\.markdown/i
+    register 'Ruby', /\.rb$/, /^rakefile(\.rb)?$/i
+    register 'Haml', /\.haml$/
+    register 'Markdown', /\.mk?d/, /\.markdown/i
     register 'xhtml_1.0', /\.xhtml/
 
     class Common
@@ -36,7 +36,7 @@ module VER
 
       def initialize(name)
         @name = name
-        file = ::File.expand_path("../syntax/#{name}.syntax", __FILE__)
+        file = ::File.expand_path("../syntax/#{name}.json", __FILE__)
         @syntax = Textpow::SyntaxNode.load(file)
       end
 
@@ -58,7 +58,7 @@ module VER
           stack << [name, pos]
 
           if tag_name = theme.get(name)
-            textarea.tag_raise(tag_name)
+            textarea.tag_raise(tag_name) rescue nil
           end
         end
 
@@ -69,7 +69,7 @@ module VER
             if tag_name = theme.get(name)
               textarea.tag_add(tag_name, "#{lineno}.#{pos}", "#{lineno}.#{mark}")
             else
-              warn("Theme doesn't define %p, using default" % [name])
+              textarea.tag_add(name, "#{lineno}.#{pos}", "#{lineno}.#{mark}")
             end
           else
             warn("Nesting mismatch: %p != %p" % [name, sname])
@@ -78,12 +78,13 @@ module VER
       end
 
       def highlight(textarea, code)
-        theme = Theme::Murphy
-        theme.apply_config(textarea)
+        theme = Theme.load("lib/ver/theme/Espresso Libre.json")
+        theme.apply_default_on(textarea)
 
         theme.colors.each do |name, options|
-          textarea.tag_delete name.to_s
-          TktNamedTag.new(textarea, name.to_s, options)
+          name = name.to_s
+          textarea.tag_delete(name)
+          TktNamedTag.new(textarea, name, options)
         end
 
         pr = Processor.new(textarea, theme)

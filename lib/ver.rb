@@ -2,7 +2,7 @@ $LOAD_PATH.unshift File.expand_path('../', __FILE__)
 
 # stdlib
 require 'tk'
-require 'yaml'
+require 'json'
 require 'tmpdir'
 require 'digest/sha1'
 

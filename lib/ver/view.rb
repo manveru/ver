@@ -71,7 +71,7 @@ module VER
       @text.focus
       @text.set_mark :insert, '0.0'
 
-      highlight_syntax
+      @text.refresh_highlight
 
       # @text.bind '<Modified>',       proc{|e| refresh; p :modified }
       # @text.bind '<Undo>',           proc{|e| refresh; p :undo }
@@ -84,16 +84,7 @@ module VER
     end
 
     def refresh
-      highlight_syntax
       display_stat
-    end
-
-    def highlight_syntax
-      syntax = Syntax.from_filename(@file_path)
-
-      if syntax
-        syntax.highlight(@text, @text.value)
-      end
     end
 
     def display_stat

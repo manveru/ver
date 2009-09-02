@@ -1,0 +1,148 @@
+{
+  "fileTypes": [
+
+  ],
+  "foldingStartMarker": "^\\s*(<[^!?%\/](?!.+?(\/>|<\/.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))",
+  "foldingStopMarker": "^\\s*(<\/[^>]+>|[\/%]>|-->)\\s*$",
+  "keyEquivalent": "^~X",
+  "name": "XML strict",
+  "patterns": [
+    {
+      "begin": "<\\?",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.tag.xml"
+        }
+      },
+      "end": ">",
+      "name": "meta.tag.processing-instruction.xml"
+    },
+    {
+      "begin": "<!",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.tag.xml"
+        }
+      },
+      "end": ">",
+      "name": "meta.tag.sgml.xml"
+    },
+    {
+      "begin": "(<)(?:([-_[:alnum:]]+)((:)))?([-_.:[:alnum:]]+)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.xml"
+        },
+        "2": {
+          "name": "entity.name.tag.namespace.xml"
+        },
+        "3": {
+          "name": "entity.name.tag.xml"
+        },
+        "4": {
+          "name": "punctuation.separator.namespace.xml"
+        },
+        "5": {
+          "name": "entity.name.tag.localname.xml"
+        },
+        "6": {
+          "name": "invalid.illegal.unexpected-end-tag.xml"
+        }
+      },
+      "end": "(\/>)|(<\/)(\\2)((\\4))(\\5)(>)|(<\/[-_.:[:alnum:]]+>)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.xml"
+        },
+        "2": {
+          "name": "punctuation.definition.tag.xml"
+        },
+        "3": {
+          "name": "entity.name.tag.namespace.xml"
+        },
+        "4": {
+          "name": "entity.name.tag.xml"
+        },
+        "5": {
+          "name": "punctuation.separator.namespace.xml"
+        },
+        "6": {
+          "name": "entity.name.tag.localname.xml"
+        },
+        "7": {
+          "name": "punctuation.definition.tag.xml"
+        },
+        "8": {
+          "name": "invalid.illegal.unexpected-end-tag.xml"
+        }
+      },
+      "name": "meta.tag.xml",
+      "patterns": [
+        {
+          "captures": {
+            "1": {
+              "name": "entity.other.attribute-name.namespace.xml"
+            },
+            "2": {
+              "name": "entity.other.attribute-name.xml"
+            },
+            "3": {
+              "name": "punctuation.separator.namespace.xml"
+            },
+            "4": {
+              "name": "entity.other.attribute-name.localname.xml"
+            }
+          },
+          "match": "\\s+(?:([-_a-zA-Z0-9]+)((:)))?([a-zA-Z-]+)="
+        },
+        {
+          "begin": "\"",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.xml"
+            }
+          },
+          "end": "\"",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.xml"
+            }
+          },
+          "name": "string.quoted.double.xml"
+        },
+        {
+          "begin": "'",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.xml"
+            }
+          },
+          "end": "'",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.xml"
+            }
+          },
+          "name": "string.quoted.single.xml"
+        },
+        {
+          "begin": ">",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.tag.xml"
+            }
+          },
+          "end": "(?=<\/)",
+          "name": "meta.tag-content.xml",
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scopeName": "text.xml.strict",
+  "uuid": "74AEC234-DD4D-4AB1-B855-253E34E34BFE"
+}

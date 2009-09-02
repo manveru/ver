@@ -1,12 +1,13 @@
+desc "Update list filename extentions for available syntax definitions"
 task 'syntax_list' do
-  require 'yaml'
+  require 'json'
   require 'pp'
 
   list = {}
 
-  Dir.glob 'lib/ver/syntax/*.syntax' do |syntax|
-    basename = File.basename(syntax, '.syntax')
-    file_types = YAML.load_file(syntax)['fileTypes']
+  Dir.glob 'lib/ver/syntax/*.json' do |syntax|
+    basename = File.basename(syntax, '.json')
+    file_types = JSON.load(File.read(syntax))['fileTypes']
 
     if !file_types || file_types.empty?
       file_types = [basename]

@@ -1,0 +1,21 @@
+{
+  "fileTypes": [
+    "mm",
+    "M",
+    "h"
+  ],
+  "foldingStartMarker": "(?x)\n\t\t \/\\*\\*(?!\\*)\n\t\t|^(?![^{]*?\/\/|[^{]*?\/\\*(?!.*?\\*\/.*?\\{)).*?\\{\\s*($|\/\/|\/\\*(?!.*?\\*\/.*\\S))\n\t\t|^@(interface|protocol|implementation)\\b\n\t",
+  "foldingStopMarker": "(?<!\\*)\\*\\*\/|^\\s*\\}|^@end\\b",
+  "keyEquivalent": "^~O",
+  "name": "Objective-C++",
+  "patterns": [
+    {
+      "include": "source.c++"
+    },
+    {
+      "include": "source.objc"
+    }
+  ],
+  "scopeName": "source.objc++",
+  "uuid": "FDAB1813-6B1C-11D9-BCAC-000D93589AF6"
+}

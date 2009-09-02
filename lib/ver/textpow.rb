@@ -1,18 +1,20 @@
 module Textpow
   class SyntaxProxy
-    def initialize hash, syntax
-      @syntax = syntax
-      @proxy = hash["include"]
+    def initialize proxy, syntax
+      @proxy, @syntax = proxy, syntax
     end
 
-    def method_missing method, *args, &block
+    def method_missing(method, *args, &block)
       if @proxy
         @proxy_value = proxy unless @proxy_value
+
         if @proxy_value
           @proxy_value.send(method, *args, &block)
         else
-          VER.warn "Failed proxying #{@proxy}.#{method}(#{args.join(', ')})"
+          warn "Failed proxying #{@proxy}.#{method}(#{args.join(', ')})"
         end
+      else
+        super
       end
     end
 
@@ -58,24 +60,23 @@ module Textpow
     attr_accessor :repository
     attr_accessor :patterns
 
-    def self.load filename, name_space = :default
-      table = nil
-      case filename
-      when /(\.tmSyntax|\.plist)$/
-        table = Plist::parse_xml( filename )
-      else
-        File.open( filename ) do |f|
-          table = YAML.load( f )
+    def self.load(filename, name_space = :default)
+      table =
+        case filename
+        when /(\.tmSyntax|\.plist)$/
+          Plist::parse_xml(filename)
+        when /\.json$/i
+          JSON.load(File.read(filename))
+        when /\.ya?ml$/i
+          YAML.load_file(filename)
+        else
+          raise ArgumentError, "Unknown filename extension"
         end
-      end
-      if table
-        SyntaxNode.new( table, nil, name_space )
-      else
-        nil
-      end
+
+      SyntaxNode.new(table, nil, name_space) if table
     end
 
-    def initialize hash, syntax = nil, name_space = :default
+    def initialize(hash, syntax = nil, name_space = :default)
       @name_space = name_space
       @@syntaxes[@name_space] ||= {}
       @@syntaxes[@name_space][hash["scopeName"]] = self if hash["scopeName"]
@@ -117,24 +118,26 @@ module Textpow
       processor
     end
 
-    def parse_repository repository
+    def parse_repository(repository)
       @repository = {}
+
       repository.each do |key, value|
-        if value["include"]
-          @repository[key] = SyntaxProxy.new( value, self.syntax )
+        if include = value["include"]
+          @repository[key] = SyntaxProxy.new(include, self.syntax)
         else
-          @repository[key] = SyntaxNode.new( value, self.syntax, @name_space )
+          @repository[key] = SyntaxNode.new(value, self.syntax, @name_space)
         end
       end
     end
 
-    def create_children patterns
+    def create_children(patterns)
       @patterns = []
-      patterns.each do |p|
-        if p["include"]
-          @patterns << SyntaxProxy.new( p, self.syntax )
+
+      patterns.each do |pattern|
+        if include = pattern["include"]
+          @patterns << SyntaxProxy.new(include, self.syntax)
         else
-          @patterns << SyntaxNode.new( p, self.syntax, @name_space )
+          @patterns << SyntaxNode.new(pattern, self.syntax, @name_space)
         end
       end
     end
