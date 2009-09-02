@@ -1,5 +1,7 @@
 module VER
   module Syntax
+    autoload :LIST, 'ver/syntax_list'
+
     EXT_NAME = {}
 
     def self.register(name, *extensions)
@@ -15,12 +17,19 @@ module VER
         return Common.new(name) if base =~ ext
       end
 
+      ext = File.extname(base).downcase
+
+      LIST.each do |name, exts|
+        return Common.new(name) if exts.include?(ext)
+      end
+
       return nil
     end
 
     register :ruby, /\.rb$/, /^rakefile(\.rb)?$/i
     register :haml, /\.haml$/
     register :markdown, /\.mk?d/, /\.markdown/i
+    register 'xhtml_1.0', /\.xhtml/
 
     class Common
       attr_reader :syntax, :name
