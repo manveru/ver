@@ -13,6 +13,10 @@ module VER
         self.ancestors ||= []
       end
 
+      def uses(*names)
+        self.ancestors |= names.map(&:to_sym)
+      end
+
       def to(method_or_block, *keychains)
         keymap.register_keys(*keychains.flatten)
         keychains.each do |keychain|
@@ -22,6 +26,7 @@ module VER
 
       def handle(keychain, &block)
         argument, input = extract_argument(keychain)
+        return true if input.empty?
 
         partial_match = false
 
@@ -49,7 +54,6 @@ module VER
             handle_nested_chain(pattern_tail, input_tail, cmd, argument, &Proc.new)
           else
             # no match (yet?)
-            true
           end
         else
           # no match
@@ -71,17 +75,23 @@ module VER
       end
 
       def extract_argument(keychain)
-        left, right = keychain.partition{|key| key =~ /^\d+$/ }
+        argument, rest = [], []
+        digits = true
 
-        unless left.empty?
-          return left.join.to_i, right
-        else
-          return nil, right
+        keychain.each do |key|
+          if digits && key =~ /^\d$/
+            argument << key
+          else
+            digits = false
+            rest << key
+          end
         end
-      end
 
-      def uses(*names)
-        self.ancestors |= names.map(&:to_sym)
+        unless argument.empty?
+          return argument.join.to_i, rest
+        else
+          return nil, rest
+        end
       end
     end
 
@@ -95,7 +105,12 @@ module VER
     end
 
     def prepare
-      0.upto(9){|n| register_key(n.to_s) }
+      0.upto 9 do |n|
+        callback.bind("KeyPress-#{n}"){|key|
+          try(n.to_s)
+          Tk.callback_break
+        }
+      end
     end
 
     def new(callback)
@@ -165,8 +180,6 @@ module VER
           return true
         end
       end
-
-      false
     end
 
     def mode(name)
