@@ -56,6 +56,10 @@ module VER
 
         def open_tag(name, pos)
           stack << [name, pos]
+
+          if tag_name = theme.get(name)
+            textarea.tag_raise(tag_name)
+          end
         end
 
         def close_tag(name, mark)
@@ -65,10 +69,10 @@ module VER
             if tag_name = theme.get(name)
               textarea.tag_add(tag_name, "#{lineno}.#{pos}", "#{lineno}.#{mark}")
             else
-              p name
+              warn("Theme doesn't define %p, using default" % [name])
             end
           else
-            warn("Nesting mismatch: #{name} != #{sname}")
+            warn("Nesting mismatch: %p != %p" % [name, sname])
           end
         end
       end
