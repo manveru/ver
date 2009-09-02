@@ -25,6 +25,7 @@ module VER
   def run
     # p Tk::Tile.themes
     Tk::Tile.set_theme('clam')
+    Thread.abort_on_exception = true
 
     @root = TkRoot.new
     @win = Layout.new(@root)

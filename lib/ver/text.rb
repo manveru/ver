@@ -196,27 +196,19 @@ module VER
 
     def start_control_mode
       self.mode = :control
-      # configure insertbackground: 'green'
-      # status.configure(background: 'green')
     end
 
     def start_select_char_mode
       self.mode = :select_char
       @selection_start = index(:insert).split('.').map(&:to_i)
-      # configure insertbackground: 'orange'
-      # status.configure(background: 'orange')
     end
 
     def start_select_line_mode
       self.mode = :select_line
-      # configure insertbackground: 'orange'
-      # status.configure(background: 'orange')
     end
 
     def start_select_block_mode
       self.mode = :select_block
-      # configure insertbackground: 'orange'
-      # status.configure(background: 'orange')
     end
 
     def quit
