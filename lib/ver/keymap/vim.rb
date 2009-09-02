@@ -5,7 +5,7 @@ module VER
 
       vim.mode :basic do |map|
         map.to :file_open_popup,    %w[Control-o]
-        map.to :file_save_popup,    %w[Control-s]
+        map.to :file_save,          %w[Control-s]
         map.to :file_save_popup,    %w[Control-Alt-s]
         map.to :quit,               %w[Control-q]
         map.to :start_control_mode, %w[Escape]

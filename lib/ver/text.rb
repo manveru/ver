@@ -235,22 +235,10 @@ module VER
       text = TkClipboard.get
     end
 
-    def save
+    def file_save
+      save_to(view.file_path)
     end
 
-    # Some strategies are discussed at:
-    #
-    # http://bitworking.org/news/390/text-editor-saving-routines
-    #
-    # I try another, "wasteful" approach, copying the original file to a
-    # temporary location, overwriting the contents in the copy, then moving the
-    # file to the location of the original file.
-    #
-    # This way all permissions should be kept identical without any effort, but
-    # it will take up additional disk space.
-    #
-    # If there is some failure during the normal saving procedure, we will
-    # simply overwrite the original file in place, make sure you have good insurance ;)
     def file_save_popup
       filetypes = [
         ['ALL Files',  '*'    ],
@@ -272,16 +260,31 @@ module VER
       return if fpath.empty?
 
       save_to(fpath)
-
-      VER.status.value = "Saved to #{path}"
     end
 
+    # Some strategies are discussed at:
+    #
+    # http://bitworking.org/news/390/text-editor-saving-routines
+    #
+    # I try another, "wasteful" approach, copying the original file to a
+    # temporary location, overwriting the contents in the copy, then moving the
+    # file to the location of the original file.
+    #
+    # This way all permissions should be kept identical without any effort, but
+    # it will take up additional disk space.
+    #
+    # If there is some failure during the normal saving procedure, we will
+    # simply overwrite the original file in place, make sure you have good insurance ;)
     def save_to(to)
       from = view.file_path
       save_smart(from, to)
+
+      VER.status.value = "Saved to #{to}"
     rescue => ex
       puts ex, *ex.backtrace
       save_dumb(from, to)
+
+      VER.status.value = "Saved to #{to}"
     end
 
     def save_smart(from, to)
