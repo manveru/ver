@@ -75,6 +75,8 @@ module VER
       end
 
       def extract_argument(keychain)
+        return nil, keychain if keychain.first == '0'
+
         argument, rest = [], []
         digits = true
 
@@ -114,7 +116,10 @@ module VER
     end
 
     def new(callback)
-      clone.tap{|instance| instance.callback = callback }
+      clone.tap{|instance|
+        instance.callback = callback
+        instance.prepare
+      }
     end
 
     def register_keys(*keys)
@@ -146,15 +151,9 @@ module VER
     def register_key(keyname)
       keyname = keyname.to_str
 
-      bindname =
-        if keyname =~ MODIFIERS_MATCH
-          "#$1KeyPress-#$2"
-        else
-          "KeyPress-#{keyname}"
-        end
-
-      callback.bind(bindname){|key|
-        try(keyname) and Tk.callback_break
+      callback.bind(keyname){|key|
+        try(keyname)
+        Tk.callback_break
       }
     end
 
