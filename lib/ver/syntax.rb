@@ -78,7 +78,8 @@ module VER
       end
 
       def highlight(textarea, code)
-        theme = Theme.load("lib/ver/theme/Espresso Libre.json")
+        theme_name = File.expand_path("../theme/Espresso Libre.json", __FILE__)
+        theme = Theme.load(theme_name)
         theme.apply_default_on(textarea)
 
         theme.colors.each do |name, options|
