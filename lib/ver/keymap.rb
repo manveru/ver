@@ -128,26 +128,6 @@ module VER
       end
     end
 
-    # names on the same line are aliases (starting from Meta)
-    MODIFIERS = %w[
-    Control Alt Shift Lock Extended
-    Double Triple Quadruple
-    Meta M
-    Mod1 M1 Command
-    Mod2 M2 Option
-    Mod3 M3
-    Mod5 M5
-    Mod4 M4
-    Button1 B1
-    Button2 B2
-    Button3 B3
-    Button4 B4
-    Button5 B5
-    ]
-
-    MODIFIERS_UNION = Regexp.union(MODIFIERS.map{|m| m + '-'})
-    MODIFIERS_MATCH = /^(#{MODIFIERS_UNION})+(.*)/
-
     def register_key(keyname)
       keyname = keyname.to_str
 
