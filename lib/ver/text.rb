@@ -13,6 +13,11 @@ module VER
     def initialize(view, options = {})
       super
 
+      # Remove the original bindings from Tk
+      bt = self.bindtags
+      bt.delete Tk::Text
+      self.bindtags = bt
+
       @keymap = Keymap.vim(self)
 
       self.view = view
