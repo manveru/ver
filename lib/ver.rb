@@ -19,7 +19,7 @@ module VER
   module_function
 
   class << self
-    attr_reader :root, :win, :status
+    attr_reader :root, :win, :status, :views
   end
 
   def run
@@ -29,6 +29,7 @@ module VER
 
     @root = TkRoot.new
     @win = Layout.new(@root)
+    @views = []
 
     @status = Status.new(@root, font: 'Terminus 9', takefocus: 0)
     @status.pack(side: :bottom, fill: :x)
@@ -42,10 +43,17 @@ module VER
   end
 
   def file_open(path)
-    @win.create_view{|view|
+    create_view{|view|
       view.file_open(path)
       view.raise
     }
     @win.horizontal_tiling top: 1
+  end
+
+  def create_view(&block)
+    @win.create_view{|view|
+      yield(view)
+      @views.unshift view
+    }
   end
 end

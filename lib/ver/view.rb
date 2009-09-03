@@ -19,6 +19,14 @@ module VER
     # |  @status  |
     # +-----------+
     def setup
+      setup_text
+      setup_scrollbars
+      setup_status
+      setup_grid
+      setup_misc
+    end
+
+    def setup_text
       @text = VER::Text.new(
         self,
         font: 'Terminus 9',
@@ -32,7 +40,9 @@ module VER
         insertbackground: '#f00',
         insertofftime: 0
       )
+    end
 
+    def setup_scrollbars
       # vertical scrollbar
       @ybar = Ttk::Scrollbar.new(self)
       @text.yscrollbar(@ybar)
@@ -40,16 +50,23 @@ module VER
       # horizontal scrollbar
       @xbar = Ttk::Scrollbar.new(self)
       @text.xscrollbar(@xbar)
+    end
 
+    def setup_status
       # status field
       @status = Status.new(self, font: 'Terminus 9', takefocus: 0)
+    end
+
+    def setup_misc
       @text.status = @status
       @text.view = self
 
       @text.bind('<Movement>'){|e|
         @text.status_projection(@status)
       }
+    end
 
+    def setup_grid
       TkGrid.grid @text,   row: 0, column: 0, sticky: :nsew
       TkGrid.grid @ybar,   row: 0, column: 1, sticky: :ns
       TkGrid.grid @xbar,   row: 1, column: 0, sticky: :ew
