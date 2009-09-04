@@ -88,7 +88,7 @@ module VER
       @text.focus
       @text.set_mark :insert, '0.0'
 
-      @text.refresh_highlight
+      @text.first_highlight
 
       # @text.bind '<Modified>',       proc{|e| refresh; p :modified }
       # @text.bind '<Undo>',           proc{|e| refresh; p :undo }

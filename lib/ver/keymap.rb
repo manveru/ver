@@ -1,8 +1,8 @@
 module VER
-  class Keymap < Struct.new(:callback, :name, :modes, :current_mode, :bindtag, :stack)
+  class Keymap < Struct.new(:callback, :name, :modes, :current_mode, :tag, :stack, :original_tags)
     require 'ver/keymap/vim'
 
-    class Mode < Struct.new(:keymap, :name, :chains, :ancestors)
+    class Mode < Struct.new(:keymap, :name, :chains, :ancestors, :tag)
       def initialize(*args)
         super
         setup
@@ -11,6 +11,7 @@ module VER
       def setup
         self.chains ||= {}
         self.ancestors ||= []
+        self.tag = TkBindTag.new
       end
 
       def uses(*names)
@@ -18,10 +19,32 @@ module VER
       end
 
       def to(method_or_block, *keychains)
-        keymap.register_keys(*keychains.flatten)
+        register_keys(*keychains.flatten)
+
         keychains.each do |keychain|
           chains[keychain] = method_or_block
         end
+      end
+
+      def missing(receiver)
+        tag.bind('Key'){|key|
+          keymap.callback.send(receiver, key.char)
+          Tk.callback_break
+        }
+      end
+
+      def register_keys(*keys)
+        keys.each do |key|
+          register_key(key) if key.respond_to?(:to_str)
+        end
+      end
+
+      def register_key(keyname)
+        keyname = keyname.to_str
+
+        tag.bind(keyname){|key|
+          keymap.try(keyname) and Tk.callback_break
+        }
       end
 
       def handle(keychain, &block)
@@ -75,25 +98,18 @@ module VER
       end
 
       def extract_argument(keychain)
-        return nil, keychain if keychain.first == '0'
+        return [nil, keychain] if keychain.first == '0'
 
-        argument, rest = [], []
-        digits = true
+        index = keychain.index{|o| o !~ /\d/ }
+        head = keychain[0...index]
 
-        keychain.each do |key|
-          if digits && key =~ /^\d$/
-            argument << key
-          else
-            digits = false
-            rest << key
-          end
-        end
+        argument = head.join.to_i unless head.empty?
 
-        unless argument.empty?
-          return argument.join.to_i, rest
-        else
-          return nil, rest
-        end
+        return argument, keychain[index..-1]
+      end
+
+      def ancestral_tags
+        ([tag] + ancestors.map{|a| keymap.mode(a){|m| m.tag }}).reverse
       end
     end
 
@@ -102,17 +118,9 @@ module VER
 
       self.modes ||= {}
       self.stack = []
+      self.tag = TkBindTag.new
 
       prepare if callback
-    end
-
-    def prepare
-      0.upto 9 do |n|
-        callback.bind("KeyPress-#{n}"){|key|
-          try(n.to_s)
-          Tk.callback_break
-        }
-      end
     end
 
     def new(callback)
@@ -122,19 +130,33 @@ module VER
       }
     end
 
-    def register_keys(*keys)
-      keys.each do |key|
-        register_key(key) if key.respond_to?(:to_str)
+    def prepare
+      self.original_tags = callback.bindtags.dup
+
+=begin
+      0.upto 9 do |n|
+        tag.bind("KeyPress-#{n}"){|key|
+          try(n.to_s)
+          # Tk.callback_break
+        }
       end
+=end
     end
 
-    def register_key(keyname)
-      keyname = keyname.to_str
+    def assign_current_mode_tags
+      tags = original_tags.dup
 
-      callback.bind(keyname){|key|
-        try(keyname)
-        Tk.callback_break
-      }
+      current_mode_tags = collect_current_mode_tags
+      tags[tags.index(callback) + 1, 0] = current_mode_tags
+      tags.delete Tk::Text
+
+      callback.bindtags = tags
+    end
+
+    def collect_current_mode_tags
+      mode current_mode do |mode|
+        return mode.ancestral_tags
+      end
     end
 
     def try(key)
@@ -168,6 +190,7 @@ module VER
 
     def current_mode=(cm)
       self[:current_mode] = cm
+      assign_current_mode_tags
     end
   end
 end

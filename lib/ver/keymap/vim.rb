@@ -2,6 +2,7 @@ module VER
   class Keymap
     def self.vim(callback)
       vim = new(callback, 'VIM alike')
+      vim.current_mode = :control
 
       vim.mode :basic do |map|
         map.to :file_open_popup,    %w[Control-o]
@@ -9,6 +10,8 @@ module VER
         map.to :file_save_popup,    %w[Control-Alt-s]
         map.to :quit,               %w[Control-q]
         map.to :start_control_mode, %w[Escape]
+
+        map.to :buffer_switch, %w[Alt-b]
       end
 
       vim.mode :move do |map|
@@ -29,8 +32,8 @@ module VER
       vim.mode :control do |map|
         map.uses :basic, :move
 
-        map.to :delete_right, %w[x]
-        map.to :delete_left,  %w[X]
+        map.to :delete_char_right, %w[x]
+        map.to :delete_char_left,  %w[X]
         # map.to :replace_with_char, ['r', :insert]
         map.to :delete_movement, ['d', :move]
         map.to :delete_movement_then_insert, ['c', :move]
@@ -44,6 +47,8 @@ module VER
         map.to :search_prev, %w[N]
         map.to :insert_indented_newline_above, %w[O]
         map.to :insert_indented_newline_below, %w[o]
+
+        map.missing :ignore_character
       end
 
       vim.mode :replace do |map|
@@ -52,8 +57,19 @@ module VER
 
       vim.mode :insert do |map|
         map.uses :basic #, :complete
-        map.to :smart_evaluate, %w[Alt-e]
+
+        map.to :go_char_left,            %w[Left]
+        map.to :go_char_right,           %w[Right]
+        map.to :go_line_down,            %w[Down]
+        map.to :go_line_up,              %w[Up]
+        map.to :go_page_down,            %w[Control-f], %w[Next]
+        map.to :go_page_up,              %w[Control-b], %w[Prior]
+        map.to :smart_evaluate,          %w[Alt-e]
         map.to :insert_indented_newline, %w[Return]
+        map.to :delete_char_left,        %w[BackSpace]
+        map.to :delete_char_right,       %w[Delete]
+
+        map.missing :insert_string
       end
 
       vim.mode :select_char do |map|
@@ -76,8 +92,6 @@ module VER
 
         map.to :status_issue, %w[Return]
       end
-
-      vim.current_mode = :control
 
       vim
     end

@@ -9,6 +9,11 @@ module VER
       View.new(self).tap(&block)
     end
 
+    def focus(number)
+      slaves = winfo_children
+      slaves[number].text.focus
+    end
+
     VERTICAL_TILING = { left: 1, right: -1 }
 
     def vertical_tiling(options = {})

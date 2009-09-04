@@ -12,15 +12,10 @@ module VER
 
     def initialize(view, options = {})
       super
-
-      # Remove the original bindings from Tk
-      bt = self.bindtags
-      bt.delete Tk::Text
-      self.bindtags = bt
+      self.view = view
 
       @keymap = Keymap.vim(self)
 
-      self.view = view
       self.mode = :insert
     end
 
@@ -155,6 +150,15 @@ module VER
       delete 'insert'
     end
 
+    def insert_string(string)
+      # puts "Insert %p in mode %p" % [char, mode]
+      insert :insert, string unless string.empty?
+    end
+
+    def ignore_character(char)
+      # puts "Ignore %p in mode %p" % [char, mode]
+    end
+
     def insert_indented_newline_below
       mark_set :insert, 'insert lineend'
       insert :insert, "\n"
@@ -238,6 +242,10 @@ module VER
 
     def paste
       text = TkClipboard.get
+    end
+
+    def buffer_switch(count)
+      p buffer_switch: count
     end
 
     def file_save
@@ -383,21 +391,23 @@ module VER
 
     def insert(*args)
       super
-      refresh_highlight
+      refresh_highlight unless args.last =~ /[a-zA-Z]/
+    end
+
+    def first_highlight
+      @highlight_syntax = Syntax.from_filename(view.file_path)
+      t = Thread.new{
+        loop{
+          @highlight_syntax.highlight(self, value)
+          sleep 1
+        }
+      }
+      t.priority = -10
     end
 
     def refresh_highlight
-      @highlighter ||= Thread.new{
-        sleep 0.1 # give @highlighter time to be defined
-        loop do
-          sleep 0.01 until @highlighter[:needed]
-          syntax = Syntax.from_filename(__FILE__)
-          syntax.highlight(self, value)
-          @highlighter[:needed] = false
-        end
-      }
-
-      @highlighter[:needed] = true
+#       t = Thread.new{ @highlight_syntax.highlight(self, value) }
+#       t.priority = -10
     end
 
     private
