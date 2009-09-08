@@ -41,6 +41,8 @@ module VER
         map.to :start_replace_mode,            %w[R]
         map.to :start_insert_mode,             %w[i]
         map.to :start_select_char_mode,        %w[v]
+        map.to :eol_then_insert_mode, %w[A]
+        map.to :sol_then_insert_mode, %w[I]
 
         map.to :smart_evaluate,                %w[Alt-e]
         map.to :status_search,                 %w[slash]
