@@ -54,8 +54,8 @@ module VER
       mark_set :insert, 'insert lineend'
     end
 
-    def go_beginning_of_file
-      mark_set :insert, '0.0'
+    def go_line(number = 0)
+      mark_set :insert, "#{number}.0"
     end
 
     def go_end_of_file

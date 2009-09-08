@@ -12,6 +12,13 @@ module VER
         self.chains ||= {}
         self.ancestors ||= []
         self.tag = TkBindTag.new
+
+        0.upto 9 do |n|
+          tag.bind("KeyPress-#{n}"){|key|
+            keymap.try(n.to_s)
+            Tk.callback_break
+          }
+        end
       end
 
       def uses(*names)
@@ -48,7 +55,7 @@ module VER
       end
 
       def handle(keychain, &block)
-        argument, input = extract_argument(keychain)
+        input, argument = extract_argument(keychain)
         return true if input.empty?
 
         partial_match = false
@@ -76,9 +83,11 @@ module VER
           if pattern_head == input_head
             handle_nested_chain(pattern_tail, input_tail, cmd, argument, &Proc.new)
           else
+            true
             # no match (yet?)
           end
         else
+          true
           # no match
         end
       end
@@ -98,14 +107,17 @@ module VER
       end
 
       def extract_argument(keychain)
-        return [nil, keychain] if keychain.first == '0'
+        p keychain
+        return keychain, [] if keychain.first == '0'
 
         index = keychain.index{|o| o !~ /\d/ }
+        return [], [] unless index
+        p index
         head = keychain[0...index]
 
         argument = head.join.to_i unless head.empty?
 
-        return argument, keychain[index..-1]
+        return keychain[index..-1], argument
       end
 
       def ancestral_tags
@@ -132,15 +144,6 @@ module VER
 
     def prepare
       self.original_tags = callback.bindtags.dup
-
-=begin
-      0.upto 9 do |n|
-        tag.bind("KeyPress-#{n}"){|key|
-          try(n.to_s)
-          # Tk.callback_break
-        }
-      end
-=end
     end
 
     def assign_current_mode_tags
@@ -173,7 +176,8 @@ module VER
           stack.clear
 
           if argument
-            callback.send(command, argument)
+            p callback: [command, argument]
+            callback.send(command, *argument)
           else
             callback.send(command)
           end

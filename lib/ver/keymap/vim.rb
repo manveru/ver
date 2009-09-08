@@ -15,7 +15,7 @@ module VER
       end
 
       vim.mode :move do |map|
-        map.to :go_beginning_of_file, %w[g g]
+        map.to :go_line,              %w[g g]
         map.to :go_char_left,         %w[h], %w[Left]
         map.to :go_char_right,        %w[l], %w[Right]
         map.to :go_end_of_file,       %w[G]
