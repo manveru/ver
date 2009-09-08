@@ -1,152 +1,59 @@
-require 'abbrev'
-require 'fileutils'
-require 'logger'
-require 'pp'
-require 'open3'
-require 'strscan'
-require 'tmpdir'
+$LOAD_PATH.unshift File.expand_path('../', __FILE__)
 
-begin; require 'rubygems'; rescue LoadError; end
-require 'ffi-ncurses'
-require 'eventmachine'
+# stdlib
+require 'tk'
+require 'json'
+require 'tmpdir'
+require 'digest/sha1'
 
 module VER
-  VERSION = "2008.10.30"
-
-  DIR = File.expand_path(File.dirname(__FILE__))
-  FatalLog = Logger.new(File.join(Dir.tmpdir, 'ver-fatal.log'), 5, (2 << 20))
-
-  $LOAD_PATH.unshift(DIR)
-
-  require 'vendor/silence'
-  require 'vendor/fuzzy_file_finder'
-  require 'vendor/textpow'
-
-  require 'ver/log'
-  require 'ver/messaging'
-  require 'ver/ncurses'
-  require 'ver/ncurses/window'
-  require 'ver/ncurses/panel'
-
-  require 'ver/buffer'
-  require 'ver/buffer/line'
-  require 'ver/buffer/memory'
-  require 'ver/buffer/file'
-
-  require 'ver/error'
-  require 'ver/keyboard'
-  require 'ver/keymap'
-  require 'ver/mixer'
-  require 'ver/window'
-  require 'ver/cursor'
-  require 'ver/undo'
-  require 'ver/color'
-  require 'ver/config'
-  require 'ver/clipboard'
-  require 'ver/clipboard/xclip'
-  require 'ver/syntax'
-  require 'ver/theme'
-
-  require 'ver/view'
-  require 'ver/view/file'
-  require 'ver/view/info'
-  require 'ver/view/ask/small'
-  require 'ver/view/ask/large'
-  require 'ver/view/ask/file'
-  require 'ver/view/ask/fuzzy_file'
-  require 'ver/view/ask/grep'
-  require 'ver/view/ask/choice'
-  require 'ver/view/ask/complete'
+  autoload :Keymap,  'ver/keymap'
+  autoload :Layout,  'ver/layout'
+  autoload :Status,  'ver/status'
+  autoload :Syntax,  'ver/syntax'
+  autoload :Text,    'ver/text'
+  autoload :Textpow, 'ver/textpow'
+  autoload :Theme,   'ver/theme'
+  autoload :View,    'ver/view'
 
   module_function
 
-  def start(context = {})
-    @last_error = nil
-    start_config
-
-    Log.info "Initializing VER"
-
-    EM.run do
-      start_ncurses
-      start_editor(context)
-    end
-  ensure
-    stop_ncurses # do this, or the world implodes
+  class << self
+    attr_reader :root, :win, :status, :views
   end
 
-  def start_editor(context)
-    EM.error_handler{|ex| error(ex) }
-    setup(context)
-  rescue ::Exception => ex
-    error(ex)
+  def run
+    # p Tk::Tile.themes
+    Tk::Tile.set_theme('clam')
+    Thread.abort_on_exception = true
+
+    @root = TkRoot.new
+    @win = Layout.new(@root)
+    @views = []
+
+    @status = Status.new(@root, font: 'Terminus 9', takefocus: 0)
+    @status.pack(side: :bottom, fill: :x)
+    @status.value = 'Welcome to VER - Quit with Control-q'
+
+    ARGV.each{|arg| file_open(arg) }
+
+    Tk.bind :all, 'Control-q', proc{ exit }
+
+    Tk.mainloop
   end
 
-  def stop
-    @stop = true
-    stop_ncurses
-    exit!
+  def file_open(path)
+    create_view{|view|
+      view.file_open(path)
+      view.raise
+    }
+    @win.horizontal_tiling top: 1
   end
 
-  def stopping?
-    @stop
-  end
-
-  def setup(context)
-    @ask      = View::AskSmall.new(:ask)
-    @info     = View::Info.new(:info)
-    @choice   = View::AskChoice.new(:ask_choice)
-    @complete = View::Complete.new(:complete)
-
-    @file = View::File.new(:file)
-    setup_context(context)
-
-    VER.info "VER #{VERSION} -- C-q to quit"
-
-    @info.open
-    @file.open
-  end
-
-  def setup_context(context = {})
-    files, temp = context.values_at(:files, :temp)
-
-    if files
-      if files.empty?
-        @file.buffer = File.join(Config[:blueprint_dir], 'welcome')
-      else
-        files.each do |hash|
-          @file.buffer = hash[:file]
-
-          if line = hash[:line]
-            @file.methods.goto_line(line)
-          elsif regex = hash[:regex]
-            @file.search = regex
-            @file.buffer.dirty = true
-            @file.methods.search_next
-          end
-        end
-      end
-    elsif temp
-      @file.buffer = MemoryBuffer.new(:file, temp)
-    end
-  end
-
-  def clipboard
-    @clipboard ||= ClipBoard.new
-  end
-
-  def bench(name, &block)
-    Log.debug "let bench: #{name}"
-
-    require 'ruby-prof'
-
-    # Profile the code
-    result = RubyProf.profile(&block)
-
-    # Print a graph profile to text
-    printer = RubyProf::GraphHtmlPrinter.new(result)
-
-    File.open('bench.html', 'w+'){|io| printer.print(io, :min_percent => 0) }
-
-    Log.debug "end bench: #{name}"
+  def create_view(&block)
+    @win.create_view{|view|
+      yield(view)
+      @views.unshift view
+    }
   end
 end

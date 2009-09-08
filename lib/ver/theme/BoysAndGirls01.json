@@ -1,0 +1,156 @@
+{
+  "name": "Boys & Girls 0.1",
+  "settings": [
+    {
+      "settings": {
+        "background": "#000306F2",
+        "caret": "#E60065",
+        "foreground": "#FFFFFF",
+        "invisibles": "#FFFFFF1A",
+        "lineHighlight": "#4DD7FC1A",
+        "selection": "#E60C6559"
+      }
+    },
+    {
+      "name": "Comment",
+      "scope": "comment",
+      "settings": {
+        "background": "#090A0FFA",
+        "foreground": "#404040"
+      }
+    },
+    {
+      "name": "String",
+      "scope": "string",
+      "settings": {
+        "foreground": "#00D8FF"
+      }
+    },
+    {
+      "name": "Number",
+      "scope": "constant.numeric",
+      "settings": {
+        "fontStyle": "",
+        "foreground": "#E62286"
+      }
+    },
+    {
+      "name": "Built-in constant",
+      "scope": "constant.language",
+      "settings": {
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "User-defined constant",
+      "scope": "constant.character, constant.other",
+      "settings": {
+        "fontStyle": "",
+        "foreground": "#00D8FF"
+      }
+    },
+    {
+      "name": "Variable",
+      "scope": "variable.language, variable.other",
+      "settings": {
+        "fontStyle": "bold",
+        "foreground": "#E62286"
+      }
+    },
+    {
+      "name": "Keyword",
+      "scope": "keyword",
+      "settings": {
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "Storage",
+      "scope": "storage",
+      "settings": {
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "Inherited class",
+      "scope": "entity.other.inherited-class",
+      "settings": {
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "Class Name",
+      "scope": "entity.name.type.module.ruby, entity.name.type.class.ruby",
+      "settings": {
+        "fontStyle": "bold underline"
+      }
+    },
+    {
+      "name": "Function name",
+      "scope": "entity.name.function",
+      "settings": {
+        "fontStyle": "bold underline"
+      }
+    },
+    {
+      "name": "Function argument",
+      "scope": "variable.parameter",
+      "settings": {
+        "fontStyle": "bold",
+        "foreground": "#E62286"
+      }
+    },
+    {
+      "name": "Tag name",
+      "scope": "entity.name.tag",
+      "settings": {
+        "fontStyle": "bold underline"
+      }
+    },
+    {
+      "name": "Tag attribute",
+      "scope": "entity.other.attribute-name",
+      "settings": {
+        "fontStyle": "bold",
+        "foreground": "#E62286"
+      }
+    },
+    {
+      "name": "Library function",
+      "scope": "support.function",
+      "settings": {
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "Library constant",
+      "scope": "support.constant",
+      "settings": {
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "Library class\/type",
+      "scope": "support.type, support.class",
+      "settings": {
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "Library variable",
+      "scope": "support.other.variable",
+      "settings": {
+        "fontStyle": ""
+      }
+    },
+    {
+      "name": "Invalid",
+      "scope": "invalid",
+      "settings": {
+        "fontStyle": "",
+        "foreground": "#FF0C00"
+      }
+    }
+  ],
+  "uuid": "E53DA166-6A3A-44BA-B651-C6D45D54B442"
+}

@@ -1,303 +1,196 @@
-require 'set'
-require 'pp'
-
 module VER
-  def self.let(*names, &block)
-    first, *rest = *names
+  class Keymap < Struct.new(:callback, :name, :modes, :current_mode, :tag, :stack, :original_tags)
+    require 'ver/keymap/vim'
 
-    if rest.empty? and first.respond_to?(:to_hash)
-      first.to_hash.each do |name, dependencies|
-        Mode.create(name, *dependencies, &block)
-      end
-    else
-      names.each{|name| Mode.create(name, &block) }
-    end
-  end
-
-  # Mode contains one or more KeyMaps and maintains relationships between them,
-  # so one Mode may inherit from another Mode which affects the lookup.
-  # Don't make circular references!
-  class Mode
-    LIST = {}
-
-    def self.create(name, *dependencies, &block)
-      if mode = LIST[name]
-        mode.add_dependencies(*dependencies)
-        mode.dsl(&block)
-      else
-        mode = LIST[name] = new(name, *dependencies, &block)
+    class Mode < Struct.new(:keymap, :name, :chains, :ancestors, :tag)
+      def initialize(*args)
+        super
+        setup
       end
 
-      return mode
-    end
-
-    attr_accessor :name
-    attr_reader :dependencies, :map
-
-    def initialize(name, *dependencies, &block)
-      @name = name
-      @map = KeyMap.new(self, name)
-      @dependencies = []
-      add_dependencies(*dependencies)
-      dsl(&block)
-    end
-
-    def keys
-      @map.keys
-    end
-
-    def dsl(&block)
-      @map.merge!(ModeMapper.new(self, &block)) if block
-    end
-
-    def add_dependencies(*deps)
-      @dependencies += deps.map{|d| Mode.create(d) }
-      @dependencies.uniq!
-    end
-
-    def [](*expression)
-      [@map, *@dependencies].map{|keymap| keymap[*expression] }.flatten.uniq.compact
-    end
-
-    def each(&block)
-      keys = [@map, *@dependencies].each do |keymap|
-        keymap.each(&block)
+      def setup
+        self.chains ||= {}
+        self.ancestors ||= []
+        self.tag = TkBindTag.new
       end
-    end
 
-    alias deep_each each
-  end
-
-  # ModeMapper is the instance in which keymapping configuration is executed
-  # Every #mode either creates a new mode or retrieves an existing one based on
-  # the names given
-
-  class ModeMapper
-    attr_reader :name, :keys
-
-    def initialize(parent, &block)
-      @parent = parent
-      @keys = Set.new
-      instance_eval(&block)
-    end
-
-    def map(*args, &block)
-      if block_given?
-        @keys << Key.new(*args, &block)
-      else
-        self[*args]
+      def uses(*names)
+        self.ancestors |= names.map(&:to_sym)
       end
-    end
 
-    # Assign a macro to a key or key-combination
-    def macro(key, as, &block)
-      expression = as.split(/ +/)
-      map(key.split(/ +/)){|*m| virtual{|kh| expression.each{|k| kh.press(k) }}}
-    end
+      def to(method_or_block, *keychains)
+        register_keys(*keychains.flatten)
 
-    def count_map(count, trigger, &block)
-      0.upto(count) do |n|
-        key = [/^[1-9]$/] + ([/^\d$/] * n) << trigger
-        map(key){
-          @trigger = @args.last
-          @count = @args.join.to_i
-          instance_eval(&block)
-        }
-      end
-    end
-
-    def after(*keys, &block)
-      add_aspect(:after, *keys, &block)
-    end
-
-    def before(*keys, &block)
-      add_aspect(:before, *keys, &block)
-    end
-
-    def add_aspect(name, *keys, &block)
-      keys.each do |k|
-        @parent.deep_each do |key|
-          if key.expression == k
-            new = key.clone
-            new.send("#{name}=", block)
-            @keys << new
-            next
-          end
+        keychains.each do |keychain|
+          chains[keychain] = method_or_block
         end
       end
-    end
 
-    def [](*expression)
-      @parent[*expression]
-    end
-  end
-
-  class KeyMap
-    attr_reader :name, :keys
-
-    def initialize(parent, name)
-      @parent, @name = parent, name
-      @keys = Set.new
-    end
-
-    def merge!(modemapper)
-      @keys += modemapper.keys
-    end
-
-    def each(&block)
-      @keys.each(&block)
-    end
-
-    def deep_each(&block)
-      @parent.deep_each(&block)
-    end
-
-    include Enumerable
-
-    def [](*expression)
-      @keys.map{|key| key.match(*expression) }
-    end
-  end
-
-  class KeyHandler
-    attr_accessor :view, :keys
-
-    def initialize(view)
-      @view = view
-      @keys = []
-    end
-
-    def press(key, times = 1)
-      keys << key
-      @mode = Mode::LIST[view.mode]
-
-      first, *rest = all = @mode[*keys]
-
-      unless first
-        VER.info("No mapping for: %p in %p" % [keys, view.mode])
-        keys.clear
-        return
+      def missing(receiver)
+        tag.bind('Key'){|key|
+          keymap.callback.send(receiver, key.char)
+          Tk.callback_break
+        }
       end
 
-      if first.ready
-        keys.clear
-        times.times{ execute_key(first) }
-      else
-        VER.info("Waiting for completion of %p" % first.expression)
+      def register_keys(*keys)
+        keys.each do |key|
+          register_key(key) if key.respond_to?(:to_str)
+        end
       end
-    end
 
-    def execute_key(key)
-      # VER.info("Execute: %p in %p: %p" % [keys, view.mode, first])
-      @args = key.args
-      @arg = @args.first
+      def register_key(keyname)
+        keyname = keyname.to_str
 
-      instance_eval(&key.before) if key.before
-      result = instance_eval(&key.block)
-      instance_eval(&key.after) if key.after
+        tag.bind(keyname){|key|
+          keymap.try(keyname) and Tk.callback_break
+        }
+      end
 
-      return result
-    end
+      def handle(keychain, &block)
+        argument, input = extract_argument(keychain)
+        return true if input.empty?
 
-    def [](*args)
-      @mode[*args]
-    end
+        partial_match = false
 
-    def selection; view.selection end
-    def cursor;    view.cursor    end
-    def buffer;    view.buffer    end
-    def window;    view.window    end
-    def methods;   view.methods   end
-
-    def method_missing(meth, *args, &block)
-      view.methods.send(meth, *args, &block)
-    end
-
-    def virtual
-      yield(clone)
-    end
-  end
-
-  # Holds name, documentation, key combinations
-  # Can be compared with other keys, but note that the assigned block will be
-  # ignored in the comparision since equality is not possible otherwise.
-  class Key
-    attr_accessor :expression, :name, :doc, :args, :block, :ready,
-      :after, :before
-
-    def initialize(expression, name = nil, doc = nil, args = [], &block)
-      @expression, @name, @doc, @args, @block = expression, name, doc, args, block
-    end
-
-    # TODO: simplify that, i doubt i'll understand it in a few weeks...
-    def match(*input)
-      args = @args.dup
-      temp = input.dup
-
-      case @expression
-      when Array
-        @expression.each do |exp|
-          return dup_with(args, ready = false) if temp.empty?
-
-          case exp
-          when String
-            return unless exp == temp.shift
-          when Regexp
-            if exp =~ temp.shift
-              captures = $~.captures
-
-              add = captures.empty? ? [$&] : captures
-              args += add
-            else
-              return
+        ancestral_chains = [chains] + ancestors.map{|a| keymap.mode(a){|m| m.chains } }
+        ancestral_chains.each do |chains|
+          chains.each do |chain, cmd|
+            if handle_chain(input, chain, cmd, argument, &block)
+              partial_match = true
             end
           end
         end
-      when String
-        return unless temp.join == @expression
-      when Regexp
-        if temp.join =~ @expression
-          args += $~.captures
-        else
-          return
-        end
-      else
-        return
+
+        keymap.stack.clear unless partial_match
       end
 
-      return dup_with(args)
+      def handle_chain(input, pattern, cmd, argument)
+        if input == pattern
+          yield cmd, argument
+          true
+        elsif input.first == pattern.first
+          pattern_head, pattern_tail = pattern[0..-2], pattern[-1]
+          input_head, input_tail = input[0, pattern_head.size], input[pattern_head.size..-1]
+
+          if pattern_head == input_head
+            handle_nested_chain(pattern_tail, input_tail, cmd, argument, &Proc.new)
+          else
+            # no match (yet?)
+          end
+        else
+          # no match
+        end
+      end
+
+      def handle_nested_chain(mode_name, input, cmd, argument)
+        keymap.mode mode_name do |mode|
+          mode.handle input do |command|
+            keymap.stack.clear
+
+            if argument
+              return keymap.callback.send(cmd, [command, argument])
+            else
+              return keymap.callback.send(cmd, command)
+            end
+          end
+        end
+      end
+
+      def extract_argument(keychain)
+        return [nil, keychain] if keychain.first == '0'
+
+        index = keychain.index{|o| o !~ /\d/ }
+        head = keychain[0...index]
+
+        argument = head.join.to_i unless head.empty?
+
+        return argument, keychain[index..-1]
+      end
+
+      def ancestral_tags
+        ([tag] + ancestors.map{|a| keymap.mode(a){|m| m.tag }}).reverse
+      end
     end
 
-    def dup_with(args, ready = true)
-      d = dup
-      d.ready = ready
-      d.args = args
-      d
+    def initialize(*args)
+      super
+
+      self.modes ||= {}
+      self.stack = []
+      self.tag = TkBindTag.new
+
+      prepare if callback
     end
 
-    def hash
-      [expression, name, doc].hash
+    def new(callback)
+      clone.tap{|instance|
+        instance.callback = callback
+        instance.prepare
+      }
     end
 
-    def ==(key)
-      return false unless key.is_a?(Key)
-      hash == key.hash
-    end
-    alias eql? ==
+    def prepare
+      self.original_tags = callback.bindtags.dup
 
-    # Currying works over regular expressions, a mapping to
-    # /(\d) f/ would respond to the keys "1 f" and 1 would be put into @args
-    # Further args can be given here, which will be put afterwards
-    def call_signature(*args)
-      @args + args
-    end
-
-    def call(*args)
-      @block.call(*call_signature(*args))
+=begin
+      0.upto 9 do |n|
+        tag.bind("KeyPress-#{n}"){|key|
+          try(n.to_s)
+          # Tk.callback_break
+        }
+      end
+=end
     end
 
-    def inspect
-      "Key %p" % [@expression]
+    def assign_current_mode_tags
+      tags = original_tags.dup
+
+      current_mode_tags = collect_current_mode_tags
+      tags[tags.index(callback) + 1, 0] = current_mode_tags
+      tags.delete Tk::Text
+
+      callback.bindtags = tags
+    end
+
+    def collect_current_mode_tags
+      mode current_mode do |mode|
+        return mode.ancestral_tags
+      end
+    end
+
+    def try(key)
+      stack << key
+      handle(stack)
+    end
+
+    # answers with action if found,
+    # nil if none matches yet,
+    # false if none will ever match
+    def handle(keychain)
+      mode current_mode do |mode|
+        mode.handle keychain do |command, argument|
+          stack.clear
+
+          if argument
+            callback.send(command, argument)
+          else
+            callback.send(command)
+          end
+
+          return true
+        end
+      end
+    end
+
+    def mode(name)
+      mode = modes[name] ||= Mode.new(self, name)
+      yield mode
+    end
+
+    def current_mode=(cm)
+      self[:current_mode] = cm
+      assign_current_mode_tags
     end
   end
 end

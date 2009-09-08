@@ -1,0 +1,157 @@
+{
+  "fileTypes": [
+    "sty",
+    "cls"
+  ],
+  "foldingStartMarker": "\/\\*\\*|\\{\\s*$",
+  "foldingStopMarker": "\\*\\*\/|^\\s*\\}",
+  "name": "TeX",
+  "patterns": [
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.keyword.tex"
+        }
+      },
+      "match": "(\\\\)(backmatter|else|fi|frontmatter|ftrue|mainmatter|if(case|cat|dim|eof|false|hbox|hmode|inner|mmode|num|odd|undefined|vbox|vmode|void|x)?)\\b",
+      "name": "keyword.control.tex"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "keyword.control.catcode.tex"
+        },
+        "2": {
+          "name": "punctuation.definition.keyword.tex"
+        },
+        "3": {
+          "name": "punctuation.separator.key-value.tex"
+        },
+        "4": {
+          "name": "constant.numeric.category.tex"
+        }
+      },
+      "match": "((\\\\)catcode)`(?:\\\\)?.(=)(\\d+)",
+      "name": "meta.catcode.tex"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.tex"
+        }
+      },
+      "match": "(%:).*$\\n?",
+      "name": "comment.line.percentage.semicolon.texshop.tex"
+    },
+    {
+      "match": "^%!TEX (\\S*) =\\s*(.*)\\s*$",
+      "name": "comment.line.percentage.directive.texshop.tex"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.tex"
+        }
+      },
+      "match": "(%).*$\\n?",
+      "name": "comment.line.percentage.tex"
+    },
+    {
+      "begin": "\\{",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.group.tex"
+        }
+      },
+      "end": "\\}",
+      "name": "meta.group.braces.tex",
+      "patterns": [
+        {
+          "include": "$base"
+        }
+      ]
+    },
+    {
+      "match": "[\\[\\]]",
+      "name": "punctuation.definition.brackets.tex"
+    },
+    {
+      "begin": "\\$\\$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.tex"
+        }
+      },
+      "end": "\\$\\$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.tex"
+        }
+      },
+      "name": "string.other.math.block.tex",
+      "patterns": [
+        {
+          "include": "text.tex.math"
+        },
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "match": "\\\\\\\\",
+      "name": "constant.character.newline.tex"
+    },
+    {
+      "begin": "\\$",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.tex"
+        }
+      },
+      "end": "\\$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.tex"
+        }
+      },
+      "name": "string.other.math.tex",
+      "patterns": [
+        {
+          "match": "\\\\\\$",
+          "name": "constant.character.escape.tex"
+        },
+        {
+          "include": "text.tex.math"
+        },
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.function.tex"
+        }
+      },
+      "match": "(\\\\)[A-Za-z@]+",
+      "name": "support.function.general.tex"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.keyword.tex"
+        }
+      },
+      "match": "(\\\\)[^a-zA-Z@]",
+      "name": "constant.character.escape.tex"
+    },
+    {
+      "match": "\u00abpress a-z and space for greek letter\u00bb[a-zA-Z]*",
+      "name": "meta.placeholder.greek.tex"
+    }
+  ],
+  "scopeName": "text.tex",
+  "uuid": "6BC8DE6F-9360-4C7E-AC3C-971385945346"
+}

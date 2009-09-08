@@ -1,5 +1,7 @@
 module VER
   module Syntax
+    autoload :LIST, 'ver/syntax_list'
+
     EXT_NAME = {}
 
     def self.register(name, *extensions)
@@ -15,34 +17,32 @@ module VER
         return Common.new(name) if base =~ ext
       end
 
+      ext = File.extname(base).downcase
+
+      LIST.each do |name, exts|
+        return Common.new(name) if exts.include?(ext)
+      end
+
       return nil
     end
 
-    register :ruby, /\.rb$/, /^rakefile(\.rb)?$/i
-    register :haml, /\.haml$/
-    register :markdown, /\.mk?d/, /\.markdown/i
+    register 'Ruby', /\.rb$/, /^rakefile(\.rb)?$/i
+    register 'Haml', /\.haml$/
+    register 'Markdown', /\.mk?d/, /\.markdown/i
+    register 'xhtml_1.0', /\.xhtml/
 
     class Common
       attr_reader :syntax, :name
 
       def initialize(name)
         @name = name
-        file = ::File.expand_path("../syntax/#{name}.syntax", __FILE__)
+        file = ::File.expand_path("../syntax/#{name}.json", __FILE__)
         @syntax = Textpow::SyntaxNode.load(file)
       end
 
-      class Processor < Struct.new(:window, :buffer, :theme, :lineno, :stack)
-        def initialize(window, buffer, theme)
-          self.buffer, self.window, self.theme =
-            buffer, window, theme
-        end
-
-        def color(name)
-          theme[name]
-        end
-
+      class Processor < Struct.new(:textarea, :theme, :lineno, :stack)
         def start_parsing(name)
-          self.lineno = -1
+          self.lineno = 0
           self.stack = []
         end
 
@@ -56,28 +56,39 @@ module VER
 
         def open_tag(name, pos)
           stack << [name, pos]
+
+          if tag_name = theme.get(name)
+            textarea.tag_raise(tag_name) rescue nil
+          end
         end
 
         def close_tag(name, mark)
-          if color(name) != Color[:white]
-            # VER.warn [color(name), lineno - 1, @pos, mark]
-          end
-
           sname, pos = stack.pop
 
           if name == sname
-            window.highlight_line(color(name), lineno, pos, mark - pos)
+            if tag_name = theme.get(name)
+              textarea.tag_add(tag_name, "#{lineno}.#{pos}", "#{lineno}.#{mark}")
+            else
+              textarea.tag_add(name, "#{lineno}.#{pos}", "#{lineno}.#{mark}")
+            end
           else
-            VER.warn("Nesting mismatch: #{name} != #{sname}")
+            warn("Nesting mismatch: %p != %p" % [name, sname])
           end
         end
       end
 
-      def highlight(view, top, bottom)
-        require 'ver/theme/murphy'
-        theme = Theme::Murphy
-        pr = Processor.new(view.window, view.buffer, theme)
-        code = view.buffer[top..bottom]
+      def highlight(textarea, code)
+        theme_name = File.expand_path("../theme/Espresso Libre.json", __FILE__)
+        theme = Theme.load(theme_name)
+        theme.apply_default_on(textarea)
+
+        theme.colors.each do |name, options|
+          name = name.to_s
+          textarea.tag_delete(name)
+          TktNamedTag.new(textarea, name, options)
+        end
+
+        pr = Processor.new(textarea, theme)
 
         syntax.parse(code, pr)
       end
