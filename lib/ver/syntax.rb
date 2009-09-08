@@ -23,7 +23,7 @@ module VER
         return Common.new(name) if exts.include?(ext)
       end
 
-      return nil
+      Common.new('Plain text')
     end
 
     register 'Ruby', /\.rb$/, /^rakefile(\.rb)?$/i
