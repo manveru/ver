@@ -82,20 +82,22 @@ module VER
 
     def status_search
       status_ask 'Search term: ' do |term|
-        regex = Regexp.new(term)
+        tag_all_matching(:search, Regexp.new(term))
+      end
+    end
 
-        tag_delete 'search'
-        TktNamedTag.new(self, 'search', foreground: '#f00', background: '#00f')
+    def tag_all_matching(tagname, regexp)
+      tag_delete tagname
+      TktNamedTag.new(self, tagname, foreground: '#f00', background: '#00f')
 
-        start = 'insert'
-        while result = search_with_length(regex, "#{start} + 1 chars", 'end - 1 chars')
-          pos, len, match = result
-          break if !result || len == 0
+      start = '0.0'
+      while result = search_with_length(regexp, "#{start} + 1 chars", 'end - 1 chars')
+        pos, len, match = result
+        break if !result || len == 0
 
-          tag_add :search, pos, "#{pos} + #{len} chars"
+        tag_add tagname, pos, "#{pos} + #{len} chars"
 
-          start = pos
-        end
+        start = pos
       end
     end
 
@@ -107,6 +109,18 @@ module VER
     def search_prev
       from, to = tag_prevrange('search', 'insert - 1 chars', '0.0')
       mark_set(:insert, from) if from
+    end
+
+    def search_next_word_under_cursor
+      word = get('insert wordstart', 'insert wordend')
+      tag_all_matching(:search, word)
+      search_next
+    end
+
+    def search_prev_word_under_cursor
+      word = get('insert wordstart', 'insert wordend')
+      tag_all_matching(:search, word)
+      search_prev
     end
 
     def status_evaluate

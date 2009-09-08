@@ -27,26 +27,30 @@ module VER
         map.to :go_beginning_of_line, %w[0]
         map.to :go_word_left,         %w[b]
         map.to :go_word_right,        %w[w]
+        map.to :go_next_newline_block, %w[braceleft]
+        map.to :go_prev_newline_block, %w[braceright]
       end
 
       vim.mode :control do |map|
         map.uses :basic, :move
 
-        map.to :delete_char_right, %w[x]
-        map.to :delete_char_left,  %w[X]
-        # map.to :replace_with_char, ['r', :insert]
-        map.to :delete_movement, ['d', :move]
-        map.to :delete_movement_then_insert, ['c', :move]
-        map.to :start_replace_mode, %w[R]
-        map.to :start_insert_mode, %w[i]
-        map.to :start_select_char_mode, %w[v]
+        map.to :delete_char_right,             %w[x]
+        map.to :delete_char_left,              %w[X]
+        map.to :delete_movement,               ['d', :move]
+        map.to :delete_movement_then_insert,   ['c', :move]
+        map.to :start_replace_mode,            %w[R]
+        map.to :start_insert_mode,             %w[i]
+        map.to :start_select_char_mode,        %w[v]
 
-        map.to :smart_evaluate, %w[Alt-e]
-        map.to :status_search, %w[slash]
-        map.to :search_next, %w[n]
-        map.to :search_prev, %w[N]
+        map.to :smart_evaluate,                %w[Alt-e]
+        map.to :status_search,                 %w[slash]
+        map.to :search_next,                   %w[n]
+        map.to :search_prev,                   %w[N]
         map.to :insert_indented_newline_above, %w[O]
         map.to :insert_indented_newline_below, %w[o]
+
+        map.to :search_next_word_under_cursor, %w[asterisk]
+        map.to :search_prev_word_under_cursor, %w[numbersign]
 
         map.missing :ignore_character
       end
@@ -68,6 +72,11 @@ module VER
         map.to :insert_indented_newline, %w[Return]
         map.to :delete_char_left,        %w[BackSpace]
         map.to :delete_char_right,       %w[Delete]
+
+        map.to :go_page_up,              %w[Shift-Up]
+        map.to :go_page_down,            %w[Shift-Down]
+        map.to :go_word_left,            %w[Shift-Left]
+        map.to :go_word_right,           %w[Shift-Right]
 
         map.missing :insert_string
       end
