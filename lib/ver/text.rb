@@ -15,6 +15,7 @@ module VER
       self.view = view
 
       @keymap = Keymap.vim(self)
+      @busy = 0
 
       self.mode = :insert
     end
@@ -369,45 +370,61 @@ module VER
 
     def undo
       edit_undo
-      refresh_highlight
+      touch!
     rescue RuntimeError => ex
       status.value = ex.message
     end
 
     def redo
       edit_redo
-      refresh_highlight
+      touch!
     rescue RuntimeError => ex
       status.value = ex.message
     end
 
     def delete(*args)
       super
-      refresh_highlight
+      touch!
     end
 
     def delete_movement(movement)
+      p delete_movement: movement
     end
 
     def insert(*args)
       super
-      refresh_highlight unless args.last =~ /[a-zA-Z]/
+      touch!
     end
 
     def first_highlight
       @highlight_syntax = Syntax.from_filename(view.file_path)
-      t = Thread.new{
-        loop{
-          @highlight_syntax.highlight(self, value)
-          sleep 1
-        }
-      }
-      t.priority = -10
+
+      @highlight_thread = Thread.new do
+        loop do
+          p @busy
+          if @busy > 0
+            sleep 1
+            @busy -= 1
+          elsif @highlight_pending
+            @highlight_syntax.highlight(self, value)
+            @highlight_pending = false
+          else
+            sleep 0.5
+          end
+        end
+      end
+
+      @highlight_thread.priority = -10
+      refresh_highlight
     end
 
     def refresh_highlight
-#       t = Thread.new{ @highlight_syntax.highlight(self, value) }
-#       t.priority = -10
+      @highlight_pending = true
+    end
+
+    def touch!
+      @busy += 1 if @busy < 4
+      refresh_highlight
     end
 
     private
