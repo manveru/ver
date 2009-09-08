@@ -107,12 +107,10 @@ module VER
       end
 
       def extract_argument(keychain)
-        p keychain
         return keychain, [] if keychain.first == '0'
 
         index = keychain.index{|o| o !~ /\d/ }
         return [], [] unless index
-        p index
         head = keychain[0...index]
 
         argument = head.join.to_i unless head.empty?
@@ -167,9 +165,6 @@ module VER
       handle(stack)
     end
 
-    # answers with action if found,
-    # nil if none matches yet,
-    # false if none will ever match
     def handle(keychain)
       mode current_mode do |mode|
         mode.handle keychain do |command, argument|
