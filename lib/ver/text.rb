@@ -401,7 +401,6 @@ module VER
 
       @highlight_thread = Thread.new do
         loop do
-          p @busy
           if @busy > 0
             sleep 1
             @busy -= 1
