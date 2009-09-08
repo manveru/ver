@@ -87,7 +87,7 @@ module VER
             # no match (yet?)
           end
         else
-          true
+          # true
           # no match
         end
       end
