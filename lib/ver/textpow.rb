@@ -1,4 +1,21 @@
 module Textpow
+  class Processor
+    def start_parsing(name)
+    end
+
+    def end_parsing(name)
+    end
+
+    def new_line(line)
+    end
+
+    def open_tag(name, pos)
+    end
+
+    def close_tag(name, mark)
+    end
+  end
+
   class SyntaxProxy
     def initialize proxy, syntax
       @proxy, @syntax = proxy, syntax
@@ -41,24 +58,10 @@ module Textpow
 
     @@syntaxes = {}
 
-    attr_accessor :syntax
-    attr_accessor :firstLineMatch
-    attr_accessor :foldingStartMarker
-    attr_accessor :foldingStopMarker
-    attr_accessor :match
-    attr_accessor :begin
-    attr_accessor :content
-    attr_accessor :fileTypes
-    attr_accessor :name
-    attr_accessor :contentName
-    attr_accessor :end
-    attr_accessor :scopeName
-    attr_accessor :keyEquivalent
-    attr_accessor :captures
-    attr_accessor :beginCaptures
-    attr_accessor :endCaptures
-    attr_accessor :repository
-    attr_accessor :patterns
+    attr_accessor :processor, :syntax, :firstLineMatch, :foldingStartMarker,
+      :foldingStopMarker, :match, :begin, :content, :fileTypes, :name,
+      :contentName, :end, :scopeName, :keyEquivalent, :captures,
+      :beginCaptures, :endCaptures, :repository, :patterns
 
     def self.load(filename, name_space = :default)
       table =
@@ -78,21 +81,23 @@ module Textpow
 
     def initialize(hash, syntax = nil, name_space = :default)
       @name_space = name_space
-      @@syntaxes[@name_space] ||= {}
-      @@syntaxes[@name_space][hash["scopeName"]] = self if hash["scopeName"]
+
+      prepare_scope_name(hash['scopeName'])
+
       @syntax = syntax || self
+
       hash.each do |key, value|
         case key
         when "firstLineMatch", "foldingStartMarker", "foldingStopMarker", "match", "begin"
           begin
-            instance_variable_set( "@#{key}", Regexp.new(value) )
-          rescue ArgumentError => e
-            raise ParsingError, "Parsing error in #{value}: #{e.to_s}"
+            send("#{key}=", Regexp.new(value))
+          rescue ArgumentError => exception
+            raise ParsingError, "Parsing error in #{value}: #{exception}"
           end
         when "content", "fileTypes", "name", "contentName", "end", "scopeName", "keyEquivalent"
-          instance_variable_set( "@#{key}", value )
+          send("#{key}=", value)
         when "captures", "beginCaptures", "endCaptures"
-          instance_variable_set( "@#{key}", value.sort )
+          send("#{key}=", value.sort)
         when "repository"
           parse_repository value
         when "patterns"
@@ -103,18 +108,27 @@ module Textpow
       end
     end
 
+    def prepare_scope_name(scopeName)
+      @@syntaxes[@name_space] ||= {}
+
+      return unless scopeName
+
+      @@syntaxes[@name_space][scopeName] = self
+    end
 
     def syntaxes
       @@syntaxes[@name_space]
     end
 
-    def parse( string, processor = nil )
-      processor.start_parsing self.scopeName if processor
+    def parse(string, processor = Processor.new)
+      processor.start_parsing scopeName
+
       stack = [[self, nil]]
       string.each_line do |line|
-        parse_line stack, line, processor
+        parse_line(stack, line, processor)
       end
-      processor.end_parsing self.scopeName if processor
+
+      processor.end_parsing self.scopeName
       processor
     end
 
@@ -132,34 +146,36 @@ module Textpow
 
     def create_children(patterns)
       @patterns = []
+      syntax = self.syntax
 
       patterns.each do |pattern|
         if include = pattern["include"]
-          @patterns << SyntaxProxy.new(include, self.syntax)
+          @patterns << SyntaxProxy.new(include, syntax)
         else
-          @patterns << SyntaxNode.new(pattern, self.syntax, @name_space)
+          @patterns << SyntaxNode.new(pattern, syntax, @name_space)
         end
       end
     end
 
-    def parse_captures name, pattern, match, processor
-      captures = pattern.match_captures( name, match )
-      captures.reject! { |group, range, name| ! range.first || range.first == range.last }
-      starts = []
-      ends = []
-      captures.each do |group, range, name|
-        starts << [range.first, group, name]
-        ends   << [range.last, -group, name]
+    def parse_captures(name, pattern, match, processor)
+      all_starts = []
+      all_ends = []
+
+      pattern.match_captures(name, match).each do |group, range, name|
+        range_first = range.first
+        next unless range_first
+
+        range_last = range.last
+        next if range_first == range_last
+
+        all_starts << [range_first, group, name]
+        all_ends   << [range_last, -group, name]
       end
 
-      #          STDERR.puts '-' * 100
-      #          starts.sort!.reverse!.each{|c| STDERR.puts c.join(', ')}
-      #          STDERR.puts
-      #          ends.sort!.reverse!.each{|c| STDERR.puts c.join(', ')}
-      starts.sort!.reverse!
-      ends.sort!.reverse!
+      starts = all_starts.sort.reverse
+      ends = all_ends.sort.reverse
 
-      while ! starts.empty? || ! ends.empty?
+      until starts.empty? && ends.empty?
         if starts.empty?
           pos, key, name = ends.pop
           processor.close_tag name, pos
@@ -176,107 +192,129 @@ module Textpow
       end
     end
 
-    def match_captures name, match
+    def match_captures(name, match)
       matches = []
-      captures = instance_variable_get "@#{name}"
-      if captures
+
+      if captures = send(name)
         captures.each do |key, value|
           if key =~ /^\d*$/
-            matches << [key.to_i, match.offset( key.to_i ), value["name"]] if key.to_i < match.size
+            key = key.to_i
+            matches << [key, match.offset(key), value["name"]] if key < match.size
           else
-            matches << [match.to_index( key.to_sym ), match.offset( key.to_sym), value["name"]] if match.to_index( key.to_sym )
+            key = key.to_sym
+            match_to_key = match.to_index(key)
+            matches << [match_to_key, match.offset(key), value["name"]] if match_to_key
           end
         end
       end
+
       matches
     end
 
-    def match_first string, position
+    def match_first(string, position)
       if self.match
-        if match = self.match.match( string, position )
+        if match = self.match.match(string, position)
           return [self, match]
         end
-      elsif self.begin
-        if match = self.begin.match( string, position )
+      elsif self_begin = self.begin
+        if match = self_begin.match(string, position)
           return [self, match]
         end
       elsif self.end
       else
-        return match_first_son( string, position )
+        return match_first_son(string, position)
       end
+
       nil
     end
 
-    def match_end string, match, position
+    def match_end(string, match, position)
       regstring = self.end.clone
-      regstring.gsub!( /\\([1-9])/ ) { |s| match[$1.to_i] }
-      regstring.gsub!( /\\k<(.*?)>/ ) { |s| match[$1.to_sym] }
-      Regexp.new(regstring).match( string, position )
+      regstring.gsub!(/\\([1-9])/){ match[$1.to_i] }
+      regstring.gsub!(/\\k<(.*?)>/){ match[$1.to_sym] }
+      Regexp.new(regstring).match(string, position)
     end
 
-    def match_first_son string, position
+    def match_first_son(string, position)
       match = nil
-      if self.patterns
-        self.patterns.each do |p|
-          tmatch = p.match_first string, position
-          if tmatch
-            if ! match || match[1].offset(0).first > tmatch[1].offset(0).first
-              match = tmatch
-            end
-            #break if tmatch[1].offset.first == position
+
+      if patterns
+        patterns.each do |pattern|
+          tmatch = pattern.match_first(string, position)
+          next unless tmatch
+          if !match || match[1].offset(0).first > tmatch[1].offset(0).first
+            match = tmatch
           end
         end
       end
+
       match
     end
 
-    def parse_line stack, line, processor
-      processor.new_line line if processor
+    def parse_line(stack, line, processor)
+      processor.new_line(line)
       top, match = stack.last
       position = 0
-      #@ln ||= 0
-      #@ln += 1
-      #STDERR.puts @ln
+
       while true
         if top.patterns
-          pattern, pattern_match = top.match_first_son line, position
+          pattern, pattern_match = top.match_first_son(line, position)
         else
           pattern, pattern_match = nil
         end
 
         end_match = nil
+
         if top.end
-          end_match = top.match_end( line, match, position )
+          end_match = top.match_end( line, match, position)
         end
 
-        if end_match && ( ! pattern_match || pattern_match.offset(0).first >= end_match.offset(0).first )
+        if end_match && ( !pattern_match || pattern_match.offset(0).first >= end_match.offset(0).first )
           pattern_match = end_match
-          start_pos = pattern_match.offset(0).first
-          end_pos = pattern_match.offset(0).last
-          processor.close_tag top.contentName, start_pos if top.contentName && processor
-          parse_captures "captures", top, pattern_match, processor if processor
-          parse_captures "endCaptures", top, pattern_match, processor if processor
-          processor.close_tag top.name, end_pos if top.name && processor
+          pattern_match_first_offset = pattern_match.offset(0)
+          start_pos = pattern_match_first_offset.first
+          end_pos = pattern_match_first_offset.last
+
+          if processor
+            top_contentName = top.contentName
+            processor.close_tag top_contentName, start_pos if top_contentName
+
+            parse_captures "captures", top, pattern_match, processor
+            parse_captures "endCaptures", top, pattern_match, processor
+
+            top_name = top.name
+            processor.close_tag top_name, end_pos if top_name
+          end
+
           stack.pop
           top, match = stack.last
         else
           break unless pattern
+
           start_pos = pattern_match.offset(0).first
           end_pos = pattern_match.offset(0).last
+          pattern_name = pattern.name
+
           if pattern.begin
-            processor.open_tag pattern.name, start_pos if pattern.name && processor
-            parse_captures "captures", pattern, pattern_match, processor if processor
-            parse_captures "beginCaptures", pattern, pattern_match, processor if processor
-            processor.open_tag pattern.contentName, end_pos if pattern.contentName && processor
+            if processor
+              processor.open_tag pattern_name, start_pos if pattern_name
+              parse_captures "captures", pattern, pattern_match, processor
+              parse_captures "beginCaptures", pattern, pattern_match, processor
+
+              pattern_contentName = pattern.contentName
+              processor.open_tag pattern_contentName, end_pos if pattern_contentName
+            end
+
             top = pattern
             match = pattern_match
             stack << [top, match]
-          elsif pattern.match
-            processor.open_tag pattern.name, start_pos if pattern.name && processor
-            parse_captures "captures", pattern, pattern_match, processor if processor
-            processor.close_tag pattern.name, end_pos if pattern.name && processor
+          elsif pattern.match and processor
+            processor.open_tag pattern_name, start_pos if pattern_name
+            parse_captures "captures", pattern, pattern_match, processor
+            processor.close_tag pattern_name, end_pos if pattern_name
           end
         end
+
         position = end_pos
       end
     end
