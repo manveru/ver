@@ -87,7 +87,6 @@ module VER
         mode.map :go_page_down,            %w[Shift-Down]
         mode.map :go_word_left,            %w[Shift-Left]
         mode.map :go_word_right,           %w[Shift-Right]
-        mode.map :insert_space,            %w[space]
 
         mode.missing :insert_string
       end

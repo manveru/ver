@@ -91,6 +91,7 @@ module VER
 
       # no ancestors or all failed
       @stack.clear
+      enter_missing(key)
     end
 
     def enter_missing(key)
@@ -114,7 +115,7 @@ module VER
     def execute(executable, *arg)
       case executable
       when Hash
-        return false
+        return nil
       when Symbol
         callback.send(executable, *arg)
       when Proc

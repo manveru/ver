@@ -49,7 +49,14 @@ module VER
       callback.bindtags = tags
 
       @tag.bind('Key'){|event|
-        enter_missing event.keysym
+        case event.char
+        when ''
+          # enter_missing event.keysym
+          p event
+        else
+          enter_missing event.char
+        end
+
         Tk.callback_break
       }
 

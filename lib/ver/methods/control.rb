@@ -265,10 +265,6 @@ module VER
         )
       end
 
-      def insert_space
-        insert :insert, ' '
-      end
-
       def insert_tab
         insert :insert, "\t"
       end
