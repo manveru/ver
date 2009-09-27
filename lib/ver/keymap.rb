@@ -52,6 +52,13 @@ module VER
         enter_missing event.keysym
         Tk.callback_break
       }
+
+      0.upto 9 do |n|
+        @tag.bind("KeyPress-#{n}") do |key|
+          enter_key n.to_s
+          Tk.callback_break
+        end
+      end
     end
 
     def register(key)

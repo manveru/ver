@@ -74,14 +74,23 @@ module VER
       @stack << key
 
       ancestors do |ancestor|
-        if result = ancestor.attempt_execute(@stack)
+        result = ancestor.attempt_execute(@stack)
+
+        case result
+        when nil # nothing matched yet, but possible in future
+          return nil
+        when false # nothing possible
+          # try next one
+        when true # executed
           @stack.clear
-          return result
+          return true
+        else
+          raise "%p is not a valid result" % [result]
         end
       end
 
+      # no ancestors or all failed
       @stack.clear
-      return false
     end
 
     def enter_missing(key)
@@ -90,18 +99,16 @@ module VER
 
     def attempt_execute(original_stack)
       stack, arg = Mode.split_stack(original_stack)
-      return false if stack.empty?
 
-      executable = stack.inject(@map){|keys, key| keys.fetch(key) }
+      if stack.empty?
+        arg ? nil : false
+      else
+        executable = stack.inject(@map){|keys, key| keys.fetch(key) }
 
-      if execute(executable, *arg)
-        original_stack.clear
-        return true
+        execute(executable, *arg)
       end
-
-      nil
     rescue KeyError
-      nil
+      false
     end
 
     def execute(executable, *arg)
@@ -129,7 +136,7 @@ module VER
       elsif pivot
         return stack[pivot..-1], stack[0..pivot].join.to_i
       else
-        return [], nil
+        return [], stack.join.to_i
       end
     end
   end
