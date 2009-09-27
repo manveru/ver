@@ -54,7 +54,7 @@ module VER
         next unless value = settings.delete(key)
         next if value.empty?
 
-        if value =~ /^(#[[:xdigit:]]{6})/
+        if value =~ /^(#\h{6})/
           settings[key] = $1
         elsif key.downcase == 'fontstyle'
           styles = value.split

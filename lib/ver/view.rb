@@ -20,7 +20,7 @@ module VER
     # +-----------+
     def setup
       setup_text
-      setup_scrollbars
+      # setup_scrollbars
       setup_status
       setup_grid
       setup_misc
@@ -67,22 +67,26 @@ module VER
     end
 
     def setup_grid
-      TkGrid.grid @text,   row: 0, column: 0, sticky: :nsew
-      TkGrid.grid @ybar,   row: 0, column: 1, sticky: :ns
-      TkGrid.grid @xbar,   row: 1, column: 0, sticky: :ew
-      TkGrid.grid @status, row: 2, column: 0, columnspan: 2, sticky: :ew
+      TkGrid.grid @text,   row: 0, column: 0, sticky: :nsew              if @text
+      TkGrid.grid @ybar,   row: 0, column: 1, sticky: :ns                if @ybar
+      TkGrid.grid @xbar,   row: 1, column: 0, sticky: :ew                if @xbar
+      TkGrid.grid @status, row: 2, column: 0, sticky: :ew, columnspan: 2 if @status
 
       TkGrid.columnconfigure self, 0, weight: 1
       TkGrid.columnconfigure self, 1, weight: 0
       TkGrid.rowconfigure    self, 0, weight: 1
       TkGrid.rowconfigure    self, 1, weight: 0
+
+      @seen = Set.new
     end
 
     def file_open(file_path)
-      @file_path = file_path
-      @text.value = File.read(file_path)
+      @file_path = File.expand_path(file_path)
+      @text.value = File.read(@file_path)
 
-      VER.status.value = "Opened #@file_path"
+      VER.opened_file(@file_path)
+
+      @status.value = "Opened #@file_path"
 
       @text.edit_reset
       @text.focus
@@ -98,20 +102,6 @@ module VER
       # @text.bind '<Paste>',          proc{|e| refresh; p :paste }
       # @text.bind '<PasteSelection>', proc{|e| refresh; p :paste_selection }
       # @text.bind '<Movement>',       proc{|e| p :movement }
-    end
-
-    def refresh
-      display_stat
-    end
-
-    def display_stat
-      mark = @text.dump_mark(:insert).find{|k,m,p|
-        p(k: k, m: m, p: p)
-        next unless m.respond_to?(:id)
-        m.id == 'insert'
-      }
-      pos = mark[2]
-      @status.value = "#{pos}"
     end
   end
 end

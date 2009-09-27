@@ -37,18 +37,13 @@ module Textpow
 
     def proxy
       case @proxy
-      when /^#/
-        if @syntax.repository && @syntax.repository[@proxy[1..-1]]
-          #puts "Repository"
-          #@table["syntax"].repository.each_key{|k| puts k}
-          return @syntax.repository[@proxy[1..-1]]
-        end
-      when "$self"
-        return @syntax
-      when "$base"
-        return @syntax
+      when /^#(?<proxy>.+)/
+        return unless @syntax.repository
+        @syntax.repository[$~[:proxy]]
+      when "$self", "$base"
+        @syntax
       else
-        return @syntax.syntaxes[@proxy]
+        @syntax.syntaxes[@proxy]
       end
     end
   end

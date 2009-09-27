@@ -2,6 +2,7 @@ $LOAD_PATH.unshift File.expand_path('../', __FILE__)
 
 # stdlib
 require 'tk'
+require 'set'
 require 'json'
 require 'tmpdir'
 require 'digest/sha1'
@@ -9,6 +10,8 @@ require 'digest/sha1'
 module VER
   autoload :Keymap,  'ver/keymap'
   autoload :Layout,  'ver/layout'
+  autoload :Methods, 'ver/methods'
+  autoload :Mode,    'ver/mode'
   autoload :Status,  'ver/status'
   autoload :Syntax,  'ver/syntax'
   autoload :Text,    'ver/text'
@@ -16,44 +19,55 @@ module VER
   autoload :Theme,   'ver/theme'
   autoload :View,    'ver/view'
 
+  # poor man's option system
+  # p Tk::Tile.themes # a list of available themes
+  #   Linux themes: "classic", "default", "clam", "alt"
+  OPTIONS = {
+    tk_theme: 'clam',
+    keymap: 'vim',
+    global_quit: 'Control-q',
+  }
+
   module_function
 
   class << self
-    attr_reader :root, :win, :status, :views
+    attr_reader :root, :layout, :status, :paths, :options
   end
 
-  def run
-    # p Tk::Tile.themes
-    Tk::Tile.set_theme('clam')
-    Thread.abort_on_exception = true
+  def run(given_options = {})
+    @options = OPTIONS.merge(given_options)
 
-    @root = TkRoot.new
-    @win = Layout.new(@root)
-    @views = []
-
-    @status = Status.new(@root, font: 'Terminus 9', takefocus: 0)
-    @status.pack(side: :bottom, fill: :x)
-    @status.value = 'Welcome to VER - Quit with Control-q'
-
-    ARGV.each{|arg| file_open(arg) }
-
-    Tk.bind :all, 'Control-q', proc{ exit }
+    setup
+    open_argv
+    emergency_bindings
 
     Tk.mainloop
   end
 
-  def file_open(path)
-    create_view{|view|
-      view.file_open(path)
-      view.raise
-    }
-    @win.horizontal_tiling top: 1
+  def setup
+    Thread.abort_on_exception = true
+
+    Tk::Tile.set_theme options[:tk_theme]
+
+    @paths = Set.new
+    @root = TkRoot.new
+    @layout = Layout.new(@root)
+    @layout.extend Layout::VerticalTiling
   end
 
-  def create_view(&block)
-    @win.create_view{|view|
-      yield(view)
-      @views.unshift view
-    }
+  def open_argv
+    layout.create_view do |view|
+      ARGV.each do |arg|
+        view.file_open(arg)
+      end
+    end
+  end
+
+  def emergency_bindings
+    Tk.bind :all, options[:global_quit], proc{ exit }
+  end
+
+  def opened_file(path)
+    @paths << path
   end
 end

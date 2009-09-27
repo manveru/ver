@@ -5,10 +5,12 @@ module VER
 
     def initialize(view, options = {})
       super
-
-      @keymap = Keymap.vim(self)
-      self.mode = :status_query
       self.view = view
+
+      keymap_name = VER.options.fetch(:keymap)
+      self.keymap = Keymap.get(name: keymap_name, receiver: self)
+
+      self.mode = :status_query
     end
 
     def method_missing(meth, *args)
