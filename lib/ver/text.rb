@@ -69,15 +69,24 @@ module VER
 
       Tk.event_generate(self, '<Movement>')
 
-      mode = keymap.current_mode
-      if mode =~ /^select/ && start = @selection_start
-        now = index(:insert).split('.').map(&:to_i)
-        left, right = [start, now].sort.map{|pos| pos.join('.') }
-        tag_remove :sel, '0.0', 'end'
-        tag_add :sel, left, right
-      end
+      refresh_selection
 
       see :insert if mark_name == :insert
+    end
+
+    def refresh_selection
+      return unless start = @selection_start
+
+      now = index(:insert).split('.').map(&:to_i)
+      left, right = [start, now].sort.map{|pos| pos.join('.') }
+      tag_remove :sel, '0.0', 'end'
+
+      case keymap.current_mode
+      when :select_char
+        tag_add :sel, left, right
+      when :select_line
+        tag_add :sel, "#{left} linestart", "#{right} lineend"
+      end
     end
 
     def delete(*args)
@@ -100,7 +109,7 @@ module VER
     end
 
     def touch!
-      # refresh_highlight
+      refresh_highlight
     end
 
     private

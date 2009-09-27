@@ -31,8 +31,14 @@ module VER
       callback.modes[name.to_sym]
     end
 
-    def ancestors(&block)
-      ([self] + @ancestors).each(&block)
+    def ancestors(*done, &block)
+      yield self
+
+      @ancestors.each do |ancestor|
+        next if done.include?(ancestor)
+        yield ancestor
+        ancestor.ancestors(done + [self], &block)
+      end
     end
 
     def missing(sym)
@@ -94,7 +100,7 @@ module VER
       @stack.clear
       enter_missing(key)
     rescue => ex
-      p ex
+      puts ex, *ex.backtrace
       @stack.clear
     end
 

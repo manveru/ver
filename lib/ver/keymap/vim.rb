@@ -48,6 +48,7 @@ module VER
         mode.map :start_replace_mode,            %w[R]
         mode.map :start_insert_mode,             %w[i]
         mode.map :start_select_char_mode,        %w[v]
+        mode.map :start_select_line_mode,        %w[V]
         mode.map :eol_then_insert_mode,          %w[A]
         mode.map :sol_then_insert_mode,          %w[I]
 
@@ -96,11 +97,23 @@ module VER
         mode.missing :insert_string
       end
 
-      vim.add_mode :select_char do |mode|
+      vim.add_mode :select do |mode|
         mode.inherits :basic, :move
 
         mode.map :copy_selection, %w[y]
         mode.map :smart_evaluate, %w[Alt-e]
+      end
+
+      vim.add_mode :select_char do |mode|
+        mode.inherits :select
+      end
+
+      vim.add_mode :select_line do |mode|
+        mode.inherits :select
+      end
+
+      vim.add_mode :select_block do |mode|
+        mode.inherits :select
       end
 
       vim.add_mode :complete do |mode|

@@ -23,6 +23,7 @@ module VER
       @modes = {}
 
       prepare_tag
+      prepare_default_binds
     end
 
     def send(*args)
@@ -47,8 +48,10 @@ module VER
       tags[index - 1, 0] = @tag
 
       callback.bindtags = tags
+    end
 
-      @tag.bind('Key'){|event|
+    def prepare_default_binds
+      @tag.bind 'Key' do |event|
         case event.char
         when ''
           # enter_missing event.keysym
@@ -58,7 +61,7 @@ module VER
         end
 
         Tk.callback_break
-      }
+      end
 
       0.upto 9 do |n|
         @tag.bind("KeyPress-#{n}") do |key|

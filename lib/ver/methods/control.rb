@@ -298,14 +298,19 @@ module VER
       def start_select_char_mode
         self.mode = :select_char
         @selection_start = index(:insert).split('.').map(&:to_i)
+        refresh_selection
       end
 
       def start_select_line_mode
         self.mode = :select_line
+        @selection_start = index(:insert).split('.').map(&:to_i)
+        refresh_selection
       end
 
       def start_select_block_mode
         self.mode = :select_block
+        @selection_start = index(:insert).split('.').map(&:to_i)
+        refresh_selection
       end
 
       def quit
