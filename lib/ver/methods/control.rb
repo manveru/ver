@@ -224,6 +224,10 @@ module VER
         delete 'insert'
       end
 
+      def delete_line
+        delete 'insert linestart', 'insert lineend + 1 char'
+      end
+
       def insert_string(string)
         puts "Insert %p in mode %p" % [string, keymap.current_mode]
         insert :insert, string unless string.empty?
