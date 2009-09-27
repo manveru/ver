@@ -295,22 +295,41 @@ module VER
         self.mode = :control
       end
 
-      def start_select_char_mode
-        self.mode = :select_char
+      def start_selection_mode(name)
+        self.mode = name
         @selection_start = index(:insert).split('.').map(&:to_i)
         refresh_selection
+      end
+
+      def switch_selection_mode(name)
+        start = @selection_start
+        self.mode = name
+        @selection_start = start
+        refresh_selection
+      end
+
+      def start_select_char_mode
+        start_select_char_mode :select_char
+      end
+
+      def switch_select_char_mode
+        switch_selection_mode :select_char
       end
 
       def start_select_line_mode
-        self.mode = :select_line
-        @selection_start = index(:insert).split('.').map(&:to_i)
-        refresh_selection
+        start_selection_mode :select_line
+      end
+
+      def switch_select_line_mode
+        switch_selection_mode :select_line
       end
 
       def start_select_block_mode
-        self.mode = :select_block
-        @selection_start = index(:insert).split('.').map(&:to_i)
-        refresh_selection
+        start_selection_mode :select_block
+      end
+
+      def switch_select_block_mode
+        switch_selection_mode :select_block
       end
 
       def quit

@@ -49,6 +49,7 @@ module VER
         mode.map :start_insert_mode,             %w[i]
         mode.map :start_select_char_mode,        %w[v]
         mode.map :start_select_line_mode,        %w[V]
+        mode.map :start_select_block_mode,       %w[Control-v]
         mode.map :eol_then_insert_mode,          %w[A]
         mode.map :sol_then_insert_mode,          %w[I]
 
@@ -102,6 +103,10 @@ module VER
 
         mode.map :copy_selection, %w[y]
         mode.map :smart_evaluate, %w[Alt-e]
+
+        mode.map :switch_select_char_mode,        %w[v]
+        mode.map :switch_select_line_mode,        %w[V]
+        mode.map :switch_select_block_mode,       %w[Control-v]
       end
 
       vim.add_mode :select_char do |mode|
