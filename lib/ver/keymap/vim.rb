@@ -44,6 +44,7 @@ module VER
         mode.map :delete_char_right,             %w[x]
         mode.map :delete_char_left,              %w[X]
         mode.map :delete_line,                   %w[d d]
+        mode.map :delete_to_eol,                 %w[D]
         mode.map :start_replace_mode,            %w[R]
         mode.map :start_insert_mode,             %w[i]
         mode.map :start_select_char_mode,        %w[v]
