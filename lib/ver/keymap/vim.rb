@@ -43,14 +43,12 @@ module VER
 
         mode.map :delete_char_right,             %w[x]
         mode.map :delete_char_left,              %w[X]
-        # mode.map :delete_movement,               ['d', :move]
         mode.map :delete_line,                   %w[d d]
-        # mode.map :delete_movement_then_insert,   ['c', :move]
         mode.map :start_replace_mode,            %w[R]
         mode.map :start_insert_mode,             %w[i]
         mode.map :start_select_char_mode,        %w[v]
-        mode.map :eol_then_insert_mode, %w[A]
-        mode.map :sol_then_insert_mode, %w[I]
+        mode.map :eol_then_insert_mode,          %w[A]
+        mode.map :sol_then_insert_mode,          %w[I]
 
         mode.map :smart_evaluate,                %w[Alt-e]
         mode.map :status_search,                 %w[slash]
@@ -61,6 +59,9 @@ module VER
 
         mode.map :search_next_word_under_cursor, %w[asterisk]
         mode.map :search_prev_word_under_cursor, %w[numbersign]
+
+        mode.map :undo,                          %w[u]
+        mode.map :redo,                          %w[Control-r]
 
         mode.missing :ignore_character
       end
