@@ -73,6 +73,7 @@ module VER
 
       vim.add_mode :insert do |mode|
         mode.inherits :basic, :views
+        mode.arguments = false
 
         mode.map :go_char_left,            %w[Left]
         mode.map :go_char_right,           %w[Right]
@@ -89,6 +90,8 @@ module VER
         mode.map :go_page_down,            %w[Shift-Down]
         mode.map :go_word_left,            %w[Shift-Left]
         mode.map :go_word_right,           %w[Shift-Right]
+        0.upto(9){|n| mode.map("insert_#{n}".to_sym, [n.to_s]) }
+        mode.map :insert_plus, %w[plus]
 
         mode.missing :insert_string
       end

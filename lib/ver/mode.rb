@@ -8,7 +8,7 @@ module VER
       end
     }
 
-    attr_accessor :callback, :name
+    attr_accessor :callback, :name, :arguments
 
     def initialize(name, callback)
       @name, @callback = name, callback
@@ -16,6 +16,7 @@ module VER
       @map = {}
       @ancestors = []
       @missing = nil
+      @arguments = true
     end
 
     def inherits(*others)
@@ -92,6 +93,9 @@ module VER
       # no ancestors or all failed
       @stack.clear
       enter_missing(key)
+    rescue => ex
+      p ex
+      @stack.clear
     end
 
     def enter_missing(key)
@@ -99,11 +103,16 @@ module VER
     end
 
     def attempt_execute(original_stack)
-      stack, arg = Mode.split_stack(original_stack)
+      if arguments
+        stack, arg = Mode.split_stack(original_stack)
+      else
+        stack = original_stack
+      end
 
       if stack.empty?
         arg ? nil : false
       else
+        p stack: stack
         executable = stack.inject(@map){|keys, key| keys.fetch(key) }
 
         execute(executable, *arg)

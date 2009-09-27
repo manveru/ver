@@ -319,6 +319,8 @@ module VER
         result = eval(text)
 
         insert("#{to} lineend", "\n#{result.inspect}")
+      rescue => ex
+        insert("#{to} lineend", "\n#{ex.inspect}")
       end
 
       def copy_selection(name = :sel)
