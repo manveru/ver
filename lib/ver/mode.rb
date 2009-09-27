@@ -112,7 +112,6 @@ module VER
       if stack.empty?
         arg ? nil : false
       else
-        p stack: stack
         executable = stack.inject(@map){|keys, key| keys.fetch(key) }
 
         execute(executable, *arg)

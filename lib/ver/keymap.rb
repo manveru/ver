@@ -52,7 +52,7 @@ module VER
         case event.char
         when ''
           # enter_missing event.keysym
-          p event
+          # p event
         else
           enter_missing event.char
         end
