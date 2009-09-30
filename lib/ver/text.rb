@@ -10,7 +10,7 @@ module VER
       :select_block => {insertbackground: 'yellow', blockcursor: true},
     }
 
-    attr_accessor :keymap, :view, :status
+    attr_accessor :keymap, :view, :status, :filename
 
     def initialize(view, options = {})
       super
@@ -100,11 +100,12 @@ module VER
     end
 
     def first_highlight
-      @highlight_syntax = Syntax.from_filename(view.file_path)
+      @highlight_syntax = Syntax.from_filename(filename)
       refresh_highlight
     end
 
     def refresh_highlight
+      return unless @highlight_syntax
       @highlight_syntax.highlight(self, value)
     end
 

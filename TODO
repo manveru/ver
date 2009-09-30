@@ -2,6 +2,10 @@
 
 This is a list of tasks that are on my list:
 
+## Startup
+
+[x] Editing of non-existing files when given as argument, create on save.
+
 ## VER::Text
 
 Following is a list of things that need redefinition or mapping and porting to

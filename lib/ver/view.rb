@@ -80,28 +80,17 @@ module VER
       @seen = Set.new
     end
 
-    def file_open(file_path)
-      @file_path = File.expand_path(file_path)
-      @text.value = File.read(@file_path)
-
-      VER.opened_file(@file_path)
-
-      @status.value = "Opened #@file_path"
-
-      @text.edit_reset
-      @text.focus
-      @text.set_mark :insert, '0.0'
-
-      @text.first_highlight
-
-      # @text.bind '<Modified>',       proc{|e| refresh; p :modified }
-      # @text.bind '<Undo>',           proc{|e| refresh; p :undo }
-      # @text.bind '<Redo>',           proc{|e| refresh; p :redo }
-      # @text.bind '<Copy>',           proc{|e| p :copy }
-      # @text.bind '<Cut>',            proc{|e| refresh; p :cut }
-      # @text.bind '<Paste>',          proc{|e| refresh; p :paste }
-      # @text.bind '<PasteSelection>', proc{|e| refresh; p :paste_selection }
-      # @text.bind '<Movement>',       proc{|e| p :movement }
+    def open_path(path)
+      @text.open_path(path)
     end
+
+    # @text.bind '<Modified>',       proc{|e| refresh; p :modified }
+    # @text.bind '<Undo>',           proc{|e| refresh; p :undo }
+    # @text.bind '<Redo>',           proc{|e| refresh; p :redo }
+    # @text.bind '<Copy>',           proc{|e| p :copy }
+    # @text.bind '<Cut>',            proc{|e| refresh; p :cut }
+    # @text.bind '<Paste>',          proc{|e| refresh; p :paste }
+    # @text.bind '<PasteSelection>', proc{|e| refresh; p :paste_selection }
+    # @text.bind '<Movement>',       proc{|e| p :movement }
   end
 end

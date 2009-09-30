@@ -116,7 +116,7 @@ module VER
           if list.size > 1
             p 'not specific enough'
           elsif list.size == 1
-            view.file_open(list.get(0))
+            open_path list.get(0)
             cleanup.call
           else
             p 'too specific'
@@ -133,7 +133,7 @@ module VER
       end
 
       def file_save
-        save_to(view.file_path)
+        save_to(filename)
       end
 
       def file_save_popup
@@ -142,10 +142,9 @@ module VER
           ['Text Files', '*.txt'],
         ]
 
-        path = view.file_path
-        filename  = ::File.basename path
-        extension = ::File.extname  path
-        directory = ::File.dirname  path
+        filename  = ::File.basename @filename
+        extension = ::File.extname  @filename
+        directory = ::File.dirname  @filename
 
         fpath = Tk.getSaveFile(
           initialfile: filename,
@@ -173,13 +172,12 @@ module VER
       # If there is some failure during the normal saving procedure, we will
       # simply overwrite the original file in place, make sure you have good insurance ;)
       def save_to(to)
-        from = view.file_path
-        save_smart(from, to)
+        save_smart(filename, to)
 
         status.value = "Saved to #{to}"
       rescue => ex
         puts ex, *ex.backtrace
-        save_dumb(from, to)
+        save_dumb(filename, to)
 
         status.value = "Saved to #{to}"
       end
@@ -213,7 +211,24 @@ module VER
 
         return if fpath.empty?
 
-        view.file_open(fpath)
+        open_path(path)
+      end
+
+      def open_path(path)
+        @filename = File.expand_path(path)
+
+        begin
+          self.value = File.read(@filename)
+          status.value = "Opened #@filename"
+        rescue Errno::ENOENT
+          # pp self.class.instance_methods.sort
+          clear
+          status.value = "Create #@filename"
+        end
+
+        edit_reset
+        focus
+        set_mark :insert, '0.0'
       end
 
       def delete_char_left

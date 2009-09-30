@@ -8,10 +8,9 @@ module VER
     end
 
     def create_view
-      View.new(self, relief: :ridge).tap do |view|
-        yield(view)
-        @views << view
-      end
+      view = View.new(self)
+      yield view
+      @views << view
 
       apply
     end

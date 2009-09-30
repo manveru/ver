@@ -1,11 +1,12 @@
 $LOAD_PATH.unshift File.expand_path('../', __FILE__)
 
 # stdlib
-require 'tk'
-require 'set'
-require 'json'
-require 'tmpdir'
 require 'digest/sha1'
+require 'json'
+require 'pp'
+require 'set'
+require 'tmpdir'
+require 'tk'
 
 module VER
   autoload :Keymap,  'ver/keymap'
@@ -56,9 +57,9 @@ module VER
   end
 
   def open_argv
-    layout.create_view do |view|
-      ARGV.each do |arg|
-        view.file_open(arg)
+    ARGV.each do |arg|
+      layout.create_view do |view|
+        view.open_path(arg)
       end
     end
   end
