@@ -134,6 +134,8 @@ module VER
         mode.inherits :basic
 
         mode.to :status_issue, %w[Return]
+
+        mode.missing :insert_string
       end
 
       vim

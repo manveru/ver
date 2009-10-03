@@ -36,7 +36,7 @@ module VER
       end
 
       def status_ask(prompt, &callback)
-        VER.status.ask(prompt){|*args|
+        @status.ask(prompt){|*args|
           begin
             callback.call(*args)
           rescue => ex

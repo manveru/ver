@@ -37,5 +37,9 @@ module VER
       result = @callback.call(answer)
       self.value = result.inspect
     end
+
+    def insert_string(string)
+      insert :end, string
+    end
   end
 end
