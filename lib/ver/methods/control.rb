@@ -365,7 +365,6 @@ module VER
           lines << get(*sel)
         end
 
-        p lines: lines
         TkClipboard.append(lines, type: Array)
       end
 
@@ -396,8 +395,6 @@ module VER
       end
 
       def paste_continous(text)
-        p paste_continous: text
-
         if text =~ /\n/
           mark_set :insert, 'insert lineend'
           insert :insert, "\n"
@@ -409,7 +406,6 @@ module VER
 
       def paste_tk_array(tk_array)
         chunks = Tk.send(:simplelist, tk_array)
-        p paste_tk_array: chunks
 
         insert_y, insert_x = index(:insert).split('.').map(&:to_i)
 
@@ -431,10 +427,6 @@ module VER
         touch!
       rescue RuntimeError => ex
         status.value = ex.message
-      end
-
-      def delete_movement(movement)
-        p delete_movement: movement
       end
     end
   end
