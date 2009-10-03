@@ -68,6 +68,11 @@ module VER
         mode.map :undo,                          %w[u]
         mode.map :redo,                          %w[Control-r]
 
+        mode.map :copy_line,                     %w[y y], %w[Y]
+        mode.map :copy_right_word,               %w[y w]
+        mode.map :copy_left_word,                %w[y b]
+        mode.map :paste,                         %w[p]
+
         mode.missing :ignore_character
       end
 

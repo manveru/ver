@@ -86,6 +86,16 @@ module VER
         tag_add :sel, left, right
       when :select_line
         tag_add :sel, "#{left} linestart", "#{right} lineend"
+      when :select_block
+        ly, lx = left.split('.').map(&:to_i)
+        ry, rx = right.split('.').map(&:to_i)
+
+        from_y, to_y = [ly, ry].sort
+        from_x, to_x = [lx, rx].sort
+
+        from_y.upto to_y do |y|
+          tag_add :sel, "#{y}.#{from_x}", "#{y}.#{to_x + 1}"
+        end
       end
     end
 
@@ -109,11 +119,16 @@ module VER
       @highlight_syntax.highlight(self, value)
     end
 
+    private
+
     def touch!
       refresh_highlight
     end
 
-    private
+    def copy(text)
+      p text: text
+      TkClipboard.set text
+    end
 
     def mode=(name)
       keymap.current_mode = mode = name.to_sym

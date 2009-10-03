@@ -331,28 +331,15 @@ module VER
         refresh_selection
       end
 
-      def start_select_char_mode
-        start_select_char_mode :select_char
-      end
+      %w[char line block].each do |suffix|
+        name = "select_#{suffix}"
+        define_method "start_#{name}_mode" do
+          start_selection_mode name
+        end
 
-      def switch_select_char_mode
-        switch_selection_mode :select_char
-      end
-
-      def start_select_line_mode
-        start_selection_mode :select_line
-      end
-
-      def switch_select_line_mode
-        switch_selection_mode :select_line
-      end
-
-      def start_select_block_mode
-        start_selection_mode :select_block
-      end
-
-      def switch_select_block_mode
-        switch_selection_mode :select_block
+        define_method "switch_#{name}_mode" do
+          switch_selection_mode name
+        end
       end
 
       def quit
@@ -371,14 +358,65 @@ module VER
       end
 
       def copy_selection(name = :sel)
-        text = get(*tag_ranges(:sel).first)
-
         TkClipboard.clear
-        TkClipboard.append(text)
+
+        lines = []
+        tag_ranges(:sel).each do |sel|
+          lines << get(*sel)
+        end
+
+        p lines: lines
+        TkClipboard.append(lines, type: Array)
       end
 
+      def copy_line
+        copy get('insert linestart', 'insert lineend + 1 chars')
+      end
+
+      def copy_right_word
+        copy get('insert', 'insert wordend')
+      end
+
+      def copy_left_word
+        copy get('insert', 'insert wordstart')
+      end
+
+      # FIXME: nasty hack or neccesary?
       def paste
         text = TkClipboard.get
+        paste_continous text
+
+      rescue RuntimeError => ex
+        if ex.message =~ /form "STRING" not defined/
+          array = TkClipboard.get type: Array
+          paste_tk_array array
+        else
+          Kernel.raise ex
+        end
+      end
+
+      def paste_continous(text)
+        p paste_continous: text
+
+        if text =~ /\n/
+          mark_set :insert, 'insert lineend'
+          insert :insert, "\n"
+          insert :insert, text.chomp
+        else
+          insert :insert, text
+        end
+      end
+
+      def paste_tk_array(tk_array)
+        chunks = Tk.send(:simplelist, tk_array)
+        p paste_tk_array: chunks
+
+        insert_y, insert_x = index(:insert).split('.').map(&:to_i)
+
+        chunks.each_with_index do |chunk, idx|
+          y = insert_y + idx
+          insert "#{y}.#{insert_x}", chunk
+        end
       end
 
       def undo
