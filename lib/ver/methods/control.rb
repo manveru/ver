@@ -239,6 +239,14 @@ module VER
         delete 'insert'
       end
 
+      def delete_word_right
+        delete 'insert', 'insert wordend'
+      end
+
+      def delete_word_left
+        delete 'insert wordstart', 'insert'
+      end
+
       def delete_line
         delete 'insert linestart', 'insert lineend + 1 char'
       end
