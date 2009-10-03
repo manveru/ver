@@ -12,6 +12,8 @@ module VER
       def insert_7; insert(:insert, '7') end
       def insert_8; insert(:insert, '8') end
       def insert_9; insert(:insert, '9') end
+      def insert_braceleft; insert(:insert, '{') end
+      def insert_braceright; insert(:insert, '}') end
     end
   end
 end

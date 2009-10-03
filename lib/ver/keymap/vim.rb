@@ -100,7 +100,9 @@ module VER
         mode.map :go_word_left,            %w[Shift-Left]
         mode.map :go_word_right,           %w[Shift-Right]
         0.upto(9){|n| mode.map("insert_#{n}".to_sym, [n.to_s]) }
-        mode.map :insert_plus, %w[plus]
+        mode.map :insert_plus,             %w[plus]
+        mode.map :insert_braceleft,        %w[braceleft]
+        mode.map :insert_braceright,       %w[braceright]
 
         mode.missing :insert_string
       end
