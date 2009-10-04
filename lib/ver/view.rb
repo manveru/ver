@@ -24,6 +24,7 @@ module VER
       setup_status
       setup_grid
       setup_misc
+      setup_events
     end
 
     def setup_text
@@ -57,15 +58,6 @@ module VER
       @status = Status.new(self, font: 'Terminus 9', takefocus: 0)
     end
 
-    def setup_misc
-      @text.status = @status
-      @text.view = self
-
-      @text.bind('<Movement>'){|e|
-        @text.status_projection(@status)
-      }
-    end
-
     def setup_grid
       TkGrid.grid @text,   row: 0, column: 0, sticky: :nsew              if @text
       TkGrid.grid @ybar,   row: 0, column: 1, sticky: :ns                if @ybar
@@ -76,12 +68,36 @@ module VER
       TkGrid.columnconfigure self, 1, weight: 0
       TkGrid.rowconfigure    self, 0, weight: 1
       TkGrid.rowconfigure    self, 1, weight: 0
+    end
 
-      @seen = Set.new
+    def setup_misc
+      @text.status = @status
+      @text.view = self
+    end
+
+    def setup_events
+      %w[Movement Modified].each do |name|
+        @text.bind("<#{name}>"){ __send__("on_#{name.downcase}") }
+      end
     end
 
     def open_path(path)
       @text.open_path(path)
+      @text.first_highlight
+    end
+
+    # handling events
+
+    def on_movement
+      @text.see :insert
+      @text.refresh_selection
+      @text.status_projection(@status)
+    end
+
+    def on_modified
+      @text.see :insert
+      @text.refresh_highlight
+      @text.status_projection(@status)
     end
 
     # @text.bind '<Modified>',       proc{|e| refresh; p :modified }

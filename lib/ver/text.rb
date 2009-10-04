@@ -67,11 +67,9 @@ module VER
     def mark_set(mark_name, index)
       super
 
+      return unless mark_name == :insert
+
       Tk.event_generate(self, '<Movement>')
-
-      refresh_selection
-
-      see :insert if mark_name == :insert
     end
 
     def refresh_selection
@@ -122,11 +120,10 @@ module VER
     private
 
     def touch!
-      refresh_highlight
+      Tk.event_generate(self, '<Modified>')
     end
 
     def copy(text)
-      p text: text
       TkClipboard.set text
     end
 
