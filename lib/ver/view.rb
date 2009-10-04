@@ -20,7 +20,7 @@ module VER
     # +-----------+
     def setup
       setup_text
-      # setup_scrollbars
+      # setup_scrollbars # enable if you really want some.
       setup_status
       setup_grid
       setup_misc
