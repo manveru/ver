@@ -28,18 +28,23 @@ module VER
     end
 
     def setup_text
+      # -tabs "[expr {4 * [font measure $font 0]}] left" -tabstyle wordprocessor
+      font_name = 'Terminus 9'
+      font_measure = TkFont.measure(font_name, '0')
+      tab_width = font_measure * 2 # rhs is number of characters
+
       @text = VER::Text.new(
         self,
-        font: 'Terminus 9',
-        undo: true,
-        tabstyle: 'wordprocessor',
-        tabs: ['2c', '4c', '6c'],
-        autoseparators: true,
-        setgrid: true,
-        exportselection: true,
-        borderwidth: 0,
-        insertbackground: '#f00',
-        insertofftime: 0
+        autoseparators:   true, # insert separators into the undo flow
+        borderwidth:      0,
+        exportselection:  true, # copy into X11 buffer automatically
+        font:             font_name,
+        insertbackground: '#f00', # initial value (hardcoded for insert mode)
+        insertofftime:    0, # blinking cursor be gone!
+        setgrid:          true, # tell the wm that this is a griddy window
+        tabs:             tab_width,
+        tabstyle:         'wordprocessor',
+        undo:             true # enable undo capabilities
       )
     end
 
