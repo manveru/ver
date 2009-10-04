@@ -1,7 +1,5 @@
 module VER
-  class Theme
-    attr_accessor :name, :uuid, :default, :colors
-
+  class Theme < Struct.new(:name, :uuid, :default, :colors)
     def self.load(filename)
       json = JSON.load(File.read(filename))
 
@@ -14,7 +12,7 @@ module VER
 
         if scope_names = hash['scope']
           # specific settings
-          scope_names.split(',').each do |scope_name|
+          scope_names.split(/\s*,\s*/).each do |scope_name|
             instance.set(scope_name, settings)
           end
         else
@@ -44,7 +42,7 @@ module VER
     end
 
     def default=(settings)
-      @default = sanitize_settings(settings)
+      self[:default] = sanitize_settings(settings)
     end
 
     def sanitize_settings(given_settings)

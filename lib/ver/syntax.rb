@@ -14,16 +14,16 @@ module VER
       base = File.basename(filename.to_str)
 
       EXT_NAME.each do |ext, name|
-        return Common.new(name) if base =~ ext
+        return Highlighter.new(name) if base =~ ext
       end
 
       ext = File.extname(base).downcase
 
       LIST.each do |name, exts|
-        return Common.new(name) if exts.include?(ext)
+        return Highlighter.new(name) if exts.include?(ext)
       end
 
-      Common.new('Plain text')
+      Highlighter.new('Plain text')
     end
 
     register 'Ruby', /\.rb$/, /^rakefile(\.rb)?$/i
@@ -31,18 +31,49 @@ module VER
     register 'Markdown', /\.mk?d/, /\.markdown/i
     register 'xhtml_1.0', /\.xhtml/
 
-    class Common
-      attr_reader :syntax, :name
+    class Highlighter
+      attr_reader :syntax, :name, :theme
 
       def initialize(name)
         @name = name
-        file = ::File.expand_path("../syntax/#{name}.json", __FILE__)
-        @syntax = Textpow::SyntaxNode.load(file)
+        @first_highlight = true
+
+        syntax = ::File.expand_path("../syntax/#{name}.json", __FILE__)
+        @syntax = Textpow::SyntaxNode.load(syntax)
+
+        theme = File.expand_path("../theme/Espresso Libre.json", __FILE__)
+        @theme = Theme.load(theme)
       end
 
-      class Processor < Struct.new(:textarea, :theme, :lineno, :stack)
+      def highlight(textarea, code, lineno = 0)
+        if @first_highlight
+          create_tags(textarea)
+          @theme.apply_default_on(textarea)
+        else
+          remove_tags(textarea)
+        end
+
+        pr = Processor.new(textarea, @theme, lineno)
+
+        syntax.parse(code, pr)
+      end
+
+      def create_tags(textarea)
+        @theme.colors.each do |name, options|
+          TktNamedTag.new(textarea, name.to_s, options)
+        end
+
+        @first_highlight = false
+      end
+
+      def remove_tags(textarea)
+        @theme.colors.each do |name, options|
+          textarea.tag_remove(name.to_s, '0.0', 'end')
+        end
+      end
+
+      class Processor < Struct.new(:textarea, :theme, :lineno, :max, :stack)
         def start_parsing(name)
-          self.lineno = 0
           self.stack = []
         end
 
@@ -75,22 +106,6 @@ module VER
             warn("Nesting mismatch: %p != %p" % [name, sname])
           end
         end
-      end
-
-      def highlight(textarea, code)
-        theme_name = File.expand_path("../theme/Espresso Libre.json", __FILE__)
-        theme = Theme.load(theme_name)
-        theme.apply_default_on(textarea)
-
-        theme.colors.each do |name, options|
-          name = name.to_s
-          textarea.tag_delete(name)
-          TktNamedTag.new(textarea, name, options)
-        end
-
-        pr = Processor.new(textarea, theme)
-
-        syntax.parse(code, pr)
       end
     end
   end

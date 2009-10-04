@@ -114,9 +114,9 @@ module VER
       refresh_highlight
     end
 
-    def refresh_highlight
+    def refresh_highlight(lineno = 0)
       return unless @highlight_syntax
-      @highlight_syntax.highlight(self, value)
+      @highlight_syntax.highlight(self, value, lineno)
     end
 
     private
