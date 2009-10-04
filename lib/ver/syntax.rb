@@ -72,7 +72,7 @@ module VER
         end
       end
 
-      class Processor < Struct.new(:textarea, :theme, :lineno, :max, :stack)
+      class Processor < Struct.new(:textarea, :theme, :lineno, :stack)
         def start_parsing(name)
           self.stack = []
         end
