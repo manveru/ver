@@ -9,7 +9,7 @@ module VER
         mode.map :file_save,          %w[Control-s]
         mode.map :file_save_popup,    %w[Control-Alt-s]
         mode.map :quit,               %w[Control-q]
-        mode.map :start_control_mode, %w[Escape]
+        mode.map :start_control_mode, %w[Escape], %w[Control-c]
 
         mode.map :buffer_switch, %w[Alt-b]
       end

@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../', __FILE__)
 
 # stdlib
+require 'benchmark'
 require 'digest/sha1'
 require 'json'
 require 'pp'
