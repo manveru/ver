@@ -108,13 +108,34 @@ module VER
     end
 
     def first_highlight
-      @highlight_syntax = Syntax.from_filename(filename)
+      return unless @highlight_syntax = Syntax.from_filename(filename)
+
+      @highlight_thread = Thread.new{
+        this = Thread.current
+        this[:pending] = 0
+
+        loop do
+          if this[:pending] > 0
+            while this[:pending] > 0
+              this[:pending] -= 1
+              sleep 0.1
+            end
+            @highlight_syntax.highlight(self, value, lineno = 0)
+          else
+            sleep 0.1
+          end
+        end
+      }
+
+      sleep 0.01 until @highlight_thread[:pending]
       refresh_highlight
     end
 
     def refresh_highlight(lineno = 0)
-      return unless @highlight_syntax
-      @highlight_syntax.highlight(self, value, lineno)
+      return unless @highlight_thread
+      @highlight_thread[:pending] += 1
+
+      # @highlight_syntax.highlight(self, value, lineno)
     end
 
     private
