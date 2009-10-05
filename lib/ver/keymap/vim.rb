@@ -102,10 +102,13 @@ module VER
         mode.map :go_word_right,           %w[Shift-Right]
 
         0.upto(9){|n| mode.map(["insert_string".to_sym, n.to_s], [n.to_s]) }
+        mode.map [:insert_string, '#'], %w[numbersign]
+        mode.map [:insert_string, '$'], %w[dollar]
+        mode.map [:insert_string, '*'], %w[asterisk]
         mode.map [:insert_string, '+'], %w[plus]
+        mode.map [:insert_string, '/'], %w[slash]
         mode.map [:insert_string, '{'], %w[braceleft]
         mode.map [:insert_string, '}'], %w[braceright]
-        mode.map [:insert_string, '/'], %w[slash]
 
         mode.missing :insert_string
       end
