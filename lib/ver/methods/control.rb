@@ -261,12 +261,12 @@ module VER
       end
 
       def insert_string(string)
-        puts "Insert %p in mode %p" % [string, keymap.current_mode]
+        # puts "Insert %p in mode %p" % [string, keymap.current_mode]
         insert :insert, string unless string.empty?
       end
 
-      def ignore_character(char)
-        puts "Ignore %p in mode %p" % [char, keymap.current_mode]
+      def ignore_string(string)
+        puts "Ignore %p in mode %p" % [string, keymap.current_mode]
       end
 
       def insert_indented_newline_below

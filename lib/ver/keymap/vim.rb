@@ -74,7 +74,7 @@ module VER
         mode.map :copy_left_word,                %w[y b]
         mode.map :paste,                         %w[p]
 
-        mode.missing :ignore_character
+        mode.missing :ignore_string
       end
 
       vim.add_mode :replace do |mode|
