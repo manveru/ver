@@ -1,9 +1,19 @@
 #!/usr/bin/env ruby
 
 if File.symlink?(__FILE__)
-  require File.expand_path('../../lib/ver', File.readlink(__FILE__))
+  lib = File.expand_path('../../lib/ver', File.readlink(__FILE__))
 else
-  require File.expand_path('../../lib/ver', __FILE__)
+  lib File.expand_path('../../lib/ver', __FILE__)
 end
 
-VER.run
+if ARGV.delete('-f')
+  require lib
+  VER.run
+else
+  fork do
+    fork do
+      require lib
+      VER.run
+    end
+  end
+end
