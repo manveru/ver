@@ -120,14 +120,15 @@ module VER
               this[:pending] -= 1
               sleep 0.2
             end
-            @highlight_syntax.highlight(self, value, lineno = 0)
+
+            refresh_highlight!
           else
             sleep 0.5
           end
         end
       }
 
-      @highlight_syntax.highlight(self, value, lineno = 0)
+      refresh_highlight!
     end
 
     def refresh_highlight(lineno = 0)
@@ -136,6 +137,11 @@ module VER
     end
 
     private
+
+    def refresh_highlight!
+      tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
+      @highlight_syntax.highlight(self, value, lineno = 0)
+    end
 
     def touch!
       Tk.event_generate(self, '<Modified>')
