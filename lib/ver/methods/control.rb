@@ -211,7 +211,7 @@ module VER
 
         return if fpath.empty?
 
-        open_path(path)
+        open_path(fpath)
       end
 
       def open_path(path)
