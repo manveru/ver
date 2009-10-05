@@ -89,7 +89,10 @@ module VER
           stack << [name, pos]
 
           if tag_name = theme.get(name)
-            textarea.tag_raise(tag_name) rescue nil
+            if stack.size > 1
+              below = theme.get(stack[-2][0])
+              textarea.tag_raise(tag_name, below) rescue nil
+            end
           end
         end
 
