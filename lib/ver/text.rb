@@ -118,24 +118,21 @@ module VER
           if this[:pending] > 0
             while this[:pending] > 0
               this[:pending] -= 1
-              sleep 0.1
+              sleep 0.2
             end
             @highlight_syntax.highlight(self, value, lineno = 0)
           else
-            sleep 0.1
+            sleep 0.5
           end
         end
       }
 
-      sleep 0.01 until @highlight_thread[:pending]
-      refresh_highlight
+      @highlight_syntax.highlight(self, value, lineno = 0)
     end
 
     def refresh_highlight(lineno = 0)
       return unless @highlight_thread
       @highlight_thread[:pending] += 1
-
-      # @highlight_syntax.highlight(self, value, lineno)
     end
 
     private
