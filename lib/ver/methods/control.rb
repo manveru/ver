@@ -277,6 +277,22 @@ module VER
         puts "Ignore %p in mode %p" % [string, keymap.current_mode]
       end
 
+      def indent_line
+        insert('insert linestart', '  ')
+      end
+
+      def unindent_line
+       line = get('insert linestart', 'insert lineend')
+
+       return unless line =~ /^(\s\s?)/
+
+       replace(
+         'insert linestart',
+         "insert linestart + #{$1.size} chars",
+         ''
+       )
+      end
+
       def insert_indented_newline_below
         line = get('insert linestart', 'insert lineend')
         indentation = line[/^\s+/] || ''

@@ -63,6 +63,8 @@ module VER
         mode.map :insert_indented_newline_above, %w[O]
         mode.map :insert_indented_newline_below, %w[o]
         mode.map :join_lines,                    %w[J]
+        mode.map :indent_line,                   %w[greater]
+        mode.map :unindent_line,                 %w[less]
 
         mode.map :search_next_word_under_cursor, %w[asterisk]
         mode.map :search_prev_word_under_cursor, %w[numbersign]
@@ -110,6 +112,8 @@ module VER
         mode.map [:insert_string, '/'], %w[slash]
         mode.map [:insert_string, '{'], %w[braceleft]
         mode.map [:insert_string, '}'], %w[braceright]
+        mode.map [:insert_string, '>'], %w[greater]
+        mode.map [:insert_string, '<'], %w[less]
 
         mode.missing :insert_string
       end
