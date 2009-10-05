@@ -14,6 +14,7 @@ module VER
       def insert_9; insert(:insert, '9') end
       def insert_braceleft; insert(:insert, '{') end
       def insert_braceright; insert(:insert, '}') end
+      def insert_slash; insert(:insert, '/') end
     end
   end
 end

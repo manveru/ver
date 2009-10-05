@@ -103,6 +103,7 @@ module VER
         mode.map :insert_plus,             %w[plus]
         mode.map :insert_braceleft,        %w[braceleft]
         mode.map :insert_braceright,       %w[braceright]
+        mode.map :insert_slash,            %w[slash]
 
         mode.missing :insert_string
       end
