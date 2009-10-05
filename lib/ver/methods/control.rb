@@ -255,6 +255,11 @@ module VER
         delete 'insert', 'insert lineend'
       end
 
+      def delete_to_eol_then_insert
+        delete_to_eol
+        start_insert_mode
+      end
+
       def insert_string(string)
         puts "Insert %p in mode %p" % [string, keymap.current_mode]
         insert :insert, string unless string.empty?
