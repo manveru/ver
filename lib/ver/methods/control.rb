@@ -270,16 +270,24 @@ module VER
       end
 
       def insert_indented_newline_below
-        mark_set :insert, 'insert lineend'
-        insert :insert, "\n"
+        line = get('insert linestart', 'insert lineend')
+        indentation = line[/^\s+/] || ''
+        insert('insert lineend', "\n" << indentation)
+        mark_set(:insert, 'insert + 1 line lineend')
+
         start_insert_mode
       end
 
       def insert_indented_newline_above
-        mark_set :insert, 'insert linestart'
-        insert :insert, "\n"
-        mark_set :insert, 'insert - 1 char'
-        start_insert_mode
+        y, x = index(:insert).split('.').map(&:to_i)
+
+        if y > 1
+          go_line_up
+          insert_indented_newline_below
+        else
+          insert('insert linestart', "\n")
+          mark_set(:insert, 'insert - 1 line')
+        end
       end
 
       def insert_newline
