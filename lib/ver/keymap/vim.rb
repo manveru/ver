@@ -62,6 +62,7 @@ module VER
         mode.map :search_prev,                   %w[N]
         mode.map :insert_indented_newline_above, %w[O]
         mode.map :insert_indented_newline_below, %w[o]
+        mode.map :join_lines,                    %w[J]
 
         mode.map :search_next_word_under_cursor, %w[asterisk]
         mode.map :search_prev_word_under_cursor, %w[numbersign]

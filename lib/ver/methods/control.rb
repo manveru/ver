@@ -260,6 +260,14 @@ module VER
         start_insert_mode
       end
 
+      def join_lines
+        start_of_next_line = search(/\S/, 'insert lineend')
+        replace('insert lineend', start_of_next_line, ' ')
+      rescue RuntimeError => exception
+        return if exception.message =~ /Index "\d+\.\d+" before "insert lineend" in the text/
+        raise exception
+      end
+
       def insert_string(string)
         # puts "Insert %p in mode %p" % [string, keymap.current_mode]
         insert :insert, string unless string.empty?
