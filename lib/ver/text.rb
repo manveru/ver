@@ -48,9 +48,12 @@ module VER
     }
 
     def tag_all_matching(name, regexp, options = {})
-      tag_delete name
-      options = TAG_ALL_MATCHING_OPTIONS.merge(options)
-      TktNamedTag.new(self, name, options)
+      if tag_exists?(name)
+        tag_remove(name, '0.0', 'end')
+      else
+        options = TAG_ALL_MATCHING_OPTIONS.merge(options)
+        TktNamedTag.new(self, name, options)
+      end
 
       start = '0.0'
       while result = search_with_length(regexp, "#{start} + 1 chars", 'end - 1 chars')
@@ -61,6 +64,11 @@ module VER
 
         start = pos
       end
+    end
+
+    def tag_exists?(given_path)
+      list = tk_split_simplelist(tk_send_without_enc('tag', 'names', None), false, true)
+      list.include?(given_path)
     end
 
     # Wrap Tk methods to behave as we want and to generate events
