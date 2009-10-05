@@ -132,6 +132,8 @@ module VER
         return nil
       when Symbol
         callback.send(executable, *arg)
+      when Array
+        callback.send(*executable, *arg)
       when Proc
         executable.call(*arg)
       else

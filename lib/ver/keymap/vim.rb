@@ -99,11 +99,12 @@ module VER
         mode.map :go_page_down,            %w[Shift-Down]
         mode.map :go_word_left,            %w[Shift-Left]
         mode.map :go_word_right,           %w[Shift-Right]
-        0.upto(9){|n| mode.map("insert_#{n}".to_sym, [n.to_s]) }
-        mode.map :insert_plus,             %w[plus]
-        mode.map :insert_braceleft,        %w[braceleft]
-        mode.map :insert_braceright,       %w[braceright]
-        mode.map :insert_slash,            %w[slash]
+
+        0.upto(9){|n| mode.map(["insert_string".to_sym, n.to_s], [n.to_s]) }
+        mode.map [:insert_string, '+'], %w[plus]
+        mode.map [:insert_string, '{'], %w[braceleft]
+        mode.map [:insert_string, '}'], %w[braceright]
+        mode.map [:insert_string, '/'], %w[slash]
 
         mode.missing :insert_string
       end
