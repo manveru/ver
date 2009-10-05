@@ -48,6 +48,8 @@ module VER
     }
 
     def tag_all_matching(name, regexp, options = {})
+      name = name.to_s
+
       if tag_exists?(name)
         tag_remove(name, '0.0', 'end')
       else
