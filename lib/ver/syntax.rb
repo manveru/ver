@@ -108,6 +108,14 @@ module VER
           else
             warn("Nesting mismatch: %p != %p" % [name, sname])
           end
+        rescue RuntimeError => exception
+          # if you modify near the end of the textarea, sometimes the last tag
+          # cannot be closed because the contents of the textarea changed since
+          # the last highlight was issued.
+          # this will cause Tk to raise an error that doesn't have a message and
+          #  is of no major consequences.
+          # We swallow that exception to avoid confusion.
+          raise exception unless exception.message.empty?
         end
       end
     end
