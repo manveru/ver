@@ -31,6 +31,7 @@ module VER
       end_y, end_x       = index(:end   ).split('.').map(&:to_i)
 
       percent = (100.0 / (end_y - 2)) * (insert_y - 1)
+      percent = 100.0 if percent.nan?
 
       values = [
         filename,
