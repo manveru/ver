@@ -450,27 +450,6 @@ module VER
         end
       end
 
-      def paste_continous(text)
-        if text =~ /\n/
-          mark_set :insert, 'insert lineend'
-          insert :insert, "\n"
-          insert :insert, text.chomp
-        else
-          insert :insert, text
-        end
-      end
-
-      def paste_tk_array(tk_array)
-        chunks = Tk.send(:simplelist, tk_array)
-
-        insert_y, insert_x = index(:insert).split('.').map(&:to_i)
-
-        chunks.each_with_index do |chunk, idx|
-          y = insert_y + idx
-          insert "#{y}.#{insert_x}", chunk
-        end
-      end
-
       def undo
         edit_undo
         touch!
