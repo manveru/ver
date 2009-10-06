@@ -33,7 +33,7 @@ module VER
       percent = (100.0 / (end_y - 2)) * (insert_y - 1)
 
       values = [
-        view.file_path,
+        filename,
         insert_y, insert_x,
         percent,
         keymap.current_mode
