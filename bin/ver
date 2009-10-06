@@ -3,7 +3,7 @@
 if File.symlink?(__FILE__)
   lib = File.expand_path('../../lib/ver', File.readlink(__FILE__))
 else
-  lib File.expand_path('../../lib/ver', __FILE__)
+  lib = File.expand_path('../../lib/ver', __FILE__)
 end
 
 if ARGV.delete('-f')
