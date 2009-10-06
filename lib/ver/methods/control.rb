@@ -300,15 +300,14 @@ module VER
 
           (from_y, from_x), (to_y, _) = sel.map{|pos| pos.split('.').map(&:to_i) }
           to_x = from_x + 2
-          queue = []
 
-          from_y.upto(to_y) do |y|
+          queue = from_y.upto(to_y).map{|y|
             left, right = "#{y}.#{from_x}", "#{y}.#{to_x}"
             next unless get(left, right) == '  '
-            queue << left << right
-          end
+            [left, right]
+          }.compact.flatten
 
-          tk_send_without_enc('delete', *queue) unless queue.empty?
+          delete(*queue) unless queue.empty?
         end
 
         refresh_selection

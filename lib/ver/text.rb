@@ -116,10 +116,18 @@ module VER
       end
     end
 
+    # fix the ruby definition of delete, Tk allows more than 2 indices
     def delete(*args)
-      deleted = get(*args)
-      copy deleted
-      super
+      if args.size > 2
+        deleted = args.each_slice(2).map{|left, right| get(left, right) }
+      else
+        deleted = get(*args)
+      end
+
+      copy(deleted)
+
+      tk_send_without_enc('delete', *args)
+
       touch!
     end
 
