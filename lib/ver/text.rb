@@ -234,6 +234,7 @@ module VER
     end
 
     def clear_selection
+      @selection_start = nil
       tag_remove :sel, '0.0', 'end'
     end
   end
