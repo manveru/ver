@@ -13,6 +13,7 @@ module VER
             callback.call(*args)
           rescue => ex
             p ex
+            status.message ex.message
           ensure
             focus
           end
