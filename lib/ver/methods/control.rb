@@ -368,9 +368,7 @@ module VER
       end
 
       def switch_selection_mode(name)
-        start = @selection_start
         self.mode = name
-        @selection_start = start
         refresh_selection
       end
 
@@ -400,15 +398,11 @@ module VER
         insert("#{to} lineend", "\n#{ex.inspect}\n")
       end
 
-      def copy_selection(name = :sel)
-        TkClipboard.clear
-
-        lines = []
-        tag_ranges(:sel).each do |sel|
-          lines << get(*sel)
-        end
-
-        TkClipboard.append(lines, type: Array)
+      def copy_selection
+        chunks = tag_ranges(:sel).map{|sel| get(*sel) }
+        copy(chunks.size == 1 ? chunks.first : chunks)
+        clear_selection
+        start_control_mode
       end
 
       def copy_line

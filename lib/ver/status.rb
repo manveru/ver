@@ -32,6 +32,10 @@ module VER
       @callback = callback
     end
 
+    def message(string)
+      self.value = string
+    end
+
     def status_issue
       answer = value.sub(@prompt, '')
       result = @callback.call(answer)

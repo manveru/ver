@@ -158,17 +158,51 @@ module VER
     end
 
     def copy(text)
-      TkClipboard.set text
+      if text.respond_to?(:to_str)
+        copy_string(text)
+      elsif text.respond_to?(:to_ary)
+        copy_array(text)
+      else
+        copy_fallback(text)
+      end
+    end
+
+    def copy_string(text)
+      TkClipboard.set(text = text.to_str)
+
+      copy_message text.count("\n"), text.size
+    end
+
+    def copy_array(text)
+      TkClipboard.set(text, type: Array)
+
+      copy_message text.size,  text.reduce(0){|s,v| s + v.size }
+    end
+
+    def copy_fallback(text)
+      TkClipboard.set(text)
+
+      status.message "Copied unkown entity of class %p" % [text.class]
+    end
+
+    def copy_message(lines, chars)
+      lines_desc = lines == 1 ? 'line' : 'lines'
+      chars_desc = chars == 1 ? 'character' : 'characters'
+
+      msg = "copied %d %s of %d %s" % [lines, lines_desc, chars, chars_desc]
+      status.message msg
     end
 
     def mode=(name)
       keymap.current_mode = mode = name.to_sym
 
-      cursor = MODE_CURSOR[mode]
+      configure MODE_CURSOR[mode]
 
-      configure cursor
-      @selection_start = nil
       # status.configure(background: cursor[:insertbackground])
+    end
+
+    def clear_selection
+      tag_remove :sel, '0.0', 'end'
     end
   end
 end
