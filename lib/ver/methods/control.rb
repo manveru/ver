@@ -188,7 +188,7 @@ module VER
         temp_dir = File.dirname(temp_path)
 
         FileUtils.mkdir_p(temp_dir)
-        FileUtils.cp(from, temp_path)
+        FileUtils.copy_file(from, temp_path, preserve = true)
         File.open(temp_path, 'w+') do |io|
           io.write(self.value)
         end
