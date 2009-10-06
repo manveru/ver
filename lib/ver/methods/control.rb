@@ -173,13 +173,9 @@ module VER
       # simply overwrite the original file in place, make sure you have good insurance ;)
       def save_to(to)
         save_smart(filename, to)
-
-        status.value = "Saved to #{to}"
       rescue => ex
-        puts ex, *ex.backtrace
+        puts "#{ex.class}: #{ex}", *ex.backtrace
         save_dumb(filename, to)
-
-        status.value = "Saved to #{to}"
       end
 
       def save_smart(from, to)
@@ -193,12 +189,18 @@ module VER
           io.write(self.value)
         end
         FileUtils.mv(temp_path, to)
+
+        status.message "Saved to #{to}"
+      rescue Errno::ENOENT
+        save_dumb(to)
       end
 
-      def save_dumb(from, to)
+      def save_dumb(to)
         File.open(to, 'w+') do |io|
           io.write(self.value)
         end
+
+        status.message "Saved to #{to}"
       end
 
       def file_open_popup
