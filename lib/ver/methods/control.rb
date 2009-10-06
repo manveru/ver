@@ -230,8 +230,8 @@ module VER
 
         edit_reset
         focus
-        set_mark :insert, '0.0'
         first_highlight
+        mark_set :insert, '0.0'
       end
 
       def delete_char_left
