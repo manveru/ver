@@ -108,6 +108,8 @@ module VER
     end
 
     def delete(*args)
+      deleted = get(*args)
+      copy deleted
       super
       touch!
     end
