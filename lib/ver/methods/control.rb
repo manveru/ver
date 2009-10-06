@@ -282,6 +282,37 @@ module VER
        )
       end
 
+      def indent_selection
+        tag_ranges(:sel).each do |sel|
+          (from_y, from_x), (to_y, to_x) = sel.map{|pos| pos.split('.').map(&:to_i) }
+          from_y.upto(to_y) do |y|
+            next if get("#{y}.#{from_x}", "#{y}.#{to_x}").empty?
+            insert("#{y}.#{from_x}", '  ')
+          end
+        end
+
+        refresh_selection
+      end
+
+      def unindent_selection
+        tag_ranges(:sel).each do |sel|
+
+          (from_y, from_x), (to_y, _) = sel.map{|pos| pos.split('.').map(&:to_i) }
+          to_x = from_x + 2
+          queue = []
+
+          from_y.upto(to_y) do |y|
+            left, right = "#{y}.#{from_x}", "#{y}.#{to_x}"
+            next unless get(left, right) == '  '
+            queue << left << right
+          end
+
+          tk_send_without_enc('delete', *queue) unless queue.empty?
+        end
+
+        refresh_selection
+      end
+
       def insert_indented_newline_below
         line = get('insert linestart', 'insert lineend')
 
