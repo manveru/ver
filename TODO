@@ -6,6 +6,10 @@ This is a list of tasks that are on my list:
 
 [x] Editing of non-existing files when given as argument, create on save.
 
+## Misc
+
+[ ] There is a memory leak hiding somewhere in Tk, you have to find out what that is, probably it's keeping references to old Tk entities somewhere, strange thing is that this also happens when you just open another file in the same buffer, some stress testing and use of ObjectSpace should reveal the issue.
+
 ## VER::Text
 
 Following is a list of things that need redefinition or mapping and porting to
