@@ -60,7 +60,7 @@ module VER
       def line_evaluate
         text = get('insert linestart', 'insert lineend')
         result = eval(text)
-        insert("insert lineend", "\n#{result.inspect}")
+        insert("insert lineend", "\n#{result.inspect}\n")
       end
 
       def buffer_switch(count = 0)
@@ -389,15 +389,15 @@ module VER
         Tk.exit
       end
 
-      def selection_evaluate(name = :sel)
-        from, to = tag_ranges(name).first
+      def selection_evaluate
+        from, to = tag_ranges(:sel).first
         text = get(from, to)
 
         result = eval(text)
 
-        insert("#{to} lineend", "\n#{result.inspect}")
+        insert("#{to} lineend", "\n#{result.inspect}\n")
       rescue => ex
-        insert("#{to} lineend", "\n#{ex.inspect}")
+        insert("#{to} lineend", "\n#{ex.inspect}\n")
       end
 
       def copy_selection(name = :sel)
