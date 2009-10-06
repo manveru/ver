@@ -88,7 +88,6 @@ module VER
 
     def open_path(path)
       @text.open_path(path)
-      @text.first_highlight
     end
 
     # handling events
