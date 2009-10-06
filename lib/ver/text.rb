@@ -22,13 +22,21 @@ module VER
       self.mode = :control
     end
 
+    def insert_index
+      index(:insert).split('.').map(&:to_i)
+    end
+
+    def end_index
+      index(:end).split('.').map(&:to_i)
+    end
+
     # lines start from 1
     # end is maximum lines + 1
     def status_projection(into)
       format = "%s  %d,%d  %d%% -- %s --"
 
-      insert_y, insert_x = index(:insert).split('.').map(&:to_i)
-      end_y, end_x       = index(:end   ).split('.').map(&:to_i)
+      insert_y, insert_x = insert_index
+      end_y, end_x       = end_index
 
       percent = (100.0 / (end_y - 2)) * (insert_y - 1)
       percent = 100.0 if percent.nan?

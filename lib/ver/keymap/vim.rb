@@ -121,12 +121,13 @@ module VER
       vim.add_mode :select do |mode|
         mode.inherits :basic, :move
 
-        mode.map :copy_selection, %w[y]
+        mode.map :copy_selection, %w[y], %w[Y]
+        mode.map :delete_selection, %w[d], %w[D]
         mode.map :smart_evaluate, %w[Alt-e]
 
-        mode.map :switch_select_char_mode,        %w[v]
-        mode.map :switch_select_line_mode,        %w[V]
-        mode.map :switch_select_block_mode,       %w[Control-v]
+        mode.map :switch_select_char_mode,  %w[v]
+        mode.map :switch_select_line_mode,  %w[V]
+        mode.map :switch_select_block_mode, %w[Control-v]
       end
 
       vim.add_mode :select_char do |mode|

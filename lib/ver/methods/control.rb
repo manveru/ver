@@ -263,6 +263,20 @@ module VER
         start_insert_mode
       end
 
+      def delete_selection
+        insert_index = self.insert_index
+
+        chunks = tag_ranges(:sel).map{|sel|
+          content = get(*sel)
+          delete(*sel)
+          content
+        }
+        copy(chunks.size == 1 ? chunks.first : chunks)
+        clear_selection
+        mark_set(:insert, insert_index.join('.'))
+        start_control_mode
+      end
+
       def join_lines
         start_of_next_line = search(/\S/, 'insert lineend')
         replace('insert lineend', start_of_next_line, ' ')
