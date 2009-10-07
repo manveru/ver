@@ -22,6 +22,10 @@ module VER
       self.mode = :control
     end
 
+    def quit
+      Tk.exit
+     end
+
     def insert_index
       index(:insert).split('.').map(&:to_i)
     end
