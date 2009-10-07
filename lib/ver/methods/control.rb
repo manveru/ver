@@ -319,7 +319,7 @@ module VER
       end
 
       def ignore_string(string)
-        puts "Ignore %p in mode %p" % [string, keymap.current_mode]
+        status.message "Ignore %p in mode %p" % [string, keymap.current_mode]
       end
 
       def replace_char
