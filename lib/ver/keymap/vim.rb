@@ -159,6 +159,7 @@ module VER
         mode.map :copy_selection, %w[y], %w[Y]
         mode.map :delete_selection, %w[d], %w[D]
         mode.map :smart_evaluate, %w[Alt-e]
+        mode.map :pipe_selection, %w[exclam]
         mode.map :indent_selection, %w[greater]
         mode.map :unindent_selection, %w[less]
 

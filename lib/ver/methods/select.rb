@@ -86,6 +86,36 @@ module VER
         clear_selection
         start_control_mode
       end
+
+      def pipe_selection
+        status_ask 'Pipe command: ' do |cmd|
+          pipe_selection_execute(cmd)
+          clear_selection
+          start_control_mode
+        end
+      end
+
+      private
+
+      def pipe_selection_execute(*cmd)
+        require 'open3'
+
+        Open3.popen2e(*cmd) do |si, sose, thread|
+          queue = []
+          tag_ranges(:sel).each do |from, to|
+            si.write(get(from, to))
+            queue << from << to
+          end
+
+          si.close
+          output = sose.read
+
+          return if queue.empty?
+
+          delete(*queue)
+          insert(queue.first, output.chomp)
+        end
+      end
     end
   end
 end
