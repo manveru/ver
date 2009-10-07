@@ -85,6 +85,8 @@ module VER
       end
 
       vim.add_mode :readline do |mode|
+        mode.arguments = false
+
         mode.map :delete_char_left,        %w[BackSpace]
         mode.map :delete_char_right,       %w[Delete]
         mode.map :go_char_left,            %w[Left]
@@ -153,7 +155,6 @@ module VER
         mode.map :go_page_up,              %w[Shift-Up]
         mode.map :insert_indented_newline, %w[Return]
         mode.map :smart_evaluate,          %w[Alt-e]
-
 
         mode.missing :insert_string
       end

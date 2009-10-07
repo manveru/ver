@@ -112,7 +112,7 @@ module VER
       if arguments
         stack, arg = Mode.split_stack(original_stack)
       else
-        stack = original_stack
+        stack, arg = original_stack, nil
       end
 
       if stack.empty?
