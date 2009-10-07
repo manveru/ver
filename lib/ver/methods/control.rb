@@ -322,6 +322,12 @@ module VER
         puts "Ignore %p in mode %p" % [string, keymap.current_mode]
       end
 
+      def replace_char
+        status_ask 'Replace with: ' do |string|
+          replace('insert', 'insert + 1 chars', string)
+        end
+      end
+
       def indent_line
         insert('insert linestart', '  ')
       end

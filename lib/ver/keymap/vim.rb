@@ -77,6 +77,7 @@ module VER
         mode.map :start_select_line_mode,        %w[V]
         mode.map :undo,                          %w[u]
         mode.map :unindent_line,                 %w[less]
+        mode.map :replace_char,                  %w[r]
 
         mode.missing :ignore_string
       end
