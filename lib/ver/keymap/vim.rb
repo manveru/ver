@@ -83,25 +83,15 @@ module VER
         mode.inherits :basic
       end
 
-      vim.add_mode :insert do |mode|
-        mode.inherits :basic, :views
-        mode.arguments = false
-
+      vim.add_mode :readline do |mode|
         mode.map :delete_char_left,        %w[BackSpace]
         mode.map :delete_char_right,       %w[Delete]
         mode.map :go_char_left,            %w[Left]
         mode.map :go_char_right,           %w[Right]
-        mode.map :go_line_down,            %w[Down]
-        mode.map :go_line_up,              %w[Up]
-        mode.map :go_page_down,            %w[Control-f], %w[Next]
-        mode.map :go_page_down,            %w[Shift-Down]
-        mode.map :go_page_up,              %w[Control-b], %w[Prior]
-        mode.map :go_page_up,              %w[Shift-Up]
         mode.map :go_word_left,            %w[Shift-Left]
         mode.map :go_word_right,           %w[Shift-Right]
-        mode.map :insert_indented_newline, %w[Return]
-        mode.map :smart_evaluate,          %w[Alt-e]
 
+        # Map Tk keysyms
         { " "  => "space",
           "!"  => "exclam",
           '"'  => "quotedbl",
@@ -148,6 +138,21 @@ module VER
         }.each do |sym, name|
           mode.map [:insert_string, sym], [name]
         end
+      end
+
+      vim.add_mode :insert do |mode|
+        mode.inherits :basic, :views, :readline
+        mode.arguments = false
+
+        mode.map :go_line_down,            %w[Down]
+        mode.map :go_line_up,              %w[Up]
+        mode.map :go_page_down,            %w[Control-f], %w[Next]
+        mode.map :go_page_down,            %w[Shift-Down]
+        mode.map :go_page_up,              %w[Control-b], %w[Prior]
+        mode.map :go_page_up,              %w[Shift-Up]
+        mode.map :insert_indented_newline, %w[Return]
+        mode.map :smart_evaluate,          %w[Alt-e]
+
 
         mode.missing :insert_string
       end
@@ -188,7 +193,7 @@ module VER
       end
 
       vim.add_mode :status_query do |mode|
-        mode.inherits :basic
+        mode.inherits :basic, :readline
 
         mode.to :status_issue, %w[Return]
 
