@@ -189,73 +189,99 @@ module VER
         open_path(fpath)
       end
 
-      def file_open_fuzzy
-        require 'ver/vendor/fuzzy_file_finder'
+      class ListView < Struct.new(:parent, :frame, :list, :entry, :tag, :on_update, :on_choice)
+        def initialize(parent)
+          self.parent = parent
 
-        frame = TkFrame.new{
-          pack fill: :both, expand: true
-        }
+          setup_widgets
+          setup_tag
+        end
 
-        list = Tk::Listbox.new(frame){
-          setgrid 'yes'
-          width 0
-          pack fill: :both, expand: true
-        }
+        def setup_widgets
+          self.frame = TkFrame.new{
+            pack fill: :both, expand: true
+          }
 
-        input = Ttk::Entry.new(frame){
-          pack fill: :x, expand: false
-          focus
-        }
+          self.list = Tk::Listbox.new(frame){
+            setgrid 'yes'
+            width 0
+            pack fill: :both, expand: true
+          }
 
-        fffinder = FuzzyFileFinder.new
+          self.entry = Ttk::Entry.new(frame){
+            pack fill: :x, expand: false
+            focus
+          }
+        end
 
-        cleanup = lambda{
-          input.destroy
+        def setup_tag
+          self.tag = TkBindTag.new
+          tags = entry.bindtags
+          tags[tags.index(entry.class) + 1, 0] = tag
+          entry.bindtags = tags
+
+          tag.bind('Key'){       update }
+          tag.bind('Return'){    pick }
+          tag.bind('Escape'){    destroy }
+          tag.bind('Control-c'){ destroy }
+        end
+
+        def destroy
+          entry.destroy
           list.destroy
           frame.destroy
-          focus
-        }
+          parent.focus
+        end
+      end
 
-        update = lambda{|input|
-          choices = fffinder.find(input).sort_by{|m| [-m[:score], m[:path]] }
+      class FuzzyFileView < ListView
+        attr_reader :fffinder
+
+        def initialize(*args, &callback)
+          super
+          @fffinder = FuzzyFileFinder.new
+          @callback = callback
+        end
+
+        def update
+          choices = fffinder.find(entry.value)
+          choices = choices.sort_by{|m| [-m[:score], m[:path]] }
+
           list.delete 0, :end
-          choices.each_with_index do |choice, idx|
-            list.insert :end, choice[:path]
 
-            color =
-              case choice[:score]
-              when 0          ; '#000'
-              when 0   ..0.25 ; '#f00'
-              when 0.25..0.75 ; '#ff0'
-              when 0.75..1    ; '#0f0'
-              end
-
-            list.itemconfigure(idx, background: color)
+          choices.each do |choice|
+            insert_choice(choice)
           end
-        }
+        end
 
-        update['.']
+        def insert_choice(choice)
+          path, score = choice.values_at(:path, :score)
+          list.insert(:end, path)
 
-        tag = TkBindTag.new
-        tags = input.bindtags
-        tags[tags.index(input.class) + 1, 0] = tag
-        input.bindtags = tags
+          color =
+            case score
+            when 0          ; '#000'
+            when 0   ..0.25 ; '#f00'
+            when 0.25..0.75 ; '#ff0'
+            when 0.75..1    ; '#0f0'
+            end
 
-        tag.bind('Key'){
-          update[input.value]
-        }
+          list.itemconfigure(:end, background: color)
+        end
 
-        tag.bind('Return'){
+        def pick
           if list.size > 1
-            open_path list.get(0)
-            cleanup.call
+            callback.call list.get(0)
           else
-            status.message "Fuzzy file finder couldn't find any matches"
+            status.message "VER is confused, what did you actually want to do?"
           end
-        }
+        end
+      end
 
-        tag.bind('Escape', &cleanup)
-        tag.bind('Control-c', &cleanup)
+      def file_open_fuzzy
+        FuzzyFileFinderView.new self do |path|
+          open_path(path)
+        end
       end
 
       def open_path(path)

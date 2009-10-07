@@ -10,16 +10,18 @@ require 'tmpdir'
 require 'tk'
 
 module VER
-  autoload :Keymap,  'ver/keymap'
-  autoload :Layout,  'ver/layout'
-  autoload :Methods, 'ver/methods'
-  autoload :Mode,    'ver/mode'
-  autoload :Status,  'ver/status'
-  autoload :Syntax,  'ver/syntax'
-  autoload :Text,    'ver/text'
-  autoload :Textpow, 'ver/textpow'
-  autoload :Theme,   'ver/theme'
-  autoload :View,    'ver/view'
+  autoload :FuzzyFileFinderView, 'ver/view/fuzzy_file_finder_view'
+  autoload :Keymap,              'ver/keymap'
+  autoload :Layout,              'ver/layout'
+  autoload :ListView,            'ver/view/list_view'
+  autoload :Methods,             'ver/methods'
+  autoload :Mode,                'ver/mode'
+  autoload :Status,              'ver/status'
+  autoload :Syntax,              'ver/syntax'
+  autoload :Text,                'ver/text'
+  autoload :Textpow,             'ver/textpow'
+  autoload :Theme,               'ver/theme'
+  autoload :View,                'ver/view'
 
   # poor man's option system
   # p Tk::Tile.themes # a list of available themes
