@@ -36,68 +36,14 @@ module VER
         insert("insert lineend", "\n#{result.inspect}\n")
       end
 
-      def buffer_switch(count = 0)
-        # p buffer_switch: count
-        frame = TkFrame.new{
-          pack fill: :both, expand: true
-        }
-
-        list = Tk::Listbox.new(frame){
-          setgrid 'yes'
-          width 0
-          pack fill: :both, expand: true
-        }
-
-        input = Ttk::Entry.new(frame){
-          pack fill: :x, expand: false
-          focus
-        }
-
-        cleanup = lambda{
-          input.destroy
-          list.destroy
-          frame.destroy
-          focus
-        }
-
-        all_elements = VER.paths
-        list.insert :end, *all_elements
-
-        tag = TkBindTag.new
-        tags = input.bindtags
-        tags[tags.index(input.class) + 1, 0] = tag
-        input.bindtags = tags
-
-        tag.bind('Key'){
-          value = input.value
-
-          if value == value.downcase
-            sub_elements = all_elements.select{|element|
-              element.downcase.include?(value)
-            }
-          else
-            sub_elements = all_elements.select{|element|
-              element.include?(value)
-            }
+      def buffer_switch(count = nil)
+        if count
+          p count: count
+        else
+          BufferListView.new self do |path|
+            open_path(path)
           end
-
-          list.delete(0, :end)
-          list.insert :end, *sub_elements
-        }
-
-        tag.bind('Return'){
-          if list.size > 1
-            p 'not specific enough'
-          elsif list.size == 1
-            open_path list.get(0)
-            cleanup.call
-          else
-            p 'too specific'
-          end
-        }
-
-        tag.bind('Escape', &cleanup)
-        tag.bind('Control-c', &cleanup)
+        end
 
         # list.bind("Double-Button-1"){
         #   selection = TkSelection.get
