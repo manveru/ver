@@ -1,7 +1,7 @@
 module VER
-  class ListView < Struct.new(:parent, :frame, :list, :entry, :tag, :on_update, :on_choice)
-    def initialize(parent)
-      self.parent = parent
+  class ListView < Struct.new(:parent, :frame, :list, :entry, :tag, :callback)
+    def initialize(parent, &block)
+      self.parent, self.callback = parent, block
 
       setup_widgets
       setup_tag
@@ -41,6 +41,19 @@ module VER
       list.destroy
       frame.destroy
       parent.focus
+    end
+
+    def pick
+      if list.size > 0
+        callback.call(list.get(0)) if callback
+        destroy
+      else
+        message "VER is confused, what did you actually want to do?"
+      end
+    end
+
+    def message(string)
+      parent.status.message(string)
     end
   end
 end

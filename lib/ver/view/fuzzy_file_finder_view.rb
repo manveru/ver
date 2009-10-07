@@ -36,13 +36,5 @@ module VER
 
       list.itemconfigure(:end, background: color)
     end
-
-    def pick
-      if list.size > 1
-        callback.call list.get(0)
-      else
-        status.message "VER is confused, what did you actually want to do?"
-      end
-    end
   end
 end

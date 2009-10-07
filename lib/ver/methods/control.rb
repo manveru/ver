@@ -189,95 +189,6 @@ module VER
         open_path(fpath)
       end
 
-      class ListView < Struct.new(:parent, :frame, :list, :entry, :tag, :on_update, :on_choice)
-        def initialize(parent)
-          self.parent = parent
-
-          setup_widgets
-          setup_tag
-        end
-
-        def setup_widgets
-          self.frame = TkFrame.new{
-            pack fill: :both, expand: true
-          }
-
-          self.list = Tk::Listbox.new(frame){
-            setgrid 'yes'
-            width 0
-            pack fill: :both, expand: true
-          }
-
-          self.entry = Ttk::Entry.new(frame){
-            pack fill: :x, expand: false
-            focus
-          }
-        end
-
-        def setup_tag
-          self.tag = TkBindTag.new
-          tags = entry.bindtags
-          tags[tags.index(entry.class) + 1, 0] = tag
-          entry.bindtags = tags
-
-          tag.bind('Key'){       update }
-          tag.bind('Return'){    pick }
-          tag.bind('Escape'){    destroy }
-          tag.bind('Control-c'){ destroy }
-        end
-
-        def destroy
-          entry.destroy
-          list.destroy
-          frame.destroy
-          parent.focus
-        end
-      end
-
-      class FuzzyFileView < ListView
-        attr_reader :fffinder
-
-        def initialize(*args, &callback)
-          super
-          @fffinder = FuzzyFileFinder.new
-          @callback = callback
-        end
-
-        def update
-          choices = fffinder.find(entry.value)
-          choices = choices.sort_by{|m| [-m[:score], m[:path]] }
-
-          list.delete 0, :end
-
-          choices.each do |choice|
-            insert_choice(choice)
-          end
-        end
-
-        def insert_choice(choice)
-          path, score = choice.values_at(:path, :score)
-          list.insert(:end, path)
-
-          color =
-            case score
-            when 0          ; '#000'
-            when 0   ..0.25 ; '#f00'
-            when 0.25..0.75 ; '#ff0'
-            when 0.75..1    ; '#0f0'
-            end
-
-          list.itemconfigure(:end, background: color)
-        end
-
-        def pick
-          if list.size > 1
-            callback.call list.get(0)
-          else
-            status.message "VER is confused, what did you actually want to do?"
-          end
-        end
-      end
-
       def file_open_fuzzy
         FuzzyFileFinderView.new self do |path|
           open_path(path)
@@ -295,6 +206,8 @@ module VER
           clear
           status.value = "Create #@filename"
         end
+
+        VER.opened_file(@filename)
 
         edit_reset
         focus
