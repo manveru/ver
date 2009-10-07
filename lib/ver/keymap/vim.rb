@@ -161,7 +161,7 @@ module VER
         mode.inherits :basic, :move, :search
 
         mode.map :copy_selection, %w[y], %w[Y]
-        mode.map :delete_selection, %w[d], %w[D]
+        mode.map :delete_selection, %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
         mode.map :indent_selection, %w[greater]
         mode.map :pipe_selection, %w[exclam]
         mode.map :smart_evaluate, %w[Alt-e]
