@@ -38,8 +38,16 @@ module VER
         mode.map :go_prev_newline_block, %w[braceright]
       end
 
+      vim.add_mode :search do |mode|
+        mode.map :status_search,                 %w[slash]
+        mode.map :search_next,                   %w[n]
+        mode.map :search_prev,                   %w[N]
+        mode.map :search_next_word_under_cursor, %w[asterisk]
+        mode.map :search_prev_word_under_cursor, %w[numbersign]
+      end
+
       vim.add_mode :control do |mode|
-        mode.inherits :basic, :move, :views
+        mode.inherits :basic, :move, :views, :search
 
         mode.map :delete_char_right,             %w[x]
         mode.map :delete_char_left,              %w[X]
@@ -55,23 +63,14 @@ module VER
         mode.map :start_select_block_mode,       %w[Control-v]
         mode.map :eol_then_insert_mode,          %w[A]
         mode.map :sol_then_insert_mode,          %w[I]
-
         mode.map :smart_evaluate,                %w[Alt-e]
-        mode.map :status_search,                 %w[slash]
-        mode.map :search_next,                   %w[n]
-        mode.map :search_prev,                   %w[N]
         mode.map :insert_indented_newline_above, %w[O]
         mode.map :insert_indented_newline_below, %w[o]
         mode.map :join_lines,                    %w[J]
         mode.map :indent_line,                   %w[greater]
         mode.map :unindent_line,                 %w[less]
-
-        mode.map :search_next_word_under_cursor, %w[asterisk]
-        mode.map :search_prev_word_under_cursor, %w[numbersign]
-
         mode.map :undo,                          %w[u]
         mode.map :redo,                          %w[Control-r]
-
         mode.map :copy_line,                     %w[y y], %w[Y]
         mode.map :copy_right_word,               %w[y w]
         mode.map :copy_left_word,                %w[y b]
@@ -155,7 +154,7 @@ module VER
       end
 
       vim.add_mode :select do |mode|
-        mode.inherits :basic, :move
+        mode.inherits :basic, :move, :search
 
         mode.map :copy_selection, %w[y], %w[Y]
         mode.map :delete_selection, %w[d], %w[D]
