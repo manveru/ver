@@ -4,10 +4,6 @@ This project can be found at: http://github.com/manveru/ver
 
 Notes:
   * M usually stands for the alt key on your keyboard.
-  * It seems that some terminals (especially on OS X) need some configuration
-    to let [esc] work, it's mapped to Meta by default, I'm not sure how to
-    change this configuration, if you know, please update this file.
-
 
 Various help commands (all not implemented yet):
   [M-h h] : Open help browser
@@ -25,7 +21,7 @@ I tried to address these downsides:
   * I don't intend this editor to be everything for everybody, it's just useful for myself for now.
   * Make editing powerful without years of learning and remembering arcane shortcuts, and don't require users of the editor to sacrifice their wrists.
   * Allow project-based browsing and grepping right from the start.
-  * Easily identify the mode you are in by looking at the color of the status line.
+  * Easily identify the mode you are in by looking at the color of the status line and cursor.
 
 Currently working:
 
@@ -62,9 +58,10 @@ Currently working:
       * [<] : Unindent selection
     * Filter
       * [!] : Filter selection through external program
-      * [C-e] : Eval selection and output result below
-  * Syntax highlighting (for .rb and Rakefile only for now)
-    - This has been disabled due to speed problems, working on it.
+      * [M-e] : Eval selection and output result below
+  * Syntax highlighting
+    - No keys associated, the syntax is detected by filename extension for now.
+    - Trailing newlines are highlighted by default.
   * Searching
     * [/] : Start searching by regular expression
     * [n] : Jump to next search result
