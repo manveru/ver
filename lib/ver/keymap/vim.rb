@@ -6,6 +6,7 @@ module VER
 
       vim.add_mode :basic do |mode|
         mode.map :file_open_popup,    %w[Control-o]
+        mode.map :file_open_fuzzy,    %w[Alt-o]
         mode.map :file_save,          %w[Control-s]
         mode.map :file_save_popup,    %w[Control-Alt-s]
         mode.map :quit,               %w[Control-q]

@@ -189,6 +189,75 @@ module VER
         open_path(fpath)
       end
 
+      def file_open_fuzzy
+        require 'ver/vendor/fuzzy_file_finder'
+
+        frame = TkFrame.new{
+          pack fill: :both, expand: true
+        }
+
+        list = Tk::Listbox.new(frame){
+          setgrid 'yes'
+          width 0
+          pack fill: :both, expand: true
+        }
+
+        input = Ttk::Entry.new(frame){
+          pack fill: :x, expand: false
+          focus
+        }
+
+        fffinder = FuzzyFileFinder.new
+
+        cleanup = lambda{
+          input.destroy
+          list.destroy
+          frame.destroy
+          focus
+        }
+
+        update = lambda{|input|
+          choices = fffinder.find(input).sort_by{|m| [-m[:score], m[:path]] }
+          list.delete 0, :end
+          choices.each_with_index do |choice, idx|
+            list.insert :end, choice[:path]
+
+            color =
+              case choice[:score]
+              when 0          ; '#000'
+              when 0   ..0.25 ; '#f00'
+              when 0.25..0.75 ; '#ff0'
+              when 0.75..1    ; '#0f0'
+              end
+
+            list.itemconfigure(idx, background: color)
+          end
+        }
+
+        update['.']
+
+        tag = TkBindTag.new
+        tags = input.bindtags
+        tags[tags.index(input.class) + 1, 0] = tag
+        input.bindtags = tags
+
+        tag.bind('Key'){
+          update[input.value]
+        }
+
+        tag.bind('Return'){
+          if list.size > 1
+            open_path list.get(0)
+            cleanup.call
+          else
+            status.message "Fuzzy file finder couldn't find any matches"
+          end
+        }
+
+        tag.bind('Escape', &cleanup)
+        tag.bind('Control-c', &cleanup)
+      end
+
       def open_path(path)
         @filename = File.expand_path(path)
 
