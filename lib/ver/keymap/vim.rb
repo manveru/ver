@@ -104,16 +104,52 @@ module VER
         mode.map :go_word_left,            %w[Shift-Left]
         mode.map :go_word_right,           %w[Shift-Right]
 
-        0.upto(9){|n| mode.map(["insert_string".to_sym, n.to_s], [n.to_s]) }
-        mode.map [:insert_string, '#'], %w[numbersign]
-        mode.map [:insert_string, '$'], %w[dollar]
-        mode.map [:insert_string, '*'], %w[asterisk]
-        mode.map [:insert_string, '+'], %w[plus]
-        mode.map [:insert_string, '/'], %w[slash]
-        mode.map [:insert_string, '{'], %w[braceleft]
-        mode.map [:insert_string, '}'], %w[braceright]
-        mode.map [:insert_string, '>'], %w[greater]
-        mode.map [:insert_string, '<'], %w[less]
+        { " "  => "space",
+          "!"  => "exclam",
+          '"'  => "quotedbl",
+          "#"  => "numbersign",
+          "$"  => "dollar",
+          "%"  => "percent",
+          "&"  => "ampersand",
+          "'"  => "quoteright",
+          "("  => "parenleft",
+          ")"  => "parenright",
+          "*"  => "asterisk",
+          "+"  => "plus",
+          ","  => "comma",
+          "-"  => "minus",
+          "."  => "period",
+          "/"  => "slash",
+          "0"  => "0",
+          "1"  => "1",
+          "2"  => "2",
+          "3"  => "3",
+          "4"  => "4",
+          "5"  => "5",
+          "6"  => "6",
+          "7"  => "7",
+          "8"  => "8",
+          "9"  => "9",
+          ":"  => "colon",
+          ";"  => "semicolon",
+          "<"  => "less",
+          "="  => "equal",
+          ">"  => "greater",
+          "?"  => "question",
+          "@"  => "at",
+          "["  => "bracketleft",
+          "\\" => "backslash",
+          "]"  => "bracketright",
+          "^"  => "asciicircum",
+          "_"  => "underscore",
+          "`"  => "quoteleft",
+          "{"  => "braceleft",
+          "|"  => "bar",
+          "}"  => "braceright",
+          "~"  => "asciitilde",
+        }.each do |sym, name|
+          mode.map [:insert_string, sym], [name]
+        end
 
         mode.missing :insert_string
       end
