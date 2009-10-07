@@ -1,6 +1,6 @@
 module VER
   # The status bar
-  class Status < Ttk::Entry
+  class Status < Tk::Tile::Entry
     attr_accessor :mode, :keymap, :view, :prompt
 
     def initialize(view, options = {})
@@ -44,6 +44,43 @@ module VER
 
     def insert_string(string)
       insert :end, string
+    end
+
+    def delete_char_left
+      cursor = self.cursor
+      return if prompt.size == cursor
+      delete(cursor - 1)
+    end
+
+    def delete_char_right
+      delete(cursor)
+    end
+
+    def go_char_left
+      cursor = self.cursor
+      return if prompt.size == cursor
+      self.cursor = cursor - 1
+    end
+
+    def go_char_right
+      self.cursor = cursor + 1
+    end
+
+    def go_word_left
+      if index = value.rindex(/.\b\s/, cursor - 1)
+        self.cursor = index
+      else
+        self.cursor = prompt.size
+      end
+    end
+
+    def go_word_right
+      if match = value.match(/\s\b/, cursor)
+        offset_from, offset_to = match.offset(0)
+        self.cursor = offset_to
+      else
+        self.cursor = :end
+      end
     end
   end
 end
