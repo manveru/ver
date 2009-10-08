@@ -24,16 +24,18 @@ module VER
       end
 
       def delete_selection
-        insert_index = self.insert_index
-
-        chunks = tag_ranges(:sel).map{|sel|
-          content = get(*sel)
-          delete(*sel)
+        start = nil
+        chunks = tag_ranges(:sel).map{|from, to|
+          start ||= from
+          content = get(from, to)
+          delete(from, to)
           content
         }
+
         copy(chunks.size == 1 ? chunks.first : chunks)
+
+        mark_set(:insert, start)
         clear_selection
-        mark_set(:insert, insert_index.join('.'))
         start_control_mode
       end
 
