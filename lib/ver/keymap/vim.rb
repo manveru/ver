@@ -17,10 +17,10 @@ module VER
       end
 
       vim.add_mode :views do |mode|
-        mode.map :view_create,     %w[Control-w plus]
-        mode.map :view_focus_next, %w[Control-w j]
-        mode.map :view_focus_prev, %w[Control-w k]
-        mode.map :view_remove,     %w[Control-w plus]
+        mode.map :view_create,     %w[Control-w Control-c]
+        mode.map :view_focus_next, %w[Control-w Control-j]
+        mode.map :view_focus_prev, %w[Control-w Control-k]
+        mode.map :view_close,      %w[Control-w Control-w]
       end
 
       vim.add_mode :move do |mode|

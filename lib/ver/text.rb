@@ -27,12 +27,22 @@ module VER
 
       begin
         self.value = File.read(@filename)
-        status.value = "Opened #@filename"
+        status.message "Opened #@filename"
       rescue Errno::ENOENT
         clear
-        status.value = "Create #@filename"
+        status.message "Create #@filename"
       end
 
+      after_open
+    end
+
+    def open_empty
+      clear
+      status.message "Empty buffer"
+      after_open
+    end
+
+    def after_open
       VER.opened_file(@filename)
 
       edit_reset

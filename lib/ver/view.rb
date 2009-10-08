@@ -1,9 +1,10 @@
 module VER
   class View < TkFrame
-    attr_reader :text, :status
+    attr_reader :layout, :text, :status
 
-    def initialize(parent, options = {})
+    def initialize(layout, options = {})
       super
+      @layout = layout
       setup
     end
 
@@ -91,6 +92,10 @@ module VER
       @text.open_path(path)
     end
 
+    def open_empty
+      @text.open_empty
+    end
+
     # handling events
 
     def on_movement
@@ -113,5 +118,23 @@ module VER
     # @text.bind '<Paste>',          proc{|e| refresh; p :paste }
     # @text.bind '<PasteSelection>', proc{|e| refresh; p :paste_selection }
     # @text.bind '<Movement>',       proc{|e| p :movement }
+
+    def create
+      layout.create_view do |view|
+        view.open_empty
+      end
+    end
+
+    def close
+      layout.close_view(self)
+    end
+
+    def destroy
+      [@text, @ybar, @xbar, @status].each do |widget|
+        widget.destroy if widget
+      end
+
+      super
+    end
   end
 end

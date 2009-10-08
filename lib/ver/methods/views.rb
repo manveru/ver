@@ -2,19 +2,19 @@ module VER
   module Methods
     module Views
       def view_create
-        VER.layout.create_view
+        view.create
       end
 
-      def view_remove
-        VER.layout.remove_view
+      def view_close
+        view.close
       end
 
       def view_focus_next
-        VER.layout.focus_next
+        view.focus_next
       end
 
       def view_focus_prev
-        VER.layout.focus_prev
+        view.focus_prev
       end
     end
   end

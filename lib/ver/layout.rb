@@ -15,8 +15,16 @@ module VER
       apply
     end
 
-    def remove_view
-      @views.delete @focus
+    def close_view(view)
+      @views.delete view
+      view.destroy
+
+      if previous = @views.last
+        apply
+        previous.text.focus
+      else
+        Tk.exit
+      end
     end
 
     def focus_next
