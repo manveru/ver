@@ -165,7 +165,7 @@ module VER
 
       @highlight_thread = Thread.new{
         this = Thread.current
-        this[:pending] = 0
+        this[:pending] = 1
 
         loop do
           if this[:pending] > 0
@@ -180,8 +180,6 @@ module VER
           end
         end
       }
-
-      refresh_highlight!
     end
 
     def refresh_highlight(lineno = 0)
