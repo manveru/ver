@@ -1,3 +1,6 @@
+# Well begun is half done.
+#             -- Aristotle
+
 $LOAD_PATH.unshift File.expand_path('../', __FILE__)
 
 # stdlib
