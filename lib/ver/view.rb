@@ -43,8 +43,9 @@ module VER
         insertofftime:    0, # blinking cursor be gone!
         setgrid:          true, # tell the wm that this is a griddy window
         tabs:             tab_width,
-        tabstyle:         'wordprocessor',
-        undo:             true # enable undo capabilities
+        tabstyle:         :wordprocessor,
+        undo:             true, # enable undo capabilities
+        wrap:             :word
       )
     end
 
