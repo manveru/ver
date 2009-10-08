@@ -135,7 +135,7 @@ module VER
       when :select_char
         tag_add :sel, left, "#{right} + 1 chars"
       when :select_line
-        tag_add :sel, "#{left} linestart", "#{right} lineend"
+        tag_add :sel, "#{left} linestart", "#{right} lineend + 1 chars"
       when :select_block
         ly, lx = left.split('.').map(&:to_i)
         ry, rx = right.split('.').map(&:to_i)
