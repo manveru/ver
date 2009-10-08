@@ -141,7 +141,6 @@ module VER
         end
       end
 
-
       def delete_char_left
         delete 'insert - 1 char'
       end
@@ -210,7 +209,6 @@ module VER
        )
       end
 
-
       def insert_indented_newline_below
         line = get('insert linestart', 'insert lineend')
 
@@ -277,7 +275,6 @@ module VER
       def start_control_mode
         self.mode = :control
       end
-
 
       def copy_line
         copy get('insert linestart', 'insert lineend + 1 chars')
