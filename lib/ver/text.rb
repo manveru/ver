@@ -29,7 +29,6 @@ module VER
         self.value = File.read(@filename)
         status.value = "Opened #@filename"
       rescue Errno::ENOENT
-        # pp self.class.instance_methods.sort
         clear
         status.value = "Create #@filename"
       end

@@ -1,3 +1,40 @@
+# (The MIT License)
+#
+# Copyright (c) 2007 Dizan Vasquez
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# 'Software'), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+# Copyright (c) 2009 Michael Fellinger
+#
+# Textpow is the underlying library for the UltraViolet syntax-highlighting engine.
+# It appears to be under MIT license, at least that is the only license I could find.
+#
+# So I simply included it into VER and modified it to:
+#  * Work faster and more efficient
+#  * Use the builtin Nokogiri capabilities of Ruby 1.9
+#  * Parse Plists with Nokogiri.
+#
+# There is no dependency on Nokogiri in VER itself, as we ship the converted
+# files as JSON, which is in Ruby stdlib and suited very well for transporting
+# and processing Plists compared to XML or YAML.
+
 module Textpow
   class Processor
     def start_parsing(name)
