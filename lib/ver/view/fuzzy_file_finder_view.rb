@@ -5,7 +5,7 @@ module VER
     def initialize(*args, &callback)
       super
 
-      require 'ver/fuzzy_file_finder'
+      require 'ver/vendor/fuzzy_file_finder'
 
       @fffinder = FuzzyFileFinder.new
       @callback = callback
