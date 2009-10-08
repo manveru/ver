@@ -1,7 +1,7 @@
 module VER
   # The status bar
   class Status < Tk::Tile::Entry
-    attr_accessor :mode, :keymap, :view, :prompt
+    attr_accessor :mode, :keymap, :view
 
     def initialize(view, options = {})
       super
@@ -22,33 +22,43 @@ module VER
       @mode = name
     end
 
+    def quit
+      Tk.exit
+    end
+
     def text
       view.text
     end
 
-    def ask(prompt, &callback)
-      self.value = @prompt = prompt
+    def ask(question, &callback)
+      @question, @backup_value, @callback = question, value, callback
+
+      message @question
       focus
-      @callback = callback
+    end
+
+    def ask_submit
+      answer = value.sub(@question, '')
+      result = @callback.call(answer)
+      message result.inspect
+    end
+
+    def ask_abort
+      message @backup_value
+      text.focus
     end
 
     def message(string)
       self.value = string
     end
 
-    def status_issue
-      answer = value.sub(@prompt, '')
-      result = @callback.call(answer)
-      self.value = result.inspect
-    end
-
     def insert_string(string)
-      insert :end, string
+      insert cursor, string
     end
 
     def delete_char_left
       cursor = self.cursor
-      return if prompt.size == cursor
+      return if @question.size == cursor
       delete(cursor - 1)
     end
 
@@ -58,7 +68,7 @@ module VER
 
     def go_char_left
       cursor = self.cursor
-      return if prompt.size == cursor
+      return if @question.size == cursor
       self.cursor = cursor - 1
     end
 
@@ -70,7 +80,7 @@ module VER
       if index = value.rindex(/.\b\s/, cursor - 1)
         self.cursor = index
       else
-        self.cursor = prompt.size
+        self.cursor = @question.size
       end
     end
 

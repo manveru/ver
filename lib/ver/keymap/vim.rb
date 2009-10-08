@@ -199,7 +199,8 @@ module VER
       vim.add_mode :status_query do |mode|
         mode.inherits :basic, :readline
 
-        mode.to :status_issue, %w[Return]
+        mode.to :ask_abort, %w[Escape], %w[Control-c]
+        mode.to :ask_submit, %w[Return]
 
         mode.missing :insert_string
       end
