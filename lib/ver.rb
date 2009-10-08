@@ -60,7 +60,7 @@ module VER
     @paths = Set.new
     @root = TkRoot.new
     @layout = Layout.new(@root)
-    @layout.extend Layout::VerticalTiling
+    @layout.strategy = Layout::VerticalTiling
   end
 
   def open_argv

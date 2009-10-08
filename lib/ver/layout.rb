@@ -1,10 +1,19 @@
 module VER
   class Layout < Ttk::Frame
+    attr_reader :strategy, :views
+
     def initialize(parent, options = {})
       super
+
       pack(fill: :both, expand: true)
+
       @views = []
-      @focus = nil
+      self.strategy = Layout::VerticalTiling
+    end
+
+    def strategy=(mod)
+      @strategy = mod
+      apply if @views.any?
     end
 
     def create_view
@@ -41,17 +50,17 @@ module VER
       found.focus
     end
 
-    def focus(number)
-      slaves = winfo_children
-      @focus = slaves[number]
-      @focus.text.focus
+    def apply(options = {})
+      strategy.apply(self, options)
     end
 
     module VerticalTiling
       DEFAULT = { left: 1, right: -1 }
 
-      def apply(options = {})
-        slaves = winfo_children
+      module_function
+
+      def apply(layout, options = {})
+        slaves = layout.winfo_children
         left, right = DEFAULT.merge(options).values_at(:left, :right)
         head, tail = slaves[0...left], slaves[left..right]
         width = tail.size == 0 ? 1.0 : 0.5
@@ -73,8 +82,10 @@ module VER
     module HorizontalTiling
       DEFAULT = { top: 1, bottom: -1 }
 
-      def apply(options = {})
-        slaves = winfo_children
+      module_function
+
+      def apply(layout, options = {})
+        slaves = layout.winfo_children
         top, bottom = DEFAULT.merge(options).values_at(:top, :bottom)
         head, tail = slaves[0...top], slaves[top..bottom]
         height = tail.size == 0 ? 1.0 : 0.5
