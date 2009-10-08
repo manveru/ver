@@ -43,7 +43,7 @@ module VER
     @options = OPTIONS.merge(given_options)
 
     setup
-    open_argv
+    open_argv || open_welcome
     emergency_bindings
 
     Tk.mainloop
@@ -61,10 +61,16 @@ module VER
   end
 
   def open_argv
-    ARGV.each do |arg|
+    ARGV.each{|arg|
       layout.create_view do |view|
         view.open_path(arg)
       end
+    }.any?
+  end
+
+  def open_welcome
+    layout.create_view do |view|
+      view.open_path(File.expand_path('../../blueprint/welcome', __FILE__))
     end
   end
 
