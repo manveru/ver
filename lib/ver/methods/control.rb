@@ -141,25 +141,6 @@ module VER
         end
       end
 
-      def open_path(path)
-        @filename = File.expand_path(path)
-
-        begin
-          self.value = File.read(@filename)
-          status.value = "Opened #@filename"
-        rescue Errno::ENOENT
-          # pp self.class.instance_methods.sort
-          clear
-          status.value = "Create #@filename"
-        end
-
-        VER.opened_file(@filename)
-
-        edit_reset
-        focus
-        first_highlight
-        mark_set :insert, '0.0'
-      end
 
       def delete_char_left
         delete 'insert - 1 char'
