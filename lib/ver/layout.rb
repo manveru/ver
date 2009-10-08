@@ -21,20 +21,24 @@ module VER
 
       if previous = @views.last
         apply
-        previous.text.focus
+        previous.focus
       else
         Tk.exit
       end
     end
 
-    def focus_next
-      index = @views.index(@focus)
-      focus(index ? index + 1 : 0)
+    def focus_next(current)
+      return unless index = @views.index(current)
+
+      found = @views[index + 1] || @views[0]
+      found.focus
     end
 
-    def focus_prev
-      index = @views.index(@focus)
-      focus(index ? index - 1 : -1)
+    def focus_prev(current)
+      return unless index = @views.index(current)
+
+      found = @views[index - 1]
+      found.focus
     end
 
     def focus(number)

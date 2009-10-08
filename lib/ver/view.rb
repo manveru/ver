@@ -119,6 +119,10 @@ module VER
     # @text.bind '<PasteSelection>', proc{|e| refresh; p :paste_selection }
     # @text.bind '<Movement>',       proc{|e| p :movement }
 
+    def focus
+      text.focus
+    end
+
     def create
       layout.create_view do |view|
         view.open_empty
@@ -127,6 +131,14 @@ module VER
 
     def close
       layout.close_view(self)
+    end
+
+    def focus_next
+      layout.focus_next(self)
+    end
+
+    def focus_prev
+      layout.focus_prev(self)
     end
 
     def destroy
