@@ -35,10 +35,12 @@ module VER
     end
 
     def set(match, options)
+      match = normalize(match)
       colors[match] = (colors[match] || {}).merge(sanitize_settings(options))
     end
 
     def get(name)
+      name = normalize(name)
       colors.each do |syntax_name, options|
         return syntax_name if name.start_with?(syntax_name)
       end
@@ -70,6 +72,10 @@ module VER
       end
 
       settings
+    end
+
+    def normalize(keyname)
+      keyname.tr(' ', '-')
     end
 
     # -background or -bg, background, Background
@@ -130,7 +136,7 @@ module VER
 
     def remove_tags_on(widget)
       colors.each do |name, options|
-        widget.tag_remove(name.to_s)
+        widget.tag_remove(name.to_s, '0.0', 'end')
       end
     end
 
