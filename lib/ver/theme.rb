@@ -1,8 +1,14 @@
 module VER
   class Theme < Struct.new(:name, :uuid, :default, :colors)
+    def self.list
+      path = File.expand_path("../theme/*.json", __FILE__)
+      Dir[path]
+    end
+
     # TODO: Handle custom paths
     def self.find(theme_name)
-      File.expand_path("../theme/#{theme_name}.json", __FILE__)
+      path = File.expand_path("../theme/#{theme_name}.json", __FILE__)
+      path if File.file?(path)
     end
 
     def self.load(filename)

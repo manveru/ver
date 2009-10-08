@@ -79,6 +79,7 @@ module VER
         mode.map :unindent_line,                 %w[less]
         mode.map :replace_char,                  %w[r]
         mode.map :status_theme_select,           %w[Alt-t]
+        mode.map :list_theme_select,             %w[Control-t]
 
         mode.missing :ignore_string
       end

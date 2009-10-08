@@ -272,6 +272,15 @@ module VER
       # status.configure(background: cursor[:insertbackground])
     end
 
+    def load_theme(name)
+      return unless @highlight_syntax
+      return unless found = Theme.find(name)
+
+      @highlight_syntax.theme = Theme.load(found)
+      refresh_highlight
+      status.message "Theme #{found} loaded"
+    end
+
     def clear_selection
       @selection_start = nil
       tag_remove :sel, '0.0', 'end'

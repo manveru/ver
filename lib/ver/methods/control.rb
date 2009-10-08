@@ -5,13 +5,15 @@ module VER
         return unless @highlight_syntax
 
         status_ask 'Theme name: ' do |name|
-          if found = Theme.find(name)
-            @highlight_syntax.theme = Theme.load(found)
-            refresh_highlight
-            "Theme #{found} applied"
-          else
-            "No theme called #{name} found"
-          end
+          load_theme(name) || "No theme called #{name} found"
+        end
+      end
+
+      def list_theme_select
+        return unless @highlight_syntax
+
+        ThemeListView.new self do |name|
+          load_theme(name)
         end
       end
 

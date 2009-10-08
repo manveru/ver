@@ -25,6 +25,7 @@ module VER
   autoload :Text,                'ver/text'
   autoload :Textpow,             'ver/textpow'
   autoload :Theme,               'ver/theme'
+  autoload :ThemeListView,       'ver/view/theme_list_view'
   autoload :View,                'ver/view'
 
   # poor man's option system
