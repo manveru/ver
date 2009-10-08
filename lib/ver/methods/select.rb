@@ -24,17 +24,10 @@ module VER
       end
 
       def delete_selection
-        start = nil
-        chunks = tag_ranges(:sel).map{|from, to|
-          start ||= from
-          content = get(from, to)
-          delete(from, to)
-          content
-        }
+        queue = tag_ranges(:sel).flatten
+        delete(*queue)
+        mark_set(:insert, queue.first)
 
-        copy(chunks.size == 1 ? chunks.first : chunks)
-
-        mark_set(:insert, start)
         clear_selection
         start_control_mode
       end
