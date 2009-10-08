@@ -133,7 +133,7 @@ module VER
 
       case keymap.current_mode
       when :select_char
-        tag_add :sel, left, right
+        tag_add :sel, left, "#{right} + 1 chars"
       when :select_line
         tag_add :sel, "#{left} linestart", "#{right} lineend"
       when :select_block
