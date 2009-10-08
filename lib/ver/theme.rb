@@ -1,5 +1,10 @@
 module VER
   class Theme < Struct.new(:name, :uuid, :default, :colors)
+    # TODO: Handle custom paths
+    def self.find(theme_name)
+      File.expand_path("../theme/#{theme_name}.json", __FILE__)
+    end
+
     def self.load(filename)
       json = JSON.load(File.read(filename))
 
@@ -114,6 +119,24 @@ module VER
           warn key => value
           widget.configure(key => value)
         end
+      end
+    end
+
+    def create_tags_on(widget)
+      colors.each do |name, options|
+        TktNamedTag.new(widget, name.to_s, options)
+      end
+    end
+
+    def remove_tags_on(widget)
+      colors.each do |name, options|
+        widget.tag_remove(name.to_s)
+      end
+    end
+
+    def delete_tags_on(widget)
+      colors.each do |name, option|
+        widget.tag_delete(name.to_s)
       end
     end
   end

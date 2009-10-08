@@ -1,6 +1,20 @@
 module VER
   module Methods
     module Control
+      def status_theme_select
+        return unless @highlight_syntax
+
+        status_ask 'Theme name: ' do |name|
+          if found = Theme.find(name)
+            @highlight_syntax.theme = Theme.load(found)
+            refresh_highlight
+            "Theme #{found} applied"
+          else
+            "No theme called #{name} found"
+          end
+        end
+      end
+
       def status_evaluate
         status_ask 'Eval expression: ' do |term|
           eval(term)

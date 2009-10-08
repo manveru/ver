@@ -41,16 +41,22 @@ module VER
         syntax = ::File.expand_path("../syntax/#{name}.json", __FILE__)
         @syntax = Textpow::SyntaxNode.load(syntax)
 
-        theme = File.expand_path("../theme/Espresso Libre.json", __FILE__)
+        theme =  Theme.find(VER.options[:syntax_theme])
         @theme = Theme.load(theme)
       end
 
       def highlight(textarea, code, lineno = 0)
+        if @old_theme
+          @old_theme.delete_tags_on(textarea)
+          @old_theme = nil
+        end
+
         if @first_highlight
-          create_tags(textarea)
+          @theme.create_tags_on(textarea)
           @theme.apply_default_on(textarea)
+          @first_highlight = false
         else
-          remove_tags(textarea)
+          @theme.remove_tags_on(textarea)
         end
 
         pr = Processor.new(textarea, @theme, lineno)
@@ -58,18 +64,10 @@ module VER
         syntax.parse(code, pr)
       end
 
-      def create_tags(textarea)
-        @theme.colors.each do |name, options|
-          TktNamedTag.new(textarea, name.to_s, options)
-        end
-
-        @first_highlight = false
-      end
-
-      def remove_tags(textarea)
-        @theme.colors.each do |name, options|
-          textarea.tag_remove(name.to_s, '0.0', 'end')
-        end
+      def theme=(theme)
+        @old_theme = @theme
+        @theme = theme
+        @first_highlight = true
       end
 
       class Processor < Struct.new(:textarea, :theme, :lineno, :stack)

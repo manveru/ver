@@ -32,6 +32,7 @@ module VER
   #   Linux themes: "classic", "default", "clam", "alt"
   OPTIONS = {
     tk_theme: 'clam',
+    syntax_theme: 'Blackboard',
     keymap: 'vim',
     global_quit: 'Control-q',
   }
