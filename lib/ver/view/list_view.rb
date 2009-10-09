@@ -31,9 +31,14 @@ module VER
       entry.bindtags = tags
 
       tag.bind('Key'){       update }
-      tag.bind('Return'){    pick }
+      tag.bind('Return'){    pick(list.get(0)) }
       tag.bind('Escape'){    destroy }
       tag.bind('Control-c'){ destroy }
+
+      list.bind('Double-Button-1'){
+        selection = TkSelection.get
+        pick(selection)
+      }
     end
 
     def destroy
@@ -43,13 +48,18 @@ module VER
       parent.focus
     end
 
-    def pick
+    def pick(item)
+      p pick: item
       if list.size > 0
-        callback.call(list.get(0)) if callback
+        pick_action(item)
         destroy
       else
         message "VER is confused, what did you actually want to do?"
       end
+    end
+
+    def pick_action(item)
+      callback.call(item) if callback
     end
 
     def message(string)

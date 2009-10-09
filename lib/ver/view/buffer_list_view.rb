@@ -18,7 +18,13 @@ module VER
     end
 
     def buffers
-      VER.paths
+      path_view = parent.layout.views.map{|view| [view.filename, view] }
+      Hash[path_view]
+    end
+
+    def pick_action
+      view = buffers[list.get(0)]
+      callback.call(view) if callback && view
     end
   end
 end

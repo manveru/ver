@@ -56,15 +56,11 @@ module VER
         if count
           p count: count
         else
-          BufferListView.new self do |path|
-            open_path(path)
+          BufferListView.new self do |view|
+            view.focus
+            # open_path(path)
           end
         end
-
-        # list.bind("Double-Button-1"){
-        #   selection = TkSelection.get
-        #   p selection: selection
-        # }
       end
 
       def file_save
