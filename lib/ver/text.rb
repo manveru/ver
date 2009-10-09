@@ -101,13 +101,12 @@ module VER
       end
 
       start = '0.0'
-      while result = search_with_length(regexp, "#{start} + 1 chars", 'end - 1 chars')
+      while result = search_with_length(regexp, start, 'end - 1 chars')
         pos, len, match = result
         break if !result || len == 0
 
-        tag_add name, pos, "#{pos} + #{len} chars"
-
-        start = pos
+        start = "#{pos} + #{len} chars"
+        tag_add name, pos, start
       end
     end
 
