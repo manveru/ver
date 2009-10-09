@@ -5,6 +5,7 @@ module VER
     def initialize(layout, options = {})
       super
       @layout = layout
+      @text = @status = @ybar = @xbar = nil
       setup
     end
 

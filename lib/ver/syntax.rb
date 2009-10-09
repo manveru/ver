@@ -50,6 +50,7 @@ module VER
       def initialize(name)
         @name = name
         @first_highlight = true
+        @old_theme = nil
 
         @syntax = Syntax.find_and_load(name)
         @theme  = Theme.find_and_load(VER.options[:theme])

@@ -1,7 +1,8 @@
 module VER
   # The status bar
   class Status < Tk::Tile::Entry
-    attr_accessor :mode, :keymap, :view
+    attr_accessor :keymap, :view
+    attr_reader :mode
 
     def initialize(view, options = {})
       super

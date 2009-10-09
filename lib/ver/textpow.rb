@@ -56,11 +56,12 @@ module Textpow
   class SyntaxProxy
     def initialize proxy, syntax
       @proxy, @syntax = proxy, syntax
+      @proxy_value = nil
     end
 
     def method_missing(method, *args, &block)
       if @proxy
-        @proxy_value = proxy unless @proxy_value
+        @proxy_value ||= proxy
 
         if @proxy_value
           @proxy_value.send(method, *args, &block)
@@ -195,15 +196,15 @@ module Textpow
       all_starts = []
       all_ends = []
 
-      pattern.match_captures(name, match).each do |group, range, name|
+      pattern.match_captures(name, match).each do |group, range, match_name|
         range_first = range.first
         next unless range_first
 
         range_last = range.last
         next if range_first == range_last
 
-        all_starts << [range_first, group, name]
-        all_ends   << [range_last, -group, name]
+        all_starts << [range_first, group, match_name]
+        all_ends   << [range_last, -group, match_name]
       end
 
       starts = all_starts.sort.reverse

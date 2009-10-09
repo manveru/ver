@@ -20,6 +20,7 @@ module VER
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
       self.mode = :control
+      @selection_start = @highlight_thread = nil
     end
 
     def open_path(path)
@@ -53,7 +54,7 @@ module VER
 
     def quit
       Tk.exit
-     end
+    end
 
     def insert_index
       index(:insert).split('.').map(&:to_i)

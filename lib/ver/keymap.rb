@@ -20,7 +20,8 @@ module VER
       end
     end
 
-    attr_accessor :modes, :current_mode, :callback
+    attr_accessor :modes, :callback
+    attr_reader :current_mode
 
     def initialize(options)
       @callback = options[:receiver]
