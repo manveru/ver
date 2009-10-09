@@ -1,19 +1,28 @@
 module VER
   class Keymap
-    PATH = ['./', File.expand_path('../', __FILE__)]
-
     def self.get(options)
       name = options.fetch(:name)
 
-      PATH.each do |path|
-        begin
-          require File.join(path, 'keymap', name)
-          return send(name, options)
-        rescue LoadError
-        end
+      find_and_load(name)
+      send(name, options)
+    end
+
+    def self.find(keymap_name)
+      VER.loadpath.each do |loadpath|
+        path = loadpath/"keymap/#{keymap_name}.rb"
+        return path if path.file?
       end
 
-      raise LoadError, 'cannot find keymap %p' % [name]
+      nil
+    end
+
+    def self.find_and_load(keymap_name)
+      if path = find(keymap_name)
+        sane = path.dirname/path.basename(path.extname)
+        require sane.to_s
+      else
+        raise LoadError, "cannot find keymap: %p" % [keymap_name]
+      end
     end
 
     attr_accessor :modes, :current_mode, :callback

@@ -96,6 +96,8 @@ module Textpow
       :beginCaptures, :endCaptures, :repository, :patterns
 
     def self.load(filename, name_space = :default)
+      filename = filename.to_s
+
       table =
         case filename
         when /(\.tmSyntax|\.plist)$/

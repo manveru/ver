@@ -1,18 +1,23 @@
 module VER
   class Theme < Struct.new(:name, :uuid, :default, :colors)
     def self.list
-      path = File.expand_path("../theme/*.json", __FILE__)
-      Dir[path]
+      VER.loadpath.map{|path| Dir[(path/'theme/*.json').to_s] }.flatten
     end
 
     # TODO: Handle custom paths
     def self.find(theme_name)
-      path = File.expand_path("../theme/#{theme_name}.json", __FILE__)
-      path if File.file?(path)
+      VER.loadpath.each do |loadpath|
+        path = loadpath/"theme/#{theme_name}.json"
+        return path if path.file?
+      end
+
+      nil
     end
 
     def self.load(filename)
-      json = JSON.load(File.read(filename))
+       raise(ArgumentError, "No path to theme file given") unless filename
+
+      json = JSON.load(File.read(filename.to_s))
 
       instance = new
       instance.name = json['name']
@@ -33,6 +38,10 @@ module VER
       end
 
       instance
+    end
+
+    def self.find_and_load(theme_name)
+      load(find(theme_name))
     end
 
     def initialize(colors = {}, &block)

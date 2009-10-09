@@ -26,6 +26,24 @@ module VER
       Highlighter.new('Plain text')
     end
 
+    def self.find(syntax_name)
+      VER.loadpath.each do |loadpath|
+        path = loadpath/"syntax/#{syntax_name}.json"
+        return path if path.file?
+      end
+
+      nil
+    end
+
+    def self.load(file)
+      raise(ArgumentError, "No path to syntax file given") unless file
+      Textpow::SyntaxNode.load(file)
+    end
+
+    def self.find_and_load(syntax_name)
+      load(find(syntax_name))
+    end
+
     register 'Ruby', /\.rb$/, /^rakefile(\.rb)?$/i
     register 'Haml', /\.haml$/
     register 'Markdown', /\.mk?d/, /\.markdown/i
@@ -38,11 +56,8 @@ module VER
         @name = name
         @first_highlight = true
 
-        syntax = ::File.expand_path("../syntax/#{name}.json", __FILE__)
-        @syntax = Textpow::SyntaxNode.load(syntax)
-
-        theme =  Theme.find(VER.options[:syntax_theme])
-        @theme = Theme.load(theme)
+        @syntax = Syntax.find_and_load(name)
+        @theme  = Theme.find_and_load(VER.options[:theme])
       end
 
       def highlight(textarea, code, lineno = 0)
