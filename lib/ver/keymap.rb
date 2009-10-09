@@ -8,12 +8,7 @@ module VER
     end
 
     def self.find(keymap_name)
-      VER.loadpath.each do |loadpath|
-        path = loadpath/"keymap/#{keymap_name}.rb"
-        return path if path.file?
-      end
-
-      nil
+      VER.find_in_loadpath("keymap/#{keymap_name}.rb")
     end
 
     def self.find_and_load(keymap_name)

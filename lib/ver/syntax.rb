@@ -27,12 +27,7 @@ module VER
     end
 
     def self.find(syntax_name)
-      VER.loadpath.each do |loadpath|
-        path = loadpath/"syntax/#{syntax_name}.json"
-        return path if path.file?
-      end
-
-      nil
+      VER.find_in_loadpath("syntax/#{syntax_name}.json")
     end
 
     def self.load(file)

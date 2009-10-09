@@ -4,14 +4,8 @@ module VER
       VER.loadpath.map{|path| Dir[(path/'theme/*.json').to_s] }.flatten
     end
 
-    # TODO: Handle custom paths
     def self.find(theme_name)
-      VER.loadpath.each do |loadpath|
-        path = loadpath/"theme/#{theme_name}.json"
-        return path if path.file?
-      end
-
-      nil
+      VER.find_in_loadpath("theme/#{theme_name}.json")
     end
 
     def self.load(filename)

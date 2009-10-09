@@ -114,6 +114,15 @@ module VER
     end
   end
 
+  def find_in_loadpath(basename)
+    loadpath.each do |dirname|
+      file = dirname/basename
+      return file if file.file?
+    end
+
+    nil
+  end
+
   def open_argv
     ARGV.each{|arg|
       layout.create_view do |view|
@@ -124,7 +133,8 @@ module VER
 
   def open_welcome
     layout.create_view do |view|
-      view.open_path(File.expand_path('../../blueprint/welcome', __FILE__))
+      welcome = find_in_loadpath('welcome')
+      view.open_path(welcome)
     end
   end
 
