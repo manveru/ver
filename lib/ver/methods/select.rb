@@ -108,7 +108,7 @@ module VER
           return if queue.empty?
 
           delete(*queue)
-          insert(queue.first, output.chomp)
+          insert(queue.first, output)
         end
       end
     end
