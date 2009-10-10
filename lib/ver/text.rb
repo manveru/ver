@@ -282,6 +282,7 @@ module VER
 
       @highlight_syntax.theme = Theme.load(found)
       refresh_highlight
+
       status.message "Theme #{found} loaded"
     end
 
@@ -289,8 +290,10 @@ module VER
       return unless @highlight_syntax
       return unless found = Syntax.find(name)
 
-      @highlight_syntax.syntax = Syntax.load(found)
+      theme = @highlight_syntax.theme
+      @highlight_syntax = Syntax::Highlighter.new(name, theme)
       refresh_highlight
+
       status.message "Syntax #{found} loaded"
     end
 

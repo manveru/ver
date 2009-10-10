@@ -66,7 +66,7 @@ module Textpow
         if @proxy_value
           @proxy_value.send(method, *args, &block)
         else
-          warn "Failed proxying #{@proxy}.#{method}(#{args.join(', ')})"
+          # warn "Failed proxying #{@proxy}.#{method}(#{args.join(', ')})"
         end
       else
         super

@@ -52,13 +52,13 @@ module VER
       attr_accessor :syntax, :name
       attr_reader :theme
 
-      def initialize(name)
+      def initialize(name, theme = nil)
         @name = name
         @first_highlight = true
         @old_theme = nil
 
         @syntax = Syntax.find_and_load(name)
-        @theme  = Theme.find_and_load(VER.options[:theme])
+        @theme  = theme || Theme.find_and_load(VER.options[:theme])
       end
 
       def highlight(textarea, code, lineno = 0)

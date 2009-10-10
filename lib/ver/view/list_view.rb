@@ -69,7 +69,7 @@ module VER
     end
 
     def sublist(list, input = entry.value)
-      if name == name.downcase
+      if input == input.downcase
         list.select{|item| item.downcase.include?(input) }
       else
         list.select{|item| item.include?(input) }
