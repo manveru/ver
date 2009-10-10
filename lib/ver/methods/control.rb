@@ -195,12 +195,12 @@ module VER
       end
 
       def insert_string(string)
-        # puts "Insert %p in mode %p" % [string, keymap.current_mode]
+        # puts "Insert %p in mode %p" % [string, keymap.mode]
         insert :insert, string unless string.empty?
       end
 
       def ignore_string(string)
-        status.message "Ignore %p in mode %p" % [string, keymap.current_mode]
+        status.message "Ignore %p in mode %p" % [string, keymap.mode]
       end
 
       def replace_char
