@@ -285,6 +285,15 @@ module VER
       status.message "Theme #{found} loaded"
     end
 
+    def load_syntax(name)
+      return unless @highlight_syntax
+      return unless found = Syntax.find(name)
+
+      @highlight_syntax.syntax = Syntax.load(found)
+      refresh_highlight
+      status.message "Syntax #{found} loaded"
+    end
+
     def clear_selection
       @selection_start = nil
       tag_remove :sel, '0.0', 'end'

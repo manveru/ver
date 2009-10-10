@@ -12,9 +12,13 @@ module VER
       def list_theme_select
         return unless @highlight_syntax
 
-        ThemeListView.new self do |name|
-          load_theme(name)
-        end
+        ThemeListView.new(self){|name| load_theme(name) }
+      end
+
+      def syntax_switch
+        return unless @highlight_syntax
+
+        SyntaxListView.new(self){|name| load_syntax(name) }
       end
 
       def status_evaluate

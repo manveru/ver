@@ -68,6 +68,14 @@ module VER
       parent.focus
     end
 
+    def sublist(list, input = entry.value)
+      if name == name.downcase
+        list.select{|item| item.downcase.include?(input) }
+      else
+        list.select{|item| item.include?(input) }
+      end
+    end
+
     def pick(item)
       if list.size > 0
         pick_action(item)

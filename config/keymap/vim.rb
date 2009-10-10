@@ -80,6 +80,7 @@ module VER
         mode.map :replace_char,                  %w[r]
         mode.map :status_theme_select,           %w[Alt-t]
         mode.map :list_theme_select,             %w[Control-t]
+        mode.map :syntax_switch,                 %w[Control-y]
 
         mode.missing :ignore_string
       end

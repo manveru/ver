@@ -4,6 +4,10 @@ module VER
 
     EXT_NAME = {}
 
+    def self.list
+      VER.loadpath.map{|path| Dir[(path/'syntax/*.json').to_s] }.flatten
+    end
+
     def self.register(name, *extensions)
       extensions.each{|ext| EXT_NAME[ext] = name }
     end
@@ -45,7 +49,8 @@ module VER
     register 'xhtml_1.0', /\.xhtml/
 
     class Highlighter
-      attr_reader :syntax, :name, :theme
+      attr_accessor :syntax, :name
+      attr_reader :theme
 
       def initialize(name)
         @name = name

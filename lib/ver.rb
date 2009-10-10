@@ -33,6 +33,7 @@ module VER
   autoload :Methods,             'ver/methods'
   autoload :Mode,                'ver/mode'
   autoload :Status,              'ver/status'
+  autoload :SyntaxListView,       'ver/view/syntax_list_view'
   autoload :Syntax,              'ver/syntax'
   autoload :Text,                'ver/text'
   autoload :Textpow,             'ver/textpow'
