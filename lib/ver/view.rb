@@ -149,5 +149,9 @@ module VER
 
       super
     end
+
+    def filename
+      text.filename
+    end
   end
 end

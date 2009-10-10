@@ -52,6 +52,10 @@ module VER
       mark_set :insert, '0.0'
     end
 
+    def layout
+      view.layout
+    end
+
     def quit
       Tk.exit
     end

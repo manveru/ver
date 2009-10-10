@@ -1,14 +1,14 @@
 module VER
   class BufferListView < ListView
     def update
-      list.value = buffers_for(entry.value)
+      list.value = p(buffers_for(entry.value))
     end
 
     def buffers_for(name)
       if name == name.downcase
-        buffers.select{|buffer| buffer.downcase.include?(name) }
+        buffers.keys.select{|filename| filename.downcase.include?(name) }
       else
-        buffers.select{|buffer| buffer.include?(name) }
+        buffers.keys.select{|filename| filename.include?(name) }
       end
     end
 
@@ -17,8 +17,8 @@ module VER
       Hash[path_view]
     end
 
-    def pick_action
-      view = buffers[list.get(0)]
+    def pick_action(filename)
+      view = buffers[filename]
       callback.call(view) if callback && view
     end
   end
