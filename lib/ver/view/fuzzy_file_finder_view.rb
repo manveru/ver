@@ -3,19 +3,17 @@ module VER
     attr_reader :fffinder
 
     def initialize(*args, &callback)
-      super
+      super(*args, &callback)
 
       require 'ver/vendor/fuzzy_file_finder'
-
       @fffinder = FuzzyFileFinder.new
-      @callback = callback
     end
 
     def update
       choices = fffinder.find(entry.value)
       choices = choices.sort_by{|m| [-m[:score], m[:path]] }
 
-      list.delete 0, :end
+      list.clear
 
       choices.each do |choice|
         insert_choice(choice)

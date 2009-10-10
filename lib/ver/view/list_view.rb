@@ -5,6 +5,7 @@ module VER
 
       setup_widgets
       setup_tag
+      update
     end
 
     def setup_widgets
@@ -49,7 +50,6 @@ module VER
     end
 
     def pick(item)
-      p pick: item
       if list.size > 0
         pick_action(item)
         destroy

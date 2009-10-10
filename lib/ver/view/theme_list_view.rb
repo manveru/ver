@@ -1,23 +1,15 @@
 module VER
   class ThemeListView < ListView
-    def initialize(*args, &callback)
-      super
-
-      @callback = callback
-      update
+    def update
+      list.value = themes_for(entry.value)
     end
 
-    def update
-      value = entry.value
-
-      if value == value.downcase
-        selected = themes.select{|buffer| buffer.downcase.include?(value) }
+    def themes_for(name)
+      if name == name.downcase
+        themes.select{|theme| theme.downcase.include?(value) }
       else
-        selected = themes.select{|buffer| buffer.include?(value) }
+        themes.select{|theme| theme.include?(value) }
       end
-
-      list.delete 0, :end
-      list.insert :end, *selected
     end
 
     def themes

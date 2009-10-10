@@ -1,20 +1,15 @@
 module VER
   class BufferListView < ListView
-    def initialize(*args, &block)
-      super
+    def update
+      list.value = buffers_for(entry.value)
     end
 
-    def update
-      value = entry.value
-
-      if value == value.downcase
-        selected = buffers.select{|buffer| buffer.downcase.include?(value) }
+    def buffers_for(name)
+      if name == name.downcase
+        buffers.select{|buffer| buffer.downcase.include?(name) }
       else
-        selected = buffers.select{|buffer| buffer.include?(value) }
+        buffers.select{|buffer| buffer.include?(name) }
       end
-
-      list.delete 0, :end
-      list.insert :end, *selected
     end
 
     def buffers
