@@ -3,10 +3,10 @@ module VER
     attr_reader :fffinder
 
     def initialize(*args, &callback)
-      super(*args, &callback)
-
       require 'ver/vendor/fuzzy_file_finder'
       @fffinder = FuzzyFileFinder.new
+
+      super(*args, &callback)
     end
 
     def update
