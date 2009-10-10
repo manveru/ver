@@ -145,6 +145,7 @@ module VER
   end
 
   def opened_file(path)
+    root['title'] = "VER: #{path}"
     @paths << path
   end
 end
