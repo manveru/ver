@@ -9,7 +9,7 @@ module VER
         end
       end
 
-      def list_theme_select
+      def theme_switch
         return unless @highlight_syntax
 
         ThemeListView.new(self){|name| load_theme(name) }
