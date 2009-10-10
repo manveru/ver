@@ -72,7 +72,7 @@ module VER
           settings[key] = $1
         elsif key.downcase == 'fontstyle'
           styles = value.split
-          settings['font'] = font = TkFont.new(family: 'Terminus', size: 9)
+          settings['font'] = TkFont.create_copy(self.font)
           font.configure underline: styles.include?('underline')
           font.configure slant: 'italic' if styles.include?('italic')
         else
@@ -81,6 +81,10 @@ module VER
       end
 
       settings
+    end
+
+    def font
+      @font ||= TkFont.new(family: 'Terminus', size: 9)
     end
 
     def normalize(keyname)
