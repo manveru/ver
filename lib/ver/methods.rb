@@ -4,6 +4,7 @@ require 'ver/methods/insert'
 require 'ver/methods/control'
 require 'ver/methods/search'
 require 'ver/methods/select'
+require 'ver/methods/completion'
 
 module VER
   module Methods
@@ -13,5 +14,6 @@ module VER
     include Control
     include Search
     include Select
+    include Completion
   end
 end

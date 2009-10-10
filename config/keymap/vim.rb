@@ -160,6 +160,8 @@ module VER
         mode.map :go_page_up,              %w[Shift-Up]
         mode.map :insert_indented_newline, %w[Return]
         mode.map :smart_evaluate,          %w[Alt-e]
+        mode.map :complete_aspell,         %w[Control-x Control-a]
+        mode.map :complete_file,           %w[Control-x Control-f]
 
         mode.missing :insert_string
       end
