@@ -1,15 +1,7 @@
 module VER
   class BufferListView < ListView
     def update
-      list.value = p(buffers_for(entry.value))
-    end
-
-    def buffers_for(name)
-      if name == name.downcase
-        buffers.keys.select{|filename| filename.downcase.include?(name) }
-      else
-        buffers.keys.select{|filename| filename.include?(name) }
-      end
+      list.value = sublist(buffers)
     end
 
     def buffers
