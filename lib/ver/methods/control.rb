@@ -228,13 +228,9 @@ module VER
       def insert_indented_newline_below
         line = get('insert linestart', 'insert lineend')
 
-        if line.empty?
-          insert('insert lineend', "\n")
-        else
-          indentation = line[/^\s+/] || ''
-          insert('insert lineend', "\n" << indentation)
-          mark_set(:insert, 'insert + 1 line lineend')
-        end
+        indent = line.empty? ? "" : (line[/^\s+/] || '')
+        mark_set :insert, 'insert lineend'
+        insert :insert, "\n#{indent}"
 
         start_insert_mode
       end
