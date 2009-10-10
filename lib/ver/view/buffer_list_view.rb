@@ -1,7 +1,7 @@
 module VER
   class BufferListView < ListView
     def update
-      list.value = sublist(buffer.keys)
+      list.value = sublist(buffers.keys)
     end
 
     def buffers
