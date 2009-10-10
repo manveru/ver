@@ -79,7 +79,7 @@ module VER
         filename,
         insert_y, insert_x,
         percent,
-        keymap.current_mode
+        keymap.mode
       ]
 
       into.value = format % values
@@ -131,7 +131,7 @@ module VER
       left, right = [start, now].sort.map{|pos| pos.join('.') }
       tag_remove :sel, '0.0', 'end'
 
-      case keymap.current_mode
+      case keymap.mode
       when :select_char
         tag_add :sel, left, "#{right} + 1 chars"
       when :select_line
@@ -265,7 +265,7 @@ module VER
     end
 
     def mode=(name)
-      keymap.current_mode = mode = name.to_sym
+      keymap.mode = mode = name.to_sym
 
       configure MODE_CURSOR[mode]
 

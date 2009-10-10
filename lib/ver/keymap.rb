@@ -20,11 +20,12 @@ module VER
       end
     end
 
-    attr_accessor :modes, :callback
-    attr_reader :current_mode
+    attr_accessor :modes, :callback, :widget, :tag
+    attr_reader :mode
 
     def initialize(options)
-      @callback = options[:receiver]
+      @callback = options.fetch(:receiver)
+      @widget = options.fetch(:widget, @callback)
       @modes = {}
 
       prepare_tag
@@ -36,27 +37,25 @@ module VER
     end
 
     def enter_key(key)
-      modes[current_mode].enter_key key
+      modes[mode].enter_key key
     end
 
     def enter_missing(key)
-      modes[current_mode].enter_missing key
+      modes[mode].enter_missing key
     end
 
     def prepare_tag
-      @tag = TkBindTag.new
-      tags = callback.bindtags
+      self.tag = TkBindTag.new
+      tags = widget.bindtags
 
-      index = tags.index(Tk::Text) ||
-              tags.index(Tk::Entry) ||
-              tags.index(Tk::Tile::TEntry)
+      index = tags.index{|element| element.is_a?(Class) }
       tags[index - 1, 0] = @tag
 
-      callback.bindtags = tags
+      widget.bindtags = tags
     end
 
     def prepare_default_binds
-      @tag.bind 'Key' do |event|
+      tag.bind 'Key' do |event|
         case event.char
         when ''
           # enter_missing event.keysym
@@ -69,7 +68,7 @@ module VER
       end
 
       0.upto 9 do |n|
-        @tag.bind("KeyPress-#{n}") do |key|
+        tag.bind("KeyPress-#{n}") do |key|
           enter_key n.to_s
           Tk.callback_break
         end
@@ -77,15 +76,15 @@ module VER
     end
 
     def register(key)
-      @tag.bind(key){|event|
+      tag.bind(key){|event|
         enter_key key
         Tk.callback_break
       }
     end
 
     # TODO: callbacks
-    def current_mode=(cm)
-      @current_mode = cm.to_sym
+    def mode=(cm)
+      @mode = cm.to_sym
     end
 
     def add_mode(name)

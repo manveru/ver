@@ -1,6 +1,6 @@
 module VER
   # The status bar
-  class Status < Tk::Tile::Entry
+  class Status < VER::Entry
     attr_accessor :keymap, :view
     attr_reader :mode
 
@@ -19,12 +19,7 @@ module VER
     end
 
     def mode=(name)
-      @keymap.current_mode = name.to_sym
-      @mode = name
-    end
-
-    def quit
-      Tk.exit
+      @keymap.mode = @mode = name.to_sym
     end
 
     def text
@@ -49,32 +44,14 @@ module VER
       text.focus
     end
 
-    def message(string)
-      self.value = string
-    end
-
-    def insert_string(string)
-      insert cursor, string
-    end
-
     def delete_char_left
-      cursor = self.cursor
       return if @question.size == cursor
-      delete(cursor - 1)
-    end
-
-    def delete_char_right
-      delete(cursor)
+      super
     end
 
     def go_char_left
-      cursor = self.cursor
       return if @question.size == cursor
-      self.cursor = cursor - 1
-    end
-
-    def go_char_right
-      self.cursor = cursor + 1
+      super
     end
 
     def go_word_left
@@ -82,15 +59,6 @@ module VER
         self.cursor = index
       else
         self.cursor = @question.size
-      end
-    end
-
-    def go_word_right
-      if match = value.match(/\s\b/, cursor)
-        offset_from, offset_to = match.offset(0)
-        self.cursor = offset_to
-      else
-        self.cursor = :end
       end
     end
   end

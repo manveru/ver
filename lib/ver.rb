@@ -25,6 +25,7 @@ end
 
 module VER
   autoload :BufferListView,      'ver/view/buffer_list_view'
+  autoload :Entry,               'ver/entry'
   autoload :FuzzyFileFinderView, 'ver/view/fuzzy_file_finder_view'
   autoload :Keymap,              'ver/keymap'
   autoload :Layout,              'ver/layout'

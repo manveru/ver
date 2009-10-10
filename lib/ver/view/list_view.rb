@@ -1,10 +1,13 @@
 module VER
   class ListView < Struct.new(:parent, :frame, :list, :entry, :tag, :callback)
+    autoload :Entry, 'ver/view/entry'
+
     def initialize(parent, &block)
       self.parent, self.callback = parent, block
 
       setup_widgets
-      setup_tag
+      setup_keymap
+      setup_events
       update
     end
 
@@ -19,27 +22,43 @@ module VER
         pack fill: :both, expand: true
       }
 
-      self.entry = Ttk::Entry.new(frame){
+      self.entry = VER::ListView::Entry.new(frame){
         pack fill: :x, expand: false
         focus
       }
+      entry.list_view = self
     end
 
-    def setup_tag
-      self.tag = TkBindTag.new
-      tags = entry.bindtags
-      tags[tags.index(entry.class) + 1, 0] = tag
-      entry.bindtags = tags
+    def setup_keymap
+      keymap_name = VER.options.fetch(:keymap)
 
-      tag.bind('Key'){       update }
-      tag.bind('Return'){    pick(list.get(0)) }
-      tag.bind('Escape'){    destroy }
-      tag.bind('Control-c'){ destroy }
+      @list_keymap = Keymap.get(
+        name: keymap_name, receiver: self, widget: list, mode: :list_view_list)
 
-      list.bind('Double-Button-1'){
-        selection = TkSelection.get
-        pick(selection)
-      }
+      @entry_keymap = Keymap.get(
+        name: keymap_name, receiver: entry, widget: entry, mode: :list_view_entry)
+    end
+
+    # Setup this event, because Keymap gets very confused when you bind 'Key' and
+    # we don't want to break the event-chain anyway
+    def setup_events
+      entry.bind('<Modified>'){ update }
+    end
+
+    def quit
+      Tk.exit
+    end
+
+    def go_line_up
+      p :go_line_up
+    end
+
+    def go_line_down
+      p :go_line_down
+    end
+
+    def cancel
+      destroy
     end
 
     def destroy
@@ -56,6 +75,14 @@ module VER
       else
         message "VER is confused, what did you actually want to do?"
       end
+    end
+
+    def pick_first
+      pick list.get(0)
+    end
+
+    def pick_selection
+      pick TkSelection.get
     end
 
     def pick_action(item)

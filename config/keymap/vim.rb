@@ -2,7 +2,7 @@ module VER
   class Keymap
     def self.vim(options)
       vim = new(options)
-      vim.current_mode = options.fetch(:current_mode, :control)
+      vim.mode = options.fetch(:mode, :control)
 
       vim.add_mode :basic do |mode|
         mode.map :file_open_popup,    %w[Control-o]
@@ -205,6 +205,24 @@ module VER
         mode.to :ask_submit, %w[Return]
 
         mode.missing :insert_string
+      end
+
+      vim.add_mode :list_view_entry do |mode|
+        mode.inherits :basic, :readline
+
+        # mode.to :update, %w[Key]
+        mode.to :pick_first, %w[Return]
+        mode.to :cancel, %w[Escape], %w[Control-c]
+
+        mode.missing :insert_string
+      end
+
+      vim.add_mode :list_view_list do |mode|
+        mode.inherits :basic
+
+        mode.to :pick_selection, %w[Double-Button-1]
+        mode.to :go_line_down, %w[Down]
+        mode.to :go_line_up, %w[Up]
       end
 
       vim
