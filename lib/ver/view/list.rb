@@ -1,6 +1,9 @@
 module VER
-  class ListView < Struct.new(:parent, :frame, :list, :entry, :tag, :callback)
-    autoload :Entry, 'ver/view/entry'
+  class View::List < Struct.new(:parent, :frame, :list, :entry, :tag, :callback)
+    autoload :Buffer,          'ver/view/list/buffer'
+    autoload :FuzzyFileFinder, 'ver/view/list/fuzzy_file_finder'
+    autoload :Syntax,          'ver/view/list/syntax'
+    autoload :Theme,           'ver/view/list/theme'
 
     def initialize(parent, &block)
       self.parent, self.callback = parent, block
@@ -22,7 +25,7 @@ module VER
         pack fill: :both, expand: true
       }
 
-      self.entry = VER::ListView::Entry.new(frame){
+      self.entry = View::Entry.new(frame){
         pack fill: :x, expand: false
         focus
       }

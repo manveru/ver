@@ -1,5 +1,5 @@
 module VER
-  class ListView
+  class View
     class Entry < VER::Entry
       attr_accessor :list_view
 

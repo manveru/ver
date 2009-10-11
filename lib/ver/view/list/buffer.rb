@@ -1,5 +1,5 @@
 module VER
-  class BufferListView < ListView
+  class View::List::Buffer < View::List
     def update
       list.value = sublist(buffers.keys)
     end

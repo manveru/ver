@@ -1,11 +1,11 @@
 module VER
-  class ThemeListView < ListView
+  class View::List::Theme < View::List
     def update
       list.value = sublist(themes)
     end
 
     def themes
-      Theme.list.map do |fullpath|
+      VER::Theme.list.map do |fullpath|
         File.basename(fullpath, File.extname(fullpath))
       end
     end

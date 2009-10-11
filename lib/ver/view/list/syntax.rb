@@ -1,11 +1,11 @@
 module VER
-  class SyntaxListView < ListView
+  class View::List::Syntax < View::List
     def update
       list.value = sublist(syntaxes)
     end
 
     def syntaxes
-      Syntax.list.map do |fullpath|
+      VER::Syntax.list.map do |fullpath|
         File.basename(fullpath, File.extname(fullpath))
       end
     end

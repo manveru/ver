@@ -12,13 +12,13 @@ module VER
       def theme_switch
         return unless @highlight_syntax
 
-        ThemeListView.new(self){|name| load_theme(name) }
+        View::List::Theme.new(self){|name| load_theme(name) }
       end
 
       def syntax_switch
         return unless @highlight_syntax
 
-        SyntaxListView.new(self){|name| load_syntax(name) }
+        View::List::Syntax.new(self){|name| load_syntax(name) }
       end
 
       def status_evaluate
@@ -60,7 +60,7 @@ module VER
         if count
           p count: count
         else
-          BufferListView.new self do |view|
+          View::List::Buffer.new self do |view|
             view.focus
             # open_path(path)
           end
@@ -152,7 +152,7 @@ module VER
       end
 
       def file_open_fuzzy
-        FuzzyFileFinderView.new self do |path|
+        View::List::FuzzyFileFinder.new self do |path|
           open_path(path)
         end
       end

@@ -1,10 +1,12 @@
 require 'ver/vendor/fuzzy_file_finder'
 
 module VER
-  class FuzzyFileFinderView < ListView
+  class View::List::FuzzyFileFinder < View::List
+    FFF = ::FuzzyFileFinder
+
     def fffinder
-      @fffinder ||= FuzzyFileFinder.new
-    rescue FuzzyFileFinder::TooManyEntries
+      @fffinder ||= FFF.new
+    rescue FFF::TooManyEntries
       message "The FuzzyFileFinder is overwhelmed by the amount of files"
       destroy
     end

@@ -1,5 +1,8 @@
 module VER
   class View < TkFrame
+    autoload :Entry, 'ver/view/entry'
+    autoload :List,  'ver/view/list'
+
     attr_reader :layout, :text, :status
 
     def initialize(layout, options = {})
