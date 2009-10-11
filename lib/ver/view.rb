@@ -30,18 +30,16 @@ module VER
     end
 
     def setup_text
-      # -tabs "[expr {4 * [font measure $font 0]}] left" -tabstyle wordprocessor
-      font_name = 'Terminus 9'
-      font_measure = TkFont.measure(font_name, '0')
-      tab_width = font_measure * 2 # rhs is number of characters
+      font = VER.options[:font]
+      tab_width = font.measure('0') * 2
 
       @text = VER::Text.new(
         self,
         autoseparators:   true, # insert separators into the undo flow
         borderwidth:      0,
         exportselection:  true, # copy into X11 buffer automatically
-        font:             font_name,
-        insertbackground: '#f00', # initial value (hardcoded for insert mode)
+        insertbackground: '#0f0', # initial value (hardcoded for control mode)
+        font:             font,
         insertofftime:    0, # blinking cursor be gone!
         setgrid:          true, # tell the wm that this is a griddy window
         tabs:             tab_width,
@@ -62,7 +60,7 @@ module VER
     end
 
     def setup_status
-      @status = Status.new(self, font: 'Terminus 9', takefocus: 0)
+      @status = Status.new(self, font: VER.options[:font], takefocus: 0)
     end
 
     def setup_grid

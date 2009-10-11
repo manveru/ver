@@ -84,7 +84,7 @@ module VER
     end
 
     def font
-      @font ||= TkFont.new(family: 'Terminus', size: 9)
+      @font ||= VER.options[:font]
     end
 
     def normalize(keyname)

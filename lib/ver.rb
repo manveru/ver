@@ -49,6 +49,7 @@ module VER
   # p Tk::Tile.themes # a list of available themes
   #   Linux themes: "classic", "default", "clam", "alt"
   OPTIONS = {
+    font:          TkFont.new(family: 'Terminus', size: 9),
     tk_theme:      'clam',
     theme:         'Blackboard',
     keymap:        'vim',
