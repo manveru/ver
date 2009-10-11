@@ -42,9 +42,10 @@ module VER
     end
 
     register 'Ruby', /\.rb$/, /^rakefile(\.rb)?$/i
-    register 'Haml', /\.haml$/
+    register 'Haml', /\.haml$/i
     register 'Markdown', /\.mk?d/, /\.markdown/i
-    register 'xhtml_1.0', /\.xhtml/
+    register 'xhtml_1.0', /\.xhtml$/i
+    register 'JavaScript', /\.json$/i, /\.js$/i
 
     class Highlighter
       attr_accessor :syntax, :name
