@@ -147,11 +147,15 @@ module VER
   end
 
   def opened_file(text)
-    filename = text.filename
-    base, dir = File.basename(filename), File.dirname(filename)
-    dir.sub!(/^#{ENV['HOME']}/, '~/')
+    if filename = text.filename
+      base, dir = File.basename(filename), File.dirname(filename)
+      dir.sub!(/^#{ENV['HOME']}/, '~')
+      title = "#{base} (#{dir}) - VER"
+    else
+      title = "[No Name] - VER"
+    end
 
-    root['title'] = "#{base} (#{dir}) - VER"
+    root['title'] = title
     @paths << text.filename
   end
 end
