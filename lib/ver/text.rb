@@ -27,7 +27,7 @@ module VER
     end
 
     def open_path(path)
-      @filename = File.expand_path(path)
+      @filename = Pathname(path.to_s).expand_path
 
       begin
         self.value = File.read(@filename)
@@ -42,7 +42,7 @@ module VER
 
     def open_empty
       clear
-      status.message "Empty buffer"
+      status.message "[No File]"
       after_open
     end
 
@@ -215,6 +215,29 @@ module VER
         end
         info
       end
+    end
+
+    def focus
+      super
+      Tk.event_generate(self, '<Focus>')
+    end
+
+    def set_window_title
+      if filename
+        home = Pathname(ENV['HOME'])
+        dir, file = filename.split
+        dir_relative_to_home = dir.relative_path_from(home)
+
+        if dir_relative_to_home.to_s.start_with?('../')
+          title = "#{file} (#{dir}) - VER"
+        else
+          title = "#{file} (#{dir_relative_to_home}) - VER"
+        end
+      else
+        title = "[No Name] - VER"
+      end
+
+      VER.root['title'] = title
     end
 
     private

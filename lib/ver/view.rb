@@ -86,8 +86,8 @@ module VER
     end
 
     def setup_events
-      %w[Movement Modified].each do |name|
-        @text.bind("<#{name}>"){ __send__("on_#{name.downcase}") }
+      %w[Movement Modified Focus].each do |name|
+        @text.bind("<#{name}>"){|event| __send__("on_#{name.downcase}", event) }
       end
     end
 
@@ -101,16 +101,21 @@ module VER
 
     # handling events
 
-    def on_movement
+    def on_movement(event)
       @text.see :insert
       @text.refresh_selection
       @text.status_projection(@status)
     end
 
-    def on_modified
+    def on_modified(event)
       @text.see :insert
       @text.refresh_highlight
       @text.status_projection(@status)
+    end
+
+    def on_focus(event)
+      pp event
+      @text.set_window_title
     end
 
     # @text.bind '<Modified>',       proc{|e| refresh; p :modified }

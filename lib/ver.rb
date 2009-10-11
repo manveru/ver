@@ -22,6 +22,10 @@ class Pathname
   def cp(dest)
     FileUtils.copy_file(expand_path.to_s, dest.to_s, preserve = true)
   end
+
+  def =~(regexp)
+    to_s =~ regexp
+  end
 end
 
 module VER
@@ -147,15 +151,6 @@ module VER
   end
 
   def opened_file(text)
-    if filename = text.filename
-      base, dir = File.basename(filename), File.dirname(filename)
-      dir.sub!(/^#{ENV['HOME']}/, '~')
-      title = "#{base} (#{dir}) - VER"
-    else
-      title = "[No Name] - VER"
-    end
-
-    root['title'] = title
     @paths << text.filename
   end
 end

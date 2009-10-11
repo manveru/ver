@@ -13,15 +13,13 @@ module VER
     end
 
     def self.from_filename(filename)
-      return unless filename.respond_to?(:to_str)
-
-      base = File.basename(filename.to_str)
+      base = filename.basename
 
       EXT_NAME.each do |ext, name|
         return Highlighter.new(name) if base =~ ext
       end
 
-      ext = File.extname(base).downcase
+      ext = filename.extname.downcase
 
       LIST.each do |name, exts|
         return Highlighter.new(name) if exts.include?(ext)
