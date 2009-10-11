@@ -51,8 +51,12 @@ module VER
 
       edit_reset
       focus
-      first_highlight
       mark_set :insert, '0.0'
+
+      Thread.new do
+        wait_visibility
+        first_highlight
+      end
     end
 
     def layout
