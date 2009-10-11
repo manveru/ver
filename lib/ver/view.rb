@@ -63,7 +63,7 @@ module VER
 
     def setup_status
       # status field
-      @status = Status.new(self, font: 'Terminus 9', takefocus: 0)
+      @status = Status.new(self, font: 'Terminus 9', takefocus: 0, 'style' => 'Status.TEntry')
     end
 
     def setup_grid

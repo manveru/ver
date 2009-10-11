@@ -285,9 +285,11 @@ module VER
     def mode=(name)
       keymap.mode = mode = name.to_sym
 
-      configure MODE_CURSOR[mode]
+      cursor = MODE_CURSOR[mode]
+      configure cursor
 
-      # status.configure(background: cursor[:insertbackground])
+      return unless status && color = cursor[:insertbackground]
+      Tk::Tile::Style.configure 'Status.TEntry', fieldbackground: color
     end
 
     def load_theme(name)
