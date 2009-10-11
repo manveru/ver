@@ -62,8 +62,7 @@ module VER
     end
 
     def setup_status
-      id = SecureRandom.hex
-      @status = Status.new(self, font: 'Terminus 9', takefocus: 0, style: "#{id}.Status.TEntry")
+      @status = Status.new(self, font: 'Terminus 9', takefocus: 0)
     end
 
     def setup_grid

@@ -5,6 +5,7 @@ module VER
     attr_reader :mode
 
     def initialize(view, options = {})
+      options[:style] ||= self.class.obtain_style_name
       super
       self.view = view
 
@@ -12,8 +13,11 @@ module VER
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
     end
 
-    def method_missing(meth, *args)
-      p meth => args
+    def destroy
+      style_name = style
+      super
+    ensure
+      self.class.return_style_name(style_name)
     end
 
     def mode=(name)
