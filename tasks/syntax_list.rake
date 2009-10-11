@@ -5,17 +5,15 @@ task 'syntax_list' do
 
   list = {}
 
-  Dir.glob 'lib/ver/syntax/*.json' do |syntax|
+  Dir.glob 'config/syntax/*.json' do |syntax|
     basename = File.basename(syntax, '.json')
     file_types = JSON.load(File.read(syntax))['fileTypes']
 
     if !file_types || file_types.empty?
       file_types = [basename]
-    else
-      file_types << basename
     end
 
-    list[basename] = file_types.map{|f| ".#{f.downcase}" }.uniq.sort
+    list[basename] = file_types.map{|f| ".#{f}" }.uniq.sort
   end
 
   File.open 'lib/ver/syntax_list.rb', 'w+' do |file|
