@@ -37,7 +37,7 @@
       "name": "keyword.control.c++"
     },
     {
-      "match": "\\bdelete\\b(\\s*\\[\\])?|\\bnew\\b(?!])",
+      "match": "\\bdelete\\b(\\s*\\[\\])?|\\bnew\\b(?!\\])",
       "name": "keyword.control.c++"
     },
     {
