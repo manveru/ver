@@ -22,15 +22,19 @@ module VER
       @selection_start = @highlight_thread = nil
     end
 
+    def short_filename
+      filename.sub(Dir.pwd + '/', '')
+    end
+
     def open_path(path)
       @filename = File.expand_path(path)
 
       begin
         self.value = File.read(@filename)
-        status.message "Opened #@filename"
+        status.message "Opened #{short_filename}"
       rescue Errno::ENOENT
         clear
-        status.message "Create #@filename"
+        status.message "Create #{short_filename}"
       end
 
       after_open
@@ -43,7 +47,7 @@ module VER
     end
 
     def after_open
-      VER.opened_file(@filename)
+      VER.opened_file(self)
 
       edit_reset
       focus
@@ -79,7 +83,7 @@ module VER
       percent = 100.0 if percent.nan?
 
       values = [
-        filename,
+        short_filename,
         insert_y, insert_x,
         percent,
         keymap.mode

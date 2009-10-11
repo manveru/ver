@@ -146,8 +146,12 @@ module VER
     Tk.bind :all, options[:global_quit], proc{ exit }
   end
 
-  def opened_file(path)
-    root['title'] = "VER: #{path}"
-    @paths << path
+  def opened_file(text)
+    filename = text.filename
+    base, dir = File.basename(filename), File.dirname(filename)
+    dir.sub!(/^#{ENV['HOME']}/, '~/')
+
+    root['title'] = "#{base} (#{dir}) - VER"
+    @paths << text.filename
   end
 end
