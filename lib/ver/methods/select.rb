@@ -34,7 +34,9 @@ module VER
 
       def indent_selection
         tag_ranges(:sel).each do |sel|
-          (from_y, from_x), (to_y, to_x) = sel.map{|pos| pos.split('.').map(&:to_i) }
+          (from_y, from_x), (to_y, _) = sel.map{|pos| pos.split('.').map(&:to_i) }
+          to_x = from_x + 2
+
           from_y.upto(to_y) do |y|
             next if get("#{y}.#{from_x}", "#{y}.#{to_x}").empty?
             insert("#{y}.#{from_x}", '  ')
