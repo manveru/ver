@@ -1,0 +1,1266 @@
+[363a1aa | 2009-10-11 20:15:28 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make a common option for the font to use
+
+[f3f6cfe | 2009-10-11 20:06:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement status styling properly, Tk fail :(
+
+[f9cddd6 | 2009-10-11 18:47:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Only apply mode color to status bar of that view, hope that's the way to do it
+
+[6bb854b | 2009-10-11 16:35:24 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Status bar reflects color of current mode
+
+[388d4cf | 2009-10-10 19:27:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add completion prototype, not all that neat yet, just to get a taste
+
+[5d7ae9c | 2009-10-10 16:27:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Set window title when opening file
+
+[68ec8e4 | 2009-10-10 15:53:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix insert_indented_newline_below
+
+[54f8543 | 2009-10-10 15:40:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix typo
+
+[50f40f0 | 2009-10-10 12:19:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix a couple of bugs
+
+[dd8cea9 | 2009-10-10 11:10:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Rename list_theme_select to theme_switch
+
+[c637198 | 2009-10-10 11:09:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Refactor ThemeListView and BufferListView to use same code as SyntaxListView
+
+[f9070aa | 2009-10-10 11:09:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix forgotten rename
+
+[e19ea46 | 2009-10-10 11:08:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add capability to switch syntax with Control-y
+
+[dfabaaa | 2009-10-10 10:42:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix buffer list
+
+[6ad8056 | 2009-10-10 10:32:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Try using Tkfont.create_copy
+
+[6f5e422 | 2009-10-10 10:30:08 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Refactor to make keymaps more flexible and add some binds for the ListView
+
+[1c9d880 | 2009-10-10 09:30:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * rescue FuzzyFileFinder::TooManyEntries
+
+[3f5c4ae | 2009-10-10 09:15:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix bug in fuzzy file view
+
+[b5bb409 | 2009-10-10 09:12:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Simplify ListView subclasses
+
+[1afac5f | 2009-10-09 10:13:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Double-click in list view executes action for item
+
+[e9daa7d | 2009-10-09 09:40:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix tag_all_matching to take 0.0 into account
+
+[4e08c7f | 2009-10-09 09:30:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure VER doesn't cause any output in ruby -w, Tk is still a nasty girl
+
+[c5196c0 | 2009-10-09 09:11:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adding VER::find_in_loadpath as shortcut
+
+[f9144ef | 2009-10-09 09:04:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix selection pipe, don't chomp the newline
+
+[bb5a749 | 2009-10-09 09:03:48 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Restructure to make config in $HOME possible
+
+[99bb9d8 | 2009-10-08 10:22:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Select themes from list via Control-t
+
+[6a85785 | 2009-10-08 10:14:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix fatal error
+
+[d884b7a | 2009-10-08 09:47:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Ability to change theme via Alt-t
+
+[7488594 | 2009-10-08 09:12:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve status a bit so Escape/Control-c can abort and Control-q quits
+
+[63d51d3 | 2009-10-08 09:01:03 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * select_line mode should include the last eol
+
+[27ce3ea | 2009-10-08 09:00:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Refactor delete_selection
+
+[de14d96 | 2009-10-08 08:53:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure the select_char mode selects the char under the cursor as well
+
+[68d8dff | 2009-10-08 08:53:22 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix annoying cursor positioning when deleting selections
+
+[28e5979 | 2009-10-08 08:41:22 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Don't extend the Layout with the strategy to keep things clear
+
+[817ba60 | 2009-10-08 08:31:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Changing focus between views works now
+
+[e559752 | 2009-10-08 08:25:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Handling of views, you can now open/close some
+
+[2239692 | 2009-10-08 08:05:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Well begun is half done -- Aristotle
+
+[c38205d | 2009-10-08 07:50:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add copyright to Textpow and clean up a little
+
+[d23db21 | 2009-10-08 07:31:48 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Open welcome page when no arguments are given
+
+[70c528a | 2009-10-08 07:27:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Line breaks are made at word boundaries
+
+[bd507e8 | 2009-10-08 07:08:03 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix location of fuzzy_file_finder
+
+[c6483a2 | 2009-10-08 07:04:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make startup appear faster
+
+[0335ffe | 2009-10-08 06:49:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Cleanup
+
+[db72012 | 2009-10-08 06:48:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Move open_path directly into Text
+
+[5240806 | 2009-10-07 21:21:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adding BufferListView, switch buffers with Alt-b
+
+[72c4b85 | 2009-10-07 21:21:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A bit of cleanup
+
+[e8cacc2 | 2009-10-07 20:36:59 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Refactor the stuff around the fuzzy file finder view into a class, now things are getting intersting
+
+[39919fd | 2009-10-07 14:50:24 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add some of the mapped methods to the status line, go left/right and delete chars, yay!
+
+[1e4389c | 2009-10-07 10:58:00 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Output missing maps in status line instead of console
+
+[9bb14a8 | 2009-10-07 10:57:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update welcome a bit
+
+[238c040 | 2009-10-07 10:49:28 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Simple replace_char via r
+
+[fba14d4 | 2009-10-07 10:49:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Map status_evaluate to Alt-x
+
+[5481422 | 2009-10-07 10:42:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add the FuzzyFileFinder, duh
+
+[adccc80 | 2009-10-07 10:42:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix bug that prevented numbers in readline
+
+[085a6d0 | 2009-10-07 10:36:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * adding first experimental open_file_fuzzy using the good old FuzzyFileFinder
+
+[cfce15f | 2009-10-07 10:00:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add some more alias keys for deletion of selection
+
+[2a4b9d3 | 2009-10-07 09:56:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Create common map for status and insert mode, now special chars work for both
+
+[90218f6 | 2009-10-07 09:51:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * sort keymap definition by method name
+
+[11018b1 | 2009-10-07 09:49:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add ability to pipe selection
+
+[4b3a70a | 2009-10-07 09:48:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Move search methods into own mode
+
+[0a322e0 | 2009-10-07 09:43:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Create a full map of special ASCII chars from the tk keysym table
+
+[40cd414 | 2009-10-07 08:54:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Move methods for select mode into separate file
+
+[46ef765 | 2009-10-06 12:27:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix the stdlib definition of Text#delete, need to file a bug
+
+[5e928c3 | 2009-10-06 12:17:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Really clear selection
+
+[a37bdf7 | 2009-10-06 12:14:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Inform yourself about memory leak
+
+[22d22f3 | 2009-10-06 12:13:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Display status ask errors in status
+
+[11dc9d2 | 2009-10-06 12:13:28 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Move meta paste methods into Text directly
+
+[fdf6037 | 2009-10-06 12:12:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Support (un)indenting selections
+
+[e288528 | 2009-10-06 11:23:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Put search methods into own module
+
+[303a8f2 | 2009-10-06 11:22:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add capability to delete selection
+
+[488f2c0 | 2009-10-06 11:22:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix reference to mark_set
+
+[625a843 | 2009-10-06 10:58:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix total fail when creating an empty file
+
+[3ca3698 | 2009-10-06 10:57:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Better handling of errors during saving
+
+[f611e6b | 2009-10-06 10:35:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Automatically copy deleted text
+
+[5f9c38d | 2009-10-06 10:35:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve selection copy behaviour
+
+[35768c2 | 2009-10-06 10:25:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Nicer evaluation
+
+[e53f058 | 2009-10-06 09:43:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix insert_indented_newline_below when on empty line
+
+[9d92bd0 | 2009-10-06 09:33:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix reference to filename
+
+[ce5eede | 2009-10-06 09:33:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Highlight openend files immediately
+
+[cd30072 | 2009-10-06 09:25:00 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Preserve permissions when saving a file
+
+[031d05b | 2009-10-06 09:05:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix typo in executable
+
+[f76defc | 2009-10-05 09:42:04 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow tagging via symbol, fixes issue with search
+
+[f8fa167 | 2009-10-05 09:41:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add functionality for (un)indent via < and >
+
+[7b8c499 | 2009-10-05 09:25:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve performance of tag_all_matching by avoiding tag deletion
+
+[efc7ff5 | 2009-10-05 09:09:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * highlight trailing whitespace
+
+[75a45a5 | 2009-10-05 08:39:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Meds for ADD of highlighting thread
+
+[d04e0cf | 2009-10-05 08:35:22 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Handle race condition caused by threaded highlighting
+
+[35876c7 | 2009-10-05 08:34:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Faster and more precise tag raising
+
+[60cc77f | 2009-10-05 08:33:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adding join_lines mapped to J
+
+[3ab2122 | 2009-10-05 07:58:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * do highlighting in a worker thread that tries to do highlighting only when the editor is idle
+
+[f70df65 | 2009-10-05 07:23:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Reduce console output
+
+[57b589e | 2009-10-05 07:12:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * double fork around VER.run unless -f is passed
+
+[4b28a8c | 2009-10-05 07:08:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix behaviour of insert_indented_newline_(above|below)
+
+[abc3240 | 2009-10-05 06:59:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Map some more special characters in insert mode
+
+[1191f9c | 2009-10-05 06:45:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Map C to delete_to_eol_then_insert
+
+[6fb7c29 | 2009-10-05 06:38:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add capability to give argument from keymap, simplifies insert mode hack
+
+[bf52bdd | 2009-10-05 06:30:33 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow insertion of slash
+
+[01ba1a0 | 2009-10-05 06:28:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix typo that prevented opening files from popup
+
+[f5d68b8 | 2009-10-04 07:29:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Clarify with comment
+
+[9e04e41 | 2009-10-04 07:29:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove unused property of Processor
+
+[5708415 | 2009-10-04 07:28:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make a tabstop equal to two characters
+
+[d2f8ab2 | 2009-10-04 07:28:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Handle more things via events
+
+[3679788 | 2009-10-04 07:27:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Major speedup of highlighting by avoiding recreation of theme tags
+
+[b4270ba | 2009-10-04 07:26:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Silly indentation fix
+
+[217bcec | 2009-10-04 07:26:31 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Enter control mode on Control-c
+
+[4021ba7 | 2009-10-03 06:27:33 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove debugging output
+
+[07d5734 | 2009-10-03 06:26:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Hackfix for braceleft/braceright
+
+[94fa4a9 | 2009-10-03 06:26:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve visual mode, enable copy&paste of selections
+
+[33d214f | 2009-10-03 05:27:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Delete word left and right with dw and db
+
+[15b8caa | 2009-10-03 05:24:59 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix searching
+
+[9f6d1b6 | 2009-09-30 14:22:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Open non-existing files
+
+[4041c0c | 2009-09-27 09:59:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Refactor selection methods
+
+[c9ae5b8 | 2009-09-27 09:33:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fixing selection and recursive mapping
+
+[77fe618 | 2009-09-27 08:56:00 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove some debugging statements
+
+[6f2be11 | 2009-09-27 08:40:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Some improvements for input mode
+
+[1ffcbbf | 2009-09-27 07:59:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * implement deletion to eol via D
+
+[d96b35c | 2009-09-27 07:56:29 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Hook up undo/redo maps
+
+[51a3bcf | 2009-09-27 07:54:47 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement delete_line
+
+[140a952 | 2009-09-27 07:54:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix handling of missing keys so insert mode works nicely now
+
+[92b60a7 | 2009-09-27 07:30:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make numeric arguments work
+
+[72fb7b2 | 2009-09-27 06:56:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Huge refactor
+
+[4a84850 | 2009-09-20 16:22:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Some optimizations for Textpow
+
+[206b4f4 | 2009-09-08 14:26:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Default to Plain text syntax
+
+[0808554 | 2009-09-08 14:26:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * map A and I
+
+[a5159ee | 2009-09-08 14:26:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix keymap again
+
+[833e85f | 2009-09-08 14:10:48 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Search word under cursor
+
+[1ae50f0 | 2009-09-08 14:10:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove some more debugging statements
+
+[363b060 | 2009-09-08 13:12:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove debugging statement
+
+[b44d003 | 2009-09-08 13:11:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * make numeric arguments work better
+
+[0198815 | 2009-09-08 12:24:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * make highlighting a little bit smarter, still too dumb
+
+[064b5f5 | 2009-09-04 13:48:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A few more changes
+
+[d042078 | 2009-09-03 15:42:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove original tk bindings
+
+[2643910 | 2009-09-03 15:42:03 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Keep track of views, modularize view setup
+
+[4cd086e | 2009-09-03 14:48:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove unused constants
+
+[3adc06a | 2009-09-03 14:41:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix leading zero handling in keymap, simplify map naming
+
+[6dd3cc6 | 2009-09-03 13:12:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix path to default theme
+
+[34033aa | 2009-09-02 15:57:31 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix arugments in keymap
+
+[37f9da6 | 2009-09-02 12:54:47 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Nicer Control-s
+
+[8c74a7b | 2009-09-02 12:25:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A bit of cleanup, raise on thread exceptions
+
+[1ff61f1 | 2009-09-02 12:25:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve handling of Syntax and refactor theme, can use original textmate themes now
+
+[85924ee | 2009-09-02 10:35:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve highlighting by manipulating tag priorities, and give nicer information
+
+[b742946 | 2009-09-02 10:34:03 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Task syntax_list generates a file that can be used to determine right syntax for given file ext
+
+[15a6494 | 2009-08-31 16:31:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Indent newline
+
+[7f0b7a6 | 2009-08-31 14:04:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * smart evaluation
+
+[948830a | 2009-08-31 14:04:08 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * remove some debugging output
+
+[55ec048 | 2009-08-31 11:04:31 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Tons of improvements, this is getting usable
+
+[3538ecf | 2009-08-29 07:31:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Some cleanup
+
+[ff224ca | 2009-08-27 15:49:04 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First experimental copy_selection
+
+[b6a6f2c | 2009-08-27 15:39:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * simplify numeric and further argument handling
+
+[e140eb8 | 2009-08-27 11:04:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Try slightly different approach for keymap
+
+[83630a3 | 2009-08-24 11:00:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Hack for 1.8
+
+[6d2a591 | 2009-08-23 19:58:57 UTC] lian <meta.rb@gmail.com>
+
+  * fix broken-pipe error when xclip not installed
+
+    check for xclip-binary and executable state on initialize,
+    run open3-pipe only when @exec is true.
+
+[778e45d | 2009-08-20 04:48:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow opening multiple views
+
+[b0a00ed | 2009-08-19 06:39:22 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Some cleanup
+
+[cb0bda5 | 2009-08-19 02:59:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * improve theme
+
+[6c3316a | 2009-08-19 02:58:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Support saving files
+
+[db70073 | 2009-08-18 10:03:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First version with Tk
+
+[bdfc4f1 | 2009-08-18 07:30:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A few final fixes
+
+[945296b | 2009-08-03 15:40:08 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Clearer definition of undo/redo map
+
+[6274bef | 2009-07-31 14:20:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Highlight trailing whitespace
+
+[562eaa5 | 2009-07-28 11:29:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix strange bug in FuzzyFileFinder for 1.9.2, wonder what is calling #to_str and who defines it
+
+[ce813bd | 2009-07-28 11:01:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Another fix for searching
+
+[147b6fe | 2009-07-28 11:01:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve input by doing stupid auto-indentation
+
+[5695e4e | 2009-07-28 03:43:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure searches are always highlighted
+
+[2dc2ffd | 2009-07-28 03:43:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve redraw speed
+
+[9ccc383 | 2009-07-28 03:42:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve search_next, should wrap around when it hits end
+
+[03e237a | 2009-07-28 03:42:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove cruft
+
+[d3961e0 | 2009-07-28 03:41:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Put more keybinding actions into methods
+
+[df1b554 | 2009-07-21 02:58:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Handle resize key
+
+[b1be307 | 2009-07-21 02:23:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Split Theme and Murphy into two files.
+
+[9278784 | 2009-07-21 02:22:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Reorder keyboard keys, easier this way
+
+[f84a5a0 | 2009-07-21 02:22:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Don't mess up the buffer when textpow complains
+
+[01a4c2a | 2009-07-21 02:22:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve Processor, handle nested highlighting
+
+[a7b7ba9 | 2009-07-21 01:57:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make up/down/left/right keys work again
+
+[b055db6 | 2009-07-20 09:50:31 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Proper syntax highlighting using textmate bundles
+
+[3ae7320 | 2009-07-19 06:57:29 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Screen F keys
+
+[6e451ab | 2009-07-19 02:05:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adding mod-keys to keyboard again
+
+[d6f7a24 | 2009-07-19 01:35:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * adding open_new_file
+
+[e9da555 | 2009-07-19 01:35:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix some bugs
+
+[a97d953 | 2009-07-19 01:34:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * eval_current_line and eval_selection
+
+[70ac8e9 | 2009-07-18 10:39:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix esc handling, refactor keyboard
+
+[492c50f | 2009-07-15 18:13:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add mvwaddnstr
+
+[f40bfce | 2009-07-15 18:11:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove useless debugging output
+
+[fd3f427 | 2009-07-15 18:11:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make completion a bit less annoying
+
+[c67ae3e | 2009-07-15 17:24:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix completion, should display nicely now
+
+[eb9304b | 2009-07-15 16:28:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Properly handle error when FuzzyFileFinder has too many entries
+
+[fc1d847 | 2009-07-15 16:17:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Solve remaining issues with displaying ask/small
+
+[bf26760 | 2009-07-15 15:55:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Use Panel to determine whether a window is visible
+
+[98a0c47 | 2009-07-15 13:44:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add some todo items
+
+[e595fc6 | 2009-07-15 11:34:28 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Restore original behaviour of MemoryBuffer#[]=
+
+[5dd77be | 2009-07-15 11:20:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Automatically recalculate completions in ask/small when a key is pressed
+
+[314ae7a | 2009-07-15 11:13:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improvments around the ask views
+
+[be82d49 | 2009-07-15 10:40:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve undo/redo, compact! behaves now
+
+[bb79a6e | 2009-07-15 08:06:04 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implemented undo/redo with memory-efficient compaction
+
+[fb48cc2 | 2009-07-13 07:18:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure that weird combo starting with esc doesn't start vicious cycle, to be replaced by proper key-name tree
+
+[d205c82 | 2009-07-13 07:16:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix remaining clipboard issues
+
+[9b18076 | 2009-07-13 07:03:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Better Cursor#up and Cursor#down
+
+[cfb808d | 2009-07-13 06:54:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adding Window#wresize
+
+[a223ee9 | 2009-07-13 06:51:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix startup glitch
+
+[f86f63c | 2009-07-13 06:51:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Proper AskDoc, browse and search any methods in VER
+
+[669d0c9 | 2009-07-13 03:43:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adding xclip clipboard, refactor clipboard
+
+[9d1aa66 | 2009-07-13 03:41:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix selection highlighting
+
+[878d4fb | 2009-07-12 08:57:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First method browser
+
+[c0c257f | 2009-07-12 08:03:51 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * All control keys are now captured by VER, ncurses call order matters in the setup
+
+[2569096 | 2009-07-12 07:56:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * EM enabled VER
+
+[4cba482 | 2009-07-12 07:31:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Snapshot with ffi-ncurses
+
+[b1e2289 | 2009-07-09 12:55:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove ver19
+
+[b1079f7 | 2009-04-28 14:23:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix wrong reference in View::refresh
+
+[870fd3b | 2009-04-28 14:23:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add search_word, mapped on *
+
+[5131641 | 2009-04-28 11:49:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Small fix
+
+[05c5604 | 2009-04-28 10:27:59 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow symlinks to bin/ver to work
+
+[2c4cdab | 2009-03-29 15:59:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adding ! to filter a single line
+
+[5d9ea4d | 2009-03-29 15:47:22 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Abstract previous buffer handling
+
+[3b55452 | 2009-03-29 15:42:59 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Now one can switch to previously active buffer with C-^
+
+[90ff17c | 2009-03-29 15:42:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Mapping C-^
+
+[2b08eb7 | 2009-03-29 15:32:28 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Rakefile and some tasks
+
+[69633e1 | 2009-03-29 15:32:08 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally a gemspec
+
+[7f3fd99 | 2009-03-29 15:31:47 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix d and c
+
+[95af90e | 2009-03-29 15:16:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * We don't need Cursor#rearrange anymore, it cannot have inconsistent state
+
+[47aef31 | 2009-03-29 15:12:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Setting @pos and @mark won't change the Struct, we have to use super
+
+[3a22fea | 2008-11-25 12:09:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * better cursor boundary
+
+[b05dab5 | 2008-11-16 03:28:00 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Minor refactor
+
+[6b3c10d | 2008-11-15 10:09:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove haml syntax
+
+[2ef93b9 | 2008-11-15 16:02:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix deletion in ask
+
+[e7bf5ad | 2008-11-14 16:26:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Put deletes into clipboard, fix paste_after
+
+[f4d80a0 | 2008-11-14 16:02:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove debugging output
+
+[ac7a674 | 2008-11-14 16:02:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Don't show empty strings in word completion and default to empty
+
+[8fa8f77 | 2008-11-14 16:02:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Pick first completion on open and display a bit nicer
+
+[4940de2 | 2008-11-14 16:01:31 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve filename completion
+
+[a9920b0 | 2008-11-14 16:00:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fail gracefully if cursor position is out of range
+
+[64095af | 2008-11-14 16:00:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Leave completion on left|right
+
+[324d231 | 2008-11-14 15:32:24 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve completion and large ask buffer, nice scrolling and less fallout
+
+[86af103 | 2008-11-13 16:50:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix syntax name if no syntax matches
+
+[5274e58 | 2008-11-13 16:49:47 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix I
+
+[eaac21e | 2008-11-13 16:49:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add file/word/line/spelling completion
+
+[3128885 | 2008-11-13 02:58:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add completion, [C-x C-w] and [C-x C-l] for now
+
+[843e091 | 2008-11-13 02:57:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * New syntax highlighting system, still disabled by default
+
+[bfb1b98 | 2008-11-12 11:28:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow for any fixnum to be color, gives support for 256 colors
+
+[246ca2c | 2008-11-12 11:27:59 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Don't dup buffer, add scan method
+
+[21248f8 | 2008-11-12 11:27:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * fix some mappings
+
+[b5f2a04 | 2008-11-12 10:22:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * fix C-x, ruby eval should work again
+
+[214b510 | 2008-11-10 13:09:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * add bin/ver19 which defaults to ruby19
+
+[f748a16 | 2008-11-10 13:09:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * remove unused method
+
+[f22afc4 | 2008-11-10 13:08:51 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Back to 1.9 compatibility
+
+[b2d916d | 2008-11-10 13:08:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * assume unix line endings if buffer is empty
+
+[3366beb | 2008-11-10 13:07:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow external filter for selections
+
+[9fb04aa | 2008-11-10 10:30:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * easy count prefix via count_map: 10j, 200b, 20%, 42g, 7up, ...
+
+[5197bd6 | 2008-11-10 05:20:29 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Show percentage within buffer in status line
+
+[94bd1f9 | 2008-11-10 05:18:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * 1% to 100% jump to percentage relative to total line count within buffer
+
+[58dbf60 | 2008-11-10 05:15:56 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve guess_eol by taking most common eol characters
+
+[c1c66bb | 2008-11-10 05:14:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * C-right and C-left equal W and B, home and end equal 0 and $
+
+[402e186 | 2008-11-10 05:13:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * fix M-(up|down|left|right) (urxvt, konsole, gnome-terminal, xterm)
+
+[593035e | 2008-11-10 05:04:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Keyboard should handle C-(left|right|up|down) (konsole)
+
+[8fac158 | 2008-11-10 05:01:51 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Keyboard should handle C-(left|right|up|down) (urxvt)
+
+[9703d17 | 2008-11-09 14:28:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Handle dos, mac, and unix end-of-line characters
+
+[d7e1d90 | 2008-11-09 04:36:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Better status_line
+
+[0eb122a | 2008-11-09 04:36:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Refactor syntax highlighting again
+
+[a6986da | 2008-11-09 04:35:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * More functionality for selection, toggle case, fix weird behaviour
+
+[1435c22 | 2008-11-09 04:33:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update welcome
+
+[1ed743b | 2008-11-09 04:33:00 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Extend functionality of bin/ver
+
+[7889f69 | 2008-11-07 04:00:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove cruft, thanks flay
+
+[26c2ebd | 2008-11-06 15:45:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * update welcome
+
+[e6b1f4b | 2008-11-06 07:37:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix info line, add block selection, cutting and pasting
+
+[b5a5b1a | 2008-11-06 04:24:48 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add x and X mapping
+
+[db84853 | 2008-11-06 04:15:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update search highlight positions when buffer changes
+
+[cc19bcf | 2008-11-06 04:15:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A shouldn't jump to next line
+
+[a081677 | 2008-11-06 04:04:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * update welcome
+
+[7d74e3b | 2008-11-06 04:04:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix ambigous mapping for buffer jump
+
+[d9b0675 | 2008-11-05 23:36:29 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remember to doupdate
+
+[578eb4d | 2008-11-04 15:27:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fixes and improvments, also add AskChoice
+
+      * When a buffer is closed via C-w, ask if it has changed
+      * When last buffer is closed, open scratch buffer
+      * Improve selection and linewise selection
+      * Improve cut
+      * Improve diakonos keymap
+      * Improve drawing speed by doing less cursor movements
+      * Unify info and status view
+      * Change status line color depending on mode
+
+[5d59fa9 | 2008-11-04 12:47:31 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Default receiver for key block is view.methods
+
+[2fcbef3 | 2008-11-04 12:47:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve linewise selection
+
+[eec716c | 2008-11-04 12:01:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * add some diakonos, fix some issues
+
+[3466c0f | 2008-11-03 14:06:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Great refactor for new keymapping
+
+[92b4836 | 2008-11-02 03:44:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First step in keymap refactor
+
+[0a7ea9d | 2008-11-01 04:48:08 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make bin/ver nicer
+
+[388e9ac | 2008-11-01 04:44:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * fix M-x for buffer selection by name
+
+[14420d1 | 2008-11-01 04:43:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix and unify the large ask buffers
+
+[d24e155 | 2008-10-31 09:17:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * count columns in statusline correct
+
+[a573f51 | 2008-10-31 09:14:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * remove debugging output
+
+[70b1aff | 2008-10-31 09:14:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * cursor has color, ruby highlighting reduced, selection separate from cursor
+
+[67b0ffb | 2008-10-30 13:30:03 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * remove ver.rb in main dir, messes up requires
+
+[b9527fa | 2008-10-30 12:30:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * minor update to welcome file
+
+[8d5d268 | 2008-10-30 12:29:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Select syntax based on filename and show in status
+
+[3b8b2d9 | 2008-10-30 12:08:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add syntax highlighting
+
+[8ca698e | 2008-10-30 11:04:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * let there be commandline options and VER::VERSION
+
+[91e8f49 | 2008-10-30 10:57:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * delete_*_then_insert methods and maps
+
+[6504e01 | 2008-10-30 10:51:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * avoid crashes, improve deleting and replacing
+
+[0a237eb | 2008-10-30 08:00:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * make rows and cols start at 1
+
+[0ceeded | 2008-10-30 07:38:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * fix loadpath if ver isn't found
+
+[f261e80 | 2008-10-30 07:32:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * lots of fixes and features
+
+[464d82b | 2008-10-25 03:38:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * fight regression
+
+[c991bd2 | 2008-10-25 03:31:00 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Major refactor again...
+
+[2e4e3ea | 2008-10-22 13:49:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * add index/rindex to Cursor again
+
+[fe6fad8 | 2008-10-22 13:49:04 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * word_left, word_right, chunk_left, chunk_right
+
+[910ad65 | 2008-10-22 12:15:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * use String#each_line for ruby 1.9
+
+[c2190af | 2008-10-21 18:03:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Redraw after buffer switch
+
+[972e715 | 2008-10-21 17:47:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * don't downcase function keys
+
+[225a825 | 2008-10-21 17:30:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * steal some weird keycodes from diakonos
+
+[a5f13d6 | 2008-10-21 16:42:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * only execute command if we got one
+
+[66bf20c | 2008-10-21 16:16:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * C-m now works again
+
+[f8e3fbe | 2008-10-21 16:16:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * there is only one mode per view
+
+[59cb3a8 | 2008-10-21 16:16:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * remove mention of ver/action
+
+[f4d48e1 | 2008-10-21 16:10:56 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Another great achievment
+
+    * improved searching, try hitting /
+    * jump between search results using n or N
+    * buffer handling nicer
+    * selection should work now, using v or V
+    * display much faster and general speedup
+
+[9121007 | 2008-10-21 07:34:04 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Deselect on control mode
+
+[43508cb | 2008-10-21 06:57:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Snapshot since just about everything seems to work
+
+[7a097dd | 2008-10-20 00:51:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix cursor spec
+
+[2dd64f6 | 2008-10-19 23:46:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update keymap
+
+[f320043 | 2008-10-19 16:25:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Snapshot after great accomplishments
+
+[134f537 | 2008-10-18 13:27:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Snapshot
+
+[290075e | 2008-10-16 08:55:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve keyhandling and keymappings
+
+[2a7ea3f | 2008-10-15 15:23:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * This message is sponsored by VER!
+
