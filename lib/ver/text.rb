@@ -19,7 +19,6 @@ module VER
       keymap_name = VER.options.fetch(:keymap)
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
-      self.mode = :control
       @selection_start = @highlight_thread = nil
     end
 
@@ -289,7 +288,8 @@ module VER
       configure cursor
 
       return unless status && color = cursor[:insertbackground]
-      Tk::Tile::Style.configure 'Status.TEntry', fieldbackground: color
+      style = status.style
+      Tk::Tile::Style.configure style, fieldbackground: color
     end
 
     def load_theme(name)

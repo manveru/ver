@@ -1,6 +1,11 @@
 module VER
   # A custom widget for easier integration
   class Entry < Tk::Tile::Entry
+    def style
+      style = cget(:style)
+      style.flatten.first if style
+    end
+
     def quit
       Tk.exit
     end

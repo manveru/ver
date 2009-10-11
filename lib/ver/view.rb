@@ -62,8 +62,8 @@ module VER
     end
 
     def setup_status
-      # status field
-      @status = Status.new(self, font: 'Terminus 9', takefocus: 0, 'style' => 'Status.TEntry')
+      id = SecureRandom.hex
+      @status = Status.new(self, font: 'Terminus 9', takefocus: 0, style: "#{id}.Status.TEntry")
     end
 
     def setup_grid
@@ -81,6 +81,8 @@ module VER
     def setup_misc
       @text.status = @status
       @text.view = self
+      @text.start_control_mode
+      @status.mode = :status_query
     end
 
     def setup_events

@@ -10,8 +10,6 @@ module VER
 
       keymap_name = VER.options.fetch(:keymap)
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
-
-      self.mode = :status_query
     end
 
     def method_missing(meth, *args)
