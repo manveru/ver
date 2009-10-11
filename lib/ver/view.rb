@@ -114,7 +114,6 @@ module VER
     end
 
     def on_focus(event)
-      pp event
       @text.set_window_title
     end
 

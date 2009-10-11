@@ -30,7 +30,7 @@ module VER
       @filename = Pathname(path.to_s).expand_path
 
       begin
-        self.value = File.read(@filename)
+        self.value = @filename.read
         status.message "Opened #{short_filename}"
       rescue Errno::ENOENT
         clear
