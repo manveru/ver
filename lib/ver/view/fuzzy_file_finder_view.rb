@@ -10,7 +10,7 @@ module VER
     end
 
     def update
-      choices = fffinder.find(entry.value)
+      choices = fffinder.find(entry.value.chomp('/'))
       choices = choices.sort_by{|m| [-m[:score], m[:path]] }
 
       list.clear
