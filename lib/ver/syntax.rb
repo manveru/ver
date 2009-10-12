@@ -85,12 +85,18 @@ module VER
         @first_highlight = true
       end
 
-      class Processor < Struct.new(:textarea, :theme, :lineno, :stack)
-        def start_parsing(name)
+      class Processor < Struct.new(:textarea, :theme, :lineno, :stack, :tags)
+        def start_parsing(syntax)
           self.stack = []
+          self.tags = Hash.new{|h,k| h[k] = [] }
         end
 
-        def end_parsing(name)
+        def end_parsing(syntax)
+          tags.each do |name, indices|
+            tag_name = theme.get(name) || name
+            textarea.fast_tag_add(tag_name, *indices)
+          end
+
           stack.clear
         end
 
@@ -112,15 +118,7 @@ module VER
         def close_tag(name, mark)
           sname, pos = stack.pop
 
-          if name == sname
-            if tag_name = theme.get(name)
-              textarea.tag_add(tag_name, "#{lineno}.#{pos}", "#{lineno}.#{mark}")
-            else
-              textarea.tag_add(name, "#{lineno}.#{pos}", "#{lineno}.#{mark}")
-            end
-          else
-            warn("Nesting mismatch: %p != %p" % [name, sname])
-          end
+          tags[name] << "#{lineno}.#{pos}" << "#{lineno}.#{mark}"
         rescue RuntimeError => exception
           # if you modify near the end of the textarea, sometimes the last tag
           # cannot be closed because the contents of the textarea changed since

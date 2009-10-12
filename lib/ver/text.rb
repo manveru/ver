@@ -20,6 +20,7 @@ module VER
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
       @selection_start = @highlight_thread = nil
+      @pristine = true
     end
 
     def short_filename
@@ -50,13 +51,20 @@ module VER
       VER.opened_file(self)
 
       edit_reset
+
+      if @pristine
+        Thread.new do
+          wait_visibility
+          setup_highlight
+        end
+      else
+        setup_highlight
+      end
+
       focus
       mark_set :insert, '0.0'
 
-      Thread.new do
-        wait_visibility
-        first_highlight
-      end
+      @pristine = false
     end
 
     def layout
@@ -184,9 +192,14 @@ module VER
       touch!
     end
 
-    def first_highlight
+    def setup_highlight
+      return unless filename
       return unless @highlight_syntax = Syntax.from_filename(filename)
 
+      @highlight_thread = create_highlight_thread
+    end
+
+    def create_highlight_thread
       @highlight_thread = Thread.new{
         this = Thread.current
         this[:pending] = 1
@@ -228,6 +241,11 @@ module VER
     def focus
       super
       Tk.event_generate(self, '<Focus>')
+    end
+
+    def fast_tag_add(tag, *indices)
+      tk_send_without_enc('tag', 'add', _get_eval_enc_str(tag), *indices)
+      self
     end
 
     def set_window_title
