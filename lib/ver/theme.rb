@@ -84,7 +84,7 @@ module VER
     end
 
     def font
-      @font ||= VER.options[:font]
+      @font ||= VER.options[:font].dup
     end
 
     def normalize(keyname)
