@@ -45,7 +45,11 @@ module VER
     # Setup this event, because Keymap gets very confused when you bind 'Key' and
     # we don't want to break the event-chain anyway
     def setup_events
-      entry.bind('<Modified>'){ update }
+      entry.bind('<Modified>'){
+        update
+        list.selection_set(0)
+        list.activate(0)
+      }
     end
 
     def quit
@@ -53,11 +57,24 @@ module VER
     end
 
     def go_line_up
-      p :go_line_up
+      index = list.curselection.first - 1
+
+      if index >= 0
+        list.selection_clear(0, 'end')
+        list.selection_set(index)
+        list.activate(index)
+      end
     end
 
     def go_line_down
-      p :go_line_down
+      index = list.curselection.first + 1
+      max = list.size
+
+      if index < max
+        list.selection_clear(0, 'end')
+        list.selection_set(index)
+        list.activate(index)
+      end
     end
 
     def cancel

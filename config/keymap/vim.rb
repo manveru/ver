@@ -214,8 +214,10 @@ module VER
         mode.inherits :basic, :readline
 
         # mode.to :update, %w[Key]
-        mode.to :pick_first, %w[Return]
-        mode.to :cancel, %w[Escape], %w[Control-c]
+        mode.to :pick_selection, %w[Return]
+        mode.to :cancel,         %w[Escape], %w[Control-c]
+        mode.to :go_line_up,     %w[Up]
+        mode.to :go_line_down,   %w[Down]
 
         mode.missing :insert_string
       end
@@ -224,8 +226,8 @@ module VER
         mode.inherits :basic
 
         mode.to :pick_selection, %w[Double-Button-1]
-        mode.to :go_line_down, %w[Down]
-        mode.to :go_line_up, %w[Up]
+        mode.to :go_line_up,     %w[Up]
+        mode.to :go_line_down,   %w[Down]
       end
 
       vim
