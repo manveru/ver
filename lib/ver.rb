@@ -5,6 +5,7 @@
 $LOAD_PATH.unshift File.expand_path('../', __FILE__)
 
 # stdlib
+require 'tk'
 require 'benchmark'
 require 'digest/sha1'
 require 'fileutils'
@@ -14,7 +15,6 @@ require 'pp'
 require 'securerandom'
 require 'set'
 require 'tmpdir'
-require 'tk'
 
 class Pathname
   alias / join
