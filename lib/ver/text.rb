@@ -24,7 +24,7 @@ module VER
     end
 
     def short_filename
-      filename.sub(Dir.pwd + '/', '')
+      filename.sub(Dir.pwd + '/', '') if filename
     end
 
     def open_path(path)
