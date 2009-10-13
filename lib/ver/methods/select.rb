@@ -124,7 +124,7 @@ module VER
       def pipe_selection_execute(*cmd)
         require 'open3'
 
-        Open3.popen2e(*cmd) do |si, sose, thread|
+        Open3.popen3(*cmd) do |si, sose, thread|
           queue = []
           tag_ranges(:sel).each do |from, to|
             si.write(get(from, to))
