@@ -5,7 +5,7 @@ module VER
     end
 
     def buffers
-      path_view = parent.layout.views.map{|view| [view.filename, view] }
+      path_view = parent.layout.views.map{|view| [view.filename.to_s, view] }
       Hash[path_view]
     end
 
