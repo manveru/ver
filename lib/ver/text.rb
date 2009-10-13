@@ -95,7 +95,7 @@ module VER
       percent = 100.0 if percent.nan?
 
       additional = [keymap.mode]
-      syntax_name = @highlight_syntax.name if @highlight_syntax
+      syntax_name = @syntax.name if @syntax
       additional << syntax_name if syntax_name
 
       values = [
@@ -194,7 +194,7 @@ module VER
 
     def setup_highlight
       return unless filename
-      return unless @highlight_syntax = Syntax.from_filename(filename)
+      return unless @syntax = Syntax.from_filename(filename)
 
       @highlight_thread = create_highlight_thread
     end
@@ -270,7 +270,7 @@ module VER
 
     def refresh_highlight!
       tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
-      @highlight_syntax.highlight(self, value, lineno = 0)
+      @syntax.highlight(self, value, lineno = 0)
     end
 
     def touch!
@@ -346,21 +346,21 @@ module VER
     end
 
     def load_theme(name)
-      return unless @highlight_syntax
+      return unless @syntax
       return unless found = Theme.find(name)
 
-      @highlight_syntax.theme = Theme.load(found)
+      @syntax.theme = Theme.load(found)
       refresh_highlight
 
       status.message "Theme #{found} loaded"
     end
 
     def load_syntax(name)
-      return unless @highlight_syntax
+      return unless @syntax
       return unless found = Syntax.find(name)
 
-      theme = @highlight_syntax.theme
-      @highlight_syntax = Syntax::Highlighter.new(name, theme)
+      theme = @syntax.theme
+      @syntax = Syntax.new(name, theme)
       refresh_highlight
 
       status.message "Syntax #{found} loaded"

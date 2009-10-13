@@ -2,7 +2,7 @@ module VER
   module Methods
     module Control
       def status_theme_select
-        return unless @highlight_syntax
+        return unless @syntax
 
         status_ask 'Theme name: ' do |name|
           load_theme(name) || "No theme called #{name} found"
@@ -10,13 +10,13 @@ module VER
       end
 
       def theme_switch
-        return unless @highlight_syntax
+        return unless @syntax
 
         View::List::Theme.new(self){|name| load_theme(name) }
       end
 
       def syntax_switch
-        return unless @highlight_syntax
+        return unless @syntax
 
         View::List::Syntax.new(self){|name| load_syntax(name) }
       end
