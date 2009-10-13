@@ -63,8 +63,7 @@ module VER
 
       if index >= 0
         list.selection_clear(0, 'end')
-        list.selection_set(index)
-        list.activate(index)
+        select_index(index)
       end
     end
 
@@ -74,9 +73,14 @@ module VER
 
       if index < max
         list.selection_clear(0, 'end')
-        list.selection_set(index)
-        list.activate(index)
+        select_index(index)
       end
+    end
+
+    def select_index(index)
+      list.selection_set(index)
+      list.activate(index)
+      list.see(index)
     end
 
     def cancel
