@@ -33,34 +33,28 @@ module VER
       end
 
       def indent_selection
-        tag_ranges(:sel).each do |sel|
-          (from_y, from_x), (to_y, _) = sel.map{|pos| pos.split('.').map(&:to_i) }
-          to_x = from_x + 2
-
-          from_y.upto(to_y) do |y|
-            next if get("#{y}.#{from_x}", "#{y}.#{to_x}").empty?
-            insert("#{y}.#{from_x}", '  ')
-          end
+        each_selected_line do |y, fx, tx|
+          tx = fx + 2
+          next if get("#{y}.#{fx}", "#{y}.#{tx}").empty?
+          insert("#{y}.#{fx}", '  ')
         end
 
+        edit_separator
         refresh_selection
       end
 
       def unindent_selection
-        tag_ranges(:sel).each do |sel|
+        queue = []
 
-          (from_y, from_x), (to_y, _) = sel.map{|pos| pos.split('.').map(&:to_i) }
-          to_x = from_x + 2
-
-          queue = from_y.upto(to_y).map{|y|
-            left, right = "#{y}.#{from_x}", "#{y}.#{to_x}"
-            next unless get(left, right) == '  '
-            [left, right]
-          }.compact.flatten
-
-          delete(*queue) unless queue.empty?
+        each_selected_line do |y, fx, tx|
+          tx = fx + 2
+          left, right = "#{y}.#{fx}", "#{y}.#{tx}"
+          next unless get(left, right) == '  '
+          queue << left << right
         end
 
+        delete(*queue)
+        edit_separator
         refresh_selection
       end
 
@@ -92,7 +86,40 @@ module VER
         end
       end
 
+      def comment_selection
+        each_selected_line do |y, fx, tx|
+          insert("#{y}.0 linestart", '# ')
+        end
+
+        edit_separator
+        refresh_selection
+      end
+
+      def uncomment_selection
+        each_selected_line do |y, fx, tx|
+          delete("#{y}.0 linestart", "#{y}.0 linestart + 2 chars")
+        end
+
+        edit_separator
+        refresh_selection
+      end
+
       private
+
+      def each_selection
+        tag_ranges(:sel).each do |sel|
+          (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
+          yield fy, fx, ty, tx
+        end
+      end
+
+      def each_selected_line
+        each_selection do |fy, fx, ty, tx|
+          fy.upto(ty) do |y|
+            yield y, fx, tx
+          end
+        end
+      end
 
       def pipe_selection_execute(*cmd)
         require 'open3'

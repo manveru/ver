@@ -178,6 +178,8 @@ module VER
         mode.map :switch_select_char_mode,  %w[v]
         mode.map :switch_select_line_mode,  %w[V]
         mode.map :unindent_selection, %w[less]
+        mode.map :comment_selection, %w[comma c]
+        mode.map :uncomment_selection, %w[comma u]
       end
 
       vim.add_mode :select_char do |mode|
