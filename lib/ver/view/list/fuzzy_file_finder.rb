@@ -28,7 +28,7 @@ module VER
 
       color =
         case score
-        when 0          ; '#000'
+        when 0          ; '#fff'
         when 0   ..0.25 ; '#f00'
         when 0.25..0.75 ; '#ff0'
         when 0.75..1    ; '#0f0'
