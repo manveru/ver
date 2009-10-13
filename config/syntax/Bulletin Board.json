@@ -406,7 +406,7 @@
       "name": "meta.link.image.bbcode",
       "patterns": [
         {
-          "match": "[\\[]]+?"
+          "match": "[\\[\]]+?"
         }
       ]
     },

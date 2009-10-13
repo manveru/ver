@@ -859,7 +859,7 @@
               "name": "punctuation.definition.list.begin.ocaml"
             }
           },
-          "end": "(?<!\\||>)(])",
+          "end": "(?<!\\||>)(\])",
           "endCaptures": {
             "1": {
               "name": "punctuation.definition.list.end.ocaml"
