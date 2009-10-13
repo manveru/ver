@@ -5,7 +5,7 @@ module VER
     FFF = ::FuzzyFileFinder
 
     def fffinder
-      @fffinder ||= FFF.new
+      @fffinder ||= FFF.new(Dir.pwd)
     rescue FFF::TooManyEntries
       message "The FuzzyFileFinder is overwhelmed by the amount of files"
       destroy
@@ -17,7 +17,9 @@ module VER
 
       list.clear
 
+      pwd = Dir.pwd + '/'
       choices.each do |choice|
+        choice[:path].sub!(pwd, '')
         insert_choice(choice)
       end
     end
@@ -26,15 +28,17 @@ module VER
       path, score = choice.values_at(:path, :score)
       list.insert(:end, path)
 
-      color =
+      foreground, background =
         case score
-        when 0          ; '#fff'
-        when 0   ..0.25 ; '#f00'
-        when 0.25..0.75 ; '#ff0'
-        when 0.75..1    ; '#0f0'
+        when 0          ; ['white',  'black']
+        when 0   ..0.25 ; ['red',    'black']
+        when 0.25..0.75 ; ['yellow', 'black']
+        when 0.75..1    ; ['green',  'black']
         end
 
-      list.itemconfigure(:end, background: color)
+      list.itemconfigure(:end,
+              foreground: foreground,       background: background,
+        selectforeground: background, selectbackground: foreground)
     end
   end
 end

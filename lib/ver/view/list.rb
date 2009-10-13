@@ -22,11 +22,14 @@ module VER
       self.list = Tk::Listbox.new(frame){
         setgrid 'yes'
         width 0
+        background '#000'
+        font VER.options[:font]
         pack fill: :both, expand: true
       }
 
       self.entry = View::Entry.new(frame){
         pack fill: :x, expand: false
+        font VER.options[:font]
         focus
       }
       entry.list_view = self
