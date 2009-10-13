@@ -11,7 +11,7 @@ module VER
       setup_widgets
       setup_keymap
       setup_events
-      update
+      on_update
     end
 
     def setup_widgets
@@ -45,11 +45,13 @@ module VER
     # Setup this event, because Keymap gets very confused when you bind 'Key' and
     # we don't want to break the event-chain anyway
     def setup_events
-      entry.bind('<Modified>'){
-        update
-        list.selection_set(0)
-        list.activate(0)
-      }
+      entry.bind('<Modified>'){ on_update }
+    end
+
+    def on_update
+      update
+      list.selection_set(0)
+      list.activate(0)
     end
 
     def quit
