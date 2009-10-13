@@ -6,14 +6,14 @@ module VER
 
       vim.add_mode :basic do |mode|
         mode.map :file_open_popup,    %w[Control-o]
-        mode.map :file_open_fuzzy,    %w[Alt-o]
-        mode.map :status_evaluate,    %w[Alt-x]
+        mode.map :file_open_fuzzy,    %w[Alt-o], %w[Control-m o]
+        mode.map :status_evaluate,    %w[Alt-x], %w[Control-m x]
         mode.map :file_save,          %w[Control-s]
         mode.map :file_save_popup,    %w[Control-Alt-s]
         mode.map :quit,               %w[Control-q]
         mode.map :start_control_mode, %w[Escape], %w[Control-c]
 
-        mode.map :buffer_switch, %w[Alt-b]
+        mode.map :buffer_switch, %w[Alt-b], %w[Control-m b]
       end
 
       vim.add_mode :views do |mode|
@@ -68,7 +68,7 @@ module VER
         mode.map :join_lines,                    %w[J]
         mode.map :paste,                         %w[p]
         mode.map :redo,                          %w[Control-r]
-        mode.map :smart_evaluate,                %w[Alt-e]
+        mode.map :smart_evaluate,                %w[Alt-e], %w[Control-m e]
         mode.map :sol_then_insert_mode,          %w[I]
         mode.map :start_insert_mode,             %w[i]
         mode.map :start_replace_mode,            %w[R]
@@ -78,7 +78,7 @@ module VER
         mode.map :undo,                          %w[u]
         mode.map :unindent_line,                 %w[less]
         mode.map :replace_char,                  %w[r]
-        mode.map :status_theme_select,           %w[Alt-t]
+        mode.map :status_theme_select,           %w[Alt-t], %w[Control-m t]
         mode.map :theme_switch,                  %w[Control-t]
         mode.map :syntax_switch,                 %w[Control-y]
 
@@ -159,7 +159,7 @@ module VER
         mode.map :go_page_up,              %w[Control-b], %w[Prior]
         mode.map :go_page_up,              %w[Shift-Up]
         mode.map :insert_indented_newline, %w[Return]
-        mode.map :smart_evaluate,          %w[Alt-e]
+        mode.map :smart_evaluate,          %w[Alt-e], %w[Control-e]
         mode.map :complete_aspell,         %w[Control-x Control-a]
         mode.map :complete_file,           %w[Control-x Control-f]
 
@@ -173,7 +173,7 @@ module VER
         mode.map :delete_selection, %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
         mode.map :indent_selection, %w[greater]
         mode.map :pipe_selection, %w[exclam]
-        mode.map :smart_evaluate, %w[Alt-e]
+        mode.map :smart_evaluate, %w[Alt-e], %w[Control-e]
         mode.map :switch_select_block_mode, %w[Control-v]
         mode.map :switch_select_char_mode,  %w[v]
         mode.map :switch_select_line_mode,  %w[V]
