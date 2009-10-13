@@ -92,9 +92,9 @@ module VER
 
     def sublist(list, input = entry.value)
       if input == input.downcase
-        list.select{|item| item.downcase.include?(input) }
+        list.select{|item| item.to_s.downcase.include?(input) }
       else
-        list.select{|item| item.include?(input) }
+        list.select{|item| item.to_s.include?(input) }
       end
     end
 
