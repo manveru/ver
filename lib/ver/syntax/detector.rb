@@ -35,10 +35,7 @@ module VER
 
         EXTS_LIST.find do |name, exts|
           exts.find do |ext|
-            if basename.end_with?(ext)
-              p basename => ext
-              return name
-            end
+            return name if basename.end_with?(ext)
           end
         end
       end
@@ -48,10 +45,7 @@ module VER
         return unless line && line.valid_encoding?
 
         HEAD_LIST.find do |name, head|
-          if line =~ head
-            p line => head
-            return name
-          end
+          return name if line =~ head
         end
       end
     end
