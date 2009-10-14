@@ -158,7 +158,7 @@ module VER
       when :select_char
         tag_add :sel, left, "#{right} + 1 chars"
       when :select_line
-        tag_add :sel, "#{left} linestart", "#{right} lineend + 1 chars"
+        tag_add :sel, "#{left} linestart", "#{right} lineend"
       when :select_block
         ly, lx = left.split('.').map(&:to_i)
         ry, rx = right.split('.').map(&:to_i)
@@ -364,11 +364,6 @@ module VER
       refresh_highlight
 
       status.message "Syntax #{found} loaded"
-    end
-
-    def clear_selection
-      @selection_start = nil
-      tag_remove :sel, '0.0', 'end'
     end
   end
 end

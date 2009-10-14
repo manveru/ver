@@ -1,6 +1,13 @@
 module VER
   module Methods
     module Control
+      def wrap_line
+        text = get('insert linestart', 'insert lineend')
+        lines = wrap_lines_of(text).join("\n")
+
+        replace('insert linestart', 'insert lineend', lines.join("\n"))
+      end
+
       def status_theme_select
         return unless @syntax
 
@@ -25,19 +32,6 @@ module VER
         status_ask 'Eval expression: ' do |term|
           eval(term)
         end
-      end
-
-      def status_ask(prompt, &callback)
-        @status.ask(prompt){|*args|
-          begin
-            callback.call(*args)
-          rescue => ex
-            p ex
-            status.message ex.message
-          ensure
-            focus
-          end
-        }
       end
 
       def smart_evaluate
@@ -99,51 +93,6 @@ module VER
         return if fpath.empty?
 
         save_to(fpath)
-      end
-
-      # Some strategies are discussed at:
-      #
-      # http://bitworking.org/news/390/text-editor-saving-routines
-      #
-      # I try another, "wasteful" approach, copying the original file to a
-      # temporary location, overwriting the contents in the copy, then moving the
-      # file to the location of the original file.
-      #
-      # This way all permissions should be kept identical without any effort, but
-      # it will take up additional disk space.
-      #
-      # If there is some failure during the normal saving procedure, we will
-      # simply overwrite the original file in place, make sure you have good insurance ;)
-      def save_to(to)
-        save_smart(filename, to)
-      rescue => ex
-        puts "#{ex.class}: #{ex}", *ex.backtrace
-        save_dumb(filename, to)
-      end
-
-      def save_smart(from, to)
-        sha1 = Digest::SHA1.hexdigest([from, to].join)
-        temp_path = File.join(Dir.tmpdir, 'ver', sha1)
-        temp_dir = File.dirname(temp_path)
-
-        FileUtils.mkdir_p(temp_dir)
-        FileUtils.copy_file(from, temp_path, preserve = true)
-        File.open(temp_path, 'w+') do |io|
-          io.write(self.value)
-        end
-        FileUtils.mv(temp_path, to)
-
-        status.message "Saved to #{to}"
-      rescue Errno::ENOENT
-        save_dumb(to)
-      end
-
-      def save_dumb(to)
-        File.open(to, 'w+') do |io|
-          io.write(self.value)
-        end
-
-        status.message "Saved to #{to}"
       end
 
       def file_open_popup
@@ -354,6 +303,86 @@ module VER
         touch!
       rescue RuntimeError => ex
         status.value = ex.message
+      end
+
+      private
+
+      def wrap_lines_of(text)
+        lines = ['']
+
+        text.scan(/\S+/) do |chunk|
+          last = lines.last
+          last_size = last.size
+          chunk_size = chunk.size
+
+          if last_size + chunk_size > 79
+            lines << chunk
+          elsif last_size == 0
+            last << chunk
+          else
+            last << ' ' << chunk
+          end
+        end
+
+        lines
+      end
+
+      def status_ask(prompt, &callback)
+        @status.ask(prompt){|*args|
+          begin
+            callback.call(*args)
+          rescue => ex
+            p ex
+            status.message ex.message
+          ensure
+            focus
+          end
+        }
+      end
+
+      # Some strategies are discussed at:
+      #
+      # http://bitworking.org/news/390/text-editor-saving-routines
+      #
+      # I try another, "wasteful" approach, copying the original file to a
+      # temporary location, overwriting the contents in the copy, then moving the
+      # file to the location of the original file.
+      #
+      # This way all permissions should be kept identical without any effort, but
+      # it will take up additional disk space.
+      #
+      # If there is some failure during the normal saving procedure, we will
+      # simply overwrite the original file in place, make sure you have good insurance ;)
+      def save_to(to)
+        save_smart(filename, to)
+      rescue => ex
+        puts "#{ex.class}: #{ex}", *ex.backtrace
+        save_dumb(filename, to)
+      end
+
+      def save_smart(from, to)
+        sha1 = Digest::SHA1.hexdigest([from, to].join)
+        temp_path = File.join(Dir.tmpdir, 'ver', sha1)
+        temp_dir = File.dirname(temp_path)
+
+        FileUtils.mkdir_p(temp_dir)
+        FileUtils.copy_file(from, temp_path, preserve = true)
+        File.open(temp_path, 'w+') do |io|
+          io.write(self.value)
+        end
+        FileUtils.mv(temp_path, to)
+
+        status.message "Saved to #{to}"
+      rescue Errno::ENOENT
+        save_dumb(to)
+      end
+
+      def save_dumb(to)
+        File.open(to, 'w+') do |io|
+          io.write(self.value)
+        end
+
+        status.message "Saved to #{to}"
       end
     end
   end

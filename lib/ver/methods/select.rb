@@ -1,6 +1,22 @@
 module VER
   module Methods
     module Select
+      def wrap_selection
+        queue = []
+        text = []
+
+        each_selected_line do |y, fx, tx|
+          queue << y
+          text << get("#{y}.0", "#{y}.0 lineend")
+        end
+
+        lines = wrap_lines_of(text.join(' '))
+        from, to = queue.first, queue.last
+        replace("#{from}.0", "#{to}.0 lineend", lines.join("\n"))
+
+        finish_selection
+      end
+
       def start_selection_mode(name)
         self.mode = name
         @selection_start = index(:insert).split('.').map(&:to_i)
@@ -28,8 +44,7 @@ module VER
         delete(*queue)
         mark_set(:insert, queue.first)
 
-        clear_selection
-        start_control_mode
+        finish_selection
       end
 
       def indent_selection
@@ -69,20 +84,20 @@ module VER
             insert("#{to} lineend", "\n%p" % [exception])
           end
         end
+
+        finish_selection
       end
 
       def copy_selection
         chunks = tag_ranges(:sel).map{|sel| get(*sel) }
         copy(chunks.size == 1 ? chunks.first : chunks)
-        clear_selection
-        start_control_mode
+        finish_selection
       end
 
       def pipe_selection
         status_ask 'Pipe command: ' do |cmd|
           pipe_selection_execute(cmd)
-          clear_selection
-          start_control_mode
+          finish_selection
         end
       end
 
@@ -106,8 +121,20 @@ module VER
 
       private
 
+      def finish_selection
+        edit_separator
+        clear_selection
+        start_control_mode
+      end
+
+      def clear_selection
+        @selection_start = nil
+        tag_remove :sel, '0.0', 'end'
+      end
+
       def each_selection
         tag_ranges(:sel).each do |sel|
+          p sel
           (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
           yield fy, fx, ty, tx
         end
@@ -116,6 +143,7 @@ module VER
       def each_selected_line
         each_selection do |fy, fx, ty, tx|
           fy.upto(ty) do |y|
+            p y
             yield y, fx, tx
           end
         end
