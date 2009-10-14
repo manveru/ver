@@ -25,20 +25,20 @@ module VER
       end
 
       vim.add_mode :move do |mode|
-        mode.map :go_beginning_of_line, %w[0]
-        mode.map :go_char_left,         %w[h], %w[Left]
-        mode.map :go_char_right,        %w[l], %w[Right]
-        mode.map :go_end_of_file,       %w[G]
-        mode.map :go_end_of_line,       %w[dollar]
-        mode.map :go_line,              %w[g g]
-        mode.map :go_line_down,         %w[j], %w[Down]
-        mode.map :go_line_up,           %w[k], %w[Up]
-        mode.map :go_next_newline_block, %w[braceleft]
-        mode.map :go_page_down,         %w[Control-f], %w[Next]
-        mode.map :go_page_up,           %w[Control-b], %w[Prior]
-        mode.map :go_prev_newline_block, %w[braceright]
-        mode.map :go_word_left,         %w[b]
-        mode.map :go_word_right,        %w[w]
+        mode.map :go_beginning_of_line,   %w[0]
+        mode.map :go_char_left,           %w[h], %w[Left]
+        mode.map :go_char_right,          %w[l], %w[Right]
+        mode.map :go_end_of_file,         %w[G]
+        mode.map :go_end_of_line,         %w[dollar]
+        mode.map :go_line,                %w[g g]
+        mode.map :go_line_down,           %w[j], %w[Down]
+        mode.map :go_line_up,             %w[k], %w[Up]
+        mode.map :go_next_newline_block,  %w[braceleft]
+        mode.map :go_page_down,           %w[Control-f], %w[Next]
+        mode.map :go_page_up,             %w[Control-b], %w[Prior]
+        mode.map :go_prev_newline_block,  %w[braceright]
+        mode.map :go_word_left,           %w[b]
+        mode.map :go_word_right,          %w[w]
       end
 
       vim.add_mode :search do |mode|
