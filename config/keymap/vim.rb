@@ -222,6 +222,7 @@ module VER
 
       vim.add_mode :list_view_entry do |mode|
         mode.inherits :basic, :readline
+        mode.arguments = false
 
         # mode.to :update, %w[Key]
         mode.to :pick_selection, %w[Return]
