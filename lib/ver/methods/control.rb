@@ -5,7 +5,7 @@ module VER
         text = get('insert linestart', 'insert lineend')
         lines = wrap_lines_of(text).join("\n")
 
-        replace('insert linestart', 'insert lineend', lines.join("\n"))
+        replace('insert linestart', 'insert lineend', lines)
       end
 
       def status_theme_select
