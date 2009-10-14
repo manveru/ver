@@ -14,6 +14,7 @@ module VER
         mode.map :start_control_mode, %w[Escape], %w[Control-c]
 
         mode.map :buffer_switch, %w[Alt-b], %w[Control-m b]
+        mode.map :window_switch, %w[Alt-B], %w[Control-m B]
       end
 
       vim.add_mode :views do |mode|

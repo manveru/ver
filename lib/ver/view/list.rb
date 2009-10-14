@@ -1,6 +1,7 @@
 module VER
   class View::List < Struct.new(:parent, :frame, :list, :entry, :tag, :callback)
     autoload :Buffer,          'ver/view/list/buffer'
+    autoload :Window,          'ver/view/list/buffer'
     autoload :FuzzyFileFinder, 'ver/view/list/fuzzy_file_finder'
     autoload :Syntax,          'ver/view/list/syntax'
     autoload :Theme,           'ver/view/list/theme'

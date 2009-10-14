@@ -56,11 +56,19 @@ module VER
         insert("insert lineend", "\n#{result.inspect}\n")
       end
 
-      def buffer_switch(count = nil)
+      def buffer_switch
+        View::List::Buffer.new self do |file|
+
+          # VER.resume_buffer file_path
+          open_path file if File.exists? file
+        end
+      end
+
+      def window_switch(count = nil)
         if count
           p count: count
         else
-          View::List::Buffer.new self do |view|
+          View::List::Window.new self do |view|
             view.focus
             # open_path(path)
           end

@@ -1,17 +1,27 @@
 module VER
-  class View::List::Buffer < View::List
+  class View::List::Window < View::List
     def update
-      list.value = sublist(buffers.keys)
+      list.value = sublist(windows.keys)
     end
 
-    def buffers
+    def windows
       path_view = parent.layout.views.map{|view| [view.filename.to_s, view] }
       Hash[path_view]
     end
 
     def pick_action(filename)
-      view = buffers[filename]
+      view = windows[filename]
       callback.call(view) if callback && view
+    end
+  end
+
+  class View::List::Buffer < View::List
+    def update
+      list.value = sublist(buffers)
+    end
+
+    def buffers
+      VER.paths.map(&:to_s).select {|b| ! b.empty? }
     end
   end
 end
