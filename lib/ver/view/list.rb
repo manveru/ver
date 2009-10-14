@@ -24,6 +24,9 @@ module VER
         setgrid 'yes'
         width 0
         background '#000'
+        foreground '#fff'
+        selectforeground '#000'
+        selectbackground '#fff'
         font VER.options[:font]
         pack fill: :both, expand: true
       }
