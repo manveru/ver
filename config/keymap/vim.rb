@@ -131,18 +131,19 @@ module VER
       vim.add_mode :select do |mode|
         mode.inherits :basic, :move, :search
 
-        mode.map :copy_selection,           %w[y], %w[Y]
-        mode.map :delete_selection,         %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
-        mode.map :indent_selection,         %w[greater]
-        mode.map :pipe_selection,           %w[exclam]
-        mode.map :smart_evaluate,           %w[Alt-e], %w[Control-e]
-        mode.map :switch_select_block_mode, %w[Control-v]
-        mode.map :switch_select_char_mode,  %w[v]
-        mode.map :switch_select_line_mode,  %w[V]
-        mode.map :unindent_selection,       %w[less]
-        mode.map :comment_selection,        %w[comma c]
-        mode.map :uncomment_selection,      %w[comma u]
-        mode.map :wrap_selection,         %w[g w]
+        mode.map :copy_selection,               %w[y], %w[Y]
+        mode.map :delete_selection,             %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
+        mode.map :indent_selection,             %w[greater]
+        mode.map :pipe_selection,               %w[exclam]
+        mode.map :smart_evaluate,               %w[Alt-e], %w[Control-e]
+        mode.map :switch_select_block_mode,     %w[Control-v]
+        mode.map :switch_select_char_mode,      %w[v]
+        mode.map :switch_select_line_mode,      %w[V]
+        mode.map :unindent_selection,           %w[less]
+        mode.map :comment_selection,            %w[comma c]
+        mode.map :uncomment_selection,          %w[comma u]
+        mode.map :wrap_selection,               %w[g w]
+        mode.map [:finish_selection, :control], %w[Escape], %w[Control-c]
       end
 
       vim.add_mode :select_char do |mode|

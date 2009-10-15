@@ -22,14 +22,18 @@ module VER
         start_selection(name)
       end
 
-      def start_selection(name)
-        self.selection_start = index(:insert).split('.').map(&:to_i)
-        switch_selection_mode(name)
+      def switch_selection_mode(name)
+        self.mode = name
+        switch_selection(name)
       end
 
-      def switch_selection_mode(name)
+      def start_selection(name)
+        self.selection_start = index(:insert).split('.').map(&:to_i)
+        switch_selection(name)
+      end
+
+      def switch_selection(name)
         self.selection_mode = name.to_sym
-        self.mode = name
         refresh_selection
       end
 
@@ -126,10 +130,10 @@ module VER
 
       private
 
-      def finish_selection
+      def finish_selection(mode = nil)
         edit_separator
         clear_selection
-        keymap.use_previous_mode
+        mode ? self.mode = mode : keymap.use_previous_mode
       end
 
       def clear_selection
@@ -139,7 +143,6 @@ module VER
 
       def each_selection
         tag_ranges(:sel).each do |sel|
-          # p sel
           (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
           yield fy, fx, ty, tx
         end
@@ -148,7 +151,6 @@ module VER
       def each_selected_line
         each_selection do |fy, fx, ty, tx|
           fy.upto(ty) do |y|
-            # p y
             yield y, fx, tx
           end
         end
