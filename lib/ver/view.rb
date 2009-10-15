@@ -41,7 +41,6 @@ module VER
         autoseparators:   true, # insert separators into the undo flow
         borderwidth:      0,
         exportselection:  true, # copy into X11 buffer automatically
-        insertbackground: '#0f0', # initial value (hardcoded for control mode)
         font:             font,
         insertofftime:    0, # blinking cursor be gone!
         setgrid:          true, # tell the wm that this is a griddy window
