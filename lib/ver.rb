@@ -77,9 +77,10 @@ module VER
   def run(given_options = {})
     @options = OPTIONS.merge(given_options)
 
-    setup
     first_startup unless options[:home_conf_dir].directory?
     load 'rc'
+    sanitize_options
+    setup
     open_argv || open_welcome
     emergency_bindings
 
@@ -99,6 +100,17 @@ module VER
     @root = TkRoot.new
     @layout = Layout.new(@root)
     @layout.strategy = Layout::VerticalTiling
+  end
+
+  def sanitize_options
+    font = options[:font]
+    options[:font] = TkFont.new(font) unless font.is_a?(TkFont)
+
+    encoding = options[:encoding]
+    options[:encoding] = Encoding.find(encoding) unless encoding.is_a?(Encoding)
+
+    tk_theme = options[:tk_theme]
+    options[:theme] = 'default' unless Tk::Tile.themes.include?(tk_theme)
   end
 
   def first_startup

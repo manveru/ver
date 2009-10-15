@@ -6,14 +6,31 @@ else
   lib = File.expand_path('../../lib/ver', __FILE__)
 end
 
-if ARGV.delete('-f')
-  require lib
-  VER.run
-else
+require 'optparse'
+
+options = {
+  fork:     true,
+  keymap:   'vim',
+  font:     'Terminus 9',
+  theme:    'Blackboard',
+  tk_theme: 'clam',
+}
+
+op = OptionParser.new{|o|
+  o.on('-f', '--nofork', 'stay attached to terminal'){ options[:fork] = false }
+  o.on('-k', '--keymap NAME', 'vim or emacs'){|k| options[:keymap] = k }
+  o.on('-h', '--help', 'Show this help'){ puts o; exit }
+}
+op.parse!(ARGV)
+
+if options[:fork]
   fork do
     fork do
       require lib
-      VER.run
+      VER.run(options)
     end
   end
+else
+  require lib
+  VER.run(options)
 end
