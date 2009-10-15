@@ -11,6 +11,10 @@ module VER
     }
 
     attr_accessor :keymap, :view, :status, :filename
+    attr_reader :encoding, :pristine, :syntax
+
+    # attributes for diverse functionality
+    attr_accessor :selection_mode, :selection_start, :highlight_thread
 
     def initialize(view, options = {})
       super
@@ -19,7 +23,7 @@ module VER
       keymap_name = VER.options.fetch(:keymap)
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
-      @selection_start = @highlight_thread = nil
+      self.selection_start = self.highlight_thread = nil
       @pristine = true
       @encoding = VER.options.fetch(:encoding)
     end
@@ -29,11 +33,11 @@ module VER
     end
 
     def open_path(path)
-      @filename = Pathname(path.to_s).expand_path
+      self.filename = Pathname(path.to_s).expand_path
 
       begin
-        enc = @encoding.name
-        self.value = @filename.open("r:#{enc}"){|io| io.read }
+        enc = encoding.name
+        self.value = filename.open("r:#{enc}"){|io| io.read }
         status.message "Opened #{short_filename}"
       rescue Errno::ENOENT
         clear
@@ -54,7 +58,7 @@ module VER
 
       edit_reset
 
-      if @pristine
+      if pristine
         Thread.new do
           wait_visibility
           setup_highlight
@@ -97,7 +101,7 @@ module VER
       percent = 100.0 if percent.nan?
 
       additional = [keymap.mode]
-      syntax_name = @syntax.name if @syntax
+      syntax_name = syntax.name if syntax
       additional << syntax_name if syntax_name
 
       values = [
@@ -150,13 +154,13 @@ module VER
     end
 
     def refresh_selection
-      return unless start = @selection_start
+      return unless start = selection_start
 
       now = index(:insert).split('.').map(&:to_i)
       left, right = [start, now].sort.map{|pos| pos.join('.') }
       tag_remove :sel, '0.0', 'end'
 
-      case keymap.mode
+      case selection_mode
       when :select_char
         tag_add :sel, left, "#{right} + 1 chars"
       when :select_line
@@ -198,11 +202,11 @@ module VER
       return unless filename
       return unless @syntax = Syntax.from_filename(filename)
 
-      @highlight_thread = create_highlight_thread
+      self.highlight_thread = create_highlight_thread
     end
 
     def create_highlight_thread
-      @highlight_thread = Thread.new{
+      Thread.new do
         this = Thread.current
         this[:pending] = 1
 
@@ -218,12 +222,12 @@ module VER
             sleep 0.5
           end
         end
-      }
+      end
     end
 
     def refresh_highlight(lineno = 0)
-      return unless @highlight_thread
-      @highlight_thread[:pending] += 1
+      return unless ht = highlight_thread
+      ht[:pending] += 1
     end
 
     def caret(keys=nil)
@@ -272,7 +276,7 @@ module VER
 
     def refresh_highlight!
       tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
-      @syntax.highlight(self, value, lineno = 0)
+      syntax.highlight(self, value, lineno = 0)
     end
 
     def touch!
@@ -348,20 +352,20 @@ module VER
     end
 
     def load_theme(name)
-      return unless @syntax
+      return unless syntax
       return unless found = Theme.find(name)
 
-      @syntax.theme = Theme.load(found)
+      syntax.theme = Theme.load(found)
       refresh_highlight
 
       status.message "Theme #{found} loaded"
     end
 
     def load_syntax(name)
-      return unless @syntax
+      return unless syntax
       return unless found = Syntax.find(name)
 
-      theme = @syntax.theme
+      theme = syntax.theme
       @syntax = Syntax.new(name, theme)
       refresh_highlight
 

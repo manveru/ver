@@ -19,11 +19,16 @@ module VER
 
       def start_selection_mode(name)
         self.mode = name
-        @selection_start = index(:insert).split('.').map(&:to_i)
-        refresh_selection
+        start_selection(name)
+      end
+
+      def start_selection(name)
+        self.selection_start = index(:insert).split('.').map(&:to_i)
+        switch_selection_mode(name)
       end
 
       def switch_selection_mode(name)
+        self.selection_mode = name.to_sym
         self.mode = name
         refresh_selection
       end
@@ -124,11 +129,11 @@ module VER
       def finish_selection
         edit_separator
         clear_selection
-        start_control_mode
+        keymap.use_previous_mode
       end
 
       def clear_selection
-        @selection_start = nil
+        self.selection_start = nil
         tag_remove :sel, '0.0', 'end'
       end
 

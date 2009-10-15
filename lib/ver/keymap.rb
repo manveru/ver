@@ -20,12 +20,13 @@ module VER
       end
     end
 
-    attr_accessor :modes, :callback, :widget, :tag
+    attr_accessor :modes, :callback, :widget, :tag, :previous_mode
     attr_reader :mode
 
     def initialize(options)
       @callback = options.fetch(:receiver)
       @widget = options.fetch(:widget, @callback)
+      @previous_mode = nil
       @modes = {}
 
       prepare_tag
@@ -84,6 +85,7 @@ module VER
 
     # TODO: callbacks
     def mode=(cm)
+      self.previous_mode = self.mode
       @mode = cm.to_sym
     end
 
@@ -92,5 +94,57 @@ module VER
       yield mode if block_given?
       mode
     end
+
+    def use_previous_mode
+      return unless mode = previous_mode
+      self.mode = previous_mode
+    end
   end
+
+  # Tk keysyms
+  KEYSYMS = {
+    " "  => "space",
+    "!"  => "exclam",
+    '"'  => "quotedbl",
+    "#"  => "numbersign",
+    "$"  => "dollar",
+    "%"  => "percent",
+    "&"  => "ampersand",
+    "'"  => "quoteright",
+    "("  => "parenleft",
+    ")"  => "parenright",
+    "*"  => "asterisk",
+    "+"  => "plus",
+    ","  => "comma",
+    "-"  => "minus",
+    "."  => "period",
+    "/"  => "slash",
+    "0"  => "0",
+    "1"  => "1",
+    "2"  => "2",
+    "3"  => "3",
+    "4"  => "4",
+    "5"  => "5",
+    "6"  => "6",
+    "7"  => "7",
+    "8"  => "8",
+    "9"  => "9",
+    ":"  => "colon",
+    ";"  => "semicolon",
+    "<"  => "less",
+    "="  => "equal",
+    ">"  => "greater",
+    "?"  => "question",
+    "@"  => "at",
+    "["  => "bracketleft",
+    "\\" => "backslash",
+    "]"  => "bracketright",
+    "^"  => "asciicircum",
+    "_"  => "underscore",
+    "`"  => "quoteleft",
+    "{"  => "braceleft",
+    "|"  => "bar",
+    "}"  => "braceright",
+    "~"  => "asciitilde",
+  }
 end
