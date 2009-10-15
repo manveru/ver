@@ -2,7 +2,7 @@ module VER
   class Keymap
     def self.emacs(options)
       emacs = new(options)
-      emacs.mode = options.fetch(:mode, :control)
+      emacs.mode = options.fetch(:mode, :basic)
 
       emacs.add_mode :quirks do |mode|
         mode.arguments = false
@@ -42,7 +42,7 @@ module VER
         mode.map :delete_word_left,       %w[Alt-BackSpace]
 
         # HACK, this probably shouldn't switch modes.
-        mode.map [:start_selection, :block], %w[Control-Space]
+        mode.map [:start_selection, :block], %w[Control-space]
 
         KEYSYMS.each do |sym, name|
           mode.map [:insert_string, sym], [name]
@@ -59,6 +59,8 @@ module VER
         mode.map :describe_function,    %w[Control-h f]
         mode.map :apropos_command,      %w[Control-h a]
       end
+
+      emacs
     end
   end
 end

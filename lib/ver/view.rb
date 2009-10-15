@@ -81,7 +81,6 @@ module VER
     def setup_misc
       @text.status = @status
       @text.view = self
-      @text.start_control_mode
       @status.mode = :status_query
     end
 
