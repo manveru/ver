@@ -27,7 +27,7 @@ module VER
       end
 
       vim.add_mode :move do |mode|
-        mode.map :go_beginning_of_line,   %w[0]
+        mode.map :go_beginning_of_line,   %w[KeyPress-0]
         mode.map :go_char_left,           %w[h], %w[Left]
         mode.map :go_char_right,          %w[l], %w[Right]
         mode.map :go_end_of_file,         %w[G]
