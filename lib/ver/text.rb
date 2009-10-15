@@ -21,6 +21,7 @@ module VER
 
       @selection_start = @highlight_thread = nil
       @pristine = true
+      @encoding = VER.options.fetch(:encoding)
     end
 
     def short_filename
@@ -31,7 +32,8 @@ module VER
       @filename = Pathname(path.to_s).expand_path
 
       begin
-        self.value = @filename.read
+        enc = @encoding.name
+        self.value = @filename.open("r:#{enc}"){|io| io.read }
         status.message "Opened #{short_filename}"
       rescue Errno::ENOENT
         clear
