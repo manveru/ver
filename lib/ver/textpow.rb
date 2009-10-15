@@ -138,7 +138,7 @@ module Textpow
         when "patterns"
           create_children value
         else
-          STDERR.puts "Ignoring: #{key} => #{value.gsub("\n", "\n>>")}" if $DEBUG
+          $stderr.puts "Ignoring: #{key} => #{value.gsub("\n", "\n>>")}" if $DEBUG
         end
       end
     end

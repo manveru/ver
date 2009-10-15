@@ -15,7 +15,7 @@ module VER
         word = get('insert wordstart', 'insert wordend')
 
         glob = "#{word}*{**/*,/**/*}"
-        p glob
+        # p glob
         Dir[glob].uniq
       end
 

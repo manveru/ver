@@ -134,7 +134,7 @@ module VER
 
       def each_selection
         tag_ranges(:sel).each do |sel|
-          p sel
+          # p sel
           (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
           yield fy, fx, ty, tx
         end
@@ -143,7 +143,7 @@ module VER
       def each_selected_line
         each_selection do |fy, fx, ty, tx|
           fy.upto(ty) do |y|
-            p y
+            # p y
             yield y, fx, tx
           end
         end

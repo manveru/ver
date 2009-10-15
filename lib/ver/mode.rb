@@ -100,7 +100,7 @@ module VER
       @stack.clear
       enter_missing(key)
     rescue => ex
-      puts ex, *ex.backtrace
+      VER.error(ex)
       @stack.clear
     end
 

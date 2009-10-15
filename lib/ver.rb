@@ -84,7 +84,7 @@ module VER
     emergency_bindings
 
   rescue => exception
-    puts "#{exception.class}: #{exception}", *exception.backtrace
+    VER.error(exception)
     Tk.exit
   else
     Tk.mainloop
@@ -153,5 +153,17 @@ module VER
 
   def opened_file(text)
     @paths << text.filename
+  end
+
+  def error(exception)
+    $stderr.puts "#{exception.class}: #{exception}"
+    $stderr.puts *exception.backtrace
+  rescue Errno::EIO
+    # The original terminal has disappeared, the $stderr pipe was closed on the
+    # other side.
+    [$stderr, $stdout, $stdin].each(&:close)
+  rescue IOError
+    # Our pipes are closed, maybe put some output to a file logger here, or display
+    # in a nicer way, maybe let it bubble up to Tk handling.
   end
 end

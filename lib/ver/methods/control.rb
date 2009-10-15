@@ -60,7 +60,7 @@ module VER
 
       def window_switch(count = nil)
         if count
-          p count: count
+          # p count: count
         else
           View::List::Window.new self do |view|
             view.focus
@@ -368,8 +368,8 @@ module VER
       # simply overwrite the original file in place, make sure you have good insurance ;)
       def save_to(to)
         save_smart(filename, to)
-      rescue => ex
-        puts "#{ex.class}: #{ex}", *ex.backtrace
+      rescue => exception
+        VER.error(exception)
         save_dumb(filename, to)
       end
 
