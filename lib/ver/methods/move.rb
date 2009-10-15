@@ -44,18 +44,20 @@ module VER
       end
 
       def go_page_up
-        height = Tk.root.winfo_height
+        height = winfo_height
         linespace = cget(:font).metrics(:linespace)
         diff = height / linespace
+        diff -= 2 if diff > 2
 
         mark_set :insert, "insert - #{diff} line"
         see :insert
       end
 
       def go_page_down
-        height = Tk.root.winfo_height
+        height = winfo_height
         linespace = cget(:font).metrics(:linespace)
         diff = height / linespace
+        diff -= 2 if diff > 2
 
         mark_set :insert, "insert + #{diff} line"
         see :insert
