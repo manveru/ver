@@ -33,6 +33,10 @@ module VER
       prepare_default_binds
     end
 
+    def message(*args)
+      @callback.message(*args)
+    end
+
     def send(*args)
       @callback.__send__(*args)
     end
@@ -119,16 +123,16 @@ module VER
     "-"  => "minus",
     "."  => "period",
     "/"  => "slash",
-    "0"  => "0",
-    "1"  => "1",
-    "2"  => "2",
-    "3"  => "3",
-    "4"  => "4",
-    "5"  => "5",
-    "6"  => "6",
-    "7"  => "7",
-    "8"  => "8",
-    "9"  => "9",
+    "0"  => "KeyPress-0",
+    "1"  => "KeyPress-1",
+    "2"  => "KeyPress-2",
+    "3"  => "KeyPress-3",
+    "4"  => "KeyPress-4",
+    "5"  => "KeyPress-5",
+    "6"  => "KeyPress-6",
+    "7"  => "KeyPress-7",
+    "8"  => "KeyPress-8",
+    "9"  => "KeyPress-9",
     ":"  => "colon",
     ";"  => "semicolon",
     "<"  => "less",

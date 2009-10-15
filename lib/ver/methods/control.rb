@@ -189,10 +189,6 @@ module VER
         insert :insert, string
       end
 
-      def ignore_string(string)
-        status.message "Ignore %p in mode %p" % [string, keymap.mode]
-      end
-
       def replace_char
         status_ask 'Replace with: ' do |string|
           replace('insert', 'insert + 1 chars', string)

@@ -89,8 +89,6 @@ module VER
         mode.map :undo,                          %w[u]
         mode.map :unindent_line,                 %w[less]
         mode.map :wrap_line,                     %w[g w]
-
-        mode.missing :ignore_string
       end
 
       vim.add_mode :replace do |mode|
@@ -173,7 +171,7 @@ module VER
         mode.inherits :basic, :readline
         mode.arguments = false
 
-        mode.to :ask_abort, %w[Escape], %w[Control-c]
+        mode.to :ask_abort,  %w[Escape], %w[Control-c]
         mode.to :ask_submit, %w[Return]
 
         mode.missing :insert_string

@@ -64,6 +64,9 @@ module VER
       insert cursor, string
     end
 
+    def noop(*args)
+    end
+
     def delete_char_left
       delete(cursor - 1)
     end

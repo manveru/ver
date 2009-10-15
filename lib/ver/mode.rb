@@ -141,12 +141,15 @@ module VER
       end
 
       true
+    rescue ArgumentError => ex
+      callback.message("#{executable} : #{ex}")
+      true
     end
 
     def self.split_stack(stack)
       return stack, nil if stack[0] == '0'
 
-      pivot = stack.index{|c| c !~ /\d/ }
+      pivot = stack.index{|c| c !~ /^\d+$/ }
 
       if pivot == 0
         return stack, nil

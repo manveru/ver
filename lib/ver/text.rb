@@ -26,6 +26,16 @@ module VER
       self.selection_start = self.highlight_thread = nil
       @pristine = true
       @encoding = VER.options.fetch(:encoding)
+
+      self.mode = keymap.mode
+    end
+
+    def message(*args)
+      status.message(*args)
+    end
+
+    def noop(*args)
+      status.message "Noop %p in mode %p" % [args, keymap.mode]
     end
 
     def short_filename
