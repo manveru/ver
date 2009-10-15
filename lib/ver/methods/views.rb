@@ -16,6 +16,14 @@ module VER
       def view_focus_prev
         view.focus_prev
       end
+
+      def view_push_up
+        view.push_up
+      end
+
+      def view_push_down
+        view.push_down
+      end
     end
   end
 end

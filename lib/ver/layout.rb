@@ -50,6 +50,36 @@ module VER
       found.focus
     end
 
+    # called on #3
+    # +-----+-----+ > +-----+-----+ > +-----+-----+ > +-----+-----+
+    # |     |  2  | > |     |  3  | > |     |  1  | > |     |  1  |
+    # |  1  +-----+ > |  1  +-----+ > |  3  +-----+ > |  3  +-----+
+    # |     |  3  | > |     |  2  | > |     |  2  | > |     |  2  |
+    # +-----+-----+ > +-----+-----+ > +-----+-----+ > +-----+-----+
+    def push_up(current)
+      return unless index = @views.index(current)
+      previous = @views[index - 1]
+      current.raise(previous)
+      @views[index - 1], @views[index] = current, previous
+
+      apply
+    end
+
+    # called on #3
+    # +-----+-----+ > +-----+-----+ > +-----+-----+ > +-----+-----+
+    # |     |  2  | > |     |  1  | > |     |  3  | > |     |  2  |
+    # |  1  +-----+ > |  3  +-----+ > |  1  +-----+ > |  1  +-----+
+    # |     |  3  | > |     |  2  | > |     |  2  | > |     |  3  |
+    # +-----+-----+ > +-----+-----+ > +-----+-----+ > +-----+-----+
+    def push_down(current)
+      return unless index = @views.index(current)
+      following = @views[index + 1] || @views[0]
+      current.raise(following)
+      @views[@views.index(following)], @views[index] = current, following
+
+      apply
+    end
+
     def apply(options = {})
       strategy.apply(self, options)
     end
@@ -60,7 +90,7 @@ module VER
       module_function
 
       def apply(layout, options = {})
-        slaves = layout.winfo_children
+        slaves = layout.views
         left, right = DEFAULT.merge(options).values_at(:left, :right)
         head, tail = slaves[0...left], slaves[left..right]
         width = tail.size == 0 ? 1.0 : 0.5
@@ -85,7 +115,7 @@ module VER
       module_function
 
       def apply(layout, options = {})
-        slaves = layout.winfo_children
+        slaves = layout.views
         top, bottom = DEFAULT.merge(options).values_at(:top, :bottom)
         head, tail = slaves[0...top], slaves[top..bottom]
         height = tail.size == 0 ? 1.0 : 0.5

@@ -147,6 +147,14 @@ module VER
       layout.focus_prev(self)
     end
 
+    def push_up
+      layout.push_up(self)
+    end
+
+    def push_down
+      layout.push_down(self)
+    end
+
     def destroy
       [@text, @ybar, @xbar, @status].each do |widget|
         widget.destroy if widget
