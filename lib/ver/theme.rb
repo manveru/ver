@@ -71,10 +71,7 @@ module VER
         if value =~ /^(#\h{6})/
           settings[key] = $1
         elsif key.downcase == 'fontstyle'
-          styles = value.split
-          settings['font'] = TkFont.create_copy(self.font)
-          font.configure underline: styles.include?('underline')
-          font.configure slant: 'italic' if styles.include?('italic')
+          settings['font'] = fontstyle_as_font(value)
         else
           settings[key] = value
         end
@@ -83,8 +80,15 @@ module VER
       settings
     end
 
-    def font
-      @font ||= VER.options[:font].dup
+    def fontstyle_as_font(style)
+      options = Font.default_options
+
+      options['slant']      = 'italic' if style =~ /\bitalic\b/
+      options['underline']  = true     if style =~ /\bunderline\b/
+      options['overstrike'] = true     if style =~ /\boverstrike\b/
+      options['weight']     = 'bold'   if style =~ /\bbold\b/
+
+      Font[options]
     end
 
     def normalize(keyname)

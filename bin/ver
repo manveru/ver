@@ -11,7 +11,8 @@ require 'optparse'
 options = {
   fork:     true,
   keymap:   'vim',
-  font:     'Terminus 9',
+  font_size: 9,
+  font_family: 'Terminus',
   theme:    'Blackboard',
   tk_theme: 'clam',
 }
@@ -19,6 +20,8 @@ options = {
 op = OptionParser.new{|o|
   o.on('-f', '--nofork', 'stay attached to terminal'){ options[:fork] = false }
   o.on('-k', '--keymap NAME', 'vim or emacs'){|k| options[:keymap] = k }
+  o.on('--font-size INT', 'font size'){|fs| options[:font_size] = fs }
+  o.on('--font-family NAME', 'font family'){|fn| options[:font_family] = fn }
   o.on('-h', '--help', 'Show this help'){ puts o; exit }
 }
 op.parse!(ARGV)

@@ -31,6 +31,7 @@ end
 module VER
   autoload :BufferListView,      'ver/view/buffer_list_view'
   autoload :Entry,               'ver/entry'
+  autoload :Font,                'ver/font'
   autoload :FuzzyFileFinderView, 'ver/view/fuzzy_file_finder_view'
   autoload :Keymap,              'ver/keymap'
   autoload :Layout,              'ver/layout'
@@ -53,7 +54,8 @@ module VER
   # p Tk::Tile.themes # a list of available themes
   #   Linux themes: "classic", "default", "clam", "alt"
   OPTIONS = {
-    font:          TkFont.new(family: 'Terminus', size: 9),
+    font_size:     9,
+    font_family:   'Terminus',
     encoding:      Encoding::UTF_8,
     tk_theme:      'clam',
     theme:         'Blackboard',
@@ -103,8 +105,8 @@ module VER
   end
 
   def sanitize_options
-    font = options[:font]
-    options[:font] = TkFont.new(font) unless font.is_a?(TkFont)
+    font, family, size = options.values_at(:font, :font_family, :font_size)
+    options[:font] = Font[family: family, size: size] unless font.is_a?(TkFont)
 
     encoding = options[:encoding]
     options[:encoding] = Encoding.find(encoding) unless encoding.is_a?(Encoding)
