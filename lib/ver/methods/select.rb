@@ -138,7 +138,7 @@ module VER
 
       def clear_selection
         self.selection_start = nil
-        tag_remove :sel, '0.0', 'end'
+        tag_remove :sel, '1.0', 'end'
       end
 
       def each_selection

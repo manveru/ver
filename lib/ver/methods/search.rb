@@ -13,7 +13,7 @@ module VER
       end
 
       def search_prev
-        from, to = tag_prevrange('search', 'insert - 1 chars', '0.0')
+        from, to = tag_prevrange('search', 'insert - 1 chars', '1.0')
         mark_set(:insert, from) if from
       end
 

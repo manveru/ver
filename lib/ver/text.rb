@@ -78,7 +78,7 @@ module VER
       end
 
       focus
-      mark_set :insert, '0.0'
+      mark_set :insert, '1.0'
 
       @pristine = false
     end
@@ -133,7 +133,7 @@ module VER
       name = name.to_s
 
       if tag_exists?(name)
-        tag_remove(name, '0.0', 'end')
+        tag_remove(name, '1.0', 'end')
       else
         options = TAG_ALL_MATCHING_OPTIONS.merge(options)
         TktNamedTag.new(self, name, options)
@@ -175,7 +175,7 @@ module VER
 
       now = index(:insert).split('.').map(&:to_i)
       left, right = [start, now].sort.map{|pos| pos.join('.') }
-      tag_remove :sel, '0.0', 'end'
+      tag_remove :sel, '1.0', 'end'
 
       case selection_mode
       when :select_char
