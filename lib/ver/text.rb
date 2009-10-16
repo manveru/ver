@@ -80,9 +80,6 @@ module VER
         setup_highlight
       end
 
-      focus
-      mark_set :insert, '1.0'
-
       @pristine = false
     end
 

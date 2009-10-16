@@ -19,9 +19,10 @@ module VER
     def create_view
       view = View.new(self)
       yield view
-      @views << view
+      @views.unshift view
 
       apply
+      view.focus
     end
 
     def close_view(view)
@@ -85,52 +86,56 @@ module VER
     end
 
     module VerticalTiling
-      DEFAULT = { left: 1, right: -1 }
+      DEFAULT = { left: 1, right: 3 }
 
       module_function
 
       def apply(layout, options = {})
         slaves = layout.views
         left, right = DEFAULT.merge(options).values_at(:left, :right)
-        head, tail = slaves[0...left], slaves[left..right]
+        head, tail, hidden = slaves[0...left], slaves[left..right], slaves[right..-1]
         width = tail.size == 0 ? 1.0 : 0.5
         head_step = 1.0 / head.size
         tail_step = 1.0 / tail.size
 
-        head.each_with_index do |slave, idx|
+        hidden.each{|slave| slave.place_forget } if hidden
+
+        head.each_with_index{|slave, idx|
           slave.place(relx: 0.0, rely: (head_step * idx),
                       relheight: head_step, relwidth: width)
-        end
+        } if head
 
-        tail.each_with_index do |slave, idx|
+        tail.each_with_index{|slave, idx|
           slave.place(relx: 0.5, rely: (tail_step * idx),
                       relheight: tail_step, relwidth: width)
-        end
+        } if tail
       end
     end
 
     module HorizontalTiling
-      DEFAULT = { top: 1, bottom: -1 }
+      DEFAULT = { top: 1, bottom: 3 }
 
       module_function
 
       def apply(layout, options = {})
         slaves = layout.views
         top, bottom = DEFAULT.merge(options).values_at(:top, :bottom)
-        head, tail = slaves[0...top], slaves[top..bottom]
+        head, tail, hidden = slaves[0...top], slaves[top..bottom], slaves[bottom..-1]
         height = tail.size == 0 ? 1.0 : 0.5
         head_step = 1.0 / head.size
         tail_step = 1.0 / tail.size
 
-        head.each_with_index do |slave, idx|
+        hidden.each{|slave| slave.place_forget } if hidden
+
+        head.each_with_index{|slave, idx|
           slave.place(relx: (head_step * idx), rely: 0.0,
                       relheight: height, relwidth: head_step)
-        end
+        } if head
 
-        tail.each_with_index do |slave, idx|
+        tail.each_with_index{|slave, idx|
           slave.place(relx: (tail_step * idx), rely: 0.5,
                       relheight: height, relwidth: tail_step)
-        end
+       } if tail
       end
     end
   end
