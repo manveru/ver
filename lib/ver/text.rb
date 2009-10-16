@@ -70,6 +70,7 @@ module VER
       VER.opened_file(self)
 
       edit_reset
+      mark_set :insert, '1.0'
 
       if pristine
         Thread.new do
