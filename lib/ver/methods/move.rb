@@ -18,13 +18,33 @@ module VER
       end
 
       def go_word_left
-        mark_set :insert, 'insert - 1 char'
-        mark_set :insert, 'insert wordstart'
+        go_left_until Text::MATCH_WORD_LEFT
+      end
+
+      def go_left_until(regexp)
+        rsearch_all(regexp, "insert wordstart") do |match, from, to|
+          mark_set :insert, from
+          return
+        end
+
+        mark_set :insert, '1.0'
       end
 
       def go_word_right
-        mark_set :insert, 'insert + 1 char'
-        mark_set :insert, 'insert wordend'
+        go_right_until Text::MATCH_WORD_RIGHT
+      end
+
+      def go_chunk_right
+        go_right_until(/\b\S/)
+      end
+
+      def go_right_until(regexp)
+        search_all(regexp, "insert wordend") do |match, from, to|
+          mark_set :insert, "#{to} - 1 chars"
+          return
+        end
+
+        mark_set :insert, 'end'
       end
 
       def go_beginning_of_line

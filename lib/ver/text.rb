@@ -10,6 +10,9 @@ module VER
       :select_block => {insertbackground: 'yellow', blockcursor: true},
     }
 
+    MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9\n-]/
+    MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
+
     attr_accessor :keymap, :view, :status, :filename
     attr_reader :encoding, :pristine, :syntax
 
@@ -144,15 +147,25 @@ module VER
       end
     end
 
-    def search_all(regexp)
-      return Enumerator.new(self, :search_all, regexp) unless block_given?
-      start = '1.0'
+    def search_all(regexp, from = '1.0')
+      return Enumerator.new(self, :search_all, regexp, from) unless block_given?
 
-      while result = search_with_length(regexp, start, 'end - 1 chars')
+      while result = search_with_length(regexp, from, 'end - 1 chars')
         pos, len, match = result
         break if !result || len == 0
-        start = "#{pos} + #{len} chars"
-        yield(match, pos, start)
+        from = index("#{pos} + #{len} chars")
+        yield(match, pos, from)
+      end
+    end
+
+    def rsearch_all(regexp, from = 'end')
+      return Enumerator.new(self, :rsearch_all, regexp, from) unless block_given?
+
+      while result = rsearch_with_length(regexp, from, '1.0')
+        pos, len, match = result
+        break if !result || len == 0
+        from = index("#{pos} - #{len} chars")
+        yield(match, pos, from)
       end
     end
 
