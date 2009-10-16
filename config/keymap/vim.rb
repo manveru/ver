@@ -199,6 +199,16 @@ module VER
         mode.to :go_line_down,   %w[Down]
       end
 
+      vim.add_mode :hover_completion do |mode|
+        mode.inherits :basic
+
+        mode.to :go_up,               %w[Up], %w[k]
+        mode.to :go_down,             %w[Down], %w[j]
+        mode.to :continue_completion, %w[Right], %w[l]
+        mode.to :submit,              %w[Return]
+        mode.to :cancel,              %w[Escape]
+      end
+
       vim
     end
   end
