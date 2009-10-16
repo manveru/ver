@@ -2,13 +2,21 @@ module VER
   module Methods
     module Completion
       def complete_file
-        files = file_completions
-        complete(files)
+        complete file_completions
       end
 
       def complete_aspell
-        words = aspell_completions
-        complete(words)
+        complete aspell_completions
+      end
+
+      def complete_word
+        complete word_completions
+      end
+
+      def word_completions
+        prefix = get('insert wordstart', 'insert wordend')
+        prefix = Regexp.escape(prefix)
+        search_all(/\b#{prefix}\S+\b/).map{|match, from, to| match }.uniq.sort
       end
 
       def file_completions

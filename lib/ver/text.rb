@@ -139,13 +139,20 @@ module VER
         TktNamedTag.new(self, name, options)
       end
 
-      start = '0.0'
+      search_all regexp do |from, to, match|
+        tag_add name, from, to
+      end
+    end
+
+    def search_all(regexp)
+      return Enumerator.new(self, :search_all, regexp) unless block_given?
+      start = '1.0'
+
       while result = search_with_length(regexp, start, 'end - 1 chars')
         pos, len, match = result
         break if !result || len == 0
-
         start = "#{pos} + #{len} chars"
-        tag_add name, pos, start
+        yield(match, pos, start)
       end
     end
 

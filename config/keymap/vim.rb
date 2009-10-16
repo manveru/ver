@@ -124,6 +124,7 @@ module VER
         mode.map :smart_evaluate,          %w[Alt-e], %w[Control-e]
         mode.map :complete_aspell,         %w[Control-x Control-a]
         mode.map :complete_file,           %w[Control-x Control-f]
+        mode.map :complete_word,           %w[Control-x Control-w]
 
         mode.missing :insert_string
       end
