@@ -114,55 +114,6 @@ module VER
         end
       end
 
-      def delete_char_left
-        delete 'insert - 1 char'
-      end
-
-      def delete_char_right
-        delete 'insert'
-      end
-
-      def delete_word_right
-        delete 'insert', 'insert wordend'
-      end
-
-      def delete_word_left
-        delete 'insert wordstart', 'insert'
-      end
-
-      def delete_line
-        delete 'insert linestart', 'insert lineend + 1 char'
-      end
-
-      def delete_to_eol
-        delete 'insert', 'insert lineend'
-      end
-
-      def delete_to_eol_then_insert
-        delete_to_eol
-        start_insert_mode
-      end
-
-      def delete_char_right_then_insert
-        delete_char_right
-        start_insert_mode
-      end
-
-      def delete_char_left_then_insert
-        delete_char_left
-        start_insert_mode
-      end
-
-      def delete_word_right_then_insert
-        delete_word_right
-        start_insert_mode
-      end
-
-      def delete_word_left_then_insert
-        delete_word_left
-        start_insert_mode
-      end
-
       def join_lines
         start_of_next_line = search(/\S/, 'insert lineend')
         replace('insert lineend', start_of_next_line, ' ')
