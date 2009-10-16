@@ -172,6 +172,8 @@ module VER
     def tag_exists?(given_path)
       list = tk_split_simplelist(tk_send_without_enc('tag', 'names', None), false, true)
       list.include?(given_path)
+    rescue RuntimeError => ex
+      false
     end
 
     # Wrap Tk methods to behave as we want and to generate events
