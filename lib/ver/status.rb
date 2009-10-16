@@ -28,11 +28,26 @@ module VER
       view.text
     end
 
-    def ask(question, &callback)
+    def ask(question, options = {}, &callback)
       @question, @backup_value, @callback = question, value, callback
 
       message @question
+      submit_when_taken(options[:take])
       focus
+    end
+
+    def submit_when_taken(length)
+      return unless length
+      target = value.size + length
+
+      block = lambda{
+        if value.size >= target
+          bind_remove('<Modified>')
+          ask_submit
+        end
+      }
+
+      bind('<Modified>', block)
     end
 
     def ask_submit

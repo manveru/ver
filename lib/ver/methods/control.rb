@@ -190,8 +190,10 @@ module VER
       end
 
       def replace_char
-        status_ask 'Replace with: ' do |string|
+        status_ask 'Replace with: ', take: 1 do |string|
           replace('insert', 'insert + 1 chars', string)
+          go_char_left
+          "replaced #{string.size} chars"
         end
       end
 
@@ -336,8 +338,8 @@ module VER
         lines
       end
 
-      def status_ask(prompt, &callback)
-        @status.ask(prompt){|*args|
+      def status_ask(prompt, options = {}, &callback)
+        @status.ask(prompt, options){|*args|
           begin
             callback.call(*args)
           rescue => ex
