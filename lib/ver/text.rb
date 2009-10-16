@@ -139,7 +139,7 @@ module VER
         TktNamedTag.new(self, name, options)
       end
 
-      search_all regexp do |from, to, match|
+      search_all regexp do |match, from, to|
         tag_add name, from, to
       end
     end
