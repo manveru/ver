@@ -10,7 +10,7 @@ module VER
       :select_block => {insertbackground: 'yellow', blockcursor: true},
     }
 
-    MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9\n-]/
+    MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
     attr_accessor :keymap, :view, :status, :filename
