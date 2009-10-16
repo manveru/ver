@@ -262,20 +262,6 @@ module VER
       ht[:pending] += 1
     end
 
-    def caret(keys=nil)
-      if keys
-        tk_call_without_enc('tk', 'caret', self, *hash_kv(keys))
-        self
-      else
-        lst = tk_split_list(tk_call_without_enc('tk', 'caret', self))
-        info = {}
-        while key = lst.shift
-          info[key[1..-1]] = lst.shift
-        end
-        info
-      end
-    end
-
     def focus
       super
       Tk.event_generate(self, '<Focus>')
