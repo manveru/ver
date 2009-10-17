@@ -4,17 +4,18 @@
 # TODO: remove before release
 $LOAD_PATH.unshift File.expand_path('../', __FILE__)
 
-# stdlib
+# lazy stdlib
+autoload :Benchmark, 'benchmark'
+autoload :FileUtils, 'fileutils'
+
+# eager stdlib
 require 'tk'
-require 'benchmark'
 require 'digest/sha1'
-require 'fileutils'
 require 'json'
 require 'pathname'
-require 'pp'
+# require 'pp'
 require 'securerandom'
 require 'set'
-require 'tmpdir'
 
 class Pathname
   alias / join

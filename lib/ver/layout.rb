@@ -100,8 +100,6 @@ module VER
     module Tiling
       DEFAULT = { master: 1, stacking: 3 }
 
-      module_function
-
       def prepare(layout, options)
         slaves = layout.views
         master, stacking = DEFAULT.merge(options).values_at(:master, :stacking)
@@ -113,9 +111,9 @@ module VER
 
         limit = stacked.size == 0 ? 1.0 : 0.5
 
-        apply_hidden(hidden)
-        apply_masters(masters, limit)
-        apply_stacked(stacked, limit)
+        apply_hidden(hidden) if hidden
+        apply_masters(masters, limit) if masters
+        apply_stacked(stacked, limit) if stacked
       end
 
       def apply_hidden(windows)
@@ -134,7 +132,7 @@ module VER
                       relheight: step, relwidth: width) }
       end
 
-      def apply_stacked(window, width, step = 1.0 / windows.size)
+      def apply_stacked(windows, width, step = 1.0 / windows.size)
         windows.each_with_index{|window, idx|
           window.place(relx: 0.5, rely: (step * idx),
                       relheight: step, relwidth: width) }

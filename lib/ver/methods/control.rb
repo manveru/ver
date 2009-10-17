@@ -323,6 +323,7 @@ module VER
       end
 
       def save_smart(from, to)
+        require 'tmpdir'
         sha1 = Digest::SHA1.hexdigest([from, to].join)
         temp_path = File.join(Dir.tmpdir, 'ver', sha1)
         temp_dir = File.dirname(temp_path)
