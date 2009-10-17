@@ -24,6 +24,14 @@ module VER
       def view_push_down
         view.push_down
       end
+
+      def view_push_top
+        view.push_top
+      end
+
+      def view_push_bottom
+        view.push_bottom
+      end
     end
   end
 end

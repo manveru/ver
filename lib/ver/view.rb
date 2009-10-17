@@ -154,6 +154,14 @@ module VER
       layout.push_down(self)
     end
 
+    def push_top
+      layout.push_top(self)
+    end
+
+    def push_bottom
+      layout.push_bottom(self)
+    end
+
     def destroy
       [@text, @ybar, @xbar, @status].each do |widget|
         widget.destroy if widget

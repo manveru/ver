@@ -18,12 +18,14 @@ module VER
       end
 
       vim.add_mode :views do |mode|
-        mode.map :view_create,     %w[Control-w c]
-        mode.map :view_focus_next, %w[Control-w j]
-        mode.map :view_focus_prev, %w[Control-w k]
-        mode.map :view_push_down,  %w[Control-w J]
-        mode.map :view_push_up,    %w[Control-w K]
-        mode.map :view_close,      %w[Control-w w]
+        mode.map :view_create,      %w[Control-w c]
+        mode.map :view_focus_next,  %w[Control-w j]
+        mode.map :view_focus_prev,  %w[Control-w k]
+        mode.map :view_push_down,   %w[Control-w J]
+        mode.map :view_push_up,     %w[Control-w K]
+        mode.map :view_close,       %w[Control-w w]
+        mode.map :view_push_top,    %w[Control-w Return]
+        mode.map :view_push_bottom, %w[Control-w BackSpace]
       end
 
       vim.add_mode :move do |mode|

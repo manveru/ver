@@ -8,6 +8,7 @@ module VER
       pack(fill: :both, expand: true)
 
       @views = []
+      @options = {}
       self.strategy = Layout::VerticalTiling
     end
 
@@ -29,7 +30,7 @@ module VER
       @views.delete view
       view.destroy
 
-      if previous = @views.last
+      if previous = @views.first
         apply
         previous.focus
       else
@@ -81,61 +82,82 @@ module VER
       apply
     end
 
-    def apply(options = {})
-      strategy.apply(self, options)
+    def push_top(current)
+      @views.unshift(@views.delete(current))
+      apply
     end
 
-    module VerticalTiling
-      DEFAULT = { left: 1, right: 3 }
+    def push_bottom(view)
+      @views.push(@views.delete(view))
+      apply
+    end
+
+    def apply(options = {})
+      @options.merge!(options)
+      strategy.apply(self, @options)
+    end
+
+    module Tiling
+      DEFAULT = { master: 1, stacking: 3 }
 
       module_function
 
-      def apply(layout, options = {})
+      def prepare(layout, options)
         slaves = layout.views
-        left, right = DEFAULT.merge(options).values_at(:left, :right)
-        head, tail, hidden = slaves[0...left], slaves[left..right], slaves[right..-1]
-        width = tail.size == 0 ? 1.0 : 0.5
-        head_step = 1.0 / head.size
-        tail_step = 1.0 / tail.size
+        master, stacking = DEFAULT.merge(options).values_at(:master, :stacking)
+        head, tail, hidden = slaves[0...master], slaves[master..stacking], slaves[stacking..-1]
+      end
 
-        hidden.each{|slave| slave.place_forget } if hidden
+      def apply(layout, options = {})
+        masters, stacked, hidden = prepare(layout, options)
 
-        head.each_with_index{|slave, idx|
-          slave.place(relx: 0.0, rely: (head_step * idx),
-                      relheight: head_step, relwidth: width)
-        } if head
+        limit = stacked.size == 0 ? 1.0 : 0.5
 
-        tail.each_with_index{|slave, idx|
-          slave.place(relx: 0.5, rely: (tail_step * idx),
-                      relheight: tail_step, relwidth: width)
-        } if tail
+        apply_hidden(hidden)
+        apply_masters(masters, limit)
+        apply_stacked(stacked, limit)
+      end
+
+      def apply_hidden(windows)
+        windows.each(&:place_forget)
+      end
+    end
+
+    module VerticalTiling
+      extend Tiling
+
+      module_function
+
+      def apply_masters(windows, width, step = 1.0 / windows.size)
+        windows.each_with_index{|window, idx|
+          window.place(relx: 0.0, rely: (step * idx),
+                      relheight: step, relwidth: width) }
+      end
+
+      def apply_stacked(window, width, step = 1.0 / windows.size)
+        windows.each_with_index{|window, idx|
+          window.place(relx: 0.5, rely: (step * idx),
+                      relheight: step, relwidth: width) }
       end
     end
 
     module HorizontalTiling
-      DEFAULT = { top: 1, bottom: 3 }
+      extend Tiling
 
       module_function
 
-      def apply(layout, options = {})
-        slaves = layout.views
-        top, bottom = DEFAULT.merge(options).values_at(:top, :bottom)
-        head, tail, hidden = slaves[0...top], slaves[top..bottom], slaves[bottom..-1]
-        height = tail.size == 0 ? 1.0 : 0.5
-        head_step = 1.0 / head.size
-        tail_step = 1.0 / tail.size
+      def apply_masters(windows, height, step = 1.0 / windows.size)
+        windows.each_with_index do |window, idx|
+          window.place(relx: (step * idx), rely: 0.0,
+                       relheight: height, relwidth: step)
+        end
+      end
 
-        hidden.each{|slave| slave.place_forget } if hidden
-
-        head.each_with_index{|slave, idx|
-          slave.place(relx: (head_step * idx), rely: 0.0,
-                      relheight: height, relwidth: head_step)
-        } if head
-
-        tail.each_with_index{|slave, idx|
-          slave.place(relx: (tail_step * idx), rely: 0.5,
-                      relheight: height, relwidth: tail_step)
-       } if tail
+      def apply_stacked(windows, height, step = 1.0 / windows.size)
+        windows.each_with_index do |window, idx|
+          window.place(relx: (step * idx), rely: 0.5,
+                       relheight: height, relwidth: step)
+        end
       end
     end
   end
