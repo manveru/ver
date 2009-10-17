@@ -265,25 +265,29 @@ module Textpow
 
     def match_end(string, match, position)
       regstring = self.end.clone
+
       regstring.gsub!(/\\([1-9])/){ match[$1.to_i] }
       regstring.gsub!(/\\k<(.*?)>/){ match[$1.to_sym] }
+      regstring = '\\\\' if regstring == '\\'
+
       Regexp.new(regstring).match(string, position)
     end
 
     def match_first_son(string, position)
+      return unless patterns
       match = nil
 
-      if patterns
-        patterns.each do |pattern|
-          tmatch = pattern.match_first(string, position)
-          next unless tmatch
-          if !match || match[1].offset(0).first > tmatch[1].offset(0).first
-            match = tmatch
-          end
+      patterns.each do |pattern|
+        tmatch = pattern.match_first(string, position)
+
+        next unless tmatch
+
+        if !match || match[1].offset(0).first > tmatch[1].offset(0).first
+          match = tmatch
         end
       end
 
-      match
+      return match
     end
 
     def parse_line(stack, line, processor)
@@ -301,7 +305,7 @@ module Textpow
         end_match = nil
 
         if top.end
-          end_match = top.match_end( line, match, position)
+          end_match = top.match_end(line, match, position)
         end
 
         if end_match && ( !pattern_match || pattern_match.offset(0).first >= end_match.offset(0).first )
@@ -310,16 +314,14 @@ module Textpow
           start_pos = pattern_match_first_offset.first
           end_pos = pattern_match_first_offset.last
 
-          if processor
-            top_contentName = top.contentName
-            processor.close_tag top_contentName, start_pos if top_contentName
+          top_contentName = top.contentName
+          processor.close_tag top_contentName, start_pos if top_contentName
 
-            parse_captures "captures", top, pattern_match, processor
-            parse_captures "endCaptures", top, pattern_match, processor
+          parse_captures "captures", top, pattern_match, processor
+          parse_captures "endCaptures", top, pattern_match, processor
 
-            top_name = top.name
-            processor.close_tag top_name, end_pos if top_name
-          end
+          top_name = top.name
+          processor.close_tag top_name, end_pos if top_name
 
           stack.pop
           top, match = stack.last
@@ -331,19 +333,17 @@ module Textpow
           pattern_name = pattern.name
 
           if pattern.begin
-            if processor
-              processor.open_tag pattern_name, start_pos if pattern_name
-              parse_captures "captures", pattern, pattern_match, processor
-              parse_captures "beginCaptures", pattern, pattern_match, processor
+            processor.open_tag pattern_name, start_pos if pattern_name
+            parse_captures "captures", pattern, pattern_match, processor
+            parse_captures "beginCaptures", pattern, pattern_match, processor
 
-              pattern_contentName = pattern.contentName
-              processor.open_tag pattern_contentName, end_pos if pattern_contentName
-            end
+            pattern_contentName = pattern.contentName
+            processor.open_tag pattern_contentName, end_pos if pattern_contentName
 
             top = pattern
             match = pattern_match
             stack << [top, match]
-          elsif pattern.match and processor
+          elsif pattern.match
             processor.open_tag pattern_name, start_pos if pattern_name
             parse_captures "captures", pattern, pattern_match, processor
             processor.close_tag pattern_name, end_pos if pattern_name
