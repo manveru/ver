@@ -70,15 +70,8 @@ module VER
       VER.opened_file(self)
 
       edit_reset
-
-      if pristine
-        Thread.new do
-          wait_visibility
-          setup_highlight
-        end
-      else
-        setup_highlight
-      end
+      mark_set :insert, '1.0'
+      setup_highlight
 
       @pristine = false
     end
@@ -229,15 +222,21 @@ module VER
 
     def setup_highlight
       return unless filename
-      return unless @syntax = Syntax.from_filename(filename)
 
-      self.highlight_thread = create_highlight_thread
+      if @syntax = Syntax.from_filename(filename)
+        self.highlight_thread ||= create_highlight_thread(pristine)
+        refresh_highlight
+      else
+        highlight_thread.stop if highlight_thread.respond_to?(:stop)
+        self.highlight_thread = nil
+      end
     end
 
-    def create_highlight_thread
+    def create_highlight_thread(wait_for_visibility)
       Thread.new do
         this = Thread.current
         this[:pending] = 1
+        wait_visibility if wait_for_visibility
 
         loop do
           if this[:pending] > 0
@@ -256,6 +255,7 @@ module VER
 
     def refresh_highlight(lineno = 0)
       return unless ht = highlight_thread
+      sleep 0.1 until ht[:pending]
       ht[:pending] += 1
     end
 

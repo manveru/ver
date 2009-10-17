@@ -113,16 +113,8 @@ module VER
 
     def on_focus(event)
       @text.set_window_title
+      @text.see(:insert)
     end
-
-    # @text.bind '<Modified>',       proc{|e| refresh; p :modified }
-    # @text.bind '<Undo>',           proc{|e| refresh; p :undo }
-    # @text.bind '<Redo>',           proc{|e| refresh; p :redo }
-    # @text.bind '<Copy>',           proc{|e| p :copy }
-    # @text.bind '<Cut>',            proc{|e| refresh; p :cut }
-    # @text.bind '<Paste>',          proc{|e| refresh; p :paste }
-    # @text.bind '<PasteSelection>', proc{|e| refresh; p :paste_selection }
-    # @text.bind '<Movement>',       proc{|e| p :movement }
 
     def focus
       text.focus
