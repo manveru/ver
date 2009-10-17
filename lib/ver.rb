@@ -69,7 +69,7 @@ module VER
   }
 
   class << self
-    attr_reader :root, :layout, :status, :paths, :options
+    attr_reader :root, :layout, :paths, :options
   end
 
   module_function
