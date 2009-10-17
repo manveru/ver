@@ -1,5 +1,7 @@
 module VER
   class Theme < Struct.new(:name, :uuid, :default, :colors)
+    CACHE = {}
+
     def self.list
       VER.loadpath.map{|path| Dir[(path/'theme/*.json').to_s] }.flatten
     end
@@ -12,15 +14,20 @@ module VER
        raise(ArgumentError, "No path to theme file given") unless filename
 
       json = JSON.load(File.read(filename.to_s))
+      uuid = json['uuid']
 
+      CACHE[uuid] ||= create(uuid, json)
+    end
+
+    def self.create(uuid, hash)
       instance = new
-      instance.name = json['name']
-      instance.uuid = json['uuid']
+      instance.name = hash['name']
+      instance.uuid = uuid
 
-      json['settings'].each do |hash|
-        next unless settings = hash['settings']
+      hash['settings'].each do |setting|
+        next unless settings = setting['settings']
 
-        if scope_names = hash['scope']
+        if scope_names = setting['scope']
           # specific settings
           scope_names.split(/\s*,\s*/).each do |scope_name|
             instance.set(scope_name, settings)
@@ -31,7 +38,7 @@ module VER
         end
       end
 
-      instance
+      return instance
     end
 
     def self.find_and_load(theme_name)
