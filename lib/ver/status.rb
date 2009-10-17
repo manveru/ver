@@ -40,7 +40,7 @@ module VER
       return unless length
       target = value.size + length
 
-      block = lambda{
+      block = lambda{|event|
         if value.size >= target
           bind_remove('<Modified>')
           ask_submit
