@@ -1,7 +1,10 @@
 module VER
   class Syntax
-    autoload :Detector, 'ver/syntax/detector'
-    autoload :Processor, 'ver/syntax/processor'
+    autoload :Detector,      'ver/syntax/detector'
+    autoload :Processor,     'ver/syntax/processor'
+    autoload :Engine,        'ver/syntax/engine'
+    autoload :Pattern,       'ver/syntax/pattern'
+    autoload :Specification, 'ver/syntax/specification'
 
     def self.list
       VER.loadpath.map{|path| Dir[(path/'syntax/*.json').to_s] }.flatten
@@ -21,7 +24,7 @@ module VER
 
     def self.load(file)
       raise(ArgumentError, "No path to syntax file given") unless file
-      Textpow::SyntaxNode.load(file)
+      Engine.load(file)
     end
 
     def self.find_and_load(syntax_name)
