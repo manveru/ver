@@ -147,7 +147,8 @@ module VER
     end
 
     def self.split_stack(stack)
-      return stack, nil if stack[0] == '0'
+      first = stack[0]
+      return stack, nil if first == '0' || first == 'KeyPress-0'
 
       pivot = stack.index{|c| c !~ /^(KeyPress-\d+|\d+)$/ }
 
