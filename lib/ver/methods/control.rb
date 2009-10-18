@@ -203,6 +203,15 @@ module VER
           "insert linestart + #{indentation2.size} chars",
           indentation1
         )
+
+        clean_previous_line
+      end
+
+      def clean_previous_line
+        from, to = index('insert - 1 line linestart'), index('insert - 1 line lineend')
+        line = get(from, to)
+        bare = line.rstrip
+        replace(from, to, bare) if bare.empty?
       end
 
       def insert_tab
