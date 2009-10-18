@@ -19,6 +19,12 @@ module VER
         self.lineno += 1
       end
 
+      def open_folding(pos)
+      end
+
+      def close_folding(pos)
+      end
+
       def open_tag(name, pos)
         stack << [name, pos]
 
@@ -33,7 +39,7 @@ module VER
       def close_tag(name, mark)
         sname, pos = stack.pop
 
-        tags[name] << "#{lineno}.#{pos}" << "#{lineno}.#{mark}"
+        tags[name] << "1.0 + #{pos} chars" << "1.0 + #{mark} chars"
       rescue RuntimeError => exception
         # if you modify near the end of the textarea, sometimes the last tag
         # cannot be closed because the contents of the textarea changed since
