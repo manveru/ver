@@ -208,7 +208,7 @@ module VER
         mode.to :go_down,             %w[Down], %w[j]
         mode.to :continue_completion, %w[Right], %w[l]
         mode.to :submit,              %w[Return]
-        mode.to :cancel,              %w[Escape]
+        mode.to :cancel,              %w[Escape], %w[BackSpace]
       end
 
       vim
