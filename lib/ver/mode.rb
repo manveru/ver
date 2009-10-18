@@ -149,12 +149,13 @@ module VER
     def self.split_stack(stack)
       return stack, nil if stack[0] == '0'
 
-      pivot = stack.index{|c| c !~ /^\d+$/ }
+      pivot = stack.index{|c| c !~ /^(KeyPress-\d+|\d+)$/ }
 
       if pivot == 0
         return stack, nil
       elsif pivot
-        return stack[pivot..-1], stack[0..pivot].join.to_i
+        keys, args = stack[pivot..-1], stack[0..pivot]
+        return keys, args.join.scan(/\d+/).join.to_i
       else
         return [], stack.join.to_i
       end
