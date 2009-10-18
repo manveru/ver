@@ -158,9 +158,9 @@ module VER
       end
     end
 
-    def remove_tags_on(widget)
+    def remove_tags_on(widget, from, to)
       colors.each do |name, options|
-        widget.tag_remove(name.to_s, '1.0', 'end')
+        widget.tag_remove(name.to_s, from, to) # '1.0', 'end')
       end
     end
 

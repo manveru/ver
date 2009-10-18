@@ -29,6 +29,7 @@ module VER
       self.selection_start = self.highlight_thread = nil
       @pristine = true
       @encoding = VER.options.fetch(:encoding)
+      @dirty_indices = []
 
       self.mode = keymap.mode
     end
@@ -212,12 +213,12 @@ module VER
 
       tk_send_without_enc('delete', *args)
 
-      touch!
+      touch!(*args)
     end
 
     def insert(*args)
       super
-      touch!
+      touch!(args.first)
     end
 
     def setup_highlight
@@ -225,7 +226,7 @@ module VER
 
       if @syntax = Syntax.from_filename(filename)
         self.highlight_thread ||= create_highlight_thread(pristine)
-        refresh_highlight
+        refresh_highlight all: true
       else
         highlight_thread.stop if highlight_thread.respond_to?(:stop)
         self.highlight_thread = nil
@@ -245,7 +246,8 @@ module VER
               sleep 0.2
             end
 
-            refresh_highlight!
+            refresh_highlight! this[:all]
+            this[:all] = false
           else
             sleep 0.5
           end
@@ -253,10 +255,11 @@ module VER
       end
     end
 
-    def refresh_highlight(lineno = 0)
+    def refresh_highlight(options = {})
       return unless ht = highlight_thread
       sleep 0.1 until ht[:pending]
       ht[:pending] += 1
+      ht[:all] = options[:all]
     end
 
     def focus
@@ -289,12 +292,24 @@ module VER
 
     private
 
-    def refresh_highlight!
+    def refresh_highlight!(all = false)
       tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
-      syntax.highlight(self, value, lineno = 0)
+
+      if all
+        @dirty_indices.clear
+        syntax.highlight(self, value)
+      else
+        while index = @dirty_indices.shift
+          line = index.to_i
+          value = get(from = "#{index} linestart", to = "#{index} lineend")
+
+          syntax.highlight(self, value, line - 1, from, to)
+        end
+      end
     end
 
-    def touch!
+    def touch!(*args)
+      @dirty_indices.concat args.flatten.map{|a| index(a) }
       Tk.event_generate(self, '<Modified>')
     end
 

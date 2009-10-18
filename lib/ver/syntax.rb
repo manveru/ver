@@ -40,7 +40,7 @@ module VER
       @theme  = theme || Theme.find_and_load(VER.options[:theme])
     end
 
-    def highlight(textarea, code, lineno = 0)
+    def highlight(textarea, code, lineno = nil, from = '1.0', to = 'end')
       if @old_theme
         @old_theme.delete_tags_on(textarea)
         @old_theme = nil
@@ -51,12 +51,20 @@ module VER
         @theme.apply_default_on(textarea)
         @first_highlight = false
       else
-        @theme.remove_tags_on(textarea)
+        @theme.remove_tags_on(textarea, from, to)
       end
 
-      pr = Processor.new(textarea, @theme, lineno)
+      pr = Processor.new(textarea, @theme, lineno || 0)
 
-      parser.parse(code, pr)
+      if lineno
+        pr.start_parsing(parser.scopeName)
+        stack = [[parser, nil]]
+        parser.parse_line(stack, code, pr)
+        pr.end_parsing(parser.scopeName)
+      else
+        @theme.remove_tags_on(textarea, from, to)
+        parser.parse(code, pr)
+      end
     end
 
     def theme=(theme)
