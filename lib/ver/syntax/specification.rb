@@ -30,6 +30,18 @@ module VER
         self[:patterns] = patterns.map{|pattern| Pattern.new(pattern) }
       end
 
+      def each_line_pattern
+        patterns.each do |pattern|
+          yield pattern if pattern.match
+        end
+      end
+
+      def each_block_pattern
+        patterns.each do |pattern|
+          yield pattern if pattern.begin
+        end
+      end
+
       alias fileTypes= file_types=
       alias firstLineMatch= first_line_match=
       alias foldingStartMarker= folding_start_marker=

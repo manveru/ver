@@ -16,6 +16,61 @@ module VER
       end
 
       def parse(source, callback)
+      	self.callback = callback
+        callback.start_parsing(spec.name)
+        parse_lines(source)
+        # parse_areas(source)
+        callback.end_parsing(spec.name)
+      end
+
+      def parse_areas(source)
+        spec.each_area_pattern do |pattern|
+          parse_area(source, pattern)
+        end
+      end
+
+      def parse_area(source, pattern)
+      end
+
+      def parse_lines(source)
+        source.each_line.with_index do |line, idx|
+          parse_line(line, idx + 1)
+        end
+      end
+
+      def parse_line(line, lineno = 1)
+        spec.each_line_pattern do |pattern|
+          parse_line_pattern(line, pattern, lineno)
+        end
+      end
+
+      def parse_line_pattern(line, pattern, lineno)
+        return unless line =~ pattern.match
+        match = $~
+        from, to = match.begin(0), match.end(0)
+
+				callback.tag(pattern.name, [lineno, from], [lineno, to])
+
+
+        pattern.each_capture do |key, name|
+          offset_from, offset_to = match.offset(key)
+
+          if offset_from
+    				callback.tag(pattern.name, [lineno, offset_from], [lineno, offset_to])
+          end
+
+#           p match: match
+#           p key: key, name: name
+#           p offset_from: offset_from
+#           p offset_to: offset_to
+        end
+      end
+    end
+  end
+end
+
+__END__
+      def parse(source, callback)
         self.callback = callback
         self.scanner = StringScanner.new(source)
         pos = scanner.pos
@@ -48,6 +103,8 @@ module VER
           parse_match(pattern, pmatch)
         elsif (pbegin = pattern.begin) && (pend = pattern.end)
           parse_begin_end(pattern, pbegin, pend)
+        elsif pbegin
+          # parse_begin(pattern, pbegin)
         end
       end
 
@@ -73,6 +130,18 @@ module VER
           on_begin_end_name(pattern, regex, name, from)
         # similar to name, but only assigns the name to the text between what is
         # matched by the begin/end patterns.
+        elsif content_name = pattern.content_name
+          on_begin_end_content_name(pattern, regex, content_name, from)
+        end
+      end
+
+      def parse_begin(pattern, pbegin)
+        from = scanner.pos
+        regex = /#{pbegin}.*/
+        return unless scanner.scan(regex)
+
+        if name = pattern.name
+          on_begin_end_name(pattern, regex, name, from)
         elsif content_name = pattern.content_name
           on_begin_end_content_name(pattern, regex, content_name, from)
         end
