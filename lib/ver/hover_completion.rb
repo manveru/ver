@@ -88,7 +88,7 @@ module VER
       return unless choices && choices.size > 0
 
       longest_choice = choices.map{|choice| choice.size }.max
-      list.configure width: longest_choice + 2, height: 20
+      list.configure width: longest_choice + 2, height: choices.size
       x, y = parent.caret.values_at('x', 'y')
       list.place x: x, y: y
     end
