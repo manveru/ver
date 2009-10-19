@@ -1,7 +1,8 @@
 module VER
   class View < TkFrame
-    autoload :Entry, 'ver/view/entry'
-    autoload :List,  'ver/view/list'
+    autoload :Entry,   'ver/view/entry'
+    autoload :List,    'ver/view/list'
+    autoload :Console, 'ver/view/console'
 
     attr_reader :layout, :text, :status
 
