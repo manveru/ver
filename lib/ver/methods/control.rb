@@ -1,6 +1,10 @@
 module VER
   module Methods
     module Control
+      def open_console
+        View::Console.new(self)
+      end
+
       def wrap_line
         text = get('insert linestart', 'insert lineend')
         lines = wrap_lines_of(text).join("\n")
