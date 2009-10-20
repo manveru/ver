@@ -225,6 +225,25 @@ module VER
       touch!(args.first)
     end
 
+
+    # Replaces the range of characters between index1 and index2 with the given
+    # characters and tags.
+    # See the section on [insert] for an explanation of the handling of the
+    # tag_list arguments, and the section on [delete] for an explanation
+    # of the handling of the indices.
+    # If index2 corresponds to an index earlier in the text than index1, an
+    # error will be generated.
+    # The deletion and insertion are arranged so that no unnecessary scrolling
+    # of the window or movement of insertion cursor occurs.
+    # In addition the undo/redo stack are correctly modified, if undo operations
+    # are active in the text widget.
+    #
+    # replace index1 index2 chars ?tagList chars tagList ...?
+    def replace(index1, index2, *rest)
+      super
+      touch! index(index1).to_i.upto(index(index2).to_i).map{|n| "#{n}.0" }
+    end
+
     def focus
       super
       Tk.event_generate(self, '<Focus>')
