@@ -241,7 +241,7 @@ module VER
     # replace index1 index2 chars ?tagList chars tagList ...?
     def replace(index1, index2, *rest)
       super
-      touch! index(index1).to_i.upto(index(index2).to_i).map{|n| "#{n}.0" }
+      touch! *index(index1).to_i.upto(index(index2).to_i).map{|n| "#{n}.0" }
     end
 
     def focus
