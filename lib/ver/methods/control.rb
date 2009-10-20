@@ -188,6 +188,8 @@ module VER
           insert('insert linestart', "\n")
           mark_set(:insert, 'insert - 1 line')
         end
+
+        start_insert_mode
       end
 
       def insert_newline
