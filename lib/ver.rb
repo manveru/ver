@@ -58,8 +58,8 @@ module VER
   # p Tk::Tile.themes # a list of available themes
   #   Linux themes: "classic", "default", "clam", "alt"
   OPTIONS = {
-    font_size:     9,
-    font_family:   'Terminus',
+    font_size:     10,
+    font_family:   'TkFixedFont',
     encoding:      Encoding::UTF_8,
     tk_theme:      'clam',
     theme:         'Blackboard',

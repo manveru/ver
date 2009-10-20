@@ -9,12 +9,12 @@ end
 require 'optparse'
 
 options = {
-  fork:     true,
-  keymap:   'vim',
-  font_size: 9,
-  font_family: 'Terminus',
-  theme:    'Blackboard',
-  tk_theme: 'clam',
+  fork:        true,
+  keymap:      'vim',
+  font_size:   10,
+  font_family: 'TkFixedFont',
+  theme:       'Blackboard',
+  tk_theme:    'default',
 }
 
 op = OptionParser.new{|o|
