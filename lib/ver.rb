@@ -136,7 +136,7 @@ module VER
   def exit
     Tk.exit rescue nil
     EM.stop rescue nil
-    exit
+    Kernel.exit
   end
 
   def load(name)
