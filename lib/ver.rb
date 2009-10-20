@@ -19,6 +19,8 @@ require 'pathname'
 require 'securerandom'
 require 'set'
 
+
+# annoying fixes
 class Pathname
   alias / join
 
@@ -29,6 +31,11 @@ class Pathname
   def =~(regexp)
     to_s =~ regexp
   end
+end
+
+# FIXME: remove when eventmachine 0.12.9 comes out.
+class Thread
+  alias kill! kill unless current.respond_to?(:kill!)
 end
 
 module VER
