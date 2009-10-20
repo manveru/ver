@@ -127,12 +127,12 @@ module VER
 
     def tag_all_matching(name, regexp, options = {})
       name = name.to_s
+      options = TAG_ALL_MATCHING_OPTIONS.merge(options)
       from, to = options.values_at(:from, :to)
 
       if tag_exists?(name)
         tag_remove(name, from, to)
       else
-        options = TAG_ALL_MATCHING_OPTIONS.merge(options)
         fg, bg = options.values_at(:foreground, :background)
         TktNamedTag.new(self, name, foreground: fg, background: bg)
       end
