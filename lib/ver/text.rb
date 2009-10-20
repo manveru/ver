@@ -119,29 +119,33 @@ module VER
     end
 
     TAG_ALL_MATCHING_OPTIONS = {
-      foreground: '#f00',
-      background: '#00f',
+      foreground: '#000',
+      background: '#f00',
+      from: '1.0',
+      to: 'end - 1 chars',
     }
 
     def tag_all_matching(name, regexp, options = {})
       name = name.to_s
+      from, to = options.values_at(:from, :to)
 
       if tag_exists?(name)
-        tag_remove(name, '1.0', 'end')
+        tag_remove(name, from, to)
       else
         options = TAG_ALL_MATCHING_OPTIONS.merge(options)
-        TktNamedTag.new(self, name, options)
+        fg, bg = options.values_at(:foreground, :background)
+        TktNamedTag.new(self, name, foreground: fg, background: bg)
       end
 
-      search_all regexp do |match, from, to|
-        tag_add name, from, to
+      search_all(regexp, from, to) do |match, match_from, match_to|
+        tag_add name, match_from, match_to
       end
     end
 
-    def search_all(regexp, from = '1.0')
+    def search_all(regexp, from = '1.0', to = 'end - 1 chars')
       return Enumerator.new(self, :search_all, regexp, from) unless block_given?
 
-      while result = search_with_length(regexp, from, 'end - 1 chars')
+      while result = search_with_length(regexp, from, to)
         pos, len, match = result
         break if !result || len == 0
         from = index("#{pos} + #{len} chars")
@@ -284,7 +288,7 @@ module VER
     def schedule_line_highlight!(line, from, to)
       EM.defer do
         syntax.highlight(self, get(from, to), line, from, to)
-        tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
+        tag_all_matching('trailing_whitespace', /[ \t]+$/, from: from, to: to)
       end
     end
 
