@@ -8,8 +8,10 @@ $LOAD_PATH.unshift File.expand_path('../', __FILE__)
 autoload :Benchmark, 'benchmark'
 autoload :FileUtils, 'fileutils'
 
+# 3rd party
+require 'eventmachine'
+
 # eager stdlib
-require 'tk'
 require 'digest/sha1'
 require 'json'
 require 'pathname'
@@ -81,23 +83,27 @@ module VER
   def run(given_options = {})
     @options = OPTIONS.merge(given_options)
 
-    first_startup unless options[:home_conf_dir].directory?
-    load 'rc'
-    sanitize_options
-    setup
-    open_argv || open_welcome
-    emergency_bindings
-
+    EM.run do
+      first_startup unless options[:home_conf_dir].directory?
+      setup_tk
+      load 'rc'
+      sanitize_options
+      setup
+      open_argv || open_welcome
+      emergency_bindings
+    end
   rescue => exception
     VER.error(exception)
-    Tk.exit
-  else
-    Tk.mainloop
+    exit
+  end
+
+  def setup_tk
+    require 'tk'
+    Thread.abort_on_exception = true
+    # TclTkLib.mainloop_abort_on_exception = true
   end
 
   def setup
-    Thread.abort_on_exception = true
-
     Tk::Tile.set_theme options[:tk_theme]
 
     @paths = Set.new
@@ -125,6 +131,12 @@ module VER
     (core/'scratch').cp(home/'scratch')
     (core/'tutorial').cp(home/'tutorial')
     (core/'welcome').cp(home/'welcome')
+  end
+
+  def exit
+    Tk.exit rescue nil
+    EM.stop rescue nil
+    exit!
   end
 
   def load(name)

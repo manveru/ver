@@ -17,7 +17,7 @@ module VER
     attr_reader :encoding, :pristine, :syntax
 
     # attributes for diverse functionality
-    attr_accessor :selection_mode, :selection_start, :highlight_thread
+    attr_accessor :selection_mode, :selection_start
 
     def initialize(view, options = {})
       super
@@ -26,7 +26,7 @@ module VER
       keymap_name = VER.options.fetch(:keymap)
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
-      self.selection_start = self.highlight_thread = nil
+      self.selection_start = nil
       @pristine = true
       @encoding = VER.options.fetch(:encoding)
       @dirty_indices = []
@@ -82,7 +82,7 @@ module VER
     end
 
     def quit
-      Tk.exit
+      VER.exit
     end
 
     def insert_index
@@ -221,47 +221,6 @@ module VER
       touch!(args.first)
     end
 
-    def setup_highlight
-      return unless filename
-
-      if @syntax = Syntax.from_filename(filename)
-        self.highlight_thread ||= create_highlight_thread(pristine)
-        refresh_highlight all: true
-      else
-        highlight_thread.stop if highlight_thread.respond_to?(:stop)
-        self.highlight_thread = nil
-      end
-    end
-
-    def create_highlight_thread(wait_for_visibility)
-      Thread.new do
-        this = Thread.current
-        this[:pending] = 1
-        wait_visibility if wait_for_visibility
-
-        loop do
-          if this[:pending] > 0
-            while this[:pending] > 0
-              this[:pending] -= 1
-              sleep 0.2
-            end
-
-            refresh_highlight! this[:all]
-            this[:all] = false
-          else
-            sleep 0.5
-          end
-        end
-      end
-    end
-
-    def refresh_highlight(options = {})
-      return unless ht = highlight_thread
-      sleep 0.1 until ht[:pending]
-      ht[:pending] += 1
-      ht[:all] = options[:all]
-    end
-
     def focus
       super
       Tk.event_generate(self, '<Focus>')
@@ -290,26 +249,49 @@ module VER
       VER.root['title'] = title
     end
 
-    private
+    def setup_highlight
+      return unless filename
 
-    def refresh_highlight!(all = false)
-      tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
-
-      if all
-        @dirty_indices.clear
-        syntax.highlight(self, value)
-      else
-        while index = @dirty_indices.shift
-          line = index.to_i
-          value = get(from = "#{index} linestart", to = "#{index} lineend")
-
-          syntax.highlight(self, value, line - 1, from, to)
-        end
+      if @syntax = Syntax.from_filename(filename)
+        EM.defer{ syntax.highlight(self, value) }
       end
     end
 
+    def schedule_line_highlight(raw_index)
+      return unless @syntax
+      index = index(raw_index)
+
+      line = index.to_i - 1
+      from, to = "#{index} linestart", "#{index} lineend"
+      schedule_line_highlight!(line, from, to)
+    end
+
+    def schedule_highlight(options = {})
+      return unless @syntax
+      schedule_highlight!
+    end
+
+    private
+
+    def schedule_highlight!(*args)
+      EM.defer do
+        syntax.highlight(self, value)
+        tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
+      end
+    end
+
+    # TODO: only tag the current line.
+    def schedule_line_highlight!(line, from, to)
+      EM.defer do
+        syntax.highlight(self, get(from, to), line, from, to)
+        tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
+      end
+    end
+
+    # TODO: maybe we can make this one faster when many lines are going to be
+    #       highlighted at once by bundling them.
     def touch!(*args)
-      @dirty_indices.concat args.flatten.map{|a| index(a) }
+      args.each{|arg| schedule_line_highlight(arg) } if @syntax
       Tk.event_generate(self, '<Modified>')
     end
 
@@ -386,7 +368,7 @@ module VER
       return unless found = Theme.find(name)
 
       syntax.theme = Theme.load(found)
-      refresh_highlight
+      schedule_highlight
 
       status.message "Theme #{found} loaded"
     end
@@ -397,7 +379,7 @@ module VER
 
       theme = syntax.theme
       @syntax = Syntax.new(name, theme)
-      refresh_highlight
+      schedule_highlight
 
       status.message "Syntax #{found} loaded"
     end

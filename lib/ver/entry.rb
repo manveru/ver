@@ -34,7 +34,7 @@ module VER
     end
 
     def quit
-      Tk.exit
+      VER.exit
     end
 
     def value=(string)

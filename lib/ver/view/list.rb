@@ -62,7 +62,7 @@ module VER
     end
 
     def quit
-      Tk.exit
+      VER.exit
     end
 
     def go_line_up

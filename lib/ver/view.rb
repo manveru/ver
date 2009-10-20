@@ -108,7 +108,7 @@ module VER
 
     def on_modified(event)
       @text.see :insert
-      @text.refresh_highlight
+      # @text.refresh_highlight
       @text.status_projection(@status)
     end
 

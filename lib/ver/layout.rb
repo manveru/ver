@@ -34,7 +34,7 @@ module VER
         apply
         previous.focus
       else
-        Tk.exit
+        VER.exit
       end
     end
 

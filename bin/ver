@@ -28,10 +28,9 @@ op.parse!(ARGV)
 
 if options[:fork]
   fork do
-    fork do
-      require lib
-      VER.run(options)
-    end
+    trap(:HUP){ 'terminal disconnected' }
+    require lib
+    VER.run(options)
   end
 else
   require lib
