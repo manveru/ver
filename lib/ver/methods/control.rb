@@ -56,9 +56,7 @@ module VER
 
       def buffer_switch
         View::List::Buffer.new self do |file|
-
-          # VER.resume_buffer file_path
-          open_path file if File.exists? file
+          view.find_or_create(file) if File.exists?(file)
         end
       end
 
@@ -67,8 +65,8 @@ module VER
           # p count: count
         else
           View::List::Window.new self do |view|
+            view.push_top
             view.focus
-            # open_path(path)
           end
         end
       end
@@ -109,12 +107,12 @@ module VER
 
         return if fpath.empty?
 
-        open_path(fpath)
+        view.find_or_create(fpath)
       end
 
       def file_open_fuzzy
         View::List::FuzzyFileFinder.new self do |path|
-          open_path(path)
+          view.find_or_create(path)
         end
       end
 

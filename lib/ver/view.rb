@@ -121,9 +121,20 @@ module VER
       text.focus
     end
 
-    def create
+    def create(path = nil)
       layout.create_view do |view|
-        view.open_empty
+        path ? view.open_path(path) : view.open_empty
+      end
+    end
+
+    def find_or_create(path)
+      needle = Pathname(path.to_s).expand_path
+
+      if found = layout.views.find{|view| view.filename == needle }
+        found.push_top
+        found.focus
+      else
+        create(needle)
       end
     end
 
