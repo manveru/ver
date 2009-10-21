@@ -9,50 +9,12 @@ module VER
         mark_set :insert, "insert + #{count} char"
       end
 
-      def go_line_up(count = 1)
-        mark_set :insert, "insert - #{count} line"
-      end
-
-      def go_line_down(count = 1)
-        mark_set :insert, "insert + #{count} line"
-      end
-
-      def go_word_left
-        go_left_until Text::MATCH_WORD_LEFT
-      end
-
-      def go_left_until(regexp)
-        rsearch_all(regexp, "insert wordstart") do |match, from, to|
-          mark_set :insert, from
-          return
-        end
-
-        mark_set :insert, '1.0'
-      end
-
-      def go_word_right
-        go_right_until Text::MATCH_WORD_RIGHT
-      end
-
-      def go_chunk_right
-        go_right_until(/\b\S/)
-      end
-
-      def go_right_until(regexp)
-        search_all(regexp, "insert wordend") do |match, from, to|
-          mark_set :insert, "#{to} - 1 chars"
-          return
-        end
-
-        mark_set :insert, 'end'
-      end
-
       def go_beginning_of_line
-        mark_set :insert, 'insert linestart'
+        mark_set :insert, 'insert display linestart'
       end
 
       def go_end_of_line
-        mark_set :insert, 'insert lineend'
+        mark_set :insert, 'insert display lineend'
       end
 
       def go_line(number = 0)
@@ -63,24 +25,60 @@ module VER
         mark_set :insert, :end
       end
 
-      def go_page_up
-        height = winfo_height
-        linespace = cget(:font).metrics(:linespace)
-        diff = height / linespace
-        diff -= 2 if diff > 2
+      # HACK: but it's just too good to do it manually
 
-        mark_set :insert, "insert - #{diff} line"
-        see :insert
+      def go_page_up(count = 1)
+        mark_set :insert, tk_prev_page_pos(count)
       end
 
-      def go_page_down
-        height = winfo_height
-        linespace = cget(:font).metrics(:linespace)
-        diff = height / linespace
-        diff -= 2 if diff > 2
+      def go_page_down(count = 1)
+        mark_set :insert, tk_next_page_pos(count)
+      end
 
-        mark_set :insert, "insert + #{diff} line"
-        see :insert
+      def go_line_up(count = 1)
+        mark_set :insert, tk_next_line_pos(count)
+      end
+
+      def go_line_down(count = 1)
+        mark_set :insert, tk_prev_line_pos(count)
+      end
+
+      def go_word_right(count = 1)
+        count.times do
+          mark_set :insert, tk_next_word_pos('insert')
+        end
+      end
+
+      def go_word_left(count = 1)
+        count.times do
+          mark_set :insert, tk_prev_word_pos('insert')
+        end
+      end
+
+      private
+
+      def tk_prev_word_pos(start)
+        Tk.tk_call('tk::TextPrevPos', path, start, 'tcl_startOfPreviousWord')
+      end
+
+      def tk_next_word_pos(start)
+        Tk.tk_call('tk::TextNextWord', path, start)
+      end
+
+      def tk_prev_line_pos(count)
+        Tk.tk_call('tk::TextUpDownLine', path, count)
+      end
+
+      def tk_next_line_pos(count)
+        Tk.tk_call('tk::TextUpDownLine', path, -count.abs)
+      end
+
+      def tk_prev_page_pos(count)
+        Tk.tk_call('tk::TextScrollPages', path, count)
+      end
+
+      def tk_next_page_pos(count)
+        Tk.tk_call('tk::TextScrollPages', path, count)
       end
     end
   end
