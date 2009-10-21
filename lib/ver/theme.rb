@@ -160,13 +160,13 @@ module VER
 
     def remove_tags_on(widget, from, to)
       colors.each do |name, options|
-        widget.tag_remove(name.to_s, from, to) # '1.0', 'end')
+        widget.tag_remove(name.to_s, from, to) rescue nil
       end
     end
 
     def delete_tags_on(widget)
       colors.each do |name, option|
-        widget.tag_delete(name.to_s)
+        widget.tag_delete(name.to_s) rescue nil
       end
     end
   end
