@@ -34,8 +34,7 @@ module VER
     end
 
     def setup_text
-      font = VER.options[:font]
-      tab_width = font.measure('0') * 2
+      font, tabs = VER.options.values_at(:font, :tabs)
 
       @text = VER::Text.new(
         self,
@@ -45,7 +44,7 @@ module VER
         font:             font,
         insertofftime:    0, # blinking cursor be gone!
         setgrid:          true, # tell the wm that this is a griddy window
-        tabs:             tab_width,
+        tabs:             tabs,
         tabstyle:         :wordprocessor,
         undo:             true, # enable undo capabilities
         wrap:             :word
