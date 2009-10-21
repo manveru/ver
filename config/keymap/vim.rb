@@ -52,6 +52,8 @@ module VER
         mode.map :search_prev,                   %w[N]
         mode.map :search_prev_word_under_cursor, %w[numbersign]
         mode.map :status_search,                 %w[slash]
+        mode.map :search_char_right,             %w[f]
+        mode.map :search_char_left,              %w[F]
       end
 
       vim.add_mode :control do |mode|

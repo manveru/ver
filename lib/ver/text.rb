@@ -153,10 +153,10 @@ module VER
       end
     end
 
-    def rsearch_all(regexp, from = 'end')
+    def rsearch_all(regexp, from = 'end', to = '1.0')
       return Enumerator.new(self, :rsearch_all, regexp, from) unless block_given?
 
-      while result = rsearch_with_length(regexp, from, '1.0')
+      while result = rsearch_with_length(regexp, from, to)
         pos, len, match = result
         break if !result || len == 0
         from = index("#{pos} - #{len} chars")
