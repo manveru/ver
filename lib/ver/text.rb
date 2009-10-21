@@ -358,7 +358,7 @@ module VER
       if text =~ /\n/
         mark_set :insert, 'insert lineend'
         insert :insert, "\n"
-        insert :insert, text.chomp
+        text.each_line{|line| insert(:insert, line) }
       else
         insert :insert, text
       end
