@@ -167,9 +167,7 @@ module VER
     end
 
     def destroy
-      [@text, @ybar, @xbar, @status].each do |widget|
-        widget.destroy if widget
-      end
+      [@text, @ybar, @xbar, @status].compact(&:destroy)
 
       super
     end
