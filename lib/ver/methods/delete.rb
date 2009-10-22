@@ -5,66 +5,52 @@ module VER
         delete 'insert - 1 char'
       end
 
-      def delete_char_right
+      def delete_char_right(count = 1)
         delete 'insert'
       end
 
-      def delete_word_right
-        delete_right_until Text::MATCH_WORD_RIGHT
+      def delete_word_right(count = 1)
+        delete(*virtual_movement(:go_word_right, count))
       end
 
-      def delete_right_until(regexp)
-        search_all(regexp, "insert wordend") do |match, from, to|
-          delete :insert, "#{to} - 1 chars"
-          return
+      def delete_word_left(count = 1)
+        delete(*virtual_movement(:go_word_left, count))
+      end
+
+      def delete_line(count = 1)
+        count.times do
+          delete 'insert linestart', 'insert lineend + 1 char'
         end
-
-        delete :insert, 'end'
       end
 
-      def delete_word_left
-        delete_left_until Text::MATCH_WORD_LEFT
-      end
-
-      def delete_left_until(regexp)
-        rsearch_all(regexp, "insert wordstart") do |match, from, to|
-          delete from, :insert
-          return
+      def delete_to_eol(count = 1)
+        count.times do
+          delete 'insert', 'insert lineend'
         end
-
-        delete :insert, '1.0'
       end
 
-      def delete_line
-        delete 'insert linestart', 'insert lineend + 1 char'
-      end
-
-      def delete_to_eol
-        delete 'insert', 'insert lineend'
-      end
-
-      def delete_to_eol_then_insert
-        delete_to_eol
+      def delete_to_eol_then_insert(count = 1)
+        delete_to_eol(count)
         start_insert_mode
       end
 
-      def delete_char_right_then_insert
-        delete_char_right
+      def delete_char_right_then_insert(count = 1)
+        delete_char_right(count)
         start_insert_mode
       end
 
-      def delete_char_left_then_insert
-        delete_char_left
+      def delete_char_left_then_insert(count = 1)
+        delete_char_left(count)
         start_insert_mode
       end
 
-      def delete_word_right_then_insert
-        delete_word_right
+      def delete_word_right_then_insert(count = 1)
+        delete_word_right(count)
         start_insert_mode
       end
 
-      def delete_word_left_then_insert
-        delete_word_left
+      def delete_word_left_then_insert(count = 1)
+        delete_word_left(count)
         start_insert_mode
       end
     end

@@ -25,6 +25,14 @@ module VER
         mark_set :insert, :end
       end
 
+      def virtual_movement(name, count = 1)
+        pos = index(:insert)
+        __send__(name, count)
+        mark = index(:insert)
+        mark_set :insert, pos
+        return [pos, mark].sort
+      end
+
       # HACK: but it's just too good to do it manually
 
       def go_page_up(count = 1)
