@@ -8,6 +8,7 @@ task 'syntax_list' do
     file.puts 'module VER::Syntax::Detector'
 
     Dir.glob 'config/syntax/*.json' do |syntax|
+      basename = File.basename(syntax, '.json')
       plist = JSON.load(File.read(syntax))
       name = plist['name']
       file_types = plist['fileTypes']
@@ -17,12 +18,12 @@ task 'syntax_list' do
         # this syntax is next to useless for ruby
         file_types.delete('rb') if name == 'Ruby on Rails'
 
-        file.puts "  exts %p, %p" % [name, file_types]
+        file.puts "  exts %p, %p" % [basename, file_types]
       end
 
       if regex
         regex.gsub!('/', '\\/')
-        file.puts "  head %p, /%s/" % [name, regex.strip]
+        file.puts "  head %p, /%s/" % [basename, regex.strip]
       end
     end
 
