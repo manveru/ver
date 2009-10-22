@@ -129,7 +129,7 @@ module VER
       # end_y = index(:end).y
 
       percent = (100.0 / (end_y - 2)) * (insert_y - 1)
-      percent = 100.0 if percent.nan?
+      percent = 100.0 if percent.nan? || percent.infinite?
 
       additional = [keymap.mode]
       syntax_name = syntax.name if syntax
