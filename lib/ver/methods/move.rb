@@ -36,11 +36,11 @@ module VER
       end
 
       def go_line_up(count = 1)
-        mark_set :insert, tk_next_line_pos(count)
+        mark_set :insert, tk_prev_line_pos(count)
       end
 
       def go_line_down(count = 1)
-        mark_set :insert, tk_prev_line_pos(count)
+        mark_set :insert, tk_next_line_pos(count)
       end
 
       def go_word_right(count = 1)
@@ -66,15 +66,15 @@ module VER
       end
 
       def tk_prev_line_pos(count)
-        Tk.tk_call('tk::TextUpDownLine', path, count)
-      end
-
-      def tk_next_line_pos(count)
         Tk.tk_call('tk::TextUpDownLine', path, -count.abs)
       end
 
+      def tk_next_line_pos(count)
+        Tk.tk_call('tk::TextUpDownLine', path, count)
+      end
+
       def tk_prev_page_pos(count)
-        Tk.tk_call('tk::TextScrollPages', path, count)
+        Tk.tk_call('tk::TextScrollPages', path, -count.abs)
       end
 
       def tk_next_page_pos(count)
