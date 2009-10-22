@@ -284,7 +284,7 @@ module VER
     def schedule_line_highlight(raw_index)
       return unless @syntax
       index = index(raw_index)
-      schedule_line_highlight!(index.y, index.linestart, index.lineend)
+      schedule_line_highlight!(index.y - 1, index.linestart, index.lineend)
     end
 
     def schedule_highlight(options = {})
