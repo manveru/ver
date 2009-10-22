@@ -37,6 +37,11 @@ module VER
         layout.options.merge! master: 1, stacking: 0
         layout.apply
       end
+
+      def view_two
+        layout.options.merge! master: 1, stacking: 1
+        layout.apply
+      end
     end
   end
 end
