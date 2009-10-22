@@ -39,7 +39,7 @@ module VER
     end
 
     def noop(*args)
-      status.message "Noop %p in mode %p" % [args, keymap.mode]
+      message "Noop %p in mode %p" % [args, keymap.mode]
     end
 
     def short_filename
@@ -52,10 +52,10 @@ module VER
       begin
         enc = encoding.name
         self.value = filename.open("r:#{enc}"){|io| io.read }
-        status.message "Opened #{short_filename}"
+        message "Opened #{short_filename}"
       rescue Errno::ENOENT
         clear
-        status.message "Create #{short_filename}"
+        message "Create #{short_filename}"
       end
 
       after_open
@@ -63,7 +63,7 @@ module VER
 
     def open_empty
       clear
-      status.message "[No File]"
+      message "[No File]"
       after_open
     end
 
@@ -343,7 +343,7 @@ module VER
     def copy_fallback(text)
       TkClipboard.set(text)
 
-      status.message "Copied unkown entity of class %p" % [text.class]
+      message "Copied unkown entity of class %p" % [text.class]
     end
 
     def copy_message(lines, chars)
@@ -351,7 +351,7 @@ module VER
       chars_desc = chars == 1 ? 'character' : 'characters'
 
       msg = "copied %d %s of %d %s" % [lines, lines_desc, chars, chars_desc]
-      status.message msg
+      message msg
     end
 
     def paste_continous(text)
@@ -393,7 +393,7 @@ module VER
       syntax.theme = Theme.load(found)
       schedule_highlight
 
-      status.message "Theme #{found} loaded"
+      message "Theme #{found} loaded"
     end
 
     def load_syntax(name)
@@ -404,7 +404,7 @@ module VER
       @syntax = Syntax.new(name, theme)
       schedule_highlight
 
-      status.message "Syntax #{found} loaded"
+      message "Syntax #{found} loaded"
     end
   end
 end

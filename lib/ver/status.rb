@@ -40,20 +40,22 @@ module VER
       return unless length
       target = value.size + length
 
-      block = lambda{|event|
+      bind '<Modified>' do |event|
         if value.size >= target
           bind_remove('<Modified>')
           ask_submit
         end
-      }
-
-      bind('<Modified>', block)
+      end
     end
 
     def ask_submit
       answer = value.sub(@question, '')
-      result = @callback.call(answer)
-      message result.inspect
+      case result = @callback.call(answer)
+      when String
+        message result
+      else
+        message result.inspect
+      end
     end
 
     def ask_abort

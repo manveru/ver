@@ -311,8 +311,7 @@ module VER
           begin
             callback.call(*args)
           rescue => ex
-            p ex
-            status.message ex.message
+            VER.error(ex)
           ensure
             focus
           end
