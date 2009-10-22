@@ -44,8 +44,11 @@ module VER
       end
 
       def view_slave_inc
-        layout.options[:stacking] += 1
-        layout.apply
+        stacking = layout.options[:stacking]
+        unless stacking >= layout.views.size
+          layout.options[:stacking] += 1
+          layout.apply
+        end
       end
 
       def view_slave_dec
