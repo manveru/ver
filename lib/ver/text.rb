@@ -176,7 +176,9 @@ module VER
 
       return unless mark_name == :insert
 
-      Tk.event_generate(self, '<Movement>')
+      see :insert
+      refresh_selection
+      EM.defer{ status_projection(status) }
     end
 
     def refresh_selection

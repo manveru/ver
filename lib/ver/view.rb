@@ -84,7 +84,7 @@ module VER
     end
 
     def setup_events
-      %w[Movement Modified Focus].each do |name|
+      %w[Modified Focus].each do |name|
         @text.bind("<#{name}>"){|event| __send__("on_#{name.downcase}", event) }
       end
     end
