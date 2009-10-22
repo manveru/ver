@@ -39,11 +39,11 @@ module VER
       end
 
       vim.add_mode :move do |mode|
-        mode.map :go_beginning_of_line,   %w[KeyPress-0]
+        mode.map :go_beginning_of_line,   %w[KeyPress-0], %w[Home]
         mode.map :go_char_left,           %w[h], %w[Left]
         mode.map :go_char_right,          %w[l], %w[Right]
         mode.map :go_end_of_file,         %w[G]
-        mode.map :go_end_of_line,         %w[dollar]
+        mode.map :go_end_of_line,         %w[dollar], %w[End]
         mode.map :go_line,                %w[g g]
         mode.map :go_line_down,           %w[j], %w[Down]
         mode.map :go_line_up,             %w[k], %w[Up]
