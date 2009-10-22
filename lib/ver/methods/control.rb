@@ -143,10 +143,14 @@ module VER
       end
 
       def replace_char
-        status_ask 'Replace with: ', take: 1 do |string|
-          replace('insert', 'insert + 1 chars', string)
-          go_char_left
-          "replaced #{string.size} chars"
+        status_ask 'Replace with: ', take: 1 do |char|
+          if char.size == 1
+            replace('insert', 'insert + 1 chars', char)
+            go_char_left
+            "replaced #{char.size} chars"
+          else
+            status.message 'replace aborted'
+          end
         end
       end
 
