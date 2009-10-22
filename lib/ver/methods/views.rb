@@ -42,6 +42,28 @@ module VER
         layout.options.merge! master: 1, stacking: 1
         layout.apply
       end
+
+      def view_slave_inc
+        layout.options[:stacking] += 1
+        layout.apply
+      end
+
+      def view_slave_dec
+        stacking = layout.options[:stacking]
+        layout.options[:stacking] -= 1 if stacking > 0
+        layout.apply
+      end
+
+      def view_master_inc
+        layout.options[:master] += 1
+        layout.apply
+      end
+
+      def view_master_dec
+        master = layout.options[:master]
+        layout.options[:master] -= 1 if master > 0
+        layout.apply
+      end
     end
   end
 end

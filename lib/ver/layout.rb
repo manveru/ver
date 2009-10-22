@@ -103,6 +103,7 @@ module VER
       def prepare(layout, options)
         slaves = layout.views
         master, stacking = DEFAULT.merge(options).values_at(:master, :stacking)
+        options.merge! master: master, stacking: stacking
         head, tail, hidden = slaves[0...master], slaves[master..stacking], slaves[stacking..-1]
       end
 

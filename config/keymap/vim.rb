@@ -21,6 +21,13 @@ module VER
       vim.add_mode :views do |mode|
         mode.map :view_one,         %w[Control-w KeyPress-1]
         mode.map :view_two,         %w[Control-w KeyPress-2]
+
+        mode.map :view_slave_inc,   %w[Control-w plus]
+        mode.map :view_slave_dec,   %w[Control-w minus]
+
+        mode.map :view_master_inc,  %w[Control-w H]
+        mode.map :view_master_dec,  %w[Control-w L]
+
         mode.map :view_create,      %w[Control-w c]
         mode.map :view_focus_next,  %w[Control-w j]
         mode.map :view_focus_prev,  %w[Control-w k]
