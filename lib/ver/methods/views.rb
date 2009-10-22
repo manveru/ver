@@ -32,6 +32,11 @@ module VER
       def view_push_bottom
         view.push_bottom
       end
+
+      def view_one
+        layout.options.merge! master: 1, stacking: 0
+        layout.apply
+      end
     end
   end
 end
