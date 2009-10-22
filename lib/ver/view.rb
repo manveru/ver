@@ -138,7 +138,9 @@ module VER
     end
 
     def close
-      layout.close_view(self)
+      text.may_close do
+        layout.close_view(self)
+      end
     end
 
     def focus_next
@@ -166,7 +168,7 @@ module VER
     end
 
     def destroy
-      [@text, @ybar, @xbar, @status].compact(&:destroy)
+      [@text, @ybar, @xbar, @status].compact.each(&:destroy)
 
       super
     end

@@ -82,6 +82,35 @@ module VER
       @pristine = false
     end
 
+    def may_close
+      return yield unless modified?
+      return yield if persisted?
+
+      question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
+
+      status_ask question, take: 1 do |answer|
+        case answer[0]
+        when 'Y', 'y'
+          yield if file_save
+          "saved"
+        when 'N', 'n'
+          yield
+          "closing without saving"
+        else
+          "Cancel closing"
+        end
+      end
+    end
+
+    def persisted?
+      return false unless filename && filename.file?
+      require 'digest/md5'
+
+      on_disk = Digest::MD5.hexdigest(File.read(filename))
+      in_memory = Digest::MD5.hexdigest(value)
+      on_disk == in_memory
+    end
+
     def layout
       view.layout
     end
@@ -225,7 +254,6 @@ module VER
       super
       touch!(args.first)
     end
-
 
     # Replaces the range of characters between index1 and index2 with the given
     # characters and tags.

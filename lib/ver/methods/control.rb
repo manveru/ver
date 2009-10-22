@@ -333,7 +333,7 @@ module VER
         save_smart(filename, to)
       rescue => exception
         VER.error(exception)
-        save_dumb(filename, to)
+        save_dumb(to)
       end
 
       def save_smart(from, to)
@@ -350,6 +350,7 @@ module VER
         FileUtils.mv(temp_path, to)
 
         status.message "Saved to #{to}"
+        return true
       rescue Errno::ENOENT
         save_dumb(to)
       end
@@ -360,6 +361,10 @@ module VER
         end
 
         status.message "Saved to #{to}"
+        return true
+      rescue Exception => ex
+        VER.error(ex)
+        return false
       end
     end
   end
