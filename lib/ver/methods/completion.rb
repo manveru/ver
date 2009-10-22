@@ -8,7 +8,7 @@ module VER
       end
 
       def file_completions(from, to)
-        y = index(from).split('.').first
+        y = index(from).y
         line = get(from, to)
 
         return [] unless match = line.match(/(?<pre>.*?)(?<path>\/[^\s"'{}()\[\]]*)(?<post>.*?)/)
@@ -28,7 +28,7 @@ module VER
       end
 
       def complete_word
-        y, x = index('insert').split('.').map(&:to_i)
+        y, x = index('insert').split
         x = (x - 1).abs
         from, to = index("#{y}.#{x} wordstart"), index("#{y}.#{x} wordend")
 

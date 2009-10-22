@@ -28,7 +28,7 @@ module VER
       end
 
       def start_selection(name)
-        self.selection_start = index(:insert).split('.').map(&:to_i)
+        self.selection_start = index(:insert)
         switch_selection(name)
       end
 

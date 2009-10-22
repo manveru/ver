@@ -1,5 +1,6 @@
 module VER
   class Text < Tk::Text
+    autoload :Index, 'ver/text/index'
     include Methods
 
     MODE_CURSOR = {
@@ -32,6 +33,10 @@ module VER
       @dirty_indices = []
 
       self.mode = keymap.mode
+    end
+
+    def index(idx)
+      Index.new(self, tk_send_without_enc('index', _get_eval_enc_str(idx)))
     end
 
     def message(*args)
@@ -85,21 +90,14 @@ module VER
       VER.exit
     end
 
-    def insert_index
-      index(:insert).split('.').map(&:to_i)
-    end
-
-    def end_index
-      index(:end).split('.').map(&:to_i)
-    end
-
     # lines start from 1
     # end is maximum lines + 1
     def status_projection(into)
       format = "%s  %d,%d  %d%% [%s]"
 
-      insert_y, insert_x = insert_index
-      end_y, end_x       = end_index
+      insert_y, insert_x = index(:insert).split
+      end_y = number(tk_send_without_enc('count', '-lines', '1.0', 'end'))
+      # end_y = index(:end).y
 
       percent = (100.0 / (end_y - 2)) * (insert_y - 1)
       percent = 100.0 if percent.nan?
@@ -138,17 +136,18 @@ module VER
       end
 
       search_all(regexp, from, to) do |match, match_from, match_to|
-        tag_add name, match_from, match_to
+        fast_tag_add name, match_from, match_to
       end
     end
 
     def search_all(regexp, from = '1.0', to = 'end - 1 chars')
       return Enumerator.new(self, :search_all, regexp, from) unless block_given?
+      from, to = from.to_s, to.to_s
 
       while result = search_with_length(regexp, from, to)
         pos, len, match = result
         break if !result || len == 0
-        from = index("#{pos} + #{len} chars")
+        from = "#{pos} + #{len} chars"
         yield(match, pos, from)
       end
     end
@@ -183,8 +182,8 @@ module VER
     def refresh_selection
       return unless start = selection_start
 
-      now = index(:insert).split('.').map(&:to_i)
-      left, right = [start, now].sort.map{|pos| pos.join('.') }
+      now = index(:insert)
+      left, right = [start, now].sort
       tag_remove :sel, '1.0', 'end'
 
       case selection_mode
@@ -193,8 +192,8 @@ module VER
       when :select_line
         tag_add :sel, "#{left} linestart", "#{right} lineend"
       when :select_block
-        ly, lx = left.split('.').map(&:to_i)
-        ry, rx = right.split('.').map(&:to_i)
+        ly, lx = left.split
+        ry, rx = right.split
 
         from_y, to_y = [ly, ry].sort
         from_x, to_x = [lx, rx].sort
@@ -241,7 +240,7 @@ module VER
     # replace index1 index2 chars ?tagList chars tagList ...?
     def replace(index1, index2, *rest)
       super
-      touch! *index(index1).to_i.upto(index(index2).to_i).map{|n| "#{n}.0" }
+      touch!(*index(index1).upto(index(index2)).to_a)
     end
 
     def focus
@@ -283,10 +282,7 @@ module VER
     def schedule_line_highlight(raw_index)
       return unless @syntax
       index = index(raw_index)
-
-      line = index.to_i - 1
-      from, to = "#{index} linestart", "#{index} lineend"
-      schedule_line_highlight!(line, from, to)
+      schedule_line_highlight!(index.y, index.linestart, index.lineend)
     end
 
     def schedule_highlight(options = {})
@@ -367,7 +363,7 @@ module VER
     def paste_tk_array(tk_array)
       chunks = Tk.send(:simplelist, tk_array)
 
-      insert_y, insert_x = index(:insert).split('.').map(&:to_i)
+      insert_y, insert_x = index(:insert).split
 
       chunks.each_with_index do |chunk, idx|
         y = insert_y + idx

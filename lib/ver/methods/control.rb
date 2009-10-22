@@ -181,9 +181,7 @@ module VER
       end
 
       def insert_indented_newline_above
-        y, x = index(:insert).split('.').map(&:to_i)
-
-        if y > 1
+        if index(:insert).y > 1
           go_line_up
           insert_indented_newline_below
         else
