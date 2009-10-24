@@ -113,6 +113,7 @@ module VER
         mode.map :undo,                          %w[u]
         mode.map :unindent_line,                 %w[less]
         mode.map :wrap_line,                     %w[g w]
+        mode.map :preview,                       %w[F5]
       end
 
       vim.add_mode :replace do |mode|

@@ -3,6 +3,7 @@ require 'ver/methods/control'
 require 'ver/methods/delete'
 require 'ver/methods/insert'
 require 'ver/methods/move'
+require 'ver/methods/preview'
 require 'ver/methods/search'
 require 'ver/methods/select'
 require 'ver/methods/views'
@@ -14,6 +15,7 @@ module VER
     include Delete
     include Insert
     include Move
+    include Preview
     include Search
     include Select
     include Views

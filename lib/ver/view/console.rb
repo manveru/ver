@@ -9,8 +9,7 @@ module VER
         end
 
         def unbind
-          callback.destroy
-          EM.stop
+          callback.closed
         end
       end
 
@@ -26,12 +25,12 @@ module VER
         end
       end
 
-      def initialize(parent)
+      def initialize(parent, *cmd)
         @parent = parent
         setup_widgets
         setup_events
         @entry.focus
-        setup_terminal
+        setup_terminal(*cmd)
       end
 
       def setup_widgets
@@ -68,25 +67,43 @@ module VER
         }
       end
 
+      def closed
+        @entry.bind_remove('Return')
+        @entry.bind('Key'){ Tk.callback_break }
+        @entry.bind('Escape'){ destroy }
+        @entry.value = 'Session ended. Press Escape to close console'
+      end
+
       def destroy
         @text.destroy
         @entry.destroy
         @parent.focus
       end
 
-      def setup_terminal
-        require 'open3'
-        @buffer = []
+      def shell_config
+        buffer = []
+
         shell = ENV['SHELL'] || 'sh'
         opts = [shell]
 
         case shell
         when /zsh/
           opts << '-s'
-          @buffer << 'echo $ZSH $ZSH_VERSION'
+          buffer << 'echo $ZSH $ZSH_VERSION'
         when /bash/
           opts << '-s'
-          @buffer << 'echo $BASH $BASH_VERSION'
+          buffer << 'echo $BASH $BASH_VERSION'
+        end
+
+        return buffer, opts
+      end
+
+      def setup_terminal(*cmd)
+        if cmd.empty?
+          @buffer, opts = shell_config
+        else
+          @buffer = []
+          opts = cmd
         end
 
         # FIXME: this should have proper shell escapes
