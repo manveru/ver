@@ -207,7 +207,7 @@ module VER
 
       see :insert
       refresh_selection
-      EM.defer{ status_projection(status) }
+      defer{ status_projection(status) }
     end
 
     def refresh_selection
@@ -281,6 +281,8 @@ module VER
     def fast_tag_add(tag, *indices)
       tk_send_without_enc('tag', 'add', _get_eval_enc_str(tag), *indices)
       self
+    rescue RuntimeError => ex
+      VER.error(ex)
     end
 
     def set_window_title
@@ -305,7 +307,7 @@ module VER
       return unless filename
 
       if @syntax = Syntax.from_filename(filename)
-        EM.defer{ syntax.highlight(self, value) }
+        defer{ syntax.highlight(self, value) }
       end
     end
 
@@ -323,7 +325,7 @@ module VER
     private
 
     def schedule_highlight!(*args)
-      EM.defer do
+      defer do
         syntax.highlight(self, value)
         tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
       end
@@ -331,7 +333,7 @@ module VER
 
     # TODO: only tag the current line.
     def schedule_line_highlight!(line, from, to)
-      EM.defer do
+      defer do
         syntax.highlight(self, get(from, to), line, from, to)
         tag_all_matching('trailing_whitespace', /[ \t]+$/, from: from, to: to)
       end
@@ -431,6 +433,16 @@ module VER
       schedule_highlight
 
       message "Syntax #{found} loaded"
+    end
+
+    def defer
+      EM.defer do
+        begin
+          yield
+        rescue Exception => ex
+          VER.error(ex)
+        end
+      end
     end
   end
 end
