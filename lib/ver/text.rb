@@ -27,6 +27,11 @@ module VER
       keymap_name = VER.options.fetch(:keymap)
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
+      defer do
+        wait_visibility
+        apply_mode_style(keymap.mode) # for startup
+      end
+
       self.selection_start = nil
       @pristine = true
       @encoding = VER.options.fetch(:encoding)
@@ -405,7 +410,10 @@ module VER
 
     def mode=(name)
       keymap.mode = mode = name.to_sym
+      apply_mode_style(mode)
+    end
 
+    def apply_mode_style(mode)
       cursor = MODE_CURSOR[mode]
       configure cursor
 
