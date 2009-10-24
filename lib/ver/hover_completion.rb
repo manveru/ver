@@ -24,7 +24,8 @@ module VER
 
     def setup_keymap
       keymap_name = VER.options.fetch(:keymap)
-      @list_keymap = Keymap.get(name: keymap_name, receiver: self, widget: list, mode: :hover_completion)
+      @list_keymap = Keymap.get(name: keymap_name, receiver: self,
+                                widget: list, mode: :hover_completion)
     end
 
     def setup_events
@@ -67,6 +68,7 @@ module VER
 
     def update
       self.from, self.to, self.choices = completer.call
+      @longest_choice = choices.map{|choice| choice.size }.max
 
       if choices && choices.size > 0
         list.value = choices
@@ -87,10 +89,9 @@ module VER
     def layout
       return unless choices && choices.size > 0
 
-      longest_choice = choices.map{|choice| choice.size }.max
-      list.configure width: longest_choice + 2, height: choices.size
       x, y = parent.caret.values_at('x', 'y')
-      list.place x: x, y: y
+      list.place x: x, relheight: 0.9
+      list.configure width: @longest_choice + 2
     end
 
     def cancel
