@@ -451,7 +451,7 @@ module VER
 
     def setup_tags
       TktNamedTag.new self, 'trailing_whitespace', foreground: '#000', background: '#f00'
-      TktNamedTag.new self, 'uri_http', foreground: '#00f', background: '#000'
+      TktNamedTag.new self, 'uri_http', underline: true, foreground: '#00f'
 
       tag_bind('uri_http', '1') do |event|
         pos = index("@#{event.x},#{event.y}")
