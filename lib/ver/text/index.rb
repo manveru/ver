@@ -5,7 +5,6 @@ module VER
       include Comparable
 
       def initialize(widget, idx)
-        # p index: idx
         self.widget, self.idx = widget, idx.to_str
       end
 
@@ -34,6 +33,14 @@ module VER
 
       def lineend
         "#{idx} lineend"
+      end
+
+      def wordstart
+        "#{idx} wordstart"
+      end
+
+      def wordend
+        "#{idx} wordend"
       end
 
       def next

@@ -1,7 +1,42 @@
 module VER
   module Methods
     module Completion
+      # TODO: use the tag names at the location to customize completion choices
+      # the textmate bundles have quite some stuff for that.
+      def smart_tab
+        context = get('insert - 1 chars', 'insert + 1 chars')
+
+        if @complete_last_used && context =~ /^\S\s/
+          complete_again
+        else
+          insert :insert, '  '
+        end
+      end
+
+      def complete_again
+        send(@complete_last_used) if @complete_last_used
+      end
+
+      def complete_line
+        @complete_last_used = :complete_line
+
+        from, to = 'insert linestart', 'insert lineend'
+        lines = line_completions(from, to)
+
+        complete{ [from, to, lines] }
+      end
+
+      def line_completions(from, to)
+        line = get(from, to).to_s.strip
+
+        return [] if line.empty?
+        needle = Regexp.escape(line)
+        search_all(/^.*#{needle}.*$/).map{|match, from, to| match }.uniq
+      end
+
       def complete_file
+        @complete_last_used = :complete_file
+
         complete continue: true do
           file_completions('insert linestart', 'insert')
         end
@@ -28,6 +63,8 @@ module VER
       end
 
       def complete_word
+        @complete_last_used = :complete_word
+
         y, x = index('insert').split
         x = (x - 1).abs
         from, to = index("#{y}.#{x} wordstart"), index("#{y}.#{x} wordend")
@@ -45,8 +82,11 @@ module VER
       end
 
       def complete_aspell
+        @complete_last_used = :complete_aspell
+
         complete do
-          from, to = 'insert wordstart', 'insert wordend'
+          pos = index('insert - 1 chars')
+          from, to = pos.wordstart, pos.wordend
           [from, to, aspell_completions(from, to)]
         end
       end

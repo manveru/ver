@@ -68,11 +68,11 @@ module VER
       vim.add_mode :complete do |mode|
         mode.arguments = false
 
-        mode.to :complete_file, %w[Control-x Control-f]
-        mode.to :complete_line, %w[Control-x Control-l]
-        mode.to :complete_omni, %w[Control-x Control-o]
-        mode.to :complete_word, %w[Control-x Control-i]
-        mode.to :smart_tab,     %w[Tab]
+        mode.to :complete_file,   %w[Control-x Control-f]
+        mode.to :complete_line,   %w[Control-x Control-l]
+        mode.to :complete_word,   %w[Control-x Control-w]
+        mode.to :complete_aspell, %w[Control-x Control-a]
+        mode.to :smart_tab,       %w[Tab]
       end
 
       vim.add_mode :control do |mode|
