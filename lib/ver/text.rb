@@ -30,6 +30,7 @@ module VER
       defer do
         wait_visibility
         apply_mode_style(keymap.mode) # for startup
+        setup_tags
       end
 
       self.selection_start = nil
@@ -153,12 +154,7 @@ module VER
       into.value = format % values
     end
 
-    TAG_ALL_MATCHING_OPTIONS = {
-      foreground: '#000',
-      background: '#f00',
-      from: '1.0',
-      to: 'end - 1 chars',
-    }
+    TAG_ALL_MATCHING_OPTIONS = { from: '1.0', to: 'end - 1 chars' }
 
     def tag_all_matching(name, regexp, options = {})
       name = name.to_s
@@ -173,6 +169,7 @@ module VER
       end
 
       search_all(regexp, from, to) do |match, match_from, match_to|
+        name = yield(match, match_from, match_to) if block_given?
         fast_tag_add name, match_from, match_to
       end
     end
@@ -335,8 +332,13 @@ module VER
     def schedule_highlight!(*args)
       defer do
         syntax.highlight(self, value)
-        tag_all_matching('trailing_whitespace', /[ \t]+$/, foreground: '#000', background: '#f00')
+        tag_all_matching('trailing_whitespace', /[ \t]+$/)
+        mark_uris(from: '1.0', to: 'end')
       end
+    end
+
+    def mark_uris(given_options = {})
+      tag_all_matching('uri_http', /http:\S+/, given_options)
     end
 
     # TODO: only tag the current line.
@@ -344,6 +346,7 @@ module VER
       defer do
         syntax.highlight(self, get(from, to), line, from, to)
         tag_all_matching('trailing_whitespace', /[ \t]+$/, from: from, to: to)
+        mark_uris(from: from, to: to)
       end
     end
 
@@ -444,6 +447,31 @@ module VER
       schedule_highlight
 
       message "Syntax #{found} loaded"
+    end
+
+    def setup_tags
+      TktNamedTag.new self, 'trailing_whitespace', foreground: '#000', background: '#f00'
+      TktNamedTag.new self, 'uri_http', foreground: '#00f', background: '#000'
+
+      tag_bind('uri_http', '1') do |event|
+        pos = index("@#{event.x},#{event.y}")
+        uri = nil
+
+        tag_ranges('uri_http').each do |from, to|
+          from, to = index(from), index(to)
+          if from <= pos && to >= pos
+            uri = get(from, to)
+            break
+          end
+        end
+
+        browser = ENV['BROWSER'] || ['links', '-g']
+        system(*browser, uri)
+        message "%p opens the uri: %s" % [browser, uri]
+      end
+
+      tag_all_matching('trailing_whitespace', /[ \t]+$/, from: '1.0', to: 'end')
+      mark_uris(from: '1.0', to: 'end')
     end
 
     def defer
