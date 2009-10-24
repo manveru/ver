@@ -127,14 +127,17 @@ module VER
     # lines start from 1
     # end is maximum lines + 1
     def status_projection(into)
-      format = "%s  %d,%d  %d%% [%s]"
+      format = "%s  %s  %s [%s]"
 
-      insert_y, insert_x = index(:insert).split
-      end_y = number(tk_send_without_enc('count', '-lines', '1.0', 'end'))
-      # end_y = index(:end).y
+      top, bot = yview
 
-      percent = (100.0 / (end_y - 2)) * (insert_y - 1)
-      percent = 100.0 if percent.nan? || percent.infinite?
+      if top < 0.5
+        percent = '[top]'
+      elsif bot > 99.5
+        percent = '[bot]'
+      else
+        percent = "#{bot.to_i}%"
+      end
 
       additional = [keymap.mode]
       syntax_name = syntax.name if syntax
@@ -142,7 +145,7 @@ module VER
 
       values = [
         short_filename,
-        insert_y, insert_x,
+        index(:insert).idx,
         percent,
         additional.join(' | '),
       ]
