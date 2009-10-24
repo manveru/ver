@@ -28,7 +28,11 @@ module VER
     end
 
     def find_ancestor(name)
-      callback.modes[name.to_sym]
+      if found = callback.modes[name.to_sym]
+        return found
+      else
+        raise "Mode #{name} is not specified yet"
+      end
     end
 
     def ancestors(*done, &block)
