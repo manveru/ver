@@ -134,6 +134,7 @@ module VER
         edit_separator
         clear_selection
         mode ? self.mode = mode : keymap.use_previous_mode
+        apply_mode_style(keymap.mode)
       end
 
       def clear_selection
