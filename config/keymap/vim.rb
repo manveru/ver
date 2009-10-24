@@ -65,6 +65,16 @@ module VER
         mode.map :search_char_left,              %w[F]
       end
 
+      vim.add_mode :complete do |mode|
+        mode.arguments = false
+
+        mode.to :complete_file, %w[Control-x Control-f]
+        mode.to :complete_line, %w[Control-x Control-l]
+        mode.to :complete_omni, %w[Control-x Control-o]
+        mode.to :complete_word, %w[Control-x Control-i]
+        mode.to :smart_tab,     %w[Tab]
+      end
+
       vim.add_mode :control do |mode|
         mode.inherits :basic, :move, :views, :search
 
@@ -125,7 +135,7 @@ module VER
       end
 
       vim.add_mode :insert do |mode|
-        mode.inherits :basic, :views, :readline
+        mode.inherits :basic, :views, :complete, :readline
         mode.arguments = false
 
         mode.map :go_line_down,            %w[Down]
@@ -136,9 +146,6 @@ module VER
         mode.map :go_page_up,              %w[Shift-Up]
         mode.map :insert_indented_newline, %w[Return]
         mode.map :smart_evaluate,          %w[Alt-e], %w[Control-e]
-        mode.map :complete_aspell,         %w[Control-x Control-a]
-        mode.map :complete_file,           %w[Control-x Control-f]
-        mode.map :complete_word,           %w[Control-x Control-w]
 
         mode.missing :insert_string
       end
@@ -171,15 +178,6 @@ module VER
 
       vim.add_mode :select_block do |mode|
         mode.inherits :select
-      end
-
-      vim.add_mode :complete do |mode|
-        mode.inherits :basic
-
-        mode.to :complete_file, %w[Control-x Control-f]
-        mode.to :complete_line, %w[Control-x Control-l]
-        mode.to :complete_omni, %w[Control-x Control-o]
-        mode.to :complete_word, %w[Control-x Control-i]
       end
 
       vim.add_mode :status_query do |mode|
