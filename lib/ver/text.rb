@@ -447,13 +447,13 @@ module VER
     end
 
     def setup_tags
-      TktNamedTag.new self, 'trailing_whitespace', foreground: '#000', background: '#f00'
-      TktNamedTag.new self, 'uri_http', underline: true, foreground: '#00f'
+      TktNamedTag.new self, 'invalid.trailing-whitespace', background: '#f00'
+      TktNamedTag.new self, 'markup.underline.link' , underline: true, foreground: '#00f'
 
-      tag_bind('uri_http', '1') do |event|
+      tag_bind('markup.underline.link', '1') do |event|
         pos = index("@#{event.x},#{event.y}")
 
-        uri = tag_ranges('uri_http').find{|from, to|
+        uri = tag_ranges('markup.underline.link').find{|from, to|
           if index(from) <= pos && index(to) >= pos
             break get(from, to)
           end
@@ -471,11 +471,11 @@ module VER
     end
 
     def tag_all_uris(given_options = {})
-      tag_all_matching('uri_http', /https?:\/\/\S+/, given_options)
+      tag_all_matching('markup.underline.link', /https?:\/\/[^)\]}\s]+/, given_options)
     end
 
     def tag_all_trailing_whitespace(given_options = {})
-      tag_all_matching('trailing_whitespace', /[ \t]+$/, given_options)
+      tag_all_matching('invalid.trailing-whitespace', /[ \t]+$/, given_options)
     end
 
     def defer
