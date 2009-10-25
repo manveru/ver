@@ -14,8 +14,8 @@ module VER
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
-    attr_accessor :keymap, :view, :status, :filename
-    attr_reader :encoding, :pristine, :syntax
+    attr_accessor :keymap, :view, :status
+    attr_reader :filename, :encoding, :pristine, :syntax
 
     # attributes for diverse functionality
     attr_accessor :selection_mode, :selection_start
@@ -57,8 +57,12 @@ module VER
       filename.sub(Dir.pwd + '/', '') if filename
     end
 
+    def filename=(path)
+      @filename = Pathname(path.to_s).expand_path
+    end
+
     def open_path(path)
-      self.filename = Pathname(path.to_s).expand_path
+      self.filename = path
 
       begin
         enc = encoding.name
