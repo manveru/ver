@@ -39,16 +39,19 @@ module VER
     end
 
     def focus_next(current)
-      return unless index = @views.index(current)
+      visible = head_tail_hidden.first(2).flatten
+      return unless index = visible.index(current)
 
-      found = @views[index + 1] || @views[0]
+      found = visible[index + 1] || visible[0]
       found.focus
     end
 
     def focus_prev(current)
-      return unless index = @views.index(current)
+      visible = head_tail_hidden.first(2).flatten
 
-      found = @views[index - 1]
+      return unless index = visible.index(current)
+
+      found = visible[index - 1]
       found.focus
     end
 
@@ -95,6 +98,11 @@ module VER
     def apply(options = {})
       @options.merge!(options)
       strategy.apply(self, @options)
+    end
+
+    def head_tail_hidden(options = {})
+      @options.merge!(options)
+      strategy.prepare(self, @options)
     end
 
     module Tiling
