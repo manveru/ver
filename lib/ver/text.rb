@@ -332,21 +332,17 @@ module VER
     def schedule_highlight!(*args)
       defer do
         syntax.highlight(self, value)
-        tag_all_matching('trailing_whitespace', /[ \t]+$/)
-        mark_uris(from: '1.0', to: 'end')
+        tag_all_trailing_whitespace
+        tag_all_uris
       end
-    end
-
-    def mark_uris(given_options = {})
-      tag_all_matching('uri_http', /http:\S+/, given_options)
     end
 
     # TODO: only tag the current line.
     def schedule_line_highlight!(line, from, to)
       defer do
         syntax.highlight(self, get(from, to), line, from, to)
-        tag_all_matching('trailing_whitespace', /[ \t]+$/, from: from, to: to)
-        mark_uris(from: from, to: to)
+        tag_all_trailing_whitespace(from: from, to: to)
+        tag_all_uris(from: from, to: to)
       end
     end
 
@@ -455,23 +451,30 @@ module VER
 
       tag_bind('uri_http', '1') do |event|
         pos = index("@#{event.x},#{event.y}")
-        uri = nil
 
-        tag_ranges('uri_http').each do |from, to|
-          from, to = index(from), index(to)
-          if from <= pos && to >= pos
-            uri = get(from, to)
-            break
+        uri = tag_ranges('uri_http').find{|from, to|
+          if index(from) <= pos && index(to) >= pos
+            break get(from, to)
           end
-        end
+        }
 
-        browser = ENV['BROWSER'] || ['links', '-g']
-        system(*browser, uri)
-        message "%p opens the uri: %s" % [browser, uri]
+        if uri
+          browser = ENV['BROWSER'] || ['links', '-g']
+          system(*browser, uri)
+          message "%p opens the uri: %s" % [browser, uri]
+        end
       end
 
-      tag_all_matching('trailing_whitespace', /[ \t]+$/, from: '1.0', to: 'end')
-      mark_uris(from: '1.0', to: 'end')
+      tag_all_trailing_whitespace
+      tag_all_uris
+    end
+
+    def tag_all_uris(given_options = {})
+      tag_all_matching('uri_http', /https?:\/\/\S+/, given_options)
+    end
+
+    def tag_all_trailing_whitespace(given_options = {})
+      tag_all_matching('trailing_whitespace', /[ \t]+$/, given_options)
     end
 
     def defer
