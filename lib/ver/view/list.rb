@@ -5,6 +5,7 @@ module VER
     autoload :FuzzyFileFinder, 'ver/view/list/fuzzy_file_finder'
     autoload :Syntax,          'ver/view/list/syntax'
     autoload :Theme,           'ver/view/list/theme'
+    autoload :Ex,              'ver/view/list/ex'
 
     def initialize(parent, &block)
       self.parent, self.callback = parent, block

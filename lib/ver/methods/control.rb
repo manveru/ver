@@ -1,6 +1,33 @@
 module VER
   module Methods
     module Control
+      # TODO: make this better?
+      def status_ex
+        completion = method(:status_ex_filter)
+
+        View::List::Ex.new self, completion do |command|
+          begin
+            result = eval(command)
+            status.message "%s # => %p" % [command, result]
+          rescue Exception => ex
+            status.error "%s # => %p" % [command, ex]
+          end
+        end
+      end
+
+      def status_ex_filter(input)
+        input = input.to_s.split.last
+        return [] if !input || input.empty?
+
+        begin
+          regexp = Regexp.new(input)
+        rescue ArgumentError, RegexpError, SyntaxError
+          regexp = Regexp.new(Regexp.escape(input))
+        end
+
+        self.methods.grep(regexp).sort_by{|sym| sym =~ regexp }
+      end
+
       def open_console
         View::Console.new(self)
       end

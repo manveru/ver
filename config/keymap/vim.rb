@@ -114,6 +114,7 @@ module VER
         mode.map :unindent_line,                 %w[less]
         mode.map :wrap_line,                     %w[g w]
         mode.map :preview,                       %w[F5]
+        mode.map :status_ex,                     %w[colon]
       end
 
       vim.add_mode :replace do |mode|
