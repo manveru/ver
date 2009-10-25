@@ -412,6 +412,7 @@ module VER
 
     def mode=(name)
       keymap.mode = mode = name.to_sym
+      edit_separator
       apply_mode_style(mode)
     end
 
