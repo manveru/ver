@@ -34,7 +34,7 @@ module VER
 
       def wrap_line
         text = get('insert linestart', 'insert lineend')
-        lines = wrap_lines_of(text).join("\n")
+        lines = wrap_lines_of(text, 80).join("\n")
 
         replace('insert linestart', 'insert lineend', lines)
       end
@@ -285,17 +285,22 @@ module VER
 
       private
 
-      def wrap_lines_of(text)
-        lines = ['']
+      def wrap_lines_of(text, wrap = 80)
+        raise ArgumentError, "+wrap+ must be > 1" unless wrap > 1
+        wrap -= 1
+
+        indent = text[/^\s+/] || ''
+        indent_size = indent.size
+        lines = [indent.dup]
 
         text.scan(/\S+/) do |chunk|
           last = lines.last
           last_size = last.size
           chunk_size = chunk.size
 
-          if last_size + chunk_size > 79
-            lines << chunk
-          elsif last_size == 0
+          if last_size + chunk_size > wrap
+            lines << indent + chunk
+          elsif last_size == indent_size
             last << chunk
           else
             last << ' ' << chunk
