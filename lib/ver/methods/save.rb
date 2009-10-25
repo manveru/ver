@@ -41,13 +41,13 @@ module VER
       # If there is some failure during the normal saving procedure, we will
       # simply overwrite the original file in place, make sure you have good insurance ;)
       def save_to(to)
-        save_smart(filename, to)
+        save_atomic(filename, to)
       rescue => exception
         VER.error(exception)
         save_dumb(to)
       end
 
-      def save_smart(from, to)
+      def save_atomic(from, to)
         require 'tmpdir'
         sha1 = Digest::SHA1.hexdigest([from, to].join)
         temp_path = File.join(Dir.tmpdir, 'ver', sha1)
