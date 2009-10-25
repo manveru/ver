@@ -53,6 +53,8 @@ module Textpow
     end
   end
 
+  ParsingError = Class.new(RuntimeError)
+
   class SyntaxProxy
     def initialize proxy, syntax
       @proxy, @syntax = proxy, syntax
@@ -126,8 +128,8 @@ module Textpow
         when "firstLineMatch", "foldingStartMarker", "foldingStopMarker", "match", "begin"
           begin
             send("#{key}=", Regexp.new(value))
-          rescue ArgumentError => exception
-            raise ParsingError, "Parsing error in #{value}: #{exception}"
+          rescue ArgumentError, RegexpError => exception
+            raise ParsingError, "Parsing error in %p: %s" % [value, exception]
           end
         when "content", "fileTypes", "name", "contentName", "end", "scopeName", "keyEquivalent"
           send("#{key}=", value)
