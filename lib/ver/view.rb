@@ -10,6 +10,7 @@ module VER
       super
       @layout = layout
       @text = @status = @ybar = @xbar = nil
+      configure takefocus: false
       setup
     end
 
@@ -44,6 +45,7 @@ module VER
         font:             font,
         insertofftime:    0, # blinking cursor be gone!
         setgrid:          true, # tell the wm that this is a griddy window
+        takefocus:        true,
         tabs:             tabs,
         tabstyle:         :wordprocessor,
         undo:             true, # enable undo capabilities
@@ -62,7 +64,7 @@ module VER
     end
 
     def setup_status
-      @status = Status.new(self, font: VER.options[:font], takefocus: 0)
+      @status = Status.new(self, font: VER.options[:font], takefocus: false)
     end
 
     def setup_grid
