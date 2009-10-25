@@ -130,6 +130,8 @@ module VER
         mode.map :go_char_right,           %w[Right]
         mode.map :go_word_left,            %w[Shift-Left]
         mode.map :go_word_right,           %w[Shift-Right]
+        mode.map :go_beginning_of_line,    %w[Home]
+        mode.map :go_end_of_line,          %w[End]
 
         KEYSYMS.each do |sym, name|
           mode.map [:insert_string, sym], [name]
