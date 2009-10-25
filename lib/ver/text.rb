@@ -418,6 +418,7 @@ module VER
       keymap.mode = mode = name.to_sym
       edit_separator
       apply_mode_style(mode)
+      status_projection(status) if status
     end
 
     def apply_mode_style(mode)
