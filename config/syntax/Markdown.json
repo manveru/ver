@@ -11,9 +11,9 @@
   "name": "Markdown",
   "patterns": [
     {
-      "begin": "(?x)^\n\t\t\t\t(?=\t[ ]{,3}>.\n\t\t\t\t|\t([ ]{4}|\\t)(?!$)\n\t\t\t\t|\t[#]{1,6}\\s*+\n\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}?k<marker>){2,}[ \\t]*+$\n\t\t\t\t)",
+      "begin": "(?x)^\n\t\t\t\t(?=\t[ ]{,3}>.\n\t\t\t\t|\t([ ]{4}|\\t)(?!$)\n\t\t\t\t|\t[#]{1,6}\\s*+\n\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}\\k<marker>){2,}[ \\t]*+$\n\t\t\t\t)",
       "comment": "\n\t\t\t\tWe could also use an empty end match and set\n\t\t\t\tapplyEndPatternLast, but then we must be sure that the begin\n\t\t\t\tpattern will only match stuff matched by the sub-patterns.\n\t\t\t",
-      "end": "(?x)^\n\t\t\t\t(?!\t[ ]{,3}>.\n\t\t\t\t|\t([ ]{4}|\\t)\n\t\t\t\t|\t[#]{1,6}\\s*+\n\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}?k<marker>){2,}[ \\t]*+$\n\t\t\t\t)",
+      "end": "(?x)^\n\t\t\t\t(?!\t[ ]{,3}>.\n\t\t\t\t|\t([ ]{4}|\\t)\n\t\t\t\t|\t[#]{1,6}\\s*+\n\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}\\k<marker>){2,}[ \\t]*+$\n\t\t\t\t)",
       "name": "meta.block-level.markdown",
       "patterns": [
         {
@@ -173,7 +173,7 @@
         }
       },
       "comment": "\n\t\t\t\tWe terminate the block quote when seeing an empty line, a\n\t\t\t\tseparator or a line with leading > characters. The latter is\n\t\t\t\tto \u201creset\u201d the quote level for quoted lines.\n\t\t\t",
-      "end": "(?x)^\n\t\t\t\t(?=\t\\s*$\n\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}?k<marker>){2,}[ \\t]*+$\n\t\t\t\t|\t[ ]{,3}>.\n\t\t\t\t)",
+      "end": "(?x)^\n\t\t\t\t(?=\t\\s*$\n\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}\\k<marker>){2,}[ \\t]*+$\n\t\t\t\t|\t[ ]{,3}>.\n\t\t\t\t)",
       "name": "markup.quote.markdown",
       "patterns": [
         {
@@ -187,7 +187,7 @@
         },
         {
           "applyEndPatternLast": 1,
-          "begin": "(?x)\\G\n\t\t\t\t\t\t(?=\t([ ]{4}|\\t)\n\t\t\t\t\t\t|\t[#]{1,6}\\s*+\n\t\t\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}?k<marker>){2,}[ \\t]*+$\n\t\t\t\t\t\t)",
+          "begin": "(?x)\\G\n\t\t\t\t\t\t(?=\t([ ]{4}|\\t)\n\t\t\t\t\t\t|\t[#]{1,6}\\s*+\n\t\t\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}\\k<marker>){2,}[ \\t]*+$\n\t\t\t\t\t\t)",
           "end": "^",
           "patterns": [
             {
@@ -202,7 +202,7 @@
           ]
         },
         {
-          "begin": "(?x)\\G\n\t\t\t\t\t\t(?!\t$\n\t\t\t\t\t\t|\t[ ]{,3}>.\n\t\t\t\t\t\t|\t([ ]{4}|\\t)\n\t\t\t\t\t\t|\t[#]{1,6}\\s*+\n\t\t\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}?k<marker>){2,}[ \\t]*+$\n\t\t\t\t\t\t)",
+          "begin": "(?x)\\G\n\t\t\t\t\t\t(?!\t$\n\t\t\t\t\t\t|\t[ ]{,3}>.\n\t\t\t\t\t\t|\t([ ]{4}|\\t)\n\t\t\t\t\t\t|\t[#]{1,6}\\s*+\n\t\t\t\t\t\t|\t[ ]{,3}(?<marker>[-*_])([ ]{,2}\\k<marker>){2,}[ \\t]*+$\n\t\t\t\t\t\t)",
           "end": "$|(?<=\\n)",
           "patterns": [
             {
@@ -217,7 +217,7 @@
       "name": "markup.raw.block.markdown"
     },
     "bold": {
-      "begin": "(?x)\n\t\t\t\t\t\t(\\*\\*|__)(?=\\S)\t\t\t\t\t\t\t\t# Open\n\t\t\t\t\t\t(?=\n\t\t\t\t\t\t\t(\n\t\t\t\t\t\t\t    <[^>]*+>\t\t\t\t\t\t\t# HTML tags\n\t\t\t\t\t\t\t  | (?<raw>`+)([^`]|(?!(?<!`)?k<raw>(?!`))`)*+?k<raw>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t# Raw\n\t\t\t\t\t\t\t  | \\\\[\\\\`*_{}\\[\\]()#.!+\\->]?+\t\t\t# Escapes\n\t\t\t\t\t\t\t  | \\[\n\t\t\t\t\t\t\t\t(\t\t\t\t\n\t\t\t\t\t\t\t\t        (?<square>\t\t\t\t\t# Named group\n\t\t\t\t\t\t\t\t\t\t\t[^\\[\\]\\\\]\t\t\t\t# Match most chars\n\t\t\t\t\t\t\t\t          | \\\\.\t\t\t\t\t\t# Escaped chars\n\t\t\t\t\t\t\t\t          | \\[ \\g<square>*+ \\]\t\t# Nested brackets\n\t\t\t\t\t\t\t\t        )*+\n\t\t\t\t\t\t\t\t\t\\]\n\t\t\t\t\t\t\t\t\t(\n\t\t\t\t\t\t\t\t\t\t(\t\t\t\t\t\t\t# Reference Link\n\t\t\t\t\t\t\t\t\t\t\t[ ]?\t\t\t\t\t# Optional space\n\t\t\t\t\t\t\t\t\t\t\t\\[[^\\]]*+\\]\t\t\t\t# Ref name\n\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t  | (\t\t\t\t\t\t\t# Inline Link\n\t\t\t\t\t\t\t\t\t\t\t\\(\t\t\t\t\t\t# Opening paren\n\t\t\t\t\t\t\t\t\t\t\t\t[ \\t]*+\t\t\t\t# Optional whtiespace\n\t\t\t\t\t\t\t\t\t\t\t\t<?(.*?)>?\t\t\t# URL\n\t\t\t\t\t\t\t\t\t\t\t\t[ \\t]*+\t\t\t\t# Optional whtiespace\n\t\t\t\t\t\t\t\t\t\t\t\t(\t\t\t\t\t# Optional Title\n\t\t\t\t\t\t\t\t\t\t\t\t\t(?<title>['\"])\n\t\t\t\t\t\t\t\t\t\t\t\t\t(.*?)\n\t\t\t\t\t\t\t\t\t\t\t\t\t?k<title>\n\t\t\t\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t\t\t\\)\n\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t  | (?!(?<=\\S)\\1).\t\t\t\t\t\t# Everything besides\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t# style closer\n\t\t\t\t\t\t\t)++\n\t\t\t\t\t\t\t(?<=\\S)\\1\t\t\t\t\t\t\t\t# Close\n\t\t\t\t\t\t)\n\t\t\t\t\t",
+      "begin": "(?x)\n\t\t\t\t\t\t(\\*\\*|__)(?=\\S)\t\t\t\t\t\t\t\t# Open\n\t\t\t\t\t\t(?=\n\t\t\t\t\t\t\t(\n\t\t\t\t\t\t\t    <[^>]*+>\t\t\t\t\t\t\t# HTML tags\n\t\t\t\t\t\t\t  | (?<raw>`+)([^`]|(?!(?<!`)\\k<raw>(?!`))`)*+\\k<raw>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t# Raw\n\t\t\t\t\t\t\t  | \\\\[\\\\`*_{}\\[\\]()#.!+\\->]?+\t\t\t# Escapes\n\t\t\t\t\t\t\t  | \\[\n\t\t\t\t\t\t\t\t(\t\t\t\t\n\t\t\t\t\t\t\t\t        (?<square>\t\t\t\t\t# Named group\n\t\t\t\t\t\t\t\t\t\t\t[^\\[\\]\\\\]\t\t\t\t# Match most chars\n\t\t\t\t\t\t\t\t          | \\\\.\t\t\t\t\t\t# Escaped chars\n\t\t\t\t\t\t\t\t          | \\[ \\g<square>*+ \\]\t\t# Nested brackets\n\t\t\t\t\t\t\t\t        )*+\n\t\t\t\t\t\t\t\t\t\\]\n\t\t\t\t\t\t\t\t\t(\n\t\t\t\t\t\t\t\t\t\t(\t\t\t\t\t\t\t# Reference Link\n\t\t\t\t\t\t\t\t\t\t\t[ ]?\t\t\t\t\t# Optional space\n\t\t\t\t\t\t\t\t\t\t\t\\[[^\\]]*+\\]\t\t\t\t# Ref name\n\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t  | (\t\t\t\t\t\t\t# Inline Link\n\t\t\t\t\t\t\t\t\t\t\t\\(\t\t\t\t\t\t# Opening paren\n\t\t\t\t\t\t\t\t\t\t\t\t[ \\t]*+\t\t\t\t# Optional whtiespace\n\t\t\t\t\t\t\t\t\t\t\t\t<?(.*?)>?\t\t\t# URL\n\t\t\t\t\t\t\t\t\t\t\t\t[ \\t]*+\t\t\t\t# Optional whtiespace\n\t\t\t\t\t\t\t\t\t\t\t\t(\t\t\t\t\t# Optional Title\n\t\t\t\t\t\t\t\t\t\t\t\t\t(?<title>['\"])\n\t\t\t\t\t\t\t\t\t\t\t\t\t(.*?)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\\k<title>\n\t\t\t\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t\t\t\\)\n\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t  | (?!(?<=\\S)\\1).\t\t\t\t\t\t# Everything besides\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t# style closer\n\t\t\t\t\t\t\t)++\n\t\t\t\t\t\t\t(?<=\\S)\\1\t\t\t\t\t\t\t\t# Close\n\t\t\t\t\t\t)\n\t\t\t\t\t",
       "captures": {
         "1": {
           "name": "punctuation.definition.bold.markdown"
@@ -421,7 +421,7 @@
       ]
     },
     "italic": {
-      "begin": "(?x)\n\t\t\t\t\t\t(\\*|_)(?=\\S)\t\t\t\t\t\t\t\t# Open\n\t\t\t\t\t\t(?=\n\t\t\t\t\t\t\t(\n\t\t\t\t\t\t\t    <[^>]*+>\t\t\t\t\t\t\t# HTML tags\n\t\t\t\t\t\t\t  | (?<raw>`+)([^`]|(?!(?<!`)?k<raw>(?!`))`)*+?k<raw>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t# Raw\n\t\t\t\t\t\t\t  | \\\\[\\\\`*_{}\\[\\]()#.!+\\->]?+\t\t\t# Escapes\n\t\t\t\t\t\t\t  | \\[\n\t\t\t\t\t\t\t\t(\t\t\t\t\n\t\t\t\t\t\t\t\t        (?<square>\t\t\t\t\t# Named group\n\t\t\t\t\t\t\t\t\t\t\t[^\\[\\]\\\\]\t\t\t\t# Match most chars\n\t\t\t\t\t\t\t\t          | \\\\.\t\t\t\t\t\t# Escaped chars\n\t\t\t\t\t\t\t\t          | \\[ \\g<square>*+ \\]\t\t# Nested brackets\n\t\t\t\t\t\t\t\t        )*+\n\t\t\t\t\t\t\t\t\t\\]\n\t\t\t\t\t\t\t\t\t(\n\t\t\t\t\t\t\t\t\t\t(\t\t\t\t\t\t\t# Reference Link\n\t\t\t\t\t\t\t\t\t\t\t[ ]?\t\t\t\t\t# Optional space\n\t\t\t\t\t\t\t\t\t\t\t\\[[^\\]]*+\\]\t\t\t\t# Ref name\n\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t  | (\t\t\t\t\t\t\t# Inline Link\n\t\t\t\t\t\t\t\t\t\t\t\\(\t\t\t\t\t\t# Opening paren\n\t\t\t\t\t\t\t\t\t\t\t\t[ \\t]*+\t\t\t\t# Optional whtiespace\n\t\t\t\t\t\t\t\t\t\t\t\t<?(.*?)>?\t\t\t# URL\n\t\t\t\t\t\t\t\t\t\t\t\t[ \\t]*+\t\t\t\t# Optional whtiespace\n\t\t\t\t\t\t\t\t\t\t\t\t(\t\t\t\t\t# Optional Title\n\t\t\t\t\t\t\t\t\t\t\t\t\t(?<title>['\"])\n\t\t\t\t\t\t\t\t\t\t\t\t\t(.*?)\n\t\t\t\t\t\t\t\t\t\t\t\t\t?k<title>\n\t\t\t\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t\t\t\\)\n\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t  | \\1\\1\t\t\t\t\t\t\t\t# Must be bold closer\n\t\t\t\t\t\t\t  | (?!(?<=\\S)\\1).\t\t\t\t\t\t# Everything besides\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t# style closer\n\t\t\t\t\t\t\t)++\n\t\t\t\t\t\t\t(?<=\\S)\\1\t\t\t\t\t\t\t\t# Close\n\t\t\t\t\t\t)\n\t\t\t\t\t",
+      "begin": "(?x)\n\t\t\t\t\t\t(\\*|_)(?=\\S)\t\t\t\t\t\t\t\t# Open\n\t\t\t\t\t\t(?=\n\t\t\t\t\t\t\t(\n\t\t\t\t\t\t\t    <[^>]*+>\t\t\t\t\t\t\t# HTML tags\n\t\t\t\t\t\t\t  | (?<raw>`+)([^`]|(?!(?<!`)\\k<raw>(?!`))`)*+\\k<raw>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t# Raw\n\t\t\t\t\t\t\t  | \\\\[\\\\`*_{}\\[\\]()#.!+\\->]?+\t\t\t# Escapes\n\t\t\t\t\t\t\t  | \\[\n\t\t\t\t\t\t\t\t(\t\t\t\t\n\t\t\t\t\t\t\t\t        (?<square>\t\t\t\t\t# Named group\n\t\t\t\t\t\t\t\t\t\t\t[^\\[\\]\\\\]\t\t\t\t# Match most chars\n\t\t\t\t\t\t\t\t          | \\\\.\t\t\t\t\t\t# Escaped chars\n\t\t\t\t\t\t\t\t          | \\[ \\g<square>*+ \\]\t\t# Nested brackets\n\t\t\t\t\t\t\t\t        )*+\n\t\t\t\t\t\t\t\t\t\\]\n\t\t\t\t\t\t\t\t\t(\n\t\t\t\t\t\t\t\t\t\t(\t\t\t\t\t\t\t# Reference Link\n\t\t\t\t\t\t\t\t\t\t\t[ ]?\t\t\t\t\t# Optional space\n\t\t\t\t\t\t\t\t\t\t\t\\[[^\\]]*+\\]\t\t\t\t# Ref name\n\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t  | (\t\t\t\t\t\t\t# Inline Link\n\t\t\t\t\t\t\t\t\t\t\t\\(\t\t\t\t\t\t# Opening paren\n\t\t\t\t\t\t\t\t\t\t\t\t[ \\t]*+\t\t\t\t# Optional whtiespace\n\t\t\t\t\t\t\t\t\t\t\t\t<?(.*?)>?\t\t\t# URL\n\t\t\t\t\t\t\t\t\t\t\t\t[ \\t]*+\t\t\t\t# Optional whtiespace\n\t\t\t\t\t\t\t\t\t\t\t\t(\t\t\t\t\t# Optional Title\n\t\t\t\t\t\t\t\t\t\t\t\t\t(?<title>['\"])\n\t\t\t\t\t\t\t\t\t\t\t\t\t(.*?)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\\k<title>\n\t\t\t\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t\t\t\\)\n\t\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t  | \\1\\1\t\t\t\t\t\t\t\t# Must be bold closer\n\t\t\t\t\t\t\t  | (?!(?<=\\S)\\1).\t\t\t\t\t\t# Everything besides\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t# style closer\n\t\t\t\t\t\t\t)++\n\t\t\t\t\t\t\t(?<=\\S)\\1\t\t\t\t\t\t\t\t# Close\n\t\t\t\t\t\t)\n\t\t\t\t\t",
       "captures": {
         "1": {
           "name": "punctuation.definition.italic.markdown"
