@@ -285,7 +285,11 @@ module VER
           rescue => ex
             VER.error(ex)
           ensure
-            focus
+            begin
+              focus
+            rescue RuntimeError
+              # might have been destroyed, stay silent
+            end
           end
         }
       end
