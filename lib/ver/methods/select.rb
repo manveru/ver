@@ -128,26 +128,49 @@ module VER
         refresh_selection
       end
 
-      def replace_selection_with_char
+      def selection_replace_char
         status_ask 'Replace selection with: ', take: 1 do |char|
           if char.size == 1
-            pos = index(:insert)
-            each_selected_line do |y, fx, tx|
-              tx = fx + 1
-              next if get("#{y}.#{fx}", "#{y}.#{tx}").empty?
-              replace("#{y}.#{fx}", "#{y}.#{tx}", char)
-            end
-
-            edit_separator
-            mark_set :insert, pos
-            "replaced #{char.size} chars"
+            replace_selection_with(char, full = true)
+            "replaced 1 char"
           else
-            status.message 'replace aborted'
+            'replace aborted'
+          end
+        end
+      end
+
+      def selection_replace_string
+        status_ask 'Replace selection with: ', do |string|
+          if string.size > 0
+            replace_selection_with(string, full = false)
+            "replaced #{string.size} chars"
+          else
+            'replace aborted'
           end
         end
       end
 
       private
+
+      # TODO: find better name for +full+
+      def replace_selection_with(string, full)
+        origin = index(:insert)
+
+        if full
+          each_selected_line do |y, fx, tx|
+            diff = tx - fx
+            replace("#{y}.#{fx}", "#{y}.#{tx}", string * diff)
+          end
+        else
+          string_size = string.size
+          each_selected_line do |y, fx, tx|
+            replace("#{y}.#{fx}", "#{y}.#{tx}", string)
+          end
+        end
+
+        edit_separator
+        mark_set :insert, origin
+      end
 
       def finish_selection(mode = nil)
         edit_separator

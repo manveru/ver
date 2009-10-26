@@ -169,7 +169,8 @@ module VER
         mode.map :comment_selection,            %w[comma c]
         mode.map :uncomment_selection,          %w[comma u]
         mode.map :wrap_selection,               %w[g w]
-        mode.map :replace_selection_with_char,  %w[r]
+        mode.map :selection_replace_char,       %w[r]
+        mode.map :selection_replace_string,     %w[c]
         mode.map [:finish_selection, :control], %w[Escape], %w[Control-c]
       end
 
