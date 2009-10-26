@@ -128,6 +128,25 @@ module VER
         refresh_selection
       end
 
+      def replace_selection_with_char
+        status_ask 'Replace selection with: ', take: 1 do |char|
+          if char.size == 1
+            pos = index(:insert)
+            each_selected_line do |y, fx, tx|
+              tx = fx + 1
+              next if get("#{y}.#{fx}", "#{y}.#{tx}").empty?
+              replace("#{y}.#{fx}", "#{y}.#{tx}", char)
+            end
+
+            edit_separator
+            mark_set :insert, pos
+            "replaced #{char.size} chars"
+          else
+            status.message 'replace aborted'
+          end
+        end
+      end
+
       private
 
       def finish_selection(mode = nil)
