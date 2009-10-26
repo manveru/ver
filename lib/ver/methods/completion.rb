@@ -78,7 +78,9 @@ module VER
         prefix = get(from, to).strip
         return [] if prefix.empty?
         prefix = Regexp.escape(prefix)
-        search_all(/\b#{prefix}\w*/).map{|match, from, to| match }.uniq
+        found = search_all(/\b#{prefix}\w*/).map{|match, from, to| match }.uniq
+        found.delete prefix
+        found
       end
 
       def complete_aspell
@@ -125,6 +127,7 @@ module VER
       end
 
       def complete(options = {}, &block)
+        edit_separator
         HoverCompletion.new(self, options, &block)
       end
     end

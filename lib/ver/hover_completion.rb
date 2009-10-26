@@ -73,6 +73,8 @@ module VER
       if choices && choices.size > 0
         list.value = choices
         select 0
+
+        submit if choices.size == 1
       else
         cancel
       end
