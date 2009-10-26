@@ -28,6 +28,7 @@ module VER
         foreground '#fff'
         selectforeground '#000'
         selectbackground '#fff'
+        exportselection false
         font VER.options[:font]
         pack fill: :both, expand: true
       }
@@ -124,7 +125,7 @@ module VER
     end
 
     def pick_selection
-      pick TkSelection.get
+      pick list.get(list.curselection.first)
     end
 
     def pick_action(item)
