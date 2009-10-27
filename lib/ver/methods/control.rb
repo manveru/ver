@@ -77,8 +77,27 @@ module VER
 
       def line_evaluate
         text = get('insert linestart', 'insert lineend')
-        result = eval(text)
-        insert("insert lineend", "\n#{result.inspect}\n")
+        stdout_capture_evaluate(text) do |res,out|
+          insert("insert lineend", "\n%s%p" % [out, res] )
+        end
+      end
+
+      def stdout_capture_evaluate(code)
+        begin
+          old_stdout = $stdout.dup
+          rd, wr = IO.pipe
+          $stdout.reopen(wr)
+          result = eval(code)
+          $stdout.reopen old_stdout; wr.close
+          stdout = rd.read
+
+          yield(result, stdout)
+        rescue => exception
+          yield(exception, '')
+        ensure
+          wr.closed? || $stdout.reopen(old_stdout) && wr.close
+          rd.closed? || rd.close
+        end
       end
 
       def buffer_switch

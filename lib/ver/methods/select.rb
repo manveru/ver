@@ -86,11 +86,8 @@ module VER
         tag_ranges(:sel).each do |from, to|
           code = get(from, to)
 
-          begin
-            result = eval(code)
-            insert("#{to} lineend", "\n%p" % [result])
-          rescue => exception
-            insert("#{to} lineend", "\n%p" % [exception])
+          stdout_capture_evaluate(code) do |res,out|
+            insert("#{to} lineend", "\n%s%p" % [out, res] )
           end
         end
 
