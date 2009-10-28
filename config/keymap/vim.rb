@@ -51,8 +51,8 @@ module VER
         mode.map :go_page_down,           %w[Control-f], %w[Next]
         mode.map :go_page_up,             %w[Control-b], %w[Prior]
         mode.map :go_prev_newline_block,  %w[braceright]
-        mode.map :go_word_left,           %w[b]
-        mode.map :go_word_right,          %w[w]
+        mode.map :go_word_left,           %w[b], %w[Shift-Left]
+        mode.map :go_word_right,          %w[w], %w[Shift-Right]
       end
 
       vim.add_mode :search do |mode|
