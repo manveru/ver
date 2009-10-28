@@ -172,11 +172,23 @@ module VER
   end
 
   def open_argv
-    ARGV.each{|arg|
+    argv = ARGV.dup
+    any = false
+
+    while arg = argv.shift
       layout.create_view do |view|
-        view.open_path(arg)
+        if argv.first =~ /\+\d+/
+          line = argv.shift.to_i
+          view.open_path(arg, line)
+        else
+          view.open_path(arg)
+        end
+
+        any = true
       end
-    }.any?
+    end
+
+    any
   end
 
   def open_welcome

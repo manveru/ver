@@ -91,8 +91,8 @@ module VER
       end
     end
 
-    def open_path(path)
-      @text.open_path(path)
+    def open_path(path, line = 1)
+      @text.open_path(path, line)
     end
 
     def open_empty

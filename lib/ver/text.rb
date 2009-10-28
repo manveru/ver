@@ -61,7 +61,7 @@ module VER
       @filename = Pathname(path.to_s).expand_path
     end
 
-    def open_path(path)
+    def open_path(path, line = 1)
       self.filename = path
 
       begin
@@ -73,7 +73,7 @@ module VER
         message "Create #{short_filename}"
       end
 
-      after_open
+      after_open(line)
     end
 
     def open_empty
@@ -82,11 +82,11 @@ module VER
       after_open
     end
 
-    def after_open
+    def after_open(line = 1)
       VER.opened_file(self)
 
       edit_reset
-      mark_set :insert, '1.0'
+      mark_set :insert, "#{line}.0"
       setup_highlight
 
       @pristine = false
