@@ -244,6 +244,11 @@ module VER
         insert :insert, "\t"
       end
 
+      def after_char_insert_mode
+        go_char_right
+        start_insert_mode
+      end
+
       def eol_then_insert_mode
         go_end_of_line
         start_insert_mode

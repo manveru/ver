@@ -93,6 +93,8 @@ module VER
         mode.map :delete_word_right,             %w[d w]
         mode.map :delete_word_right_then_insert, %w[c w]
         mode.map :eol_then_insert_mode,          %w[A]
+        mode.map :after_char_insert_mode,          %w[a]
+
         mode.map :indent_line,                   %w[greater]
         mode.map :insert_indented_newline_above, %w[O]
         mode.map :insert_indented_newline_below, %w[o]
