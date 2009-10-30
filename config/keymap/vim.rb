@@ -53,6 +53,7 @@ module VER
         mode.map :go_prev_newline_block,  %w[braceright]
         mode.map :go_word_left,           %w[b], %w[Shift-Left]
         mode.map :go_word_right,          %w[w], %w[Shift-Right]
+        mode.map :go_word_right_end,      %w[e]
       end
 
       vim.add_mode :search do |mode|

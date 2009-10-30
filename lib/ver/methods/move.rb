@@ -57,6 +57,12 @@ module VER
         end
       end
 
+      def go_word_right_end(count = 1)
+        count.times do
+          mark_set :insert, tk_next_word_pos_end('insert')
+        end
+      end
+
       def go_word_left(count = 1)
         count.times do
           mark_set :insert, tk_prev_word_pos('insert')
@@ -70,6 +76,10 @@ module VER
       end
 
       def tk_next_word_pos(start)
+        Tk.tk_call('tk::TextNextPos', path, start, 'tcl_startOfNextWord')
+      end
+
+      def tk_next_word_pos_end(start)
         Tk.tk_call('tk::TextNextWord', path, start)
       end
 
