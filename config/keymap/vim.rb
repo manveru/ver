@@ -134,6 +134,7 @@ module VER
         mode.map :go_word_right,           %w[Shift-Right]
         mode.map :go_beginning_of_line,    %w[Home]
         mode.map :go_end_of_line,          %w[End]
+        mode.map :insert_selection,        %w[Shift-Insert]
 
         KEYSYMS.each do |sym, name|
           mode.map [:insert_string, sym], [name]
