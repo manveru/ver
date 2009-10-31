@@ -35,6 +35,7 @@ module VER
       def wrap_line
         text = get('insert linestart', 'insert lineend')
         lines = wrap_lines_of(text, 80).join("\n")
+        lines.rstrip!
 
         replace('insert linestart', 'insert lineend', lines)
       end
@@ -326,6 +327,9 @@ module VER
             lines << indent + chunk
           elsif last_size == indent_size
             last << chunk
+          elsif chunk =~ /\.$/
+            last << ' ' << chunk
+            lines << indent.dup
           else
             last << ' ' << chunk
           end
