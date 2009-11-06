@@ -1,5 +1,5 @@
 module VER
-  class Layout < Ttk::Frame
+  class Layout < Tk::Tile::Frame
     attr_reader :strategy, :views, :options
 
     def initialize(parent, options = {})

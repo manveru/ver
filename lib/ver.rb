@@ -106,7 +106,7 @@ module VER
   end
 
   def setup_tk
-    require 'tk'
+    require 'ffi-tk'
     Thread.abort_on_exception = true
     # TclTkLib.mainloop_abort_on_exception = true
   end
@@ -115,14 +115,14 @@ module VER
     Tk::Tile.set_theme options[:tk_theme]
 
     @paths = Set.new
-    @root = TkRoot.new
+    @root = Tk.root
     @layout = Layout.new(@root)
     @layout.strategy = Layout::VerticalTiling
   end
 
   def sanitize_options
     font, family, size = options.values_at(:font, :font_family, :font_size)
-    options[:font] = Font[family: family, size: size] unless font.is_a?(TkFont)
+    options[:font] = Font[family: family, size: size] unless font.is_a?(Tk::Font)
 
     tabs = options[:font].measure('0') * (options[:tab_expand] || 2)
     options[:tabs] = tabs
@@ -131,7 +131,7 @@ module VER
     options[:encoding] = Encoding.find(encoding) unless encoding.is_a?(Encoding)
 
     tk_theme = options[:tk_theme]
-    options[:theme] = 'default' unless Tk::Tile.themes.include?(tk_theme)
+    options[:theme] = 'default' unless Tk::Tile::Style.theme_names.include?(tk_theme)
   end
 
   def first_startup

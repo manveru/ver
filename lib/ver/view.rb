@@ -1,5 +1,5 @@
 module VER
-  class View < TkFrame
+  class View < Tk::Frame
     autoload :Entry,   'ver/view/entry'
     autoload :List,    'ver/view/list'
     autoload :Console, 'ver/view/console'

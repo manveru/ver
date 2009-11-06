@@ -24,7 +24,7 @@ module VER
     end
 
     def create(options)
-      font = TkFont.new(options)
+      font = Tk::Font.new(options)
       @cache << font
       font
     end
