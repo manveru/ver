@@ -154,7 +154,7 @@ module VER
 
     def create_tags_on(widget)
       colors.each do |name, options|
-        TktNamedTag.new(widget, name.to_s, options)
+        widget.tag_configure(name.to_s, options)
       end
     end
 

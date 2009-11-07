@@ -321,19 +321,19 @@ module VER
       return unless filename
 
       if @syntax = Syntax.from_filename(filename)
-        # defer{ syntax.highlight(self, get('0.0', :end)) }
+        defer{ syntax.highlight(self, get('0.0', :end)) }
       end
     end
 
     def schedule_line_highlight(raw_index)
       return unless @syntax
       index = index(raw_index)
-      # schedule_line_highlight!(index.y - 1, index.linestart, index.lineend)
+      schedule_line_highlight!(index.y - 1, index.linestart, index.lineend)
     end
 
     def schedule_highlight(options = {})
       return unless @syntax
-      # schedule_highlight!
+      schedule_highlight!
     end
 
     private
@@ -457,8 +457,8 @@ module VER
     end
 
     def setup_tags
-      TktNamedTag.new self, 'invalid.trailing-whitespace', background: '#f00'
-      TktNamedTag.new self, 'markup.underline.link' , underline: true, foreground: '#00f'
+      tag_configure 'invalid.trailing-whitespace', background: '#f00'
+      tag_configure 'markup.underline.link' , underline: true, foreground: '#00f'
 
       tag_bind('markup.underline.link', '1') do |event|
         pos = index("@#{event.x},#{event.y}")
