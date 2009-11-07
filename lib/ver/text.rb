@@ -183,8 +183,10 @@ module VER
       return Enumerator.new(self, :search_all, regexp, from) unless block_given?
       from, to = from.to_s, to.to_s
 
-      while result = search_with_length(regexp, from, to)
-        pos, len, match = result
+      while result = search(regexp, from, to, :count)
+        pos, len = result
+        match = get(pos, "#{pos} + #{len} chars")
+
         break if !result || len == 0
         from = "#{pos} + #{len} chars"
         yield(match, pos, from)
@@ -194,8 +196,10 @@ module VER
     def rsearch_all(regexp, from = 'end', to = '1.0')
       return Enumerator.new(self, :rsearch_all, regexp, from) unless block_given?
 
-      while result = rsearch_with_length(regexp, from, to)
-        pos, len, match = result
+      while result = rsearch(regexp, from, to, :count)
+        pos, len = result
+        match = get(pos, "#{pos} + #{len} chars")
+
         break if !result || len == 0
         from = index("#{pos} - #{len} chars")
         yield(match, pos, from)
