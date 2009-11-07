@@ -17,27 +17,25 @@ module VER
     end
 
     def setup_widgets
-      self.frame = TkFrame.new{
-        pack fill: :both, expand: true
-      }
+      self.frame = Tk::Frame.new.pack fill: :both, expand: true
 
-      self.list = Tk::Listbox.new(frame){
-        setgrid 'yes'
-        width 0
-        background '#000'
-        foreground '#fff'
-        selectforeground '#000'
-        selectbackground '#fff'
-        exportselection false
-        font VER.options[:font]
-        pack fill: :both, expand: true
-      }
+      self.list = list = Tk::Listbox.new(frame)
+      list.configure(
+        setgrid: true,
+        width: 0,
+        background: '#000',
+        foreground: '#fff',
+        selectforeground: '#000',
+        selectbackground: '#fff',
+        exportselection: false,
+        font: VER.options[:font]
+      )
+      list.pack fill: :both, expand: true
 
-      self.entry = View::Entry.new(frame){
-        pack fill: :x, expand: false
-        font VER.options[:font]
-        focus
-      }
+      self.entry = entry = View::Entry.new(frame)
+      entry.configure font: VER.options[:font]
+      entry.pack fill: :x, expand: false
+      entry.focus
       entry.list_view = self
     end
 

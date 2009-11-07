@@ -207,8 +207,7 @@ module VER
     end
 
     def tag_exists?(given_path)
-      list = execute('tag', 'names', None).to_a
-      list.include?(given_path)
+      tag_names.include?(given_path)
     rescue RuntimeError => ex
       false
     end

@@ -99,7 +99,7 @@ module VER
       setup
       open_argv || open_welcome
       emergency_bindings
-      Tk.mainloop
+      FFI::Tk.mainloop
     # end
   rescue => exception
     VER.error(exception)
