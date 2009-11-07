@@ -185,10 +185,11 @@ module VER
 
       while result = search(regexp, from, to, :count)
         pos, len = result
-        match = get(pos, "#{pos} + #{len} chars")
+        break if !pos || len == 0
 
-        break if !result || len == 0
+        match = get(pos, "#{pos} + #{len} chars")
         from = "#{pos} + #{len} chars"
+
         yield(match, pos, from)
       end
     end
@@ -198,10 +199,11 @@ module VER
 
       while result = rsearch(regexp, from, to, :count)
         pos, len = result
-        match = get(pos, "#{pos} + #{len} chars")
+        break if !pos || len == 0
 
-        break if !result || len == 0
+        match = get(pos, "#{pos} + #{len} chars")
         from = index("#{pos} - #{len} chars")
+
         yield(match, pos, from)
       end
     end
