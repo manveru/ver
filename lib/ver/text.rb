@@ -170,7 +170,7 @@ module VER
         tag_remove(name, from, to)
       else
         fg, bg = options.values_at(:foreground, :background)
-        TktNamedTag.new(self, name, foreground: fg, background: bg)
+        tag_configure(name, foreground: fg, background: bg)
       end
 
       search_all(regexp, from, to) do |match, match_from, match_to|
@@ -498,3 +498,4 @@ module VER
     end
   end
 end
+
