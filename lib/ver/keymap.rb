@@ -84,7 +84,7 @@ module VER
     end
 
     def register(sequence)
-      tag.bind(sequence){|event|
+      tag.bind("<#{sequence}>"){|event|
         enter_key sequence
         Tk.callback_break
       }
