@@ -38,18 +38,19 @@ module VER
     end
 
     def value=(string)
-      super
-      Tk.event_generate(self, '<Modified>')
+      delete(0, :end)
+      insert(0, string)
+      Tk::Event.generate(self, '<<Modified>>')
     end
 
     def delete(*args)
       super
-      Tk.event_generate(self, '<Modified>')
+      Tk::Event.generate(self, '<<Modified>>')
     end
 
     def insert(*args)
       super
-      Tk.event_generate(self, '<Modified>')
+      Tk::Event.generate(self, '<<Modified>>')
     end
 
     def message(string)

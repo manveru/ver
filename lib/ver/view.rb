@@ -68,15 +68,15 @@ module VER
     end
 
     def setup_grid
-      TkGrid.grid @text,   row: 0, column: 0, sticky: :nsew              if @text
-      TkGrid.grid @ybar,   row: 0, column: 1, sticky: :ns                if @ybar
-      TkGrid.grid @xbar,   row: 1, column: 0, sticky: :ew                if @xbar
-      TkGrid.grid @status, row: 2, column: 0, sticky: :ew, columnspan: 2 if @status
+      @text.grid_configure   row: 0, column: 0, sticky: :nsew              if @text
+      @ybar.grid_configure   row: 0, column: 1, sticky: :ns                if @ybar
+      @xbar.grid_configure   row: 1, column: 0, sticky: :ew                if @xbar
+      @status.grid_configure row: 2, column: 0, sticky: :ew, columnspan: 2 if @status
 
-      TkGrid.columnconfigure self, 0, weight: 1
-      TkGrid.columnconfigure self, 1, weight: 0
-      TkGrid.rowconfigure    self, 0, weight: 1
-      TkGrid.rowconfigure    self, 1, weight: 0
+      grid_columnconfigure 0, weight: 1
+      grid_columnconfigure 1, weight: 0
+      grid_rowconfigure    0, weight: 1
+      grid_rowconfigure    1, weight: 0
     end
 
     def setup_misc
@@ -87,7 +87,7 @@ module VER
 
     def setup_events
       %w[Modified Focus].each do |name|
-        @text.bind("<#{name}>"){|event| __send__("on_#{name.downcase}", event) }
+        @text.bind("<<#{name}>>"){|event| __send__("on_#{name.downcase}", event) }
       end
     end
 

@@ -28,9 +28,10 @@ module VER
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
       defer do
-        wait_visibility
+        sleep 1
+        # Tk::Wait.visibility(self)
         apply_mode_style(keymap.mode) # for startup
-        setup_tags
+        # setup_tags
       end
 
       self.selection_start = nil
@@ -42,7 +43,7 @@ module VER
     end
 
     def index(idx)
-      Index.new(self, tk_send_without_enc('index', _get_eval_enc_str(idx)))
+      Index.new(self, execute('index', idx).to_s)
     end
 
     def message(*args)
@@ -69,7 +70,7 @@ module VER
         self.value = filename.open("r:#{enc}"){|io| io.read }
         message "Opened #{short_filename}"
       rescue Errno::ENOENT
-        clear
+        delete '1.0', :end
         message "Create #{short_filename}"
       end
 
@@ -77,7 +78,7 @@ module VER
     end
 
     def open_empty
-      clear
+      delete '1.0', :end
       message "[No File]"
       after_open
     end
@@ -202,7 +203,7 @@ module VER
     end
 
     def tag_exists?(given_path)
-      list = tk_split_simplelist(tk_send_without_enc('tag', 'names', None), false, true)
+      list = execute('tag', 'names', None).to_a
       list.include?(given_path)
     rescue RuntimeError => ex
       false
@@ -254,7 +255,7 @@ module VER
 
       copy(deleted)
 
-      tk_send_without_enc('delete', *args)
+      execute('delete', *args)
 
       touch!(*args)
     end
@@ -284,11 +285,11 @@ module VER
 
     def focus
       super
-      Tk.event_generate(self, '<Focus>')
+      Tk::Event.generate(self, '<<Focus>>')
     end
 
     def fast_tag_add(tag, *indices)
-      tk_send_without_enc('tag', 'add', _get_eval_enc_str(tag), *indices)
+      execute('tag', 'add', tag, *indices)
       self
     rescue RuntimeError => ex
       VER.error(ex)
@@ -309,26 +310,26 @@ module VER
         title = "[No Name] - VER"
       end
 
-      VER.root['title'] = title
+      VER.root.wm_title = title
     end
 
     def setup_highlight
       return unless filename
 
       if @syntax = Syntax.from_filename(filename)
-        defer{ syntax.highlight(self, value) }
+        # defer{ syntax.highlight(self, get('0.0', :end)) }
       end
     end
 
     def schedule_line_highlight(raw_index)
       return unless @syntax
       index = index(raw_index)
-      schedule_line_highlight!(index.y - 1, index.linestart, index.lineend)
+      # schedule_line_highlight!(index.y - 1, index.linestart, index.lineend)
     end
 
     def schedule_highlight(options = {})
       return unless @syntax
-      schedule_highlight!
+      # schedule_highlight!
     end
 
     private
@@ -354,7 +355,7 @@ module VER
     #       highlighted at once by bundling them.
     def touch!(*args)
       args.each{|arg| schedule_line_highlight(arg) } if @syntax
-      Tk.event_generate(self, '<Modified>')
+      Tk::Event.generate(self, '<<Modified>>')
     end
 
     def copy(text)
@@ -368,19 +369,19 @@ module VER
     end
 
     def copy_string(text)
-      TkClipboard.set(text = text.to_str)
+      clipboard_set(text = text.to_str)
 
       copy_message text.count("\n"), text.size
     end
 
     def copy_array(text)
-      TkClipboard.set(text, type: Array)
+      clipboard_set(text, type: Array)
 
-      copy_message text.size,  text.reduce(0){|s,v| s + v.size }
+      copy_message text.size, text.reduce(0){|s,v| s + v.size }
     end
 
     def copy_fallback(text)
-      TkClipboard.set(text)
+      clipboard_set(text)
 
       message "Copied unkown entity of class %p" % [text.class]
     end
@@ -484,13 +485,13 @@ module VER
     end
 
     def defer
-      EM.defer do
+      # EM.defer do
         begin
           yield
         rescue Exception => ex
           VER.error(ex)
         end
-      end
+      # end
     end
   end
 end

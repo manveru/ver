@@ -72,31 +72,31 @@ module VER
       private
 
       def tk_prev_word_pos(start)
-        Tk.tk_call('tk::TextPrevPos', path, start, 'tcl_startOfPreviousWord')
+        Tk.execute('tk::TextPrevPos', tk_pathname, start, 'tcl_startOfPreviousWord').to_s
       end
 
       def tk_next_word_pos(start)
-        Tk.tk_call('tk::TextNextPos', path, start, 'tcl_startOfNextWord')
+        Tk.execute('tk::TextNextPos', tk_pathname, start, 'tcl_startOfNextWord').to_s
       end
 
       def tk_next_word_pos_end(start)
-        Tk.tk_call('tk::TextNextWord', path, start)
+        Tk.execute('tk::TextNextWord', tk_pathname, start).to_s
       end
 
       def tk_prev_line_pos(count)
-        Tk.tk_call('tk::TextUpDownLine', path, -count.abs)
+        Tk.execute('tk::TextUpDownLine', tk_pathname, -count.abs).to_s
       end
 
       def tk_next_line_pos(count)
-        Tk.tk_call('tk::TextUpDownLine', path, count)
+        Tk.execute('tk::TextUpDownLine', tk_pathname, count).to_s
       end
 
       def tk_prev_page_pos(count)
-        Tk.tk_call('tk::TextScrollPages', path, -count.abs)
+        Tk.execute('tk::TextScrollPages', tk_pathname, -count.abs).to_s
       end
 
       def tk_next_page_pos(count)
-        Tk.tk_call('tk::TextScrollPages', path, count)
+        Tk.execute('tk::TextScrollPages', tk_pathname, count).to_s
       end
     end
   end

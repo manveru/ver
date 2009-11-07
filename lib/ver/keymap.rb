@@ -50,39 +50,42 @@ module VER
     end
 
     def prepare_tag
-      self.tag = TkBindTag.new
+      name="bindtag__ver::layout0_ver::view0_ver::status0"
+      uuid = callback.tk_pathname.tr('.-:', '_').squeeze('_')
+      self.tag = Tk::BindTag.new("bindtag_#{uuid}")
       tags = widget.bindtags
 
-      index = tags.index{|element| element.is_a?(Class) }
+      pivot = %w[Text TEntry]
+      index = tags.index{|element| pivot.include?(element) }
       tags[index - 1, 0] = @tag
 
-      widget.bindtags = tags
+      widget.bindtags(*tags)
     end
 
     def prepare_default_binds
-      tag.bind 'Key' do |event|
-        case event.char
+      tag.bind '<Key>' do |event|
+        case chunk = event.unicode
         when ''
           # enter_missing event.keysym
           # p event
         else
-          enter_missing event.char
+          enter_missing(chunk)
         end
 
         Tk.callback_break
       end
 
       0.upto 9 do |n|
-        tag.bind("KeyPress-#{n}") do |key|
+        tag.bind("<KeyPress-#{n}>") do |key|
           enter_key n.to_s
           Tk.callback_break
         end
       end
     end
 
-    def register(key)
-      tag.bind(key){|event|
-        enter_key key
+    def register(sequence)
+      tag.bind(sequence){|event|
+        enter_key sequence
         Tk.callback_break
       }
     end

@@ -40,9 +40,9 @@ module VER
       return unless length
       target = value.size + length
 
-      bind '<Modified>' do |event|
+      bind '<<Modified>>' do |event|
         if value.size >= target
-          bind_remove('<Modified>')
+          bind('<<Modified>>'){}
           ask_submit
         end
       end
