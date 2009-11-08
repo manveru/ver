@@ -15,11 +15,8 @@ module VER
     end
 
     def setup_widgets
-      @list = Tk::Listbox.new(parent){
-        borderwidth 0
-        selectmode :single
-        focus
-      }
+      @list = Tk::Listbox.new(parent, borderwidth: 0, selectmode: :single)
+      @list.focus
     end
 
     def setup_keymap
@@ -29,8 +26,8 @@ module VER
     end
 
     def setup_events
-      list.bind('<ListboxSelect>'){ layout }
-      list.bind('Expose'){ layout }
+      list.bind('<<ListboxSelect>>'){ layout }
+      list.bind('<Expose>'){ layout }
     end
 
     def go_down
@@ -85,13 +82,13 @@ module VER
       list.selection_set(index)
       list.see(index)
 
-      Tk.event_generate(list, '<ListboxSelect>')
+      Tk::Event.generate(list, '<<ListboxSelect>>')
     end
 
     def layout
       return unless choices && choices.size > 0
 
-      x, y = parent.caret.values_at('x', 'y')
+      x, y = parent.tk_caret.values_at('x', 'y')
       list.place x: x, relheight: 0.9
       list.configure width: @longest_choice + 2
     end
