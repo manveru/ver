@@ -52,7 +52,7 @@ module VER
       end
 
       def inspect
-        idx.inspect
+        "#<Text::Index #{self}>"
       end
 
       def to_str
@@ -60,11 +60,15 @@ module VER
       end
 
       def to_s
-        idx
+        "#{x}.#{y}"
       end
 
       def to_i
         y
+      end
+
+      def to_tcl
+        Tk::TclString.new(to_s)
       end
 
       def upto(other)
