@@ -94,7 +94,7 @@ module VER
     end
 
     def may_close
-      return yield unless modified?
+      return yield unless edit_modified?
       return yield if persisted?
 
       question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
