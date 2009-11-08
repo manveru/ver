@@ -1,4 +1,12 @@
 module VER
+  # FIXME:
+  #   If a font doesn't support, for example, underline, we will still create a
+  #   new font for it.
+  #   This means that there can be an infinite number of fonts with identical
+  #   options, yet we still try to create new instances because the actual
+  #   properties of the font don't equal the properties it was created with.
+  #   We might be able to fix this by storing the options used for creation with
+  #   the Font and comparing against them instead.
   module Font
     module_function
 
@@ -14,13 +22,7 @@ module VER
     end
 
     def find(options)
-      @cache.find do |font|
-        actual = font.actual_hash
-
-        options.all? do |key, value|
-          actual[key] == value
-        end
-      end
+      @cache.find{|font| font.actual_hash == options }
     end
 
     def create(options)
@@ -38,14 +40,18 @@ module VER
     end
 
     def normalize_options(options)
-      result = default_options.dup
+      result = {}
 
       options.each{|key, value|
         case key = key.to_s
-        when 'family', 'weight', 'slant'
-          result[key] = value.to_s
-        when 'size', 'underline', 'overstrike'
-          result[key] = value
+        when 'family'
+          result[key.to_sym] = value.to_s
+        when 'weight', 'slant'
+          result[key.to_sym] = value.to_sym
+        when 'size'
+          result[key.to_sym] = value.to_i
+        when 'underline', 'overstrike'
+          result[key.to_sym] = !!value
         end
       }
 

@@ -90,10 +90,10 @@ module VER
     def fontstyle_as_font(style)
       options = Font.default_options
 
-      options['slant']      = 'italic' if style =~ /\bitalic\b/
-      options['underline']  = true     if style =~ /\bunderline\b/
-      options['overstrike'] = true     if style =~ /\boverstrike\b/
-      options['weight']     = 'bold'   if style =~ /\bbold\b/
+      options[:slant]      = :italic if style =~ /\bitalic\b/
+      options[:underline]  = true    if style =~ /\bunderline\b/
+      options[:overstrike] = true    if style =~ /\boverstrike\b/
+      options[:weight]     = :bold   if style =~ /\bbold\b/
 
       Font[options]
     end
