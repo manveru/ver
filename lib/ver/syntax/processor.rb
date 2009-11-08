@@ -24,8 +24,10 @@ module VER
 
         if tag_name = theme.get(name)
           if stack.size > 1
-            below = theme.get(stack[-2][0])
-            textarea.tag_raise(tag_name, below) rescue nil
+            below_name = stack[-2][0]
+            below = theme.get(below_name)
+            return if !below || below.empty?
+            textarea.tag_raise(tag_name, below)
           end
         end
       end
