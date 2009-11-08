@@ -282,12 +282,12 @@ module VER
 
       # FIXME: nasty hack or neccesary?
       def paste
-        text = TkClipboard.get
+        text = Tk::Clipboard.get
         paste_continous text
 
       rescue RuntimeError => ex
         if ex.message =~ /form "STRING" not defined/
-          array = TkClipboard.get type: Array
+          array = Tk::Clipboard.get type: Array
           paste_tk_array array
         else
           Kernel.raise ex
@@ -356,3 +356,4 @@ module VER
     end
   end
 end
+
