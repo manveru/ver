@@ -38,8 +38,8 @@ module VER
     end
 
     def value=(string)
-      delete(0, :end)
-      insert(0, string)
+      execute_only(:delete, 0, :end)
+      execute_only(:insert, 0, string)
       Tk::Event.generate(self, '<<Modified>>')
     end
 
