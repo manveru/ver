@@ -67,7 +67,7 @@ module VER
 
       begin
         enc = encoding.name
-        self.value = filename.open("r:#{enc}"){|io| io.read }
+        self.value = filename.open("r:#{enc}"){|io| io.read.chomp }
         message "Opened #{short_filename}"
       rescue Errno::ENOENT
         delete '1.0', :end
@@ -500,4 +500,3 @@ module VER
     end
   end
 end
-
