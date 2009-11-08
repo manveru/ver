@@ -67,13 +67,12 @@ module VER
       end
 
       def smart_evaluate
-        from, to = tag_ranges(:sel).first
-
-        if from && to
-          selection_evaluate
-        else
-          line_evaluate
+        if sel = tag_ranges(:sel)
+          from, to = sel.first
+          return selection_evaluate if from && to
         end
+
+        line_evaluate
       end
 
       def line_evaluate
