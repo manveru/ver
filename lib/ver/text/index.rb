@@ -60,7 +60,7 @@ module VER
       end
 
       def to_s
-        "#{x}.#{y}"
+        "#{y}.#{x}"
       end
 
       def to_i
