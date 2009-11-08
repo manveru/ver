@@ -2,7 +2,7 @@ module VER
   module Methods
     module Insert
       def insert_selection
-        insert :insert, TkSelection.get
+        insert :insert, Tk::Selection.get
       end
     end
   end
