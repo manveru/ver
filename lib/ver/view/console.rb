@@ -37,7 +37,7 @@ module VER
         font = VER.options[:font]
         tab_width = font.measure('0') * 2
 
-        @text = TkText.new(
+        @text = Tk::Text.new(
           @parent,
           borderwidth: 0,
           exportselection: true,
@@ -63,7 +63,7 @@ module VER
         @entry.bind('Control-q'){ Tk.exit }
         @entry.bind('Return'){
           send_data @entry.value
-          @entry.delete 0, :end
+          @entry.clear
         }
       end
 
