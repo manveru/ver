@@ -124,9 +124,9 @@ module VER
           ['Text Files', '*.txt'],
         ]
 
-        fpath = Tk.getOpenFile(filetypes: filetypes)
+        fpath = Tk.get_open_file(filetypes: filetypes)
 
-        return if fpath.empty?
+        return unless fpath
 
         view.find_or_create(fpath)
       end
