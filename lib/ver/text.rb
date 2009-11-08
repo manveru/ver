@@ -31,7 +31,7 @@ module VER
         sleep 1
         # Tk::Wait.visibility(self)
         apply_mode_style(keymap.mode) # for startup
-        # setup_tags
+        setup_tags
       end
 
       self.selection_start = nil
@@ -461,7 +461,7 @@ module VER
       tag_configure 'invalid.trailing-whitespace', background: '#f00'
       tag_configure 'markup.underline.link' , underline: true, foreground: '#00f'
 
-      tag_bind('markup.underline.link', '1') do |event|
+      tag_bind('markup.underline.link', '<1>') do |event|
         pos = index("@#{event.x},#{event.y}")
 
         uri = tag_ranges('markup.underline.link').find{|from, to|
@@ -482,7 +482,7 @@ module VER
     end
 
     def tag_all_uris(given_options = {})
-      tag_all_matching('markup.underline.link', /https?:\/\/[^)\]}\s]+/, given_options)
+      tag_all_matching('markup.underline.link', /https?:\/\/[^)\]}\s'"]+/, given_options)
     end
 
     def tag_all_trailing_whitespace(given_options = {})
