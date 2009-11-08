@@ -22,6 +22,7 @@ op = OptionParser.new{|o|
   o.on('-k', '--keymap NAME', 'vim or emacs'){|k| options[:keymap] = k }
   o.on('--font-size INT', 'font size'){|fs| options[:font_size] = fs }
   o.on('--font-family NAME', 'font family'){|fn| options[:font_family] = fn }
+  o.on('--debug', 'turn $DEBUG on'){ $DEBUG = true }
   o.on('-h', '--help', 'Show this help'){ puts o; exit }
 }
 op.parse!(ARGV)
