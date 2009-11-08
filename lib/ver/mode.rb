@@ -122,12 +122,16 @@ module VER
       if stack.empty?
         arg ? nil : false
       else
-        executable = stack.inject(@map){|keys, key| keys.fetch(key) }
+        # executable = stack.inject(@map){|keys, key| keys.fetch(key) }
+
+        executable = @map
+        stack.each do |key|
+          executable = executable[key]
+          return false if executable.nil?
+        end
 
         execute(executable, *arg)
       end
-    rescue KeyError
-      false
     end
 
     def execute(executable, *arg)
