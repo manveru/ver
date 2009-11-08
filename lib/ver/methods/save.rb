@@ -5,24 +5,20 @@ module VER
         save_to(filename)
       end
 
-      def file_save_popup
-        filetypes = [
+      def file_save_popup(options = {})
+        options = options.dup
+        options[:filetypes] ||= [
           ['ALL Files',  '*'    ],
           ['Text Files', '*.txt'],
         ]
 
-        filename  = ::File.basename @filename
-        extension = ::File.extname  @filename
-        directory = ::File.dirname  @filename
+        options[:filename]  ||= ::File.basename(@filename)
+        options[:extension] ||= ::File.extname(@filename)
+        options[:directory] ||= ::File.dirname(@filename)
 
-        fpath = Tk.getSaveFile(
-          initialfile: filename,
-          initialdir: directory,
-          defaultextension: extension,
-          filetypes: filetypes
-        )
+        fpath = Tk.get_save_file(options)
 
-        return if fpath.empty?
+        return unless fpath
 
         save_to(fpath)
       end
