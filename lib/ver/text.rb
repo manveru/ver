@@ -490,13 +490,13 @@ module VER
     end
 
     def defer
-      # EM.defer do
+      Tk::After.idle do
         begin
           yield
         rescue Exception => ex
           VER.error(ex)
         end
-      # end
+      end
     end
   end
 end
