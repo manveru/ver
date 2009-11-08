@@ -51,7 +51,7 @@ module VER
 
     def prepare_tag
       name="bindtag__ver::layout0_ver::view0_ver::status0"
-      uuid = widget.tk_pathname.tr('.-:', '_').squeeze('_')
+      uuid = widget.tk_pathname.scan(/\w+/).join('_')
       self.tag = Tk::BindTag.new("bindtag_#{uuid}")
       tags = widget.bindtags
 
