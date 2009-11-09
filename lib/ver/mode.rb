@@ -135,6 +135,7 @@ module VER
     end
 
     def execute(executable, *arg)
+      arg = [*arg].compact # doesn't allow nil
       case executable
       when Hash
         return nil
