@@ -4,6 +4,8 @@ module VER
     attr_accessor :keymap, :view
     attr_reader :mode
 
+    HISTORY = Hash.new{|k,v| k[v] = [] }
+
     def initialize(view, options = {})
       options[:style] ||= self.class.obtain_style_name
       super
@@ -30,6 +32,7 @@ module VER
 
     def ask(question, options = {}, &callback)
       @question, @backup_value, @callback = question, value, callback
+      @history_idx = -1
 
       message @question
       submit_when_taken(options[:take])
@@ -50,6 +53,10 @@ module VER
 
     def ask_submit
       answer = value.sub(@question, '')
+      history = HISTORY[@question]
+      history.uniq!
+      history << answer
+
       case result = @callback.call(answer)
       when String
         message result
@@ -79,6 +86,44 @@ module VER
       else
         self.cursor = @question.size
       end
+    end
+
+    def history_prev
+      @history_idx -= 1
+      history = HISTORY[@question]
+
+      if @history_idx < 0
+        @history_idx = history.size - 1
+      end
+
+      p prev: [history, @history_idx]
+      answer = history[@history_idx]
+      return unless answer
+      self.value = "#@question#{answer}"
+    end
+
+    def history_next
+      @history_idx += 1
+      history = HISTORY[@question]
+
+      if @history_idx > history.size
+        @history_idx = 0
+      end
+
+      p next: [history, @history_idx]
+      answer = history[@history_idx]
+      return unless answer
+      self.value = "#@question#{answer}"
+    end
+
+    def history_complete
+      history = HISTORY[@question]
+      so_far = value.sub(@question, '')
+      needle = Regexp.escape(so_far)
+      list = history.grep(/#{needle}/i)
+      return if list.empty?
+
+      self.value = "#@question#{list.last}"
     end
   end
 end

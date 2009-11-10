@@ -195,6 +195,9 @@ module VER
         mode.arguments = false
 
         mode.to :ask_abort,  %w[Escape], %w[Control-c]
+        mode.to :history_prev, %w[Up], %w[Control-p]
+        mode.to :history_next, %w[Down], %w[Control-n]
+        mode.to :history_complete, %w[Tab]
         mode.to :ask_submit, %w[Return]
 
         mode.missing :insert_string
