@@ -117,6 +117,7 @@ module VER
 
     @paths = Set.new
     @root = Tk.root
+    @root.wm_geometry = '160x80'
     @layout = Layout.new(@root)
     @layout.strategy = Layout::VerticalTiling
   end
