@@ -11,6 +11,34 @@ module VER
       :select_block => {insertbackground: 'yellow', blockcursor: true},
     }
 
+    GUESS_ENCODING_ORDER = [
+      Encoding::US_ASCII,
+      Encoding::UTF_8,
+      Encoding::Shift_JIS,
+      Encoding::EUC_JP,
+      Encoding::EucJP_ms,
+      Encoding::Big5,
+      Encoding::UTF_16BE,
+      Encoding::UTF_16LE,
+      Encoding::UTF_32BE,
+      Encoding::UTF_32LE,
+      Encoding::CP949,
+      Encoding::Emacs_Mule,
+      Encoding::EUC_KR,
+      Encoding::EUC_TW,
+      Encoding::GB18030,
+      Encoding::GBK,
+      Encoding::Stateless_ISO_2022_JP,
+      Encoding::CP51932,
+      Encoding::EUC_CN,
+      Encoding::GB12345,
+      Encoding::Windows_31J,
+      Encoding::MacJapanese,
+      Encoding::UTF8_MAC,
+      Encoding::BINARY,
+    ]
+
+
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
@@ -62,12 +90,60 @@ module VER
       @filename = Pathname(path.to_s).expand_path
     end
 
+    # TODO:
+    # Binary files are still major fail.
+    # We could try to copy behaviour of Vim or Emacs.
+    # Some nice files for testing binary display are in /usr/share/terminfo
+    #
+    # About the nature of fail:
+    # First of all, just about no font is made to have binary glyphs, even if it
+    # would be nice to create a composite font, and would make editing a lot
+    # nicer, it's really no option.
+    #
+    # Next issue is that some bytes that occur in binary files "\0" for example,
+    # cause big problems for Tcl_EvalEx.
+    #
+    # I've tried sending the byte as:
+    #   "\0", "\\0",
+    #   "\x0", "\\x0",
+    #   "\x00", "\\x00",
+    #   "\u0000", "\\u0000"
+    #
+    # Tcl doesn't like that at all.
+    # The first obviously sends the original \0 byte directly on, the second
+    # displays in the widget as "\0", "\x0", and so on, which will lead to total
+    # corruption.
+    #
+    # I have no idea how to work around this issue, must be some convention?
+    # More important though, is to avoid sending those bytes at all, and it
+    # seems to be a huge amount of work to get support for binary editing going.
+    # There are much better tools for this around already, and maybe diluting
+    # the normal Text buffer for this purpose will just make problems.
+    #
+    # For now, VER will simply fail to open files that contain \0 bytes, and
+    # display binary files in a weird way.
     def open_path(path, line = 1)
       self.filename = path
 
       begin
         enc = encoding.name
-        self.value = filename.open("r:#{enc}"){|io| io.read.chomp }
+        content = filename.open("r:#{enc}"){|io| io.read.chomp }
+
+        if content.valid_encoding?
+          self.value = content
+        else # take a guess
+          @encoding = GUESS_ENCODING_ORDER.find{|enc|
+            content.force_encoding(enc)
+            content.valid_encoding?
+          }
+
+          # Now we have the source encoding, let's make it UTF-8 so Tcl can
+          # handle it.
+          content.force_encoding(@encoding)
+          content.encode!(Encoding::UTF_8)
+          self.value = content
+        end
+
         message "Opened #{short_filename}"
       rescue Errno::ENOENT
         delete '1.0', :end
@@ -148,6 +224,7 @@ module VER
       additional = [keymap.mode]
       syntax_name = syntax.name if syntax
       additional << syntax_name if syntax_name
+      additional << @encoding
 
       values = [
         short_filename,
@@ -320,6 +397,7 @@ module VER
 
     def setup_highlight
       return unless filename
+      return if @encoding == Encoding::BINARY
 
       if @syntax = Syntax.from_filename(filename)
         defer{ syntax.highlight(self, get('0.0', :end)) }
