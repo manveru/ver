@@ -38,7 +38,6 @@ module VER
       Encoding::BINARY,
     ]
 
-
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
@@ -64,7 +63,7 @@ module VER
 
       self.selection_start = nil
       @pristine = true
-      @encoding = VER.options.fetch(:encoding)
+      @encoding = Encoding.default_internal
       @dirty_indices = []
 
       self.mode = keymap.mode

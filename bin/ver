@@ -9,6 +9,7 @@ end
 require 'optparse'
 
 options = {
+  encoding:    'UTF-8:UTF-8',
   fork:        true,
   keymap:      'vim',
   font_size:   10,
@@ -18,12 +19,15 @@ options = {
 }
 
 op = OptionParser.new{|o|
+  o.on('-Eex[:in]', '--encoding EXTERNAL[:INTERNAL]', 'used encoding'){|enc|
+    options[:encoding] = enc }
+  o.on('--font-family NAME', 'font family'){|fn| options[:font_family] = fn }
+  o.on('--font-size INT', 'font size'){|fs| options[:font_size] = fs }
   o.on('-f', '--nofork', 'stay attached to terminal'){ options[:fork] = false }
   o.on('-k', '--keymap NAME', 'vim or emacs'){|k| options[:keymap] = k }
-  o.on('--font-size INT', 'font size'){|fs| options[:font_size] = fs }
-  o.on('--font-family NAME', 'font family'){|fn| options[:font_family] = fn }
-  o.on('--debug', 'turn $DEBUG on'){ $DEBUG = true }
+  o.separator ' '
   o.on('-h', '--help', 'Show this help'){ puts o; exit }
+  o.on('--debug', 'turn $DEBUG on'){ $DEBUG = true }
 }
 op.parse!(ARGV)
 

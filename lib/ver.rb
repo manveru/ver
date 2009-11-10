@@ -67,7 +67,7 @@ module VER
   OPTIONS = {
     font_size:     10,
     font_family:   'TkFixedFont',
-    encoding:      Encoding::UTF_8,
+    encoding:      'UTF-8:UTF-8',
     tk_theme:      'clam',
     theme:         'Blackboard',
     keymap:        'vim',
@@ -130,7 +130,12 @@ module VER
     options[:tabs] = tabs
 
     encoding = options[:encoding]
-    options[:encoding] = Encoding.find(encoding) unless encoding.is_a?(Encoding)
+    unless encoding.is_a?(Encoding)
+      external, internal = encoding.to_s.split(':', 2)
+
+      Encoding.default_external = Encoding.find(external) if external
+      Encoding.default_internal = Encoding.find(internal) if internal
+    end
 
     tk_theme = options[:tk_theme]
     options[:theme] = 'default' unless Tk::Tile::Style.theme_names.include?(tk_theme)
