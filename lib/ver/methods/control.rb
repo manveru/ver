@@ -137,11 +137,11 @@ module VER
       end
 
       def join_lines
-        start_of_next_line = search(/\S/, 'insert lineend')
+        start_of_next_line = search(/\S/, 'insert lineend').first
         replace('insert lineend', start_of_next_line, ' ')
       rescue RuntimeError => exception
         return if exception.message =~ /Index "\d+\.\d+" before "insert lineend" in the text/
-        raise exception
+        Kernel.raise exception
       end
 
       # Most of the input will be in US-ASCII, but an encoding can be set per view for the input.
@@ -310,7 +310,7 @@ module VER
       private
 
       def wrap_lines_of(text, wrap = 80)
-        raise ArgumentError, "+wrap+ must be > 1" unless wrap > 1
+        Kernel.raise ArgumentError, "+wrap+ must be > 1" unless wrap > 1
         wrap -= 1
 
         indent = text[/^\s+/] || ''
