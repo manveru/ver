@@ -18,7 +18,7 @@ end
 
 module VER
   file = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
-  ROOT = File.expand_path('../../lib', file)
+  ROOT = File.expand_path('../../lib', file).encode(Encoding::UTF_8)
 
   module_function
 
@@ -46,7 +46,8 @@ module VER
 
     Dir.glob(glob, File::FNM_CASEFOLD) do |syntax|
       plist = VER::Plist.parse_xml(syntax)
-      name = plist['name']
+      name = plist['name'].to_s.gsub(/\//, '-')
+      puts "Installing #{name}"
       target = File.expand_path("../config/syntax/#{name}.json", ROOT)
 
       File.open(target, 'w+'){|io| io.write(JSON.pretty_unparse(plist)) }
