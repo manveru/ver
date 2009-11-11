@@ -46,7 +46,7 @@ module VER
 
     Dir.glob(glob, File::FNM_CASEFOLD) do |syntax|
       plist = VER::Plist.parse_xml(syntax)
-      name = plist['name'].to_s.gsub(/\//, '-')
+      name = plist['name'].to_s.gsub(/[\/\u2014]/, '-')
       puts "Installing #{name}"
       target = File.expand_path("../config/syntax/#{name}.json", ROOT)
 
