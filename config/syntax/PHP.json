@@ -120,7 +120,7 @@
         },
         {
           "comment": "In PHP, any identifier which is not a variable is taken to be a constant.\n\t\t\t\tHowever, if there is no constant defined with the given name then a notice\n\t\t\t\tis generated and the constant is assumed to have the value of its name.",
-          "match": "[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*",
+          "match": "[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*",
           "name": "constant.other.php"
         }
       ]
@@ -144,7 +144,7 @@
           "name": "support.class.php"
         }
       },
-      "match": "(?i)\\b(new)\\s+(?:(\\$[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)|(\\w+))|(\\w+)(?=::)"
+      "match": "(?i)\\b(new)\\s+(?:(\\$[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)|(\\w+))|(\\w+)(?=::)"
     },
     "interpolation": {
       "comment": "http://www.php.net/manual/en/language.types.string.php#language.types.string.parsing",
@@ -174,7 +174,7 @@
             }
           },
           "comment": "Simple syntax with braces: \"foo${bar}baz\"",
-          "match": "(?x)\n\t\t\t\t\t\t((\\$\\{)(?<name>[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)(\\}))\n\t\t\t\t\t\t"
+          "match": "(?x)\n\t\t\t\t\t\t((\\$\\{)(?<name>[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)(\\}))\n\t\t\t\t\t\t"
         },
         {
           "captures": {
@@ -216,10 +216,10 @@
             }
           },
           "comment": "Simple syntax: $foo, $foo[0], $foo[$bar], $foo->bar",
-          "match": "(?x)\n\t\t\t\t\t\t((\\$)(?<name>[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*))\n\t\t\t\t\t\t(?:\n\t\t\t\t\t\t\t(->)\n\t\t\t\t\t\t\t\t(?:\n\t\t\t\t\t\t\t\t\t(\\g<name>)\n\t\t\t\t\t\t\t\t\t|\n\t\t\t\t\t\t\t\t\t(\\$\\g<name>)\n\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t|\n\t\t\t\t\t\t\t(\\[)\n\t\t\t\t\t\t\t\t(?:(\\d+)|((\\$)\\g<name>)|(\\w+)|(.*?))\n\t\t\t\t\t\t\t(\\])\n\t\t\t\t\t\t)?\n\t\t\t\t\t\t"
+          "match": "(?x)\n\t\t\t\t\t\t((\\$)(?<name>[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*))\n\t\t\t\t\t\t(?:\n\t\t\t\t\t\t\t(->)\n\t\t\t\t\t\t\t\t(?:\n\t\t\t\t\t\t\t\t\t(\\g<name>)\n\t\t\t\t\t\t\t\t\t|\n\t\t\t\t\t\t\t\t\t(\\$\\g<name>)\n\t\t\t\t\t\t\t\t)\n\t\t\t\t\t\t\t|\n\t\t\t\t\t\t\t(\\[)\n\t\t\t\t\t\t\t\t(?:(\\d+)|((\\$)\\g<name>)|(\\w+)|(.*?))\n\t\t\t\t\t\t\t(\\])\n\t\t\t\t\t\t)?\n\t\t\t\t\t\t"
         },
         {
-          "begin": "(?=(?<regex>(?#simple syntax)\\$(?<name>[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)(?:\\[(?<index>[a-zA-Z0-9_\\x{7f}-\\x{ff}]+|\\$\\g<name>)\\]|->\\g<name>(\\(.*?\\))?)?|(?#simple syntax with braces)\\$\\{(?:\\g<name>(?<indices>\\[(?:\\g<index>|'(?:\\\\.|[^'\\\\])*'|\"(?:\\g<regex>|\\\\.|[^\"\\\\])*\")\\])?|\\g<complex>|\\$\\{\\g<complex>\\})\\}|(?#complex syntax)\\{(?<complex>\\$(?<segment>\\g<name>(\\g<indices>*|\\(.*?\\))?)(?:->\\g<segment>)*|\\$\\g<complex>|\\$\\{\\g<complex>\\})\\}))\\{",
+          "begin": "(?=(?<regex>(?#simple syntax)\\$(?<name>[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)(?:\\[(?<index>[a-zA-Z0-9_\\x7f-\\xff]+|\\$\\g<name>)\\]|->\\g<name>(\\(.*?\\))?)?|(?#simple syntax with braces)\\$\\{(?:\\g<name>(?<indices>\\[(?:\\g<index>|'(?:\\\\.|[^'\\\\])*'|\"(?:\\g<regex>|\\\\.|[^\"\\\\])*\")\\])?|\\g<complex>|\\$\\{\\g<complex>\\})\\}|(?#complex syntax)\\{(?<complex>\\$(?<segment>\\g<name>(\\g<indices>*|\\(.*?\\))?)(?:->\\g<segment>)*|\\$\\g<complex>|\\$\\{\\g<complex>\\})\\}))\\{",
           "beginCaptures": {
             "0": {
               "name": "punctuation.definition.variable.php"
@@ -597,7 +597,7 @@
               "name": "punctuation.definition.variable.php"
             }
           },
-          "match": "\\b(catch)\\b\\s*\\(\\s*([A-Za-z_][A-Za-z_0-9]*)\\s*((\\$+)[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)\\s*\\)",
+          "match": "\\b(catch)\\b\\s*\\(\\s*([A-Za-z_][A-Za-z_0-9]*)\\s*((\\$+)[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\\s*\\)",
           "name": "meta.catch.php"
         },
         {
@@ -636,7 +636,7 @@
           "name": "meta.function.php",
           "patterns": [
             {
-              "begin": "(?x)\n\t\t\t\t\t\t\t\t\t\\s*(array) # Typehint\n\t\t\t\t\t\t\t\t\t\\s*(&)? \t\t\t\t\t# Reference\n\t\t\t\t\t\t\t\t\t\\s*((\\$+)[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*) # The variable name\n\t\t\t\t\t\t\t\t\t\\s*(=)\t# A default value\n\t\t\t\t\t\t\t\t\t\\s*(array)\\s*(\\()\n\t\t\t\t\t\t\t\t\t",
+              "begin": "(?x)\n\t\t\t\t\t\t\t\t\t\\s*(array) # Typehint\n\t\t\t\t\t\t\t\t\t\\s*(&)? \t\t\t\t\t# Reference\n\t\t\t\t\t\t\t\t\t\\s*((\\$+)[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*) # The variable name\n\t\t\t\t\t\t\t\t\t\\s*(=)\t# A default value\n\t\t\t\t\t\t\t\t\t\\s*(array)\\s*(\\()\n\t\t\t\t\t\t\t\t\t",
               "beginCaptures": {
                 "1": {
                   "name": "storage.type.php"
@@ -701,7 +701,7 @@
                   "name": "invalid.illegal.non-null-typehinted.php"
                 }
               },
-              "match": "(?x)\n\t\t\t\t\t\t\t\t\t\\s*(array) # Typehint\n\t\t\t\t\t\t\t\t\t\\s*(&)? \t\t\t\t\t# Reference\n\t\t\t\t\t\t\t\t\t\\s*((\\$+)[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*) # The variable name\n\t\t\t\t\t\t\t\t\t(?:\n\t\t\t\t\t\t\t\t\t\t\\s*(=)\t# A default value\n\t\t\t\t\t\t\t\t\t\t\\s*(?i:\n\t\t\t\t\t\t\t\t\t\t\t(NULL)\n\t\t\t\t\t\t\t\t\t\t\t|\n\t\t\t\t\t\t\t\t\t\t\t(\\S.*?)\n\t\t\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t\\s*(?=,|\\)) # A closing parentheses (end of argument list) or a comma\n\t\t\t\t\t\t\t\t\t",
+              "match": "(?x)\n\t\t\t\t\t\t\t\t\t\\s*(array) # Typehint\n\t\t\t\t\t\t\t\t\t\\s*(&)? \t\t\t\t\t# Reference\n\t\t\t\t\t\t\t\t\t\\s*((\\$+)[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*) # The variable name\n\t\t\t\t\t\t\t\t\t(?:\n\t\t\t\t\t\t\t\t\t\t\\s*(=)\t# A default value\n\t\t\t\t\t\t\t\t\t\t\\s*(?i:\n\t\t\t\t\t\t\t\t\t\t\t(NULL)\n\t\t\t\t\t\t\t\t\t\t\t|\n\t\t\t\t\t\t\t\t\t\t\t(\\S.*?)\n\t\t\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t\\s*(?=,|\\)) # A closing parentheses (end of argument list) or a comma\n\t\t\t\t\t\t\t\t\t",
               "name": "meta.function.argument.array.php"
             },
             {
@@ -728,7 +728,7 @@
                   "name": "invalid.illegal.non-null-typehinted.php"
                 }
               },
-              "match": "(?x)\n\t\t\t\t\t\t\t\t\t\\s*([A-Za-z_][A-Za-z_0-9]*) # Typehinted class name\n\t\t\t\t\t\t\t\t\t\\s*(&)? \t\t\t\t\t# Reference\n\t\t\t\t\t\t\t\t\t\\s*((\\$+)[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*) # The variable name\n\t\t\t\t\t\t\t\t\t(?:\n\t\t\t\t\t\t\t\t\t\t\\s*(=)\t# A default value\n\t\t\t\t\t\t\t\t\t\t\\s*(?i:\n\t\t\t\t\t\t\t\t\t\t\t(NULL)\n\t\t\t\t\t\t\t\t\t\t\t|\n\t\t\t\t\t\t\t\t\t\t\t(\\S.*?)\n\t\t\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t\\s*(?=,|\\)) # A closing parentheses (end of argument list) or a comma\n\t\t\t\t\t\t\t\t\t",
+              "match": "(?x)\n\t\t\t\t\t\t\t\t\t\\s*([A-Za-z_][A-Za-z_0-9]*) # Typehinted class name\n\t\t\t\t\t\t\t\t\t\\s*(&)? \t\t\t\t\t# Reference\n\t\t\t\t\t\t\t\t\t\\s*((\\$+)[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*) # The variable name\n\t\t\t\t\t\t\t\t\t(?:\n\t\t\t\t\t\t\t\t\t\t\\s*(=)\t# A default value\n\t\t\t\t\t\t\t\t\t\t\\s*(?i:\n\t\t\t\t\t\t\t\t\t\t\t(NULL)\n\t\t\t\t\t\t\t\t\t\t\t|\n\t\t\t\t\t\t\t\t\t\t\t(\\S.*?)\n\t\t\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t)?\n\t\t\t\t\t\t\t\t\t\\s*(?=,|\\)) # A closing parentheses (end of argument list) or a comma\n\t\t\t\t\t\t\t\t\t",
               "name": "meta.function.argument.typehinted.php"
             },
             {
@@ -743,11 +743,11 @@
                   "name": "punctuation.definition.variable.php"
                 }
               },
-              "match": "(\\s*&)?\\s*((\\$+)[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)\\s*(?=,|\\))",
+              "match": "(\\s*&)?\\s*((\\$+)[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\\s*(?=,|\\))",
               "name": "meta.function.argument.no-default.php"
             },
             {
-              "begin": "(\\s*&)?\\s*((\\$+)[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)(?:\\s*(=)\\s*)\\s*",
+              "begin": "(\\s*&)?\\s*((\\$+)[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)(?:\\s*(=)\\s*)\\s*",
               "captures": {
                 "1": {
                   "name": "storage.modifier.php"
@@ -811,7 +811,7 @@
               "name": "constant.other.class.php"
             }
           },
-          "match": "(?x)(::)\n                        (?:\n        \t\t\t\t    ([A-Za-z_][A-Za-z_0-9]*)\\s*\\(\n        \t\t\t\t    |\n        \t\t\t\t    ((\\$+)[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)\n        \t\t\t\t    |\n        \t\t\t\t    ([a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)\n        \t\t\t\t)?"
+          "match": "(?x)(::)\n                        (?:\n        \t\t\t\t    ([A-Za-z_][A-Za-z_0-9]*)\\s*\\(\n        \t\t\t\t    |\n        \t\t\t\t    ((\\$+)[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\n        \t\t\t\t    |\n        \t\t\t\t    ([a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\n        \t\t\t\t)?"
         },
         {
           "include": "#support"
@@ -921,7 +921,7 @@
               "name": "variable.other.property.php"
             }
           },
-          "match": "(?<=[a-zA-Z0-9_\\x{7f}-\\x{ff}])(->)([a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*?)\\b"
+          "match": "(?<=[a-zA-Z0-9_\\x7f-\\xff])(->)([a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*?)\\b"
         },
         {
           "include": "#instantiation"
@@ -950,7 +950,7 @@
           "name": "punctuation.definition.variable.php"
         }
       },
-      "match": "(?x)(->)\n    \t\t\t\t(?:\n    \t\t\t\t    ([A-Za-z_][A-Za-z_0-9]*)\\s*\\(\n    \t\t\t\t    |\n    \t\t\t\t    ((\\$+)?[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)\n    \t\t\t\t)?"
+      "match": "(?x)(->)\n    \t\t\t\t(?:\n    \t\t\t\t    ([A-Za-z_][A-Za-z_0-9]*)\\s*\\(\n    \t\t\t\t    |\n    \t\t\t\t    ((\\$+)?[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*)\n    \t\t\t\t)?"
     },
     "parameter-default-types": {
       "patterns": [
@@ -2144,7 +2144,7 @@
           "name": "punctuation.definition.variable.php"
         }
       },
-      "match": "(?x)\n\t\t\t            (\\$+)[a-zA-Z_\\x{7f}-\\x{ff}]\n\t\t\t            [a-zA-Z0-9_\\x{7f}-\\x{ff}]*?\\b",
+      "match": "(?x)\n\t\t\t            (\\$+)[a-zA-Z_\\x7f-\\xff]\n\t\t\t            [a-zA-Z0-9_\\x7f-\\xff]*?\\b",
       "name": "variable.other.php"
     },
     "var_global": {

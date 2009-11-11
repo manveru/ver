@@ -21,7 +21,7 @@
       "name": "meta.header.mail"
     },
     {
-      "begin": "([\\x{21}-\\x{39}\\x{3B}-\\x{7E}]+)(:)\\s*",
+      "begin": "([\\x21-\\x39\\x3B-\\x7E]+)(:)\\s*",
       "beginCaptures": {
         "1": {
           "name": "keyword.other.mail"

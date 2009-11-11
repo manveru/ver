@@ -126,7 +126,7 @@
           "name": "entity.name.type.r"
         }
       },
-      "match": "(setMethod|setGeneric|setGroupGeneric|setClass)\\s*\\(\\s*(\"|\\x{27})([a-zA-Z._\\[\\$@][a-zA-Z0-9._\\[]*?)\\2",
+      "match": "(setMethod|setGeneric|setGroupGeneric|setClass)\\s*\\(\\s*(\"|\\x27)([a-zA-Z._\\[\\$@][a-zA-Z0-9._\\[]*?)\\2",
       "name": "meta.method.declaration.r"
     },
     {

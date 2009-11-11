@@ -50,7 +50,11 @@ module VER
       puts "Installing #{name}"
       target = File.expand_path("../config/syntax/#{name}.json", ROOT)
 
-      File.open(target, 'w+'){|io| io.write(JSON.pretty_unparse(plist)) }
+      File.open(target, 'w+'){|io|
+        json = JSON.pretty_unparse(plist)
+        json.gsub!(/\\x\{(\h+)\}/, '\\\\x\1')
+        io.write(json)
+      }
     end
 
     exit

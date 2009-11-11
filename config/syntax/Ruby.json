@@ -1742,7 +1742,7 @@
             }
           },
           "comment": "We are restrictive in what we allow to go after the comment character to avoid false positives, since the availability of comments depend on regexp flags.",
-          "match": "(?<=^|\\s)(#)\\s[[a-zA-Z0-9,. \\t?!-][^\\x{00}-\\x{7F}]]*$",
+          "match": "(?<=^|\\s)(#)\\s[[a-zA-Z0-9,. \\t?!-][^\\x00-\\x7F]]*$",
           "name": "comment.line.number-sign.ruby"
         }
       ]
