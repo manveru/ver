@@ -12,6 +12,7 @@ module VER
         mode.map :file_save_popup,    %w[Control-Alt-s]
         mode.map :quit,               %w[Control-q]
         mode.map :start_control_mode, %w[Escape], %w[Control-c]
+        mode.map :open_method_list,   %w[F11]
 
         mode.map :buffer_switch, %w[Alt-b], %w[Control-m b]
         mode.map :window_switch, %w[Alt-B], %w[Control-m B]

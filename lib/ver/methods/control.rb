@@ -1,6 +1,12 @@
 module VER
   module Methods
     module Control
+      def open_method_list
+        View::List::Methods.new self do |file, line|
+          view.find_or_create(file, line)
+        end
+      end
+
       # TODO: make this better?
       def status_ex
         completion = method(:status_ex_filter)

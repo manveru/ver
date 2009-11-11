@@ -122,20 +122,21 @@ module VER
       text.focus
     end
 
-    def create(path = nil)
+    def create(path = nil, line = nil)
       layout.create_view do |view|
-        path ? view.open_path(path) : view.open_empty
+        path ? view.open_path(path, line) : view.open_empty
       end
     end
 
-    def find_or_create(path)
+    def find_or_create(path, line = nil)
       needle = Pathname(path.to_s).expand_path
 
       if found = layout.views.find{|view| view.filename == needle }
         found.push_top
         found.focus
+        found.text.go_line(line) if line
       else
-        create(needle)
+        create(needle, line)
       end
     end
 

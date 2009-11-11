@@ -16,23 +16,18 @@ require 'securerandom'
 require 'set'
 
 module VER
-  autoload :BufferListView,      'ver/view/buffer_list_view'
   autoload :Entry,               'ver/entry'
   autoload :Font,                'ver/font'
-  autoload :FuzzyFileFinderView, 'ver/view/fuzzy_file_finder_view'
   autoload :HoverCompletion,     'ver/hover_completion'
   autoload :Keymap,              'ver/keymap'
   autoload :Layout,              'ver/layout'
-  autoload :ListView,            'ver/view/list_view'
   autoload :Methods,             'ver/methods'
   autoload :Mode,                'ver/mode'
   autoload :Status,              'ver/status'
   autoload :Syntax,              'ver/syntax'
-  autoload :SyntaxListView,      'ver/view/syntax_list_view'
   autoload :Text,                'ver/text'
   autoload :Textpow,             'ver/textpow'
   autoload :Theme,               'ver/theme'
-  autoload :ThemeListView,       'ver/view/theme_list_view'
   autoload :View,                'ver/view'
 
   home_conf_dir = Pathname('~/.config/ver').expand_path
