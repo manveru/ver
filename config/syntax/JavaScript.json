@@ -283,23 +283,23 @@
       ]
     },
     {
-      "begin": "\/\\*\\*(?!\/)",
+      "begin": "/\\*\\*(?!/)",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.js"
         }
       },
-      "end": "\\*\/",
+      "end": "\\*/",
       "name": "comment.block.documentation.js"
     },
     {
-      "begin": "\/\\*",
+      "begin": "/\\*",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.js"
         }
       },
-      "end": "\\*\/",
+      "end": "\\*/",
       "name": "comment.block.js"
     },
     {
@@ -308,7 +308,7 @@
           "name": "punctuation.definition.comment.js"
         }
       },
-      "match": "(\/\/).*$\\n?",
+      "match": "(//).*$\\n?",
       "name": "comment.line.double-slash.js"
     },
     {
@@ -388,7 +388,7 @@
       "name": "support.function.event-handler.js"
     },
     {
-      "match": "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|(?<!\\()\/=|%=|\\+=|\\-=|&=|\\^=|\\b(in|instanceof|new|delete|typeof|void)\\b",
+      "match": "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|(?<!\\()/=|%=|\\+=|\\-=|&=|\\^=|\\b(in|instanceof|new|delete|typeof|void)\\b",
       "name": "keyword.operator.js"
     },
     {
@@ -396,13 +396,13 @@
       "name": "constant.language.js"
     },
     {
-      "begin": "(?<=[=(:]|^|return)\\s*(\/)(?![\/*+{}?])",
+      "begin": "(?<=[=(:]|^|return)\\s*(/)(?![/*+{}?])",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.string.begin.js"
         }
       },
-      "end": "(\/)[igm]*",
+      "end": "(/)[igm]*",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.string.end.js"

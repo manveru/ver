@@ -6,7 +6,7 @@
     "S",
     "Rprofile"
   ],
-  "foldingStartMarker": "(\\(\\s*$|\\{\\s*$)",
+  "foldingStartMarker": "^[^#]*(\\([^\\)]*$|\\{\\s*$)",
   "foldingStopMarker": "(^\\s*\\)|^\\s*\\})",
   "keyEquivalent": "^~R",
   "name": "R",
@@ -41,7 +41,7 @@
       "name": "support.constant.misc.r"
     },
     {
-      "match": "(\\-|\\+|\\*|\\\/|%\\\/%|%%|%\\*%|%in%|%o%|%x%|\\^)",
+      "match": "(\\-|\\+|\\*|\\/|%\\/%|%%|%\\*%|%in%|%o%|%x%|\\^)",
       "name": "keyword.operator.arithmetic.r"
     },
     {
@@ -126,7 +126,7 @@
           "name": "entity.name.type.r"
         }
       },
-      "match": "(setMethod|setGeneric|setGroupGeneric|setClass)\\s*\\(\\s*(\"|\\x27)([a-zA-Z._\\[\\$@][a-zA-Z0-9._\\[]*?)\\2",
+      "match": "(setMethod|setGeneric|setGroupGeneric|setClass)\\s*\\(\\s*(\"|\\x{27})([a-zA-Z._\\[\\$@][a-zA-Z0-9._\\[]*?)\\2",
       "name": "meta.method.declaration.r"
     },
     {

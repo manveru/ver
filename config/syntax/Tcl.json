@@ -67,7 +67,7 @@
           "name": "keyword.other.tcl"
         }
       },
-      "comment": "special-case regexp\/regsub keyword in order to handle the expression",
+      "comment": "special-case regexp/regsub keyword in order to handle the expression",
       "end": "[\\n;]|(?=\\])",
       "patterns": [
         {

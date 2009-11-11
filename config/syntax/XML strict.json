@@ -2,8 +2,8 @@
   "fileTypes": [
 
   ],
-  "foldingStartMarker": "^\\s*(<[^!?%\/](?!.+?(\/>|<\/.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))",
-  "foldingStopMarker": "^\\s*(<\/[^>]+>|[\/%]>|-->)\\s*$",
+  "foldingStartMarker": "^\\s*(<[^!?%/](?!.+?(/>|</.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))",
+  "foldingStopMarker": "^\\s*(</[^>]+>|[/%]>|-->)\\s*$",
   "keyEquivalent": "^~X",
   "name": "XML strict",
   "patterns": [
@@ -49,7 +49,7 @@
           "name": "invalid.illegal.unexpected-end-tag.xml"
         }
       },
-      "end": "(\/>)|(<\/)(\\2)((\\4))(\\5)(>)|(<\/[-_.:[:alnum:]]+>)",
+      "end": "(/>)|(</)(\\2)((\\4))(\\5)(>)|(</[-_.:[:alnum:]]+>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.xml"
@@ -132,7 +132,7 @@
               "name": "punctuation.definition.tag.xml"
             }
           },
-          "end": "(?=<\/)",
+          "end": "(?=</)",
           "name": "meta.tag-content.xml",
           "patterns": [
             {

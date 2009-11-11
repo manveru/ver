@@ -1,5 +1,5 @@
 {
-  "comment": "ASP SCRIPTING DICTIONARY \u2013 By Rich Barton: Version 1.0 (based on PHP Scripting Dictionary by Justin French, Sune Foldager and Allan Odgaard) Note: .asp is handled by asp\/html",
+  "comment": "ASP SCRIPTING DICTIONARY \u2013 By Rich Barton: Version 1.0 (based on PHP Scripting Dictionary by Justin French, Sune Foldager and Allan Odgaard) Note: .asp is handled by asp/html",
   "fileTypes": [
     "asa"
   ],

@@ -1,8 +1,8 @@
 {
   "comment": "TODO:\n\u2022 Try to improve parameters list syntax \u2013 scope numbers, \u2018=\u2019, \u2018,\u2019 and possibly be intelligent about entity ordering\n\u2022 Is meta.function-call the correct scope? I've added it to my theme but by default it's not highlighted",
   "firstLineMatch": "^#!.*(?<!-)php[0-9]{0,1}\\b",
-  "foldingStartMarker": "(\/\\*|\\{\\s*$|<<<HTML)",
-  "foldingStopMarker": "(\\*\/|^\\s*\\}|^HTML;)",
+  "foldingStartMarker": "(/\\*|\\{\\s*$|<<<HTML)",
+  "foldingStopMarker": "(\\*/|^\\s*\\}|^HTML;)",
   "name": "PHP",
   "patterns": [
     {
@@ -147,7 +147,7 @@
       "match": "(?i)\\b(new)\\s+(?:(\\$[a-zA-Z_\\x{7f}-\\x{ff}][a-zA-Z0-9_\\x{7f}-\\x{ff}]*)|(\\w+))|(\\w+)(?=::)"
     },
     "interpolation": {
-      "comment": "http:\/\/www.php.net\/manual\/en\/language.types.string.php#language.types.string.parsing",
+      "comment": "http://www.php.net/manual/en/language.types.string.php#language.types.string.parsing",
       "patterns": [
         {
           "match": "\\\\[0-7]{1,3}",
@@ -447,14 +447,14 @@
           ]
         },
         {
-          "begin": "\/\\*\\*(?:#@\\+)?\\s*$",
+          "begin": "/\\*\\*(?:#@\\+)?\\s*$",
           "captures": {
             "0": {
               "name": "punctuation.definition.comment.php"
             }
           },
-          "comment": "This now only highlights a docblock if the first line contains only \/**\n\t\t\t\t\t\t\t\t- this is to stop highlighting everything as invalid when people do comment banners with \/******** ...\n\t\t\t\t\t\t\t\t- Now matches \/**#@+ too - used for docblock templates: http:\/\/manual.phpdoc.org\/HTMLframesConverter\/default\/phpDocumentor\/tutorial_phpDocumentor.howto.pkg.html#basics.docblocktemplate",
-          "end": "\\*\/",
+          "comment": "This now only highlights a docblock if the first line contains only /**\n\t\t\t\t\t\t\t\t- this is to stop highlighting everything as invalid when people do comment banners with /******** ...\n\t\t\t\t\t\t\t\t- Now matches /**#@+ too - used for docblock templates: http://manual.phpdoc.org/HTMLframesConverter/default/phpDocumentor/tutorial_phpDocumentor.howto.pkg.html#basics.docblocktemplate",
+          "end": "\\*/",
           "name": "comment.block.documentation.phpdoc.php",
           "patterns": [
             {
@@ -463,13 +463,13 @@
           ]
         },
         {
-          "begin": "\/\\*",
+          "begin": "/\\*",
           "captures": {
             "0": {
               "name": "punctuation.definition.comment.php"
             }
           },
-          "end": "\\*\/",
+          "end": "\\*/",
           "name": "comment.block.php"
         },
         {
@@ -478,7 +478,7 @@
               "name": "punctuation.definition.comment.php"
             }
           },
-          "match": "(\/\/).*?($\\n?|(?=\\?>))",
+          "match": "(//).*?($\\n?|(?=\\?>))",
           "name": "comment.line.double-slash.php"
         },
         {
@@ -771,13 +771,13 @@
               ]
             },
             {
-              "begin": "\/\\*",
+              "begin": "/\\*",
               "captures": {
                 "0": {
                   "name": "punctuation.definition.comment.php"
                 }
               },
-              "end": "\\*\/",
+              "end": "\\*/",
               "name": "comment.block.php"
             }
           ]
@@ -863,7 +863,7 @@
           "name": "keyword.operator.increment-decrement.php"
         },
         {
-          "match": "(\\-|\\+|\\*|\/|%)",
+          "match": "(\\-|\\+|\\*|/|%)",
           "name": "keyword.operator.arithmetic.php"
         },
         {
@@ -1031,7 +1031,7 @@
           "match": "^\\s*\\*\\s*(@access)\\s+((public|private|protected)|(.+))\\s*$"
         },
         {
-          "match": "((https?|s?ftp|ftps|file|smb|afp|nfs|(x-)?man|gopher|txmt):\/\/|mailto:)[-:@a-zA-Z0-9_.~%+\/?=&#]+(?<![.?:])",
+          "match": "((https?|s?ftp|ftps|file|smb|afp|nfs|(x-)?man|gopher|txmt)://|mailto:)[-:@a-zA-Z0-9_.~%+/?=&#]+(?<![.?:])",
           "name": "markup.underline.link.php"
         },
         {
@@ -1061,13 +1061,13 @@
       ]
     },
     "regex-double-quoted": {
-      "begin": "(?x)\"\/ (?= (\\\\.|[^\"\/])++\/[imsxeADSUXu]*\" )",
+      "begin": "(?x)\"/ (?= (\\\\.|[^\"/])++/[imsxeADSUXu]*\" )",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.php"
         }
       },
-      "end": "(\/)([imsxeADSUXu]*)(\")",
+      "end": "(/)([imsxeADSUXu]*)(\")",
       "endCaptures": {
         "0": {
           "name": "punctuation.definition.string.end.php"
@@ -1117,13 +1117,13 @@
       ]
     },
     "regex-single-quoted": {
-      "begin": "(?x)'\/ (?= (\\\\.|[^'\/])++\/[imsxeADSUXu]*' )",
+      "begin": "(?x)'/ (?= (\\\\.|[^'/])++/[imsxeADSUXu]*' )",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.string.begin.php"
         }
       },
-      "end": "(\/)([imsxeADSUXu]*)(')",
+      "end": "(/)([imsxeADSUXu]*)(')",
       "endCaptures": {
         "0": {
           "name": "punctuation.definition.string.end.php"

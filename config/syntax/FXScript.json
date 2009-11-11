@@ -3,7 +3,7 @@
     "fxscript"
   ],
   "foldingStartMarker": "(^|(?<=;)[ \\t]*)on[ \\t]+(\\w+)[ \\t]*",
-  "foldingStopMarker": "end(;|;?[ \\t]*|;?[ \\t]*\/\/.*[ \\t]*)",
+  "foldingStopMarker": "end(;|;?[ \\t]*|;?[ \\t]*//.*[ \\t]*)",
   "keyEquivalent": "^~F",
   "name": "FXScript",
   "patterns": [
@@ -14,7 +14,7 @@
           "name": "entity.name.function.fxscript"
         }
       },
-      "end": "end(;|;?[ \\t]*\\n|;?[ \\t]*\/\/.*[ \\t]*\\n)",
+      "end": "end(;|;?[ \\t]*\\n|;?[ \\t]*//.*[ \\t]*\\n)",
       "name": "meta.function.fxscript",
       "patterns": [
         {
@@ -74,11 +74,11 @@
       "name": "keyword.control.fxscrpt"
     },
     {
-      "match": "\/b(?i:AlphaType|EffectID|FullFrame|Group|InformationFlag|InvalEntireItem|KeyType|ProducesAlpha|QTEffect|RenderEachFrameWhenStill|WipeCode)\/b",
+      "match": "/b(?i:AlphaType|EffectID|FullFrame|Group|InformationFlag|InvalEntireItem|KeyType|ProducesAlpha|QTEffect|RenderEachFrameWhenStill|WipeCode)/b",
       "name": "keyword.other.definition-statements.fxscript"
     },
     {
-      "match": "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|==|=|!=|!==|<=|>=|<|>|!|&&|\\|\\||\\?\\:|\\*=|\/=|%=|\\+=|\\-=|&=|\\^=",
+      "match": "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|==|=|!=|!==|<=|>=|<|>|!|&&|\\|\\||\\?\\:|\\*=|/=|%=|\\+=|\\-=|&=|\\^=",
       "name": "keyword.operator.arithmetic.fxscrpt"
     },
     {
@@ -87,7 +87,7 @@
           "name": "punctuation.definition.comment.fxscript"
         }
       },
-      "match": "(\/\/).*$\\n?",
+      "match": "(//).*$\\n?",
       "name": "comment.line.double-slash.fxscript"
     },
     {

@@ -2,8 +2,8 @@
   "fileTypes": [
     "io"
   ],
-  "foldingStartMarker": "(\/\\*\\*|\\([^\\)]*$|if\\()",
-  "foldingStopMarker": "(\\*\\*\/|^\\s*\\))",
+  "foldingStartMarker": "(/\\*\\*|\\([^\\)]*$|if\\()",
+  "foldingStopMarker": "(\\*\\*/|^\\s*\\))",
   "keyEquivalent": "^~I",
   "name": "Io",
   "patterns": [
@@ -30,13 +30,13 @@
       "name": "keyword.control.io"
     },
     {
-      "begin": "\/\\*",
+      "begin": "/\\*",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.io"
         }
       },
-      "end": "\\*\/",
+      "end": "\\*/",
       "name": "comment.block.io"
     },
     {
@@ -45,7 +45,7 @@
           "name": "punctuation.definition.comment.io"
         }
       },
-      "match": "(\/\/).*$\\n?",
+      "match": "(//).*$\\n?",
       "name": "comment.line.double-slash.io"
     },
     {
@@ -63,7 +63,7 @@
       "name": "variable.language.io"
     },
     {
-      "match": "<=|>=|=|:=|\\*|\\||\\|\\||\\+|-|\/|&|&&|>|<|\\?|@|@@|\\b(and|or)\\b",
+      "match": "<=|>=|=|:=|\\*|\\||\\|\\||\\+|-|/|&|&&|>|<|\\?|@|@@|\\b(and|or)\\b",
       "name": "keyword.operator.io"
     },
     {

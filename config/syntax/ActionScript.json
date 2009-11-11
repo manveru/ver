@@ -2,8 +2,8 @@
   "fileTypes": [
     "as"
   ],
-  "foldingStartMarker": "(\/\\*\\*|\\{\\s*$)",
-  "foldingStopMarker": "(\\*\\*\/|^\\s*\\})",
+  "foldingStartMarker": "(/\\*\\*|\\{\\s*$)",
+  "foldingStopMarker": "(\\*\\*/|^\\s*\\})",
   "keyEquivalent": "^~A",
   "name": "ActionScript",
   "patterns": [
@@ -82,13 +82,13 @@
       "name": "support.constant.actionscript.2"
     },
     {
-      "begin": "\/\\*",
+      "begin": "/\\*",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.actionscript.2"
         }
       },
-      "end": "\\*\/",
+      "end": "\\*/",
       "name": "comment.block.actionscript.2"
     },
     {
@@ -97,7 +97,7 @@
           "name": "punctuation.definition.comment.actionscript.2"
         }
       },
-      "match": "(\/\/).*$\\n?",
+      "match": "(//).*$\\n?",
       "name": "comment.line.double-slash.actionscript.2"
     },
     {
@@ -105,7 +105,7 @@
       "name": "keyword.operator.actionscript.2"
     },
     {
-      "match": "[-!%&*+=\/?:]",
+      "match": "[-!%&*+=/?:]",
       "name": "keyword.operator.symbolic.actionscript.2"
     },
     {

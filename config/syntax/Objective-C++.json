@@ -4,8 +4,8 @@
     "M",
     "h"
   ],
-  "foldingStartMarker": "(?x)\n\t\t \/\\*\\*(?!\\*)\n\t\t|^(?![^{]*?\/\/|[^{]*?\/\\*(?!.*?\\*\/.*?\\{)).*?\\{\\s*($|\/\/|\/\\*(?!.*?\\*\/.*\\S))\n\t\t|^@(interface|protocol|implementation)\\b\n\t",
-  "foldingStopMarker": "(?<!\\*)\\*\\*\/|^\\s*\\}|^@end\\b",
+  "foldingStartMarker": "(?x)\n\t\t /\\*\\*(?!\\*)\n\t\t|^(?![^{]*?//|[^{]*?/\\*(?!.*?\\*/.*?\\{)).*?\\{\\s*($|//|/\\*(?!.*?\\*/.*\\S))\n\t\t|^@(interface|protocol|implementation)\\b\n\t",
+  "foldingStopMarker": "(?<!\\*)\\*\\*/|^\\s*\\}|^@end\\b",
   "keyEquivalent": "^~O",
   "name": "Objective-C++",
   "patterns": [

@@ -13,8 +13,8 @@
     "h++"
   ],
   "firstLineMatch": "-\\*- C\\+\\+ -\\*-",
-  "foldingStartMarker": "(?x)\n\t\t \/\\*\\*(?!\\*)\n\t\t|^(?![^{]*?\/\/|[^{]*?\/\\*(?!.*?\\*\/.*?\\{)).*?\\{\\s*($|\/\/|\/\\*(?!.*?\\*\/.*\\S))\n\t",
-  "foldingStopMarker": "(?<!\\*)\\*\\*\/|^\\s*\\}",
+  "foldingStartMarker": "(?x)\n\t\t /\\*\\*(?!\\*)\n\t\t|^(?![^{]*?//|[^{]*?/\\*(?!.*?\\*/.*?\\{)).*?\\{\\s*($|//|/\\*(?!.*?\\*/.*\\S))\n\t",
+  "foldingStopMarker": "(?<!\\*)\\*\\*/|^\\s*\\}",
   "keyEquivalent": "^~C",
   "name": "C++",
   "patterns": [
@@ -37,7 +37,7 @@
       "name": "keyword.control.c++"
     },
     {
-      "match": "\\bdelete\\b(\\s*\\[\\])?|\\bnew\\b(?!\\])",
+      "match": "\\bdelete\\b(\\s*\\[\\])?|\\bnew\\b(?!])",
       "name": "keyword.control.c++"
     },
     {

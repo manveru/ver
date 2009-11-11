@@ -3,8 +3,8 @@
     "sty",
     "cls"
   ],
-  "foldingStartMarker": "\/\\*\\*|\\{\\s*$",
-  "foldingStopMarker": "\\*\\*\/|^\\s*\\}",
+  "foldingStartMarker": "/\\*\\*|\\{\\s*$",
+  "foldingStopMarker": "\\*\\*/|^\\s*\\}",
   "name": "TeX",
   "patterns": [
     {

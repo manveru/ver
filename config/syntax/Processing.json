@@ -2,8 +2,8 @@
   "fileTypes": [
     "pde"
   ],
-  "foldingStartMarker": "(\/\\*\\*|\\{\\s*$)",
-  "foldingStopMarker": "(\\*\\*\/|^\\s*\\})",
+  "foldingStartMarker": "(/\\*\\*|\\{\\s*$)",
+  "foldingStopMarker": "(\\*\\*/|^\\s*\\})",
   "keyEquivalent": "^~P",
   "name": "Processing",
   "patterns": [
@@ -17,27 +17,27 @@
           "name": "punctuation.definition.comment.processing"
         }
       },
-      "match": "\/\\*\\*\/",
+      "match": "/\\*\\*/",
       "name": "comment.block.empty.processing"
     },
     {
-      "begin": "\/\\*",
+      "begin": "/\\*",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.processing"
         }
       },
-      "end": "\\*\/",
+      "end": "\\*/",
       "name": "comment.block.processing"
     },
     {
-      "begin": "\/\\*\\*",
+      "begin": "/\\*\\*",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.processing"
         }
       },
-      "end": "\\*\/",
+      "end": "\\*/",
       "name": "comment.block.documentation.processing",
       "patterns": [
         {
@@ -67,7 +67,7 @@
           "name": "punctuation.definition.comment.processing"
         }
       },
-      "match": "(\/\/).*$\\n?",
+      "match": "(//).*$\\n?",
       "name": "comment.line.double-slash.processing"
     },
     {

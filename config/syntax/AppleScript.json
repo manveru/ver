@@ -106,7 +106,7 @@
           "name": "punctuation.separator.continuation.line.applescript"
         },
         {
-          "match": "\\b((a )?(ref( to)|reference to)|(does not|doesn't) (come (before|after)|contain|equal)|(start|begin)s? with|comes (before|after)|is(n't| not)?( (in|contained by|(less than|greater than)( or equal( to)?)?|equal( to)?))?|ends? with|contains?|equals?|than|and|div|mod|not|or|as)\\b|(\u2260|\u2265|\u2264|>=|<=|\u00f7|&|=|>|<|\\*|\\+|-|\/|\\^)",
+          "match": "\\b((a )?(ref( to)|reference to)|(does not|doesn't) (come (before|after)|contain|equal)|(start|begin)s? with|comes (before|after)|is(n't| not)?( (in|contained by|(less than|greater than)( or equal( to)?)?|equal( to)?))?|ends? with|contains?|equals?|than|and|div|mod|not|or|as)\\b|(\u2260|\u2265|\u2264|>=|<=|\u00f7|&|=|>|<|\\*|\\+|-|/|\\^)",
           "name": "keyword.operator.applescript"
         },
         {
@@ -141,7 +141,7 @@
           "name": "constant.other.text-styles.applescript"
         },
         {
-          "comment": "yes\/no can\u2019t always be used as booleans, e.g. in an if() expression. But they work e.g. for boolean arguments.",
+          "comment": "yes/no can\u2019t always be used as booleans, e.g. in an if() expression. But they work e.g. for boolean arguments.",
           "match": "\\b(?i:true|false|yes|no)\\b",
           "name": "constant.language.boolean.applescript"
         },
@@ -154,7 +154,7 @@
           "name": "constant.other.date-time.applescript"
         },
         {
-          "comment": "these are used in considering\/ignoring statements",
+          "comment": "these are used in considering/ignoring statements",
           "match": "\\b(?<=considering|ignoring) (application responses|current application|case|diacriticals|expansion|hyphens|punctuation|white space)\\b",
           "name": "constant.other.considering-ignoring-attributes.applescript"
         },

@@ -1,7 +1,7 @@
 {
   "firstLineMatch": "This is (pdf|pdfe)?TeXk?, Version ",
-  "foldingStartMarker": "\/\\*\\*|\\(\\s*$",
-  "foldingStopMarker": "\\*\\*\/|^\\s*\\)",
+  "foldingStartMarker": "/\\*\\*|\\(\\s*$",
+  "foldingStopMarker": "\\*\\*/|^\\s*\\)",
   "name": "LaTeX Log",
   "patterns": [
     {
@@ -77,7 +77,7 @@
               "name": "entity.name.function.filename.latex"
             }
           },
-          "match": "(.*\/.*\\.pdf)",
+          "match": "(.*/.*\\.pdf)",
           "name": "support.function.with-arg.latex"
         }
       ]

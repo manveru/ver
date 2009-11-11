@@ -3,8 +3,8 @@
     "i",
     "swg"
   ],
-  "foldingStartMarker": "(\/\\*\\*|%?\\{\\s*$)",
-  "foldingStopMarker": "(\\*\\*\/|^\\s*%?\\})",
+  "foldingStartMarker": "(/\\*\\*|%?\\{\\s*$)",
+  "foldingStopMarker": "(\\*\\*/|^\\s*%?\\})",
   "keyEquivalent": "^~S",
   "name": "SWIG",
   "patterns": [

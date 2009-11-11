@@ -172,7 +172,7 @@
       "name": "keyword.operator.comparison.sql"
     },
     {
-      "match": "-|\\+|\/",
+      "match": "-|\\+|/",
       "name": "keyword.operator.math.sql"
     },
     {
@@ -180,12 +180,12 @@
       "name": "keyword.operator.concatenator.sql"
     },
     {
-      "comment": "List of SQL99 built-in functions from http:\/\/www.oreilly.com\/catalog\/sqlnut\/chapter\/ch04.html",
+      "comment": "List of SQL99 built-in functions from http://www.oreilly.com/catalog/sqlnut/chapter/ch04.html",
       "match": "(?i)\\b(CURRENT_(DATE|TIME(STAMP)?|USER)|(SESSION|SYSTEM)_USER)\\b",
       "name": "support.function.scalar.sql"
     },
     {
-      "comment": "List of SQL99 built-in functions from http:\/\/www.oreilly.com\/catalog\/sqlnut\/chapter\/ch04.html",
+      "comment": "List of SQL99 built-in functions from http://www.oreilly.com/catalog/sqlnut/chapter/ch04.html",
       "match": "(?i)\\b(AVG|COUNT|MIN|MAX|SUM)(?=\\s*\\()",
       "name": "support.function.aggregate.sql"
     },
@@ -233,13 +233,13 @@
           "name": "comment.line.number-sign.sql"
         },
         {
-          "begin": "\/\\*",
+          "begin": "/\\*",
           "captures": {
             "0": {
               "name": "punctuation.definition.comment.sql"
             }
           },
-          "end": "\\*\/",
+          "end": "\\*/",
           "name": "comment.block.c"
         }
       ]
@@ -247,13 +247,13 @@
     "regexps": {
       "patterns": [
         {
-          "begin": "\/(?=\\S.*\/)",
+          "begin": "/(?=\\S.*/)",
           "beginCaptures": {
             "0": {
               "name": "punctuation.definition.string.begin.sql"
             }
           },
-          "end": "\/",
+          "end": "/",
           "endCaptures": {
             "0": {
               "name": "punctuation.definition.string.end.sql"
@@ -265,7 +265,7 @@
               "include": "#string_interpolation"
             },
             {
-              "match": "\\\\\/",
+              "match": "\\\\/",
               "name": "constant.character.escape.slash.sql"
             }
           ]
@@ -317,7 +317,7 @@
               "name": "punctuation.definition.string.end.sql"
             }
           },
-          "comment": "this is faster than the next begin\/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
+          "comment": "this is faster than the next begin/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
           "match": "(')[^'\\\\]*(')",
           "name": "string.quoted.single.sql"
         },
@@ -350,7 +350,7 @@
               "name": "punctuation.definition.string.end.sql"
             }
           },
-          "comment": "this is faster than the next begin\/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
+          "comment": "this is faster than the next begin/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
           "match": "(`)[^`\\\\]*(`)",
           "name": "string.quoted.other.backtick.sql"
         },
@@ -383,7 +383,7 @@
               "name": "punctuation.definition.string.end.sql"
             }
           },
-          "comment": "this is faster than the next begin\/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
+          "comment": "this is faster than the next begin/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
           "match": "(\")[^\"#]*(\")",
           "name": "string.quoted.double.sql"
         },

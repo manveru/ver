@@ -12,7 +12,7 @@
       "name": "keyword.control.slate"
     },
     {
-      "match": "\\b(clone|new|copy|resend|forwardTo:|is:|isReally:|as:|[-+=<>,;\/\\\\*]+)\\b",
+      "match": "\\b(clone|new|copy|resend|forwardTo:|is:|isReally:|as:|[-+=<>,;/\\\\*]+)\\b",
       "name": "keyword.operator.slate"
     },
     {
@@ -110,7 +110,7 @@
       ]
     },
     {
-      "match": "#([[:lower:]]|_|[+=\\-\/!%&*|><~?])(\\w|[+=\\-\/!%&*|><~?:])*",
+      "match": "#([[:lower:]]|_|[+=\\-/!%&*|><~?])(\\w|[+=\\-/!%&*|><~?:])*",
       "name": "meta.block.compact.slate"
     },
     {
@@ -162,7 +162,7 @@
       "name": "variable.parameter.slate"
     },
     {
-      "match": "\\b(\/\\\\|\\\\\/|and:|or:|not|xor:)\\b",
+      "match": "\\b(/\\\\|\\\\/|and:|or:|not|xor:)\\b",
       "name": "keyword.operator.logical.slate"
     },
     {
@@ -196,7 +196,7 @@
       "name": "support.class.slate"
     },
     {
-      "match": "\\`[-A-Za-z0-9+=*^<>?,;\/\\\\]+:?",
+      "match": "\\`[-A-Za-z0-9+=*^<>?,;/\\\\]+:?",
       "name": "keyword.control.import.slate"
     },
     {
@@ -229,7 +229,7 @@
   ],
   "repository": {
     "binary-selector": {
-      "match": "\\b([=+-\\\/?<>,;^*]+[A-Za-z0-9_=+-\\\/?<>,;^*]+[=+-\\\/?<>,;^*]+)\\b"
+      "match": "\\b([=+-\\/?<>,;^*]+[A-Za-z0-9_=+-\\/?<>,;^*]+[=+-\\/?<>,;^*]+)\\b"
     },
     "escaped-char": {
       "match": "\\\\."

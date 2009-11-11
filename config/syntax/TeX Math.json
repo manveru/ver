@@ -2,8 +2,8 @@
   "fileTypes": [
 
   ],
-  "foldingStartMarker": "\/\\*\\*|\\{\\s*$",
-  "foldingStopMarker": "\\*\\*\/|^\\s*\\}",
+  "foldingStartMarker": "/\\*\\*|\\{\\s*$",
+  "foldingStopMarker": "\\*\\*/|^\\s*\\}",
   "name": "TeX Math",
   "patterns": [
     {

@@ -3,8 +3,8 @@
     "gri"
   ],
   "firstLineMatch": "-[*]-( Mode:)? Gri -[*]-",
-  "foldingStartMarker": "(\/\\*\\*|\\{\\s*$)",
-  "foldingStopMarker": "(\\*\\*\/|^\\s*\\})",
+  "foldingStartMarker": "(/\\*\\*|\\{\\s*$)",
+  "foldingStopMarker": "(\\*\\*/|^\\s*\\})",
   "name": "Gri",
   "patterns": [
     {
@@ -39,7 +39,7 @@
       ]
     },
     {
-      "begin": "\/\/",
+      "begin": "//",
       "beginCaptures": {
         "0": {
           "name": "punctuation.definition.comment.gri"
@@ -59,7 +59,7 @@
       "name": "keyword.control.gri"
     },
     {
-      "match": "(\\-|\\+|\\*|\\\/|%\\\/%|%%|\\^)",
+      "match": "(\\-|\\+|\\*|\\/|%\\/%|%%|\\^)",
       "name": "keyword.operator.arithmetic.gri"
     },
     {

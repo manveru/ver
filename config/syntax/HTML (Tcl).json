@@ -5,7 +5,7 @@
     "inc"
   ],
   "foldingStartMarker": "(<(?i:(head|table|div|style|script|ul|ol|form|dl))\\b.*?>|\\{)",
-  "foldingStopMarker": "(<\/(?i:(head|table|div|style|script|ul|ol|form|dl))>|\\})",
+  "foldingStopMarker": "(</(?i:(head|table|div|style|script|ul|ol|form|dl))>|\\})",
   "keyEquivalent": "^~T",
   "name": "HTML (Tcl)",
   "patterns": [

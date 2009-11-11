@@ -2,8 +2,8 @@
   "fileTypes": [
     "as"
   ],
-  "foldingStartMarker": "(\/\\*\\*|\\{\\s*$)",
-  "foldingStopMarker": "(\\*\\*\/|^\\s*\\})",
+  "foldingStartMarker": "(/\\*\\*|\\{\\s*$)",
+  "foldingStopMarker": "(\\*\\*/|^\\s*\\})",
   "keyEquivalent": "^~M",
   "name": "MEL",
   "patterns": [
@@ -91,13 +91,13 @@
       "name": "constant.language.mel"
     },
     {
-      "begin": "\/\\*",
+      "begin": "/\\*",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.mel"
         }
       },
-      "end": "\\*\/",
+      "end": "\\*/",
       "name": "comment.block.mel"
     },
     {
@@ -106,7 +106,7 @@
           "name": "punctuation.definition.comment.mel"
         }
       },
-      "match": "(\/\/).*$\\n?",
+      "match": "(//).*$\\n?",
       "name": "comment.line.double-slash.mel"
     },
     {
@@ -114,7 +114,7 @@
       "name": "keyword.operator.mel"
     },
     {
-      "match": "[-\\!\\%\\&\\*\\+\\=\\\/\\?\\:]",
+      "match": "[-\\!\\%\\&\\*\\+\\=\\/\\?\\:]",
       "name": "keyword.operator.symbolic.mel"
     },
     {

@@ -25,7 +25,7 @@
       "name": "constant.numeric.fscript"
     },
     {
-      "match": "#([[:lower:]]|_|[+=\\-\/!%&*|><~?])(\\w|[+=\\-\/!%&*|><~?:])*",
+      "match": "#([[:lower:]]|_|[+=\\-/!%&*|><~?])(\\w|[+=\\-/!%&*|><~?:])*",
       "name": "constant.other.block.compact.fscript"
     },
     {

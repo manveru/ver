@@ -1,0 +1,247 @@
+{
+  "fileTypes": [
+    "etx",
+    "etx.txt"
+  ],
+  "firstLineMatch": "setext",
+  "keyEquivalent": "^~S",
+  "name": "Setext",
+  "patterns": [
+    {
+      "include": "#inline"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "keyword.other.setext"
+        },
+        "2": {
+          "name": "punctuation.separator.key-value.setext"
+        },
+        "3": {
+          "name": "string.unquoted.setext"
+        }
+      },
+      "match": "^(Subject|Date|From)(:) (.+)",
+      "name": "meta.header.setext"
+    },
+    {
+      "match": "^={3,}\\s*$\\n?",
+      "name": "markup.heading.1.setext"
+    },
+    {
+      "match": "^-{3,}\\s*$\\n?",
+      "name": "markup.heading.2.setext"
+    },
+    {
+      "begin": "^(>)\\s",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.quote.setext"
+        }
+      },
+      "end": "$",
+      "name": "markup.quote.setext",
+      "patterns": [
+        {
+          "include": "#inline"
+        }
+      ]
+    },
+    {
+      "begin": "^([*])\\s",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.bullet.setext"
+        }
+      },
+      "end": "$",
+      "name": "markup.other.bullet.setext",
+      "patterns": [
+        {
+          "include": "#inline"
+        }
+      ]
+    },
+    {
+      "begin": "`",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.raw.begin.setext"
+        }
+      },
+      "end": "`",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.raw.end.setext"
+        }
+      },
+      "name": "markup.raw.setext"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.note.setext"
+        },
+        "2": {
+          "name": "constant.other.reference.note.setext"
+        },
+        "3": {
+          "name": "punctuation.definition.reference.setext"
+        },
+        "4": {
+          "name": "string.quoted.other.note.setext"
+        },
+        "5": {
+          "name": "punctuation.definition.string.begin.setext"
+        },
+        "7": {
+          "name": "punctuation.definition.string.end.setext"
+        }
+      },
+      "match": "^(\\.{2}) ((_)[-\\w.]+) +((\\()(.+(\\))|.+))$",
+      "name": "meta.note.def.setext"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.reference.setext"
+        },
+        "2": {
+          "name": "constant.other.reference.link.setext"
+        },
+        "3": {
+          "name": "punctuation.definition.reference.setext"
+        },
+        "4": {
+          "name": "markup.underline.link.setext"
+        }
+      },
+      "match": "^(\\.{2}) ((_)[-\\w.]+) +(.{2,})$",
+      "name": "meta.link.reference.def.setext"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.setext"
+        }
+      },
+      "match": "^(\\.{2}) (?![.]).+$\\n?",
+      "name": "comment.line.double-dot.setext"
+    },
+    {
+      "begin": "^(\\.{2})$",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.comment.setext"
+        }
+      },
+      "end": "not(?<=possible)",
+      "name": "comment.block.logical_end_of_text.setext"
+    }
+  ],
+  "repository": {
+    "bold": {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.bold.setext"
+        },
+        "2": {
+          "name": "punctuation.definition.bold.setext"
+        }
+      },
+      "match": "([*]{2}).+?([*]{2})",
+      "name": "markup.bold.setext"
+    },
+    "doc_separator": {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.separator.setext"
+        }
+      },
+      "match": "\\s*(\\$\\$)$\\n?",
+      "name": "meta.separator.document.setext"
+    },
+    "hotword": {
+      "captures": {
+        "0": {
+          "name": "constant.other.reference.link.setext"
+        },
+        "1": {
+          "name": "punctuation.definition.reference.setext"
+        }
+      },
+      "match": "\\b[-\\w.]*\\w(?<!_)(_)\\b",
+      "name": "meta.link.reference.setext"
+    },
+    "inline": {
+      "patterns": [
+        {
+          "include": "#italic"
+        },
+        {
+          "include": "#bold"
+        },
+        {
+          "include": "#underline"
+        },
+        {
+          "include": "#hotword"
+        },
+        {
+          "include": "#link"
+        },
+        {
+          "include": "#doc_separator"
+        }
+      ]
+    },
+    "italic": {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.italic.setext"
+        },
+        "2": {
+          "name": "punctuation.definition.italic.setext"
+        }
+      },
+      "match": "(~)\\w+(~)",
+      "name": "markup.italic.setext"
+    },
+    "link": {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.link.setext"
+        },
+        "2": {
+          "name": "markup.underline.link.setext"
+        },
+        "3": {
+          "name": "punctuation.definition.link.setext"
+        }
+      },
+      "comment": "Not actually part of setext, added for Tidbits.",
+      "match": "(<)((?i:mailto|https?|ftp|news)://.*?)(>)"
+    },
+    "underline": {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.underline.setext"
+        },
+        "2": {
+          "name": "punctuation.definition.underline.setext"
+        },
+        "3": {
+          "name": "punctuation.definition.underline.setext"
+        },
+        "4": {
+          "name": "punctuation.definition.underline.setext"
+        }
+      },
+      "match": "\\b(_)\\w+(?<!_)(_)\\b|\\b(_).+(?<!_)(_)\\b",
+      "name": "markup.underline.setext"
+    }
+  },
+  "scopeName": "text.setext",
+  "uuid": "FB227CE6-DC4C-4632-BCA3-965AE0D8E419"
+}

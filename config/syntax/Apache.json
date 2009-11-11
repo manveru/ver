@@ -4,7 +4,7 @@
     "htaccess"
   ],
   "foldingStartMarker": "^[ ]*(?x)\n\t\t(<(?i:FilesMatch|Files|DirectoryMatch|Directory|LocationMatch|Location|VirtualHost|IfModule|IfDefine)\\b.*?>\n\t\t)",
-  "foldingStopMarker": "^[ ]*(?x)\n\t\t(<\/(?i:FilesMatch|Files|DirectoryMatch|Directory|LocationMatch|Location|VirtualHost|IfModule|IfDefine)>\n\t\t)",
+  "foldingStopMarker": "^[ ]*(?x)\n\t\t(</(?i:FilesMatch|Files|DirectoryMatch|Directory|LocationMatch|Location|VirtualHost|IfModule|IfDefine)>\n\t\t)",
   "keyEquivalent": "^~A",
   "name": "Apache",
   "patterns": [
@@ -38,7 +38,7 @@
           "name": "punctuation.definition.tag.apache-config"
         }
       },
-      "match": "^[ ]*(<)([a-zA-Z0-9:]+)[^>]*(>(<)\/)(\\2)(>)",
+      "match": "^[ ]*(<)([a-zA-Z0-9:]+)[^>]*(>(<)/)(\\2)(>)",
       "name": "meta.tag.any.html"
     },
     {
@@ -60,7 +60,7 @@
           "name": "punctuation.definition.tag.apache-config"
         }
       },
-      "end": "^[ ]*((<\/)(VirtualHost)[^>]*(>))",
+      "end": "^[ ]*((</)(VirtualHost)[^>]*(>))",
       "endCaptures": {
         "1": {
           "name": "meta.tag.apache-config"
@@ -101,7 +101,7 @@
           "name": "punctuation.definition.tag.apache-config"
         }
       },
-      "end": "^[ ]*((<\/)(Directory(?:Match)?)[^>]*(>))",
+      "end": "^[ ]*((</)(Directory(?:Match)?)[^>]*(>))",
       "endCaptures": {
         "1": {
           "name": "meta.tag.apache-config"
@@ -142,7 +142,7 @@
           "name": "punctuation.definition.tag.apache-config"
         }
       },
-      "end": "^[ ]*((<\/)(Location(?:Match)?)[^>]*(>))",
+      "end": "^[ ]*((</)(Location(?:Match)?)[^>]*(>))",
       "endCaptures": {
         "1": {
           "name": "meta.tag.apache-config"
@@ -302,7 +302,7 @@
       ]
     },
     {
-      "begin": "(<\/?)([a-zA-Z]+)",
+      "begin": "(</?)([a-zA-Z]+)",
       "captures": {
         "1": {
           "name": "punctuation.definition.tag.apache-config"
@@ -311,7 +311,7 @@
           "name": "entity.name.tag.apache-config"
         }
       },
-      "end": "(\/?>)",
+      "end": "(/?>)",
       "name": "meta.tag.apache-config"
     }
   ],

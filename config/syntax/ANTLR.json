@@ -2,8 +2,8 @@
   "fileTypes": [
     "g"
   ],
-  "foldingStartMarker": "\/\\*(?!\\*\/)|\\{\\s*$",
-  "foldingStopMarker": "\\*\/|^\\s*\\}",
+  "foldingStartMarker": "/\\*(?!\\*/)|\\{\\s*$",
+  "foldingStopMarker": "\\*/|^\\s*\\}",
   "keyEquivalent": "^~A",
   "name": "ANTLR",
   "patterns": [
@@ -118,13 +118,13 @@
     "comments": {
       "patterns": [
         {
-          "begin": "\/\\*",
+          "begin": "/\\*",
           "captures": {
             "0": {
               "name": "punctuation.definition.comment.antlr"
             }
           },
-          "end": "\\*\/",
+          "end": "\\*/",
           "name": "comment.block.antlr"
         },
         {
@@ -133,7 +133,7 @@
               "name": "punctuation.definition.comment.antlr"
             }
           },
-          "match": "(\/\/).*$\\n?",
+          "match": "(//).*$\\n?",
           "name": "comment.line.double-slash.antlr"
         }
       ]

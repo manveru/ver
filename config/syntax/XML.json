@@ -9,8 +9,8 @@
     "rss",
     "opml"
   ],
-  "foldingStartMarker": "^\\s*(<[^!?%\/](?!.+?(\/>|<\/.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))",
-  "foldingStopMarker": "^\\s*(<\/[^>]+>|[\/%]>|-->)\\s*$",
+  "foldingStartMarker": "^\\s*(<[^!?%/](?!.+?(/>|</.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))",
+  "foldingStopMarker": "^\\s*(</[^>]+>|[/%]>|-->)\\s*$",
   "keyEquivalent": "^~X",
   "name": "XML",
   "patterns": [
@@ -88,7 +88,7 @@
       "name": "comment.block.xml"
     },
     {
-      "begin": "(<)((?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+))(?=(\\s[^>]*)?><\/\\2>)",
+      "begin": "(<)((?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+))(?=(\\s[^>]*)?></\\2>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.xml"
@@ -106,7 +106,7 @@
           "name": "entity.name.tag.localname.xml"
         }
       },
-      "end": "(>(<))\/(?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+)(>)",
+      "end": "(>(<))/(?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+)(>)",
       "endCaptures": {
         "1": {
           "name": "punctuation.definition.tag.xml"
@@ -138,7 +138,7 @@
       ]
     },
     {
-      "begin": "(<\/?)(?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+)",
+      "begin": "(</?)(?:([-_a-zA-Z0-9]+)((:)))?([-_a-zA-Z0-9:]+)",
       "captures": {
         "1": {
           "name": "punctuation.definition.tag.xml"
@@ -156,7 +156,7 @@
           "name": "entity.name.tag.localname.xml"
         }
       },
-      "end": "(\/?>)",
+      "end": "(/?>)",
       "name": "meta.tag.xml",
       "patterns": [
         {

@@ -718,7 +718,7 @@
       "name": "meta.reference.label.latex",
       "patterns": [
         {
-          "match": "[a-zA-Z0-9\\.,:\/*!^_-]",
+          "match": "[a-zA-Z0-9\\.,:/*!^_-]",
           "name": "constant.other.reference.label.latex"
         }
       ]
@@ -745,7 +745,7 @@
       "name": "meta.definition.label.latex",
       "patterns": [
         {
-          "match": "[a-zA-Z0-9\\.,:\/*!^_-]",
+          "match": "[a-zA-Z0-9\\.,:/*!^_-]",
           "name": "variable.parameter.definition.label.latex"
         }
       ]

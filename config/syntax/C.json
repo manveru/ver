@@ -4,8 +4,8 @@
     "h"
   ],
   "firstLineMatch": "-[*]-( Mode:)? C -[*]-",
-  "foldingStartMarker": "(?x)\n\t\t \/\\*\\*(?!\\*)\n\t\t|^(?![^{]*?\/\/|[^{]*?\/\\*(?!.*?\\*\/.*?\\{)).*?\\{\\s*($|\/\/|\/\\*(?!.*?\\*\/.*\\S))\n\t",
-  "foldingStopMarker": "(?<!\\*)\\*\\*\/|^\\s*\\}",
+  "foldingStartMarker": "(?x)\n\t\t /\\*\\*(?!\\*)\n\t\t|^(?![^{]*?//|[^{]*?/\\*(?!.*?\\*/.*?\\{)).*?\\{\\s*($|//|/\\*(?!.*?\\*/.*\\S))\n\t",
+  "foldingStopMarker": "(?<!\\*)\\*\\*/|^\\s*\\}",
   "keyEquivalent": "^~C",
   "name": "C",
   "patterns": [
@@ -122,7 +122,7 @@
           "name": "punctuation.definition.parameters.c"
         }
       },
-      "end": "(?=(?:\/\/|\/\\*))|$",
+      "end": "(?=(?://|/\\*))|$",
       "name": "meta.preprocessor.macro.c",
       "patterns": [
         {
@@ -157,7 +157,7 @@
           "name": "keyword.control.import.include.c"
         }
       },
-      "end": "(?=(?:\/\/|\/\\*))|$",
+      "end": "(?=(?://|/\\*))|$",
       "name": "meta.preprocessor.c.include",
       "patterns": [
         {
@@ -206,7 +206,7 @@
           "name": "keyword.control.import.c"
         }
       },
-      "end": "(?=(?:\/\/|\/\\*))|$",
+      "end": "(?=(?://|/\\*))|$",
       "name": "meta.preprocessor.c",
       "patterns": [
         {
@@ -356,21 +356,21 @@
               "name": "meta.toc-list.banner.block.c"
             }
           },
-          "match": "^\/\\* =(\\s*.*?)\\s*= \\*\/$\\n?",
+          "match": "^/\\* =(\\s*.*?)\\s*= \\*/$\\n?",
           "name": "comment.block.c"
         },
         {
-          "begin": "\/\\*",
+          "begin": "/\\*",
           "captures": {
             "0": {
               "name": "punctuation.definition.comment.c"
             }
           },
-          "end": "\\*\/",
+          "end": "\\*/",
           "name": "comment.block.c"
         },
         {
-          "match": "\\*\/.*\\n",
+          "match": "\\*/.*\\n",
           "name": "invalid.illegal.stray-comment-end.c"
         },
         {
@@ -379,11 +379,11 @@
               "name": "meta.toc-list.banner.line.c"
             }
           },
-          "match": "^\/\/ =(\\s*.*?)\\s*=\\s*$\\n?",
+          "match": "^// =(\\s*.*?)\\s*=\\s*$\\n?",
           "name": "comment.line.banner.c++"
         },
         {
-          "begin": "\/\/",
+          "begin": "//",
           "beginCaptures": {
             "0": {
               "name": "punctuation.definition.comment.c"
@@ -627,7 +627,7 @@
       ]
     },
     "preprocessor-rule-other": {
-      "begin": "^\\s*(#\\s*(if(n?def)?)\\b.*?(?:(?=(?:\/\/|\/\\*))|$))",
+      "begin": "^\\s*(#\\s*(if(n?def)?)\\b.*?(?:(?=(?://|/\\*))|$))",
       "captures": {
         "1": {
           "name": "meta.preprocessor.c"
@@ -644,7 +644,7 @@
       ]
     },
     "preprocessor-rule-other-block": {
-      "begin": "^\\s*(#\\s*(if(n?def)?)\\b.*?(?:(?=(?:\/\/|\/\\*))|$))",
+      "begin": "^\\s*(#\\s*(if(n?def)?)\\b.*?(?:(?=(?://|/\\*))|$))",
       "captures": {
         "1": {
           "name": "meta.preprocessor.c"

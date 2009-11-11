@@ -51,7 +51,7 @@
           "name": "punctuation.definition.tag.twiki"
         }
       },
-      "end": "(<\/)verbatim(>)|(<\/)pre(>)",
+      "end": "(</)verbatim(>)|(</)pre(>)",
       "name": "markup.raw.twiki",
       "patterns": [
         {

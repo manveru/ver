@@ -592,7 +592,7 @@
       "name": "keyword.operator.symbol.ocaml"
     },
     {
-      "match": "[*+\/-]\\.",
+      "match": "[*+/-]\\.",
       "name": "keyword.operator.infix.floating-point.ocaml"
     },
     {
@@ -616,11 +616,11 @@
       "name": "punctuation.separator.function-return.ocaml"
     },
     {
-      "match": "[=<>@^&+\\-*\/$%|][|!$%&*+.\/:<=>?@^~-]*",
+      "match": "[=<>@^&+\\-*/$%|][|!$%&*+./:<=>?@^~-]*",
       "name": "keyword.operator.infix.ocaml"
     },
     {
-      "match": "\\bnot\\b|!|[!\\?~][!$%&*+.\/:<=>?@^~-]+",
+      "match": "\\bnot\\b|!|[!\\?~][!$%&*+./:<=>?@^~-]+",
       "name": "keyword.operator.prefix.ocaml"
     },
     {
@@ -859,7 +859,7 @@
               "name": "punctuation.definition.list.begin.ocaml"
             }
           },
-          "end": "(?<!\\||>)(\])",
+          "end": "(?<!\\||>)(])",
           "endCaptures": {
             "1": {
               "name": "punctuation.definition.list.end.ocaml"

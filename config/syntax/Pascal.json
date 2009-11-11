@@ -55,7 +55,7 @@
           "name": "punctuation.definition.comment.pascal"
         }
       },
-      "match": "(\/\/).*$\\n?",
+      "match": "(//).*$\\n?",
       "name": "comment.line.double-slash.pascal.two"
     },
     {

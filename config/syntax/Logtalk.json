@@ -3,19 +3,19 @@
     "lgt",
     "config"
   ],
-  "foldingStartMarker": "(\/\\*|:-\\s+(object|protocol|category)(?=[(]))",
-  "foldingStopMarker": "(\\*\/|:-\\s+end_(object|protocol|category)(?=[.]))",
+  "foldingStartMarker": "(/\\*|:-\\s+(object|protocol|category)(?=[(]))",
+  "foldingStopMarker": "(\\*/|:-\\s+end_(object|protocol|category)(?=[.]))",
   "keyEquivalent": "^~L",
   "name": "Logtalk",
   "patterns": [
     {
-      "begin": "\/\\*",
+      "begin": "/\\*",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.logtalk"
         }
       },
-      "end": "\\*\/",
+      "end": "\\*/",
       "name": "comment.block.logtalk"
     },
     {
@@ -102,7 +102,7 @@
       "name": "keyword.operator.comparison.arithmetic.logtalk"
     },
     {
-      "match": "(<<|>>|\/\\\\|\\\\\/|\\\\)",
+      "match": "(<<|>>|/\\\\|\\\\/|\\\\)",
       "name": "keyword.operator.bitwise.logtalk"
     },
     {
@@ -110,7 +110,7 @@
       "name": "keyword.operator.evaluable.logtalk"
     },
     {
-      "match": "(\\*\\*|\\+|-|\\*|\/|\/\/)",
+      "match": "(\\*\\*|\\+|-|\\*|/|//)",
       "name": "keyword.operator.evaluable.logtalk"
     },
     {

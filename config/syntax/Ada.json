@@ -18,7 +18,7 @@
           "name": "entity.name.function.ada"
         }
       },
-      "match": "\\b(?i:(function|procedure))\\b\\s+(\\w+(\\.\\w+)?|\"(?:\\+|-|=|\\*|\/)\")",
+      "match": "\\b(?i:(function|procedure))\\b\\s+(\\w+(\\.\\w+)?|\"(?:\\+|-|=|\\*|/)\")",
       "name": "meta.function.ada"
     },
     {
@@ -33,7 +33,7 @@
           "name": "entity.name.type.package.ada"
         }
       },
-      "match": "\\b(?i:(package)(?:\\b\\s+(body))?)\\b\\s+(\\w+(\\.\\w+)?|\"(?:\\+|-|=|\\*|\/)\")",
+      "match": "\\b(?i:(package)(?:\\b\\s+(body))?)\\b\\s+(\\w+(\\.\\w+)?|\"(?:\\+|-|=|\\*|/)\")",
       "name": "meta.function.ada"
     },
     {
@@ -45,7 +45,7 @@
           "name": "entity.name.function.ada"
         }
       },
-      "match": "\\b(?i:(end))\\b\\s+(\\w+(\\.\\w+)?|\"(\\+|-|=|\\*|\/)\")\\s?;",
+      "match": "\\b(?i:(end))\\b\\s+(\\w+(\\.\\w+)?|\"(\\+|-|=|\\*|/)\")\\s?;",
       "name": "meta.function.ada"
     },
     {

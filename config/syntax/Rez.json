@@ -3,19 +3,19 @@
   "fileTypes": [
     "r"
   ],
-  "foldingStartMarker": "(\/\\*\\*|\\{\\s*$)",
-  "foldingStopMarker": "(\\*\\*\/|^\\s*\\})",
+  "foldingStartMarker": "(/\\*\\*|\\{\\s*$)",
+  "foldingStopMarker": "(\\*\\*/|^\\s*\\})",
   "keyEquivalent": "^~R",
   "name": "Rez",
   "patterns": [
     {
-      "begin": "\/\\*",
+      "begin": "/\\*",
       "captures": {
         "0": {
           "name": "punctuation.definition.comment.rez"
         }
       },
-      "end": "\\*\/",
+      "end": "\\*/",
       "name": "comment.block.rez"
     },
     {
@@ -24,7 +24,7 @@
           "name": "punctuation.definition.comment.rez"
         }
       },
-      "match": "(\/\/).*$\\n?",
+      "match": "(//).*$\\n?",
       "name": "comment.line.double-slash.rez"
     },
     {

@@ -72,16 +72,16 @@
         },
         {
           "comment": "\n\t\t\t\t\t\tThese functions are potentially dangerous because\n\t\t\t\t\t\tthey have side-effects which could affect other\n\t\t\t\t\t\tparts of the program.\n\t\t\t\t\t",
-          "match": "(?x)\n\t\t\t\t\t\t(?<=(\\s|\\()) # preceded by space or (\n\t\t\t\t\t\t( set-(?:car|cdr)|\t\t\t\t # set car\/cdr\n\t\t\t\t\t\t  (?:vector|string)-(?:fill|set) # fill\/set string\/vector\n\t\t\t\t\t\t)\n\t\t\t\t\t\t(!)\t\t\t# name ends with ! sign\n\t\t\t\t\t\t(?=(\\s|\\()) # followed by space or (\n\t\t\t\t\t",
+          "match": "(?x)\n\t\t\t\t\t\t(?<=(\\s|\\()) # preceded by space or (\n\t\t\t\t\t\t( set-(?:car|cdr)|\t\t\t\t # set car/cdr\n\t\t\t\t\t\t  (?:vector|string)-(?:fill|set) # fill/set string/vector\n\t\t\t\t\t\t)\n\t\t\t\t\t\t(!)\t\t\t# name ends with ! sign\n\t\t\t\t\t\t(?=(\\s|\\()) # followed by space or (\n\t\t\t\t\t",
           "name": "support.function.with-side-effects.scheme"
         },
         {
-          "comment": "\n\t\t\t\t\t\t+, -, *, \/, =, >, etc. \n\t\t\t\t\t",
-          "match": "(?x)\n\t\t\t\t\t\t(?<=(\\s|\\()) # preceded by space or (\n\t\t\t\t\t\t( >=?|<=?|=|[*\/+-])\n\t\t\t\t\t\t(?=(\\s|\\()) # followed by space or (\n\t\t\t\t\t\t",
+          "comment": "\n\t\t\t\t\t\t+, -, *, /, =, >, etc. \n\t\t\t\t\t",
+          "match": "(?x)\n\t\t\t\t\t\t(?<=(\\s|\\()) # preceded by space or (\n\t\t\t\t\t\t( >=?|<=?|=|[*/+-])\n\t\t\t\t\t\t(?=(\\s|\\()) # followed by space or (\n\t\t\t\t\t\t",
           "name": "keyword.operator.arithmetic.scheme"
         },
         {
-          "match": "(?x)\n\t\t\t\t\t\t(?<=(\\s|\\()) # preceded by space or (\n\t\t\t\t\t\t( append|apply|approximate|\n\t\t\t\t\t\t  call-with-current-continuation|call\/cc|catch|\n\t\t\t\t\t\t  construct-identifier|define-syntax|display|foo|\n\t\t\t\t\t\t  for-each|force|cd|gen-counter|gen-loser|\n\t\t\t\t\t\t  generate-identifier|last-pair|length|let-syntax|\n\t\t\t\t\t\t  letrec-syntax|list|list-ref|list-tail|load|log|\n\t\t\t\t\t\t  macro|magnitude|map|map-streams|max|member|memq|\n\t\t\t\t\t\t  memv|min|newline|nil|not|peek-char|rationalize|\n\t\t\t\t\t\t  read|read-char|return|reverse|sequence|substring|\n\t\t\t\t\t\t  syntax|syntax-rules|transcript-off|transcript-on|\n\t\t\t\t\t\t  truncate|unwrap-syntax|values-list|write|write-char|\n\t\t\t\t\t\t  \n\t\t\t\t\t\t  # cons, car, cdr, etc\n\t\t\t\t\t\t  cons|c(a|d){1,4}r| \n                          \n\t\t\t\t\t\t  # unary math operators\n\t\t\t\t\t\t  abs|acos|angle|asin|assoc|assq|assv|atan|ceiling|\n\t\t\t\t\t\t  cos|floor|round|sin|sqrt|tan|\n\t\t\t\t\t\t  (?:real|imag)-part|numerator|denominator\n                          \n\t\t\t\t\t\t  # other math operators\n\t\t\t\t\t\t  modulo|exp|expt|remainder|quotient|lcm|\n                          \n\t\t\t\t\t\t  # ports \/ files\n\t\t\t\t\t\t  call-with-(?:input|output)-file|\n\t\t\t\t\t\t  (?:close|current)-(?:input|output)-port|\n\t\t\t\t\t\t  with-(?:input|output)-from-file|\n\t\t\t\t\t\t  open-(?:input|output)-file|\n\t\t\t\t\t\t  \n\t\t\t\t\t\t  # char-\u00abfoo\u00bb\n\t\t\t\t\t\t  char-(?:downcase|upcase|ready)|\n\t\t\t\t\t\t  \n\t\t\t\t\t\t  # make-\u00abfoo\u00bb\n\t\t\t\t\t\t  make-(?:polar|promise|rectangular|string|vector)\n\t\t\t\t\t\t  \n\t\t\t\t\t\t  # string-\u00abfoo\u00bb, vector-\u00abfoo\u00bb\n\t\t\t\t\t\t  string(?:-(?:append|copy|length|ref))?|\n\t\t\t\t\t\t  vector(?:-length|-ref)\n\t\t\t\t\t\t)\n\t\t\t\t\t\t(?=(\\s|\\()) # followed by space or (\n\t\t\t\t\t",
+          "match": "(?x)\n\t\t\t\t\t\t(?<=(\\s|\\()) # preceded by space or (\n\t\t\t\t\t\t( append|apply|approximate|\n\t\t\t\t\t\t  call-with-current-continuation|call/cc|catch|\n\t\t\t\t\t\t  construct-identifier|define-syntax|display|foo|\n\t\t\t\t\t\t  for-each|force|cd|gen-counter|gen-loser|\n\t\t\t\t\t\t  generate-identifier|last-pair|length|let-syntax|\n\t\t\t\t\t\t  letrec-syntax|list|list-ref|list-tail|load|log|\n\t\t\t\t\t\t  macro|magnitude|map|map-streams|max|member|memq|\n\t\t\t\t\t\t  memv|min|newline|nil|not|peek-char|rationalize|\n\t\t\t\t\t\t  read|read-char|return|reverse|sequence|substring|\n\t\t\t\t\t\t  syntax|syntax-rules|transcript-off|transcript-on|\n\t\t\t\t\t\t  truncate|unwrap-syntax|values-list|write|write-char|\n\t\t\t\t\t\t  \n\t\t\t\t\t\t  # cons, car, cdr, etc\n\t\t\t\t\t\t  cons|c(a|d){1,4}r| \n                          \n\t\t\t\t\t\t  # unary math operators\n\t\t\t\t\t\t  abs|acos|angle|asin|assoc|assq|assv|atan|ceiling|\n\t\t\t\t\t\t  cos|floor|round|sin|sqrt|tan|\n\t\t\t\t\t\t  (?:real|imag)-part|numerator|denominator\n                          \n\t\t\t\t\t\t  # other math operators\n\t\t\t\t\t\t  modulo|exp|expt|remainder|quotient|lcm|\n                          \n\t\t\t\t\t\t  # ports / files\n\t\t\t\t\t\t  call-with-(?:input|output)-file|\n\t\t\t\t\t\t  (?:close|current)-(?:input|output)-port|\n\t\t\t\t\t\t  with-(?:input|output)-from-file|\n\t\t\t\t\t\t  open-(?:input|output)-file|\n\t\t\t\t\t\t  \n\t\t\t\t\t\t  # char-\u00abfoo\u00bb\n\t\t\t\t\t\t  char-(?:downcase|upcase|ready)|\n\t\t\t\t\t\t  \n\t\t\t\t\t\t  # make-\u00abfoo\u00bb\n\t\t\t\t\t\t  make-(?:polar|promise|rectangular|string|vector)\n\t\t\t\t\t\t  \n\t\t\t\t\t\t  # string-\u00abfoo\u00bb, vector-\u00abfoo\u00bb\n\t\t\t\t\t\t  string(?:-(?:append|copy|length|ref))?|\n\t\t\t\t\t\t  vector(?:-length|-ref)\n\t\t\t\t\t\t)\n\t\t\t\t\t\t(?=(\\s|\\()) # followed by space or (\n\t\t\t\t\t",
           "name": "support.function.general.scheme"
         }
       ]
@@ -95,7 +95,7 @@
               "name": "punctuation.section.quoted.symbol.scheme"
             }
           },
-          "match": "(?x)\n\t\t\t\t\t\t(')\\s*\n\t\t\t\t\t\t([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*)\n\t\t\t\t\t",
+          "match": "(?x)\n\t\t\t\t\t\t(')\\s*\n\t\t\t\t\t\t([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*)\n\t\t\t\t\t",
           "name": "constant.other.symbol.scheme"
         },
         {
@@ -205,7 +205,7 @@
           "include": "#comment"
         },
         {
-          "begin": "(?x)\n\t\t\t\t\t\t(?<=\\()       # preceded by (\n\t\t\t\t\t\t(define)\\s+   # define\n\t\t\t\t\t\t(\\()          # list of parameters\n\t\t\t\t\t\t  ([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*)\n\t\t\t\t\t\t  ((\\s+\n\t\t\t\t\t\t    ([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*|[._])\n\t\t\t\t\t\t   )*\n\t\t\t\t\t\t  )\\s*\n\t\t\t\t\t\t(\\))\n\t\t\t\t\t",
+          "begin": "(?x)\n\t\t\t\t\t\t(?<=\\()       # preceded by (\n\t\t\t\t\t\t(define)\\s+   # define\n\t\t\t\t\t\t(\\()          # list of parameters\n\t\t\t\t\t\t  ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*)\n\t\t\t\t\t\t  ((\\s+\n\t\t\t\t\t\t    ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*|[._])\n\t\t\t\t\t\t   )*\n\t\t\t\t\t\t  )\\s*\n\t\t\t\t\t\t(\\))\n\t\t\t\t\t",
           "captures": {
             "1": {
               "name": "keyword.control.scheme"
@@ -238,7 +238,7 @@
           ]
         },
         {
-          "begin": "(?x)\n\t\t\t\t\t\t(?<=\\() # preceded by (\n\t\t\t\t\t\t(lambda)\\s+\n\t\t\t\t\t\t(\\() # opening paren\n\t\t\t\t\t\t((?:\n\t\t\t\t\t\t  ([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*|[._])\n\t\t\t\t\t\t  \\s+\n\t\t\t\t\t\t)*(?:\n\t\t\t\t\t\t  ([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*|[._])\n\t\t\t\t\t\t)?)\n\t\t\t\t\t\t(\\)) # closing paren\n\t\t\t\t\t",
+          "begin": "(?x)\n\t\t\t\t\t\t(?<=\\() # preceded by (\n\t\t\t\t\t\t(lambda)\\s+\n\t\t\t\t\t\t(\\() # opening paren\n\t\t\t\t\t\t((?:\n\t\t\t\t\t\t  ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*|[._])\n\t\t\t\t\t\t  \\s+\n\t\t\t\t\t\t)*(?:\n\t\t\t\t\t\t  ([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*|[._])\n\t\t\t\t\t\t)?)\n\t\t\t\t\t\t(\\)) # closing paren\n\t\t\t\t\t",
           "captures": {
             "1": {
               "name": "keyword.control.scheme"
@@ -269,7 +269,7 @@
           ]
         },
         {
-          "begin": "(?<=\\()(define)\\s([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*)\\s*.*?",
+          "begin": "(?<=\\()(define)\\s([[:alnum:]][[:alnum:]!$%&*+-./:<=>?@^_~]*)\\s*.*?",
           "captures": {
             "1": {
               "name": "keyword.control.scheme"

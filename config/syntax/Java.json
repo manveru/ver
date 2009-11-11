@@ -3,8 +3,8 @@
     "java",
     "bsh"
   ],
-  "foldingStartMarker": "(\\{\\s*(\/\/.*)?$|^\\s*\/\/ \\{\\{\\{)",
-  "foldingStopMarker": "^\\s*(\\}|\/\/ \\}\\}\\}$)",
+  "foldingStartMarker": "(\\{\\s*(//.*)?$|^\\s*// \\{\\{\\{)",
+  "foldingStopMarker": "^\\s*(\\}|// \\}\\}\\}$)",
   "keyEquivalent": "^~J",
   "name": "Java",
   "patterns": [
@@ -350,7 +350,7 @@
               "name": "punctuation.definition.comment.java"
             }
           },
-          "match": "\/\\*\\*\/",
+          "match": "/\\*\\*/",
           "name": "comment.block.empty.java"
         },
         {
@@ -364,13 +364,13 @@
     "comments-inline": {
       "patterns": [
         {
-          "begin": "\/\\*",
+          "begin": "/\\*",
           "captures": {
             "0": {
               "name": "punctuation.definition.comment.java"
             }
           },
-          "end": "\\*\/",
+          "end": "\\*/",
           "name": "comment.block.java"
         },
         {
@@ -382,7 +382,7 @@
               "name": "punctuation.definition.comment.java"
             }
           },
-          "match": "\\s*((\/\/).*$\\n?)"
+          "match": "\\s*((//).*$\\n?)"
         }
       ]
     },
@@ -472,7 +472,7 @@
           "name": "keyword.operator.increment-decrement.java"
         },
         {
-          "match": "(\\-|\\+|\\*|\\\/|%)",
+          "match": "(\\-|\\+|\\*|\\/|%)",
           "name": "keyword.operator.arithmetic.java"
         },
         {

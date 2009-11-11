@@ -5,8 +5,8 @@
     "markdn",
     "md"
   ],
-  "foldingStartMarker": "(?x)\n\t\t(<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)\\b.*?>\n\t\t|<!--(?!.*-->)\n\t\t|\\{\\s*($|\\?>\\s*$|\/\/|\/\\*(.*\\*\/\\s*$|(?!.*?\\*\/)))\n\t\t)",
-  "foldingStopMarker": "(?x)\n\t\t(<\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)>\n\t\t|^\\s*-->\n\t\t|(^|\\s)\\}\n\t\t)",
+  "foldingStartMarker": "(?x)\n\t\t(<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)\\b.*?>\n\t\t|<!--(?!.*-->)\n\t\t|\\{\\s*($|\\?>\\s*$|//|/\\*(.*\\*/\\s*$|(?!.*?\\*/)))\n\t\t)",
+  "foldingStopMarker": "(?x)\n\t\t(</(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)>\n\t\t|^\\s*-->\n\t\t|(^|\\s)\\}\n\t\t)",
   "keyEquivalent": "^~M",
   "name": "Markdown",
   "patterns": [
@@ -61,9 +61,9 @@
       ]
     },
     {
-      "begin": "^(?=<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|ins|del)\\b)(?!.*?<\/\\1>)",
+      "begin": "^(?=<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|ins|del)\\b)(?!.*?</\\1>)",
       "comment": "\n\t\t\t\tMarkdown formatting is disabled inside block-level tags.\n\t\t\t",
-      "end": "(?<=^<\/\\1>$\\n)",
+      "end": "(?<=^</\\1>$\\n)",
       "name": "meta.disable-markdown",
       "patterns": [
         {
@@ -276,7 +276,7 @@
     },
     "bracket": {
       "comment": "\n\t\t\t\tMarkdown will convert this for us. We match it so that the\n\t\t\t\tHTML grammar will not mark it up as invalid.\n\t\t\t",
-      "match": "<(?![a-z\/?\\$!])",
+      "match": "<(?![a-z/?\\$!])",
       "name": "meta.other.valid-bracket.markdown"
     },
     "escape": {
@@ -509,7 +509,7 @@
           "name": "punctuation.definition.link.markdown"
         }
       },
-      "match": "(<)((?:https?|ftp):\/\/.*?)(>)",
+      "match": "(<)((?:https?|ftp)://.*?)(>)",
       "name": "meta.link.inet.markdown"
     },
     "link-inline": {
