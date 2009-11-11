@@ -11,7 +11,7 @@ module VER
       if syntax_name = Detector.detect(filename)
         return new(syntax_name)
       else
-        new 'Plain text'
+        new 'Plain Text'
       end
     end
 
