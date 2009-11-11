@@ -1,12 +1,60 @@
 #!/usr/bin/env ruby
 
-if File.symlink?(__FILE__)
-  lib = File.expand_path('../../lib/ver', File.readlink(__FILE__))
-else
-  lib = File.expand_path('../../lib/ver', __FILE__)
+require 'pathname'
+require 'optparse'
+
+# annoying fixes
+class Pathname
+  alias / join
+
+  def cp(dest)
+    FileUtils.copy_file(expand_path.to_s, dest.to_s, preserve = true)
+  end
+
+  def =~(regexp)
+    to_s =~ regexp
+  end
 end
 
-require 'optparse'
+module VER
+  file = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
+  ROOT = File.expand_path('../../lib', file)
+
+  module_function
+
+  def require_and_run(options = {})
+    # TODO: remove before release
+    $LOAD_PATH.unshift(ROOT)
+
+    if options[:fork]
+      fork do
+        trap(:HUP){ 'terminal disconnected' }
+        require 'ver'
+        run(options)
+      end
+    else
+      require 'ver'
+      run(options)
+    end
+  end
+
+  def install_tm_bundle(path)
+    require 'ver/plist'
+    require 'json'
+
+    glob = File.expand_path('Syntaxes/*.{plist,tmLanguage}', path)
+
+    Dir.glob(glob, File::FNM_CASEFOLD) do |syntax|
+      plist = VER::Plist.parse_xml(syntax)
+      name = plist['name']
+      target = File.expand_path("../config/syntax/#{name}.json", ROOT)
+
+      File.open(target, 'w+'){|io| io.write(JSON.pretty_unparse(plist)) }
+    end
+
+    exit
+  end
+end
 
 options = {
   encoding:    'UTF-8:UTF-8',
@@ -26,18 +74,13 @@ op = OptionParser.new{|o|
   o.on('-f', '--nofork', 'stay attached to terminal'){ options[:fork] = false }
   o.on('-k', '--keymap NAME', 'vim or emacs'){|k| options[:keymap] = k }
   o.separator ' '
+  o.on('--install-tm-bundle PATH',
+       'Install textmate bundle for use with VER',
+       &VER.method(:install_tm_bundle))
+  o.separator ' '
   o.on('-h', '--help', 'Show this help'){ puts o; exit }
   o.on('--debug', 'turn $DEBUG on'){ $DEBUG = true }
 }
 op.parse!(ARGV)
 
-if options[:fork]
-  fork do
-    trap(:HUP){ 'terminal disconnected' }
-    require lib
-    VER.run(options)
-  end
-else
-  require lib
-  VER.run(options)
-end
+VER.require_and_run(options)

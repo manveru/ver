@@ -1,9 +1,6 @@
 # Well begun is half done.
 #             -- Aristotle
 
-# TODO: remove before release
-$LOAD_PATH.unshift File.expand_path('../', __FILE__)
-
 # lazy stdlib
 autoload :Benchmark, 'benchmark'
 autoload :FileUtils, 'fileutils'
@@ -14,29 +11,9 @@ autoload :FileUtils, 'fileutils'
 # eager stdlib
 require 'digest/sha1'
 require 'json'
-require 'pathname'
 # require 'pp'
 require 'securerandom'
 require 'set'
-
-
-# annoying fixes
-class Pathname
-  alias / join
-
-  def cp(dest)
-    FileUtils.copy_file(expand_path.to_s, dest.to_s, preserve = true)
-  end
-
-  def =~(regexp)
-    to_s =~ regexp
-  end
-end
-
-# FIXME: remove when eventmachine 0.12.9 comes out.
-class Thread
-  alias kill! kill unless current.respond_to?(:kill!)
-end
 
 module VER
   autoload :BufferListView,      'ver/view/buffer_list_view'
