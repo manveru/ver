@@ -162,7 +162,7 @@ module VER
       VER.opened_file(self)
 
       edit_reset
-      mark_set :insert, "#{line}.0"
+      mark_set :insert, "#{line.to_i}.0"
       setup_highlight
 
       @pristine = false
