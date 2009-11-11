@@ -111,6 +111,14 @@ module VER
 
     tk_theme = options[:tk_theme]
     options[:theme] = 'default' unless Tk::Tile::Style.theme_names.include?(tk_theme)
+
+    letter = /[\w\n.-]/
+    space = /[^\w.-]/
+
+    # make sure Tcl already has the vars set
+    Tk.interp.eval('catch {tcl_endOfWord}')
+    Tk.execute('set', 'tcl_wordchars', letter)
+    Tk.execute('set', 'tcl_nonwordchars', space)
   end
 
   def first_startup

@@ -53,7 +53,34 @@ module VER
 
       def go_word_right(count = 1)
         count.times do
-          mark_set :insert, tk_next_word_pos('insert')
+          now = get(:insert)
+          p now: now
+
+          target =
+            case now
+            when /\S/
+              p 1
+              search(/\s/, 'insert + 1c', 'insert lineend', :count)
+            when /\s/
+              p 2
+              search(/\S/, 'insert + 1c', 'end', :count, :nolinestop)
+            else
+              raise "now: %p" % [now]
+            end
+
+          p target: target
+          from, count = target
+          p from: from, count: count
+
+          if from && count
+            y, x = from.split('.')
+            to = "#{y}.#{x.to_i + count}"
+            mark_set :insert, to
+          else
+            mark_set :insert, 'insert lineend'
+          end
+
+          # mark_set :insert, tk_next_word_pos('insert')
         end
       end
 
