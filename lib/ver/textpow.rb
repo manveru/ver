@@ -129,7 +129,7 @@ module Textpow
           begin
             send("#{key}=", Regexp.new(value))
           rescue ArgumentError, RegexpError => exception
-            warn "Parsing error in %p: %s" % [value, exception]
+            warn "Parsing error in %p => %p: %s" % [key, value, exception]
           end
         when "content", "fileTypes", "name", "contentName", "end", "scopeName", "keyEquivalent"
           send("#{key}=", value)
