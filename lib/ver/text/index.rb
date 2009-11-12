@@ -47,6 +47,10 @@ module VER
         self.class.new(widget, "#{y + 1}.#{x}")
       end
 
+      def prev
+        self.class.new(widget, "#{y - 1}.#{x}")
+      end
+
       def split
         return y, x
       end
