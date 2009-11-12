@@ -1,3 +1,5 @@
+require 'eventmachine'
+
 module VER
   class View
     class Console
@@ -107,15 +109,17 @@ module VER
         end
 
         # FIXME: this should have proper shell escapes
-        popen3(opts.join(' '), self) do |stdin|
-          begin
-            @stdin = stdin
+        EM.run do
+          popen3(opts.join(' '), self) do |stdin|
+            begin
+              @stdin = stdin
 
-            while line = @buffer.shift
-              send_data(line)
+              while line = @buffer.shift
+                send_data(line)
+              end
+            rescue => ex
+              p ex
             end
-          rescue => ex
-            p ex
           end
         end
       end
