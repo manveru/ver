@@ -52,44 +52,22 @@ module VER
       end
 
       def go_word_right(count = 1)
-        search_from = "insert + 1 char"
-        search_to = "#{search_from} lineend"
-
         count.times do
-          now = get(:insert)
+          original_type = type = char_type(get(:insert))
+          changed = 0
 
-          target =
-            case now
-            when /\w/
-              search(/[^\s\w]+/, search_from, search_to, :count, :all) +
-              search(/\S+/, search_from, search_to, :count, :all)
-            when /\S/
-              search(/\w+/, search_from, search_to, :count, :all)
-            when /\s/
-              [search(/\S+/, search_from, :end, :count)]
-            else
-              raise "now: %p" % [now]
-            end
+          begin
+            original_pos = index(:insert)
+            execute :mark, :set, :insert, 'insert + 1 chars'
+            break if  original_pos == index(:insert)
 
-          target.map!{|idx, len| [Text::Index.new(self, idx), len] }
-          target.sort!
-          # p target: target
-
-          now_y, now_x = index(:insert).split
-
-          target.each do |idx, len|
-            p get(idx, "#{idx} + #{len} chars")
-            y, x = idx.split
-
-            if now_y == y && now_x == (x - 1)
-              next
-            else
-              return mark_set(:insert, idx)
-            end
-          end
-
-          mark_set(:insert, 'insert lineend')
+            type = char_type(get(:insert))
+            changed += 1 if type != original_type
+            original_type = type
+          end until changed > 0 && type != :space
         end
+
+        Tk::Event.generate(self, '<<Movement>>')
       rescue => ex
         VER.error(ex)
       end
@@ -102,11 +80,45 @@ module VER
 
       def go_word_left(count = 1)
         count.times do
-          mark_set :insert, tk_prev_word_pos('insert')
+          original_type = type = char_type(get(:insert))
+          changed = 0
+
+          begin
+            original_pos = index(:insert)
+            execute :mark, :set, :insert, 'insert - 1 chars'
+            break if index(:insert) == original_pos
+
+            type = char_type(get(:insert))
+            changed += 1 if type != original_type
+            original_type = type
+          end until changed > 0 && type != :space
+
+          type = char_type(get('insert - 1 chars'))
+
+          while type == original_type
+            original_pos = index(:insert)
+            execute :mark, :set, :insert, 'insert - 1 chars'
+            break if index(:insert) == original_pos
+
+            type = char_type(get('insert - 1 chars'))
+          end
         end
+
+        Tk::Event.generate(self, '<<Movement>>')
+      rescue => ex
+        VER.error(ex)
       end
 
       private
+
+      def char_type(char)
+        case char
+        when /\w/; :word
+        when /\S/; :special
+        when /\s/; :space
+        else; raise "You cannot get here"
+        end
+      end
 
       def tk_prev_word_pos(start)
         Tk.execute('tk::TextPrevPos', tk_pathname, start, 'tcl_startOfPreviousWord').to_s

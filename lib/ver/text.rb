@@ -293,12 +293,8 @@ module VER
     # Wrap Tk methods to behave as we want and to generate events
     def mark_set(mark_name, index)
       super
-
       return unless mark_name == :insert
-
-      see :insert
-      refresh_selection
-      defer{ status_projection(status) }
+      Tk::Event.generate(self, '<<Movement>>')
     end
 
     def refresh_selection
