@@ -156,24 +156,6 @@ module VER
         Kernel.raise exception
       end
 
-      # Most of the input will be in US-ASCII, but an encoding can be set per view for the input.
-      # For just about all purposes, UTF-8 should be what you want to input, and it's what Tk
-      # can handle best.
-      def insert_string(string)
-        return if string.empty?
-
-        if !string.frozen? && string.encoding == Encoding::ASCII_8BIT
-          begin
-            string.encode!(@encoding)
-          rescue Encoding::UndefinedConversionError
-            string.force_encoding(@encoding)
-          end
-        end
-
-        # puts "Insert %p in mode %p" % [string, keymap.mode]
-        insert :insert, string
-      end
-
       def replace_char
         status_ask 'Replace with: ', take: 1 do |char|
           if char.size == 1
@@ -202,58 +184,11 @@ module VER
        )
       end
 
-      def insert_indented_newline_below
-        line = get('insert linestart', 'insert lineend')
-
-        indent = line.empty? ? "" : (line[/^\s+/] || '')
-        mark_set :insert, 'insert lineend'
-        insert :insert, "\n#{indent}"
-
-        start_insert_mode
-      end
-
-      def insert_indented_newline_above
-        if index(:insert).y > 1
-          go_line_up
-          insert_indented_newline_below
-        else
-          insert('insert linestart', "\n")
-          mark_set(:insert, 'insert - 1 line')
-        end
-
-        start_insert_mode
-      end
-
-      def insert_newline
-        insert :insert, "\n"
-      end
-
-      def insert_indented_newline
-        line1 = get('insert linestart', 'insert lineend')
-        indentation1 = line1[/^\s+/] || ''
-        insert :insert, "\n"
-
-        line2 = get('insert linestart', 'insert lineend')
-        indentation2 = line2[/^\s+/] || ''
-
-        replace(
-          'insert linestart',
-          "insert linestart + #{indentation2.size} chars",
-          indentation1
-        )
-
-        clean_previous_line
-      end
-
       def clean_previous_line
         from, to = index('insert - 1 line linestart'), index('insert - 1 line lineend')
         line = get(from, to)
         bare = line.rstrip
         replace(from, to, bare) if bare.empty?
-      end
-
-      def insert_tab
-        insert :insert, "\t"
       end
 
       def after_char_insert_mode
