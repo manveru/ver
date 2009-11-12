@@ -41,6 +41,7 @@ module VER
   def install_tm_bundle(path)
     require 'ver/plist'
     require 'json'
+    require 'fileutils'
 
     glob = File.expand_path('Syntaxes/*.{plist,tmLanguage}', path)
 
@@ -49,13 +50,32 @@ module VER
       name = plist['name'].to_s.gsub(/[\/\u2014]/, '-')
       puts "Installing #{name}"
       target = File.expand_path("../config/syntax/#{name}.json", ROOT)
+      json = JSON.pretty_unparse(plist)
+      json.gsub!(/\\x\{(\h+)\}/, '\\\\x\1')
 
-      File.open(target, 'w+'){|io|
-        json = JSON.pretty_unparse(plist)
-        json.gsub!(/\\x\{(\h+)\}/, '\\\\x\1')
-        io.write(json)
-      }
+      FileUtils.mkdir_p(File.dirname(target))
+      File.open(target, 'w+'){|io| io.write(json) }
     end
+
+    info = Plist.parse_xml(File.join(path, 'info.plist'))
+    info_name = info['name']
+
+    glob = File.expand_path('Preferences/*.{plist,tmPreferences}', path)
+    preferences = {}
+
+    Dir.glob(glob, File::FNM_CASEFOLD) do |preference|
+      plist = Plist.parse_xml(preference)
+      name = plist['name'].to_s.gsub(/[\/\u2014]/, '-')
+      puts "Adding #{name}"
+      preferences[plist['uuid']] = plist
+    end
+
+    pref = File.expand_path("../config/preferences/#{info_name}.json", ROOT)
+    pref.gsub!(/[\/\u2014]/, '-')
+    FileUtils.mkdir_p(File.dirname(pref))
+    json = JSON.pretty_unparse(preferences)
+    puts "Writing to #{pref}"
+    File.open(pref, 'w+'){|io| io.write(json) }
 
     exit
   end

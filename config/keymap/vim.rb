@@ -120,6 +120,7 @@ module VER
         mode.map :wrap_line,                     %w[g w]
         mode.map :preview,                       %w[F5]
         mode.map :status_ex,                     %w[colon]
+        mode.map :syntax_indent_file,            %w[equal]
       end
 
       vim.add_mode :replace do |mode|

@@ -93,6 +93,70 @@ module VER
         # puts "Insert %p in mode %p" % [string, keymap.mode]
         insert :insert, string
       end
+
+      def auto_indent_line
+        if @syntax
+          syntax_indent_line
+        end
+      end
+
+      def indent_settings
+        return {} unless @syntax
+        name = @syntax.name
+        file = File.open("config/preferences/#{name}.json")
+        pref = JSON.load(File.read(file))
+
+        indent_settings = {}
+
+        pref.each do |key, value|
+          settings = value['settings']
+          indent_settings[:increase]    ||= settings['increaseIndentPattern']
+          indent_settings[:decrease]    ||= settings['decreaseIndentPattern']
+          indent_settings[:indent_next] ||= settings['indentNextLinePattern']
+          indent_settings[:unindented]  ||= settings['unIndentedLinePattern']
+        end
+
+
+        [:increase, :decrease, :indent_next, :unindented].each do |key|
+          if value = indent_settings[key]
+            indent_settings[key] = Regexp.new(value)
+          else
+            indent_settings.delete(key)
+          end
+        end
+
+        return indent_settings
+      end
+
+      def syntax_indent_file
+        settings = indent_settings.values_at(:increase, :decrease, :indent_next, :unindented)
+
+        return unless settings.any?
+        increase, decrease, indent_next, unindented = settings
+
+        empty_line = /^\s*$/
+        indent = 0
+
+        index('1.0').upto(index('end')) do |pos|
+          pos_lineend = pos.lineend
+          line = get(pos, pos_lineend).strip
+
+          if increase && decrease && line =~ increase && line =~ decrease
+            indent -= 1
+            replace(pos, pos_lineend, ('  ' * indent) << line)
+            indent += 1
+          elsif decrease && line =~ decrease
+            indent -= 1
+            replace(pos, pos_lineend, ('  ' * indent) << line)
+          elsif increase && line =~ increase
+            replace(pos, pos_lineend, ('  ' * indent) << line)
+            indent += 1
+          elsif line =~ empty_line
+          else
+            replace(pos, pos_lineend, ('  ' * indent) << line)
+          end
+        end
+      end
     end
   end
 end
