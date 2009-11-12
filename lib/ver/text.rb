@@ -473,7 +473,10 @@ module VER
     end
 
     def paste_continous(text)
-      if text =~ /\n/
+      if text =~ /\A([^\n]*)\n\Z/
+        mark_set :insert, 'insert lineend'
+        insert :insert, "\n#{$1}"
+      elsif text =~ /\n/
         mark_set :insert, 'insert lineend'
         insert :insert, "\n"
         text.each_line{|line| insert(:insert, line) }
