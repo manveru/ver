@@ -1,6 +1,12 @@
 module VER
   module Methods
     module Control
+      def open_grep_list
+        View::List::Grep.new self do |file, line|
+          view.find_or_create(file, line)
+        end
+      end
+
       def open_method_list
         View::List::Methods.new self do |file, line|
           view.find_or_create(file, line)
