@@ -79,7 +79,8 @@ module VER
         return [] if prefix.empty?
         prefix = Regexp.escape(prefix)
 
-        found = search_all(/\W?#{prefix}\w*/).map{|match, from, to| match }.uniq
+        found = search_all(/\W?(#{prefix}[\w-]*)/).
+          map{|match, from, to| match.strip[/[\w-]+/] }.uniq
         found.delete prefix
         found
       end
