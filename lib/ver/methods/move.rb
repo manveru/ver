@@ -52,36 +52,46 @@ module VER
       end
 
       def go_word_right(count = 1)
+        search_from = "insert + 1 char"
+        search_to = "#{search_from} lineend"
+
         count.times do
           now = get(:insert)
-          p now: now
 
           target =
             case now
+            when /\w/
+              search(/[^\s\w]+/, search_from, search_to, :count, :all) +
+              search(/\S+/, search_from, search_to, :count, :all)
             when /\S/
-              p 1
-              search(/\s/, 'insert + 1c', 'insert lineend', :count)
+              search(/\w+/, search_from, search_to, :count, :all)
             when /\s/
-              p 2
-              search(/\S/, 'insert + 1c', 'end', :count, :nolinestop)
+              [search(/\S+/, search_from, :end, :count)]
             else
               raise "now: %p" % [now]
             end
 
-          p target: target
-          from, count = target
-          p from: from, count: count
+          target.map!{|idx, len| [Text::Index.new(self, idx), len] }
+          target.sort!
+          # p target: target
 
-          if from && count
-            y, x = from.split('.')
-            to = "#{y}.#{x.to_i + count}"
-            mark_set :insert, to
-          else
-            mark_set :insert, 'insert lineend'
+          now_y, now_x = index(:insert).split
+
+          target.each do |idx, len|
+            p get(idx, "#{idx} + #{len} chars")
+            y, x = idx.split
+
+            if now_y == y && now_x == (x - 1)
+              next
+            else
+              return mark_set(:insert, idx)
+            end
           end
 
-          # mark_set :insert, tk_next_word_pos('insert')
+          mark_set(:insert, 'insert lineend')
         end
+      rescue => ex
+        VER.error(ex)
       end
 
       def go_word_right_end(count = 1)
