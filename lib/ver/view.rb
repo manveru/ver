@@ -55,11 +55,11 @@ module VER
 
     def setup_scrollbars
       # vertical scrollbar
-      @ybar = Ttk::Scrollbar.new(self)
+      @ybar = Tk::Tile::YScrollbar.new(self)
       @text.yscrollbar(@ybar)
 
       # horizontal scrollbar
-      @xbar = Ttk::Scrollbar.new(self)
+      @xbar = Tk::Tile::XScrollbar.new(self)
       @text.xscrollbar(@xbar)
     end
 
