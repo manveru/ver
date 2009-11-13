@@ -39,15 +39,14 @@ module VER
 
       def insert_indented_newline
         indent = indent_fix_at('insert', indent_after('insert - 1 line'))
-        p fixed: indent
-        # current_indent = indent_of('insert')
         insert 'insert lineend', "\n"
-        p fixed: indent_fix_at('insert', indent)
+        indent_fix_at('insert', indent)
+      rescue Errno::ENOENT
+        fallback_insert_indented_newline
       end
 
       def indent_of(index)
         index = index(index)
-        p indent_of: index
         return 0 if index.y < 1
 
         line = get(index.linestart, index.lineend)
@@ -75,21 +74,15 @@ module VER
 
         if increase && decrease && line =~ increase && line =~ decrease
           indent -= 1
-          p '+-' => indent
           indent += 1
         elsif decrease && line =~ decrease
-          p '-' => indent
           indent -= 1
         elsif increase && line =~ increase
-          p '+' => indent
           indent += 1
         elsif line =~ /^\s*$/
-          p 'em' => indent
         else
-          p 'el' => indent
         end
 
-        p indent_after: [index, line, indent]
         return indent
       end
 
@@ -100,35 +93,28 @@ module VER
         increase, decrease, indent_next, unindented = settings
 
         index = index(index)
-        p indent_fix_at: [index, indent]
 
         linestart, lineend  = index.linestart, index.lineend
         line = get(linestart, lineend).strip
 
         if increase && decrease && line =~ increase && line =~ decrease
           indent -= 1
-          p '+-' => indent
           replace(linestart, lineend, ('  ' * indent) << line)
           indent += 1
         elsif decrease && line =~ decrease
-          p '-' => indent
           replace(linestart, lineend, ('  ' * indent) << line)
           indent -= 1
         elsif increase && line =~ increase
-          p '+' => indent
           replace(linestart, lineend, ('  ' * indent) << line)
           indent += 1
         elsif line =~ /^\s*$/
-          p 'em' => indent
           replace(linestart, lineend, ('  ' * indent) << line)
         else
-          p 'el' => indent
           replace(linestart, lineend, ('  ' * indent) << line)
         end
 
         # clean_previous_line
 
-        p indent_fix_at: [index, line, indent]
         return indent
       end
 
