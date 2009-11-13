@@ -574,5 +574,9 @@ module VER
         end
       end
     end
+
+    def font(options)
+      VER.options[:font].configure options
+    end
   end
 end
