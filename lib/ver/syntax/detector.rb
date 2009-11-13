@@ -30,14 +30,28 @@ module VER
       end
 
       def detect_ext(path)
+        require 'ver/levenshtein'
         basename = path.basename.to_s
         return unless basename =~ /\./
 
-        EXTS_LIST.find do |name, exts|
+        scores = {}
+
+        EXTS_LIST.each do |name, exts|
+          lowest = nil
           exts.find do |ext|
-            return name if basename.end_with?(ext)
+            if basename.end_with?(ext)
+              distance = Levenshtein.distance(basename, ext)
+              lowest ||= distance
+              lowest = distance if lowest > distance
+            end
+            # return name if basename.end_with?(ext)
           end
+          scores[name] = lowest if lowest
         end
+
+        p scores
+        found = scores.sort_by{|k,v| v }.first
+        return found.first if found
       end
 
       def detect_head(path)
