@@ -44,6 +44,11 @@ module VER
         View::Console.new(self)
       end
 
+      def open_terminal
+        require 'ver/view/term'
+        View::Terminal.new(self)
+      end
+
       def wrap_line
         text = get('insert linestart', 'insert lineend')
         lines = wrap_lines_of(text, 80).join("\n")
