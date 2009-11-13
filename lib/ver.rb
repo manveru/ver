@@ -195,8 +195,7 @@ module VER
   end
 
   def error(exception)
-    $stderr.puts "#{exception.class}: #{exception}"
-    $stderr.puts *exception.backtrace
+    $stderr.puts("#{exception.class}: #{exception}", *exception.backtrace)
   rescue Errno::EIO
     # The original terminal has disappeared, the $stderr pipe was closed on the
     # other side.

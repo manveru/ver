@@ -31,7 +31,7 @@ module VER
 
         return [] if line.empty?
         needle = Regexp.escape(line)
-        search_all(/^.*#{needle}.*$/).map{|match, from, to| match }.uniq
+        search_all(/^.*#{needle}.*$/).map{|match, *_| match }.uniq
       end
 
       def complete_file
@@ -80,7 +80,7 @@ module VER
         prefix = Regexp.escape(prefix)
 
         found = search_all(/\W?(#{prefix}[\w-]*)/).
-          map{|match, from, to| match.strip[/[\w-]+/] }.uniq
+          map{|match, *_| match.strip[/[\w-]+/] }.uniq
         found.delete prefix
         found
       end

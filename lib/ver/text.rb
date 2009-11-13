@@ -63,6 +63,7 @@ module VER
 
       self.selection_start = nil
       @pristine = true
+      @syntax = nil
       @encoding = Encoding.default_internal
       @dirty_indices = []
 
@@ -125,8 +126,8 @@ module VER
       self.filename = path
 
       begin
-        enc = encoding.name
-        content = filename.open("r:#{enc}"){|io| io.read.chomp }
+        encoding_name = encoding.name
+        content = filename.open("r:#{encoding_name}"){|io| io.read.chomp }
 
         if content.valid_encoding?
           self.value = content
