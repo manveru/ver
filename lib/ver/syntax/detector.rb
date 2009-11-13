@@ -49,7 +49,6 @@ module VER
           scores[name] = lowest if lowest
         end
 
-        p scores
         found = scores.sort_by{|k,v| v }.first
         return found.first if found
       end
