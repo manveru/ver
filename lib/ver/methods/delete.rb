@@ -53,6 +53,11 @@ module VER
         delete_word_left(count)
         start_insert_mode
       end
+
+      def delete_trailing_whitespace
+        tag_all_trailing_whitespace
+        execute :delete, *tag_ranges('invalid.trailing-whitespace').flatten
+      end
     end
   end
 end
