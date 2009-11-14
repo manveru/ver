@@ -23,6 +23,10 @@ module VER
       def go_line_down
         list_view.go_line_down
       end
+
+      def completion
+        list_view.completion
+      end
     end
   end
 end

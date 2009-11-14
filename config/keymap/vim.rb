@@ -216,6 +216,7 @@ module VER
         mode.to :cancel,         %w[Escape], %w[Control-c]
         mode.to :go_line_up,     %w[Up]
         mode.to :go_line_down,   %w[Down]
+        mode.to :completion,     %w[Tab]
 
         mode.missing :insert_string
       end

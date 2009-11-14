@@ -132,6 +132,19 @@ module VER
       callback.call(item) if callback
     end
 
+    def completion
+      values = list.get(0, :end)
+
+      if values.size == 1
+        entry.value = values.first
+      elsif values.size > 1
+        require 'abbrev'
+        if found = values.abbrev[entry.value]
+          entry.value = found
+        end
+      end
+    end
+
     def message(string)
       parent.status.message(string)
     end
