@@ -19,8 +19,8 @@ class VER::View::Terminal
     Tk.interp.do_events_until do
       unless @tk_queue.empty?
         chunk = @tk_queue.shift
-        destroy if chunk == :destroy
-        on_chunk(chunk)
+        return destroy if chunk == :destroy
+        Tk::After.idle{ on_chunk(chunk) }
       end
 
       false
@@ -29,17 +29,21 @@ class VER::View::Terminal
     @pty.join
   end
 
+  def bench(name, &block)
+    require 'benchmark'
+    p name => Benchmark.realtime(&block)
+  end
+
   def setup_widgets
     Tk.set_palette('black')
 
     @option_cache ||= {}
-    @font ||= Tk::Font.new(family: "DejaVu Sans Mono")
+    @font ||= VER.options[:font]
     @font_actual ||= @font.actual_hash
 
     @text = Tk::Text.new(font: @font)
     @text.pack expand: true, fill: :both
     @text.focus
-    # @text.bind('<Map>'){ pty }
 
     @text.bind('<Key>'){|event|
       @pty[:queue] << event.unicode
@@ -67,7 +71,7 @@ class VER::View::Terminal
       end
 
       loop do
-        c = r_pty.sysread(512)
+        c = r_pty.sysread(1) # 1024)
         return if c.nil?
         @tk_queue << c
       end
@@ -112,8 +116,11 @@ class VER::View::Terminal
     until s.eos?
       pos = s.pos
 
-      if s.peek(1) == "\e"
-        if s.scan(/\e\](\d+);/)
+      case s.peek(1)
+      when "\e"
+        if    s.scan(/\e\](\d+);/)
+          color s[1]
+        elsif s.scan(/\e\[(\d+)([A-Z])/)
           color s[1]
         elsif s.scan(/\e\[\?(\d+h)/)
           color s[1]
@@ -125,8 +132,6 @@ class VER::View::Terminal
          color s[1]
         elsif s.scan(/\e\[([A-Z])/)
           color s[1]
-        elsif s.scan(/\e\[(\d+)([A-Z])/)
-          color s[1]
         elsif s.scan(/\e\[m/)
           # nothing?
         elsif s.scan(/\e=\r/)
@@ -134,17 +139,28 @@ class VER::View::Terminal
         else
           p s.rest
         end
-      elsif s.scan(/\r\n/)
-        insert :end, "\n"
-      elsif s.scan(/\r\r/)
+      when "\r"
+        if s.scan(/\r\n/)
+          insert :end, "\n"
+        elsif s.scan(/\r\r/)
+          delete 'insert linestart', 'insert lineend'
+        elsif s.scan(/\r[^\n\r]/)
+          p :no_rn => s.matched
+        else
+          p :r_fail => s.rest
+        end
+      when "\x07"
+        s.pos += 1
         delete 'insert linestart', 'insert lineend'
-      elsif s.scan(/\r|\x07/)
-        delete 'insert linestart', 'insert lineend'
-      elsif s.scan(/\x08/)
+      when "\x08"
+        s.pos += 1
         delete 'insert - 1 chars'
-      elsif s.scan(/[^\e\r\x08\x07]+/)
-        insert :end, s.matched
+      else
+        if s.scan(/\A[^\e\r\x08\x07]+/)
+          insert :end, s.matched
+        end
       end
+      p s.matched
 
       if s.pos == pos
         warn("Scanner stopped at: %p" % [s])
