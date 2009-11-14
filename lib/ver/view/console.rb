@@ -6,7 +6,7 @@ module VER
       class Process < EventMachine::Connection
         attr_accessor :callback
 
-        def receive_data data
+        def receive_data(data)
           callback.on_stdout(data)
         end
 
@@ -31,7 +31,6 @@ module VER
         @parent = parent
         setup_widgets
         setup_events
-        @entry.focus
         setup_terminal(*cmd)
       end
 
@@ -62,18 +61,21 @@ module VER
       end
 
       def setup_events
-        @entry.bind('Control-q'){ Tk.exit }
-        @entry.bind('Return'){
+        @entry.bind('<Control-q>'){ Tk.exit }
+        # @entry.bind('Escape'){ closed }
+        @entry.bind('<Return>'){
           send_data @entry.value
           @entry.clear
         }
       end
 
       def closed
-        @entry.bind_remove('Return')
-        @entry.bind('Key'){ Tk.callback_break }
-        @entry.bind('Escape'){ destroy }
+        @entry.bind('<Return>'){}
+        @entry.bind('<Key>'){ Tk.callback_break }
+        @entry.bind('<Escape>'){ destroy }
         @entry.value = 'Session ended. Press Escape to close console'
+      rescue => ex
+        VER.error(ex)
       end
 
       def destroy
@@ -109,17 +111,16 @@ module VER
         end
 
         # FIXME: this should have proper shell escapes
-        EM.run do
-          popen3(opts.join(' '), self) do |stdin|
-            begin
-              @stdin = stdin
+        popen3(opts.join(' '), self) do |stdin|
+          begin
+            @entry.focus
+            @stdin = stdin
 
-              while line = @buffer.shift
-                send_data(line)
-              end
-            rescue => ex
-              p ex
+            while line = @buffer.shift
+              send_data(line)
             end
+          rescue => ex
+            VER.error(ex)
           end
         end
       end

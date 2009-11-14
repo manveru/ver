@@ -6,7 +6,7 @@ autoload :Benchmark, 'benchmark'
 autoload :FileUtils, 'fileutils'
 
 # 3rd party
-# require 'eventmachine'
+require 'eventmachine'
 
 # eager stdlib
 require 'digest/sha1'
@@ -63,16 +63,18 @@ module VER
   def run(given_options = {})
     @options = OPTIONS.merge(given_options)
 
-    # EM.run do
-      first_startup unless options[:home_conf_dir].directory?
-      setup_tk
-      load 'rc'
-      sanitize_options
-      setup
-      open_argv || open_welcome
-      emergency_bindings
-      FFI::Tk.mainloop
-    # end
+    EM.run do
+      EM.defer do
+        first_startup unless options[:home_conf_dir].directory?
+        setup_tk
+        load 'rc'
+        sanitize_options
+        setup
+        open_argv || open_welcome
+        emergency_bindings
+        Tk.mainloop
+      end
+    end
   rescue => exception
     VER.error(exception)
     exit
@@ -81,7 +83,6 @@ module VER
   def setup_tk
     require 'ffi-tk'
     Thread.abort_on_exception = true
-    # TclTkLib.mainloop_abort_on_exception = true
   end
 
   def setup
