@@ -41,7 +41,7 @@ module VER
         indent = indent_fix_at('insert', indent_after('insert - 1 line'))
         insert 'insert lineend', "\n"
         indent_fix_at('insert', indent)
-      rescue Errno::ENOENT
+      rescue Errno::ENOENT, TypeError
         fallback_insert_indented_newline
       end
 
