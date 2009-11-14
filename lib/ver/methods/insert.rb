@@ -38,9 +38,12 @@ module VER
       end
 
       def insert_indented_newline
-        indent = indent_fix_at('insert', indent_after('insert - 1 line'))
+        fallback_insert_indented_newline
+      end
+
+      def insert_auto_indented_newline
         insert 'insert lineend', "\n"
-        indent_fix_at('insert', indent)
+        indent_fix_at('insert', indent_fix('insert - 1 line', indent_after('insert - 2 line')))
       rescue Errno::ENOENT, TypeError
         fallback_insert_indented_newline
       end
