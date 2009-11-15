@@ -20,7 +20,7 @@ class VER::View::Terminal
       unless @tk_queue.empty?
         chunk = @tk_queue.shift
         return destroy if chunk == :destroy
-        Tk::After.idle{ on_chunk(chunk) }
+        on_chunk(chunk)
       end
 
       false
