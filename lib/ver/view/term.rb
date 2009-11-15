@@ -216,8 +216,7 @@ class VER::View::Terminal
       options[:background] = nil
       options[:foreground] = nil
     when :bold
-      # options[:font] = Tk::Font.new(@font_actual.merge(weight: :bold))
-      options[:font] = @font
+      options[:font] = font_for(@font_actual.merge(weight: :bold))
     when *FG_COLORS
       options[:foreground] = fg
     when *BG_COLORS
@@ -242,6 +241,11 @@ class VER::View::Terminal
 
     @option_cache[options] = options
     options
+  end
+
+  def font_for(options)
+    @fonts ||= {}
+    @fonts[options] ||= Tk::Font.new(options)
   end
 
   def ansi2sym(ansi)
