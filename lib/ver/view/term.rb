@@ -5,28 +5,8 @@ require 'pty'
 class VER::View::Terminal
   def initialize(parent)
     @parent = parent
-    Thread.abort_on_exception = true
-
-    @tk_queue = Thread.current[:queue] = Queue.new
-
-    @pty = Thread.new{
-      queue = Thread.current[:queue] = Queue.new
-      pty(queue)
-    }
-
     setup_widgets
-
-    Tk.interp.do_events_until do
-      unless @tk_queue.empty?
-        chunk = @tk_queue.shift
-        return destroy if chunk == :destroy
-        on_chunk(chunk)
-      end
-
-      false
-    end
-
-    @pty.join
+    pty
   end
 
   def bench(name, &block)
@@ -35,23 +15,23 @@ class VER::View::Terminal
   end
 
   def setup_widgets
-    Tk.set_palette('black')
+    Tk.set_palette('black') # maybe use themes instead?
 
     @option_cache ||= {}
     @font ||= VER.options[:font]
     @font_actual ||= @font.actual_hash
 
-    @text = Tk::Text.new(font: @font)
+    @text = Tk::Text.new(font: @font, insertofftime: 1)
     @text.pack expand: true, fill: :both
     @text.focus
 
     @text.bind('<Key>'){|event|
-      @pty[:queue] << event.unicode
+      @pty_queue << event.unicode
       Tk.callback_break
     }
 
     @text.bind('<Return>'){|event|
-      @pty[:queue] << event.unicode
+      @pty_queue << event.unicode
       # Tk.callback_break
     }
   end
@@ -61,23 +41,28 @@ class VER::View::Terminal
     @parent.focus
   end
 
-  def pty(queue)
-    PTY.spawn("/bin/bash") do |r_pty, w_pty, pid|
-      Thread.new do
-        while chunk = queue.shift
-          w_pty.print chunk
-          w_pty.flush
-        end
-      end
+  def pty
+    @pty_queue = queue = Queue.new
 
-      loop do
-        c = r_pty.sysread(1 << 20)
-        return if c.nil?
-        @tk_queue << c
+    Thread.new do
+      shell = ENV['SHELL'] || 'bash'
+
+      PTY.spawn(shell) do |r_pty, w_pty, pid|
+        Thread.new do
+          while chunk = queue.shift
+            w_pty.print chunk
+            w_pty.flush
+          end
+        end
+
+        loop do
+          c = r_pty.sysread(1 << 15)
+          on_chunk(c) if c
+        end
       end
     end
   rescue Errno::EIO, PTY::ChildExited
-    @tk_queue << :destroy
+    destroy
   end
 
   ANSI_CODES = []
@@ -181,7 +166,7 @@ class VER::View::Terminal
   rescue => ex
     puts "#{ex.class}: #{ex}", *ex.backtrace
     @buffer = ''
-    @tk_queue << :destroy
+    destroy
   end
 
   def color(fg, bg = nil)
