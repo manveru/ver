@@ -15,6 +15,7 @@ module VER
         mode.map :open_method_list,   %w[F10]
         mode.map :open_terminal,      %w[F9]
         mode.map :open_grep_list,     %w[Alt-g], %w[Control-m g]
+        mode.map :open_which_key,     %w[Control-h k]
 
         mode.map :buffer_switch, %w[Alt-b], %w[Control-m b]
         mode.map :window_switch, %w[Alt-B], %w[Control-m B]

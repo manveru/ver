@@ -24,21 +24,21 @@ module VER
     attr_reader :mode
 
     def initialize(options)
-      @callback = options.fetch(:receiver)
-      @widget = options.fetch(:widget, @callback)
-      @previous_mode = nil
-      @modes = {}
+      self.callback = options.fetch(:receiver)
+      self.widget = options.fetch(:widget, callback)
+      self.previous_mode = nil
+      self.modes = {}
 
       prepare_tag
       prepare_default_binds
     end
 
     def message(*args)
-      @callback.message(*args)
+      callback.message(*args)
     end
 
     def send(*args)
-      @callback.__send__(*args)
+      callback.send(*args)
     end
 
     def enter_key(key)
@@ -57,7 +57,7 @@ module VER
 
       pivot = %w[Text TEntry Listbox]
       index = tags.index{|element| pivot.include?(element) }
-      tags[index - 1, 0] = @tag
+      tags[index - 1, 0] = self.tag
 
       widget.bindtags(*tags)
     end
@@ -83,11 +83,26 @@ module VER
       end
     end
 
-    def register(sequence)
-      tag.bind("<#{sequence}>"){|event|
-        enter_key sequence
+    def register(raw_sequence)
+      case raw_sequence
+      when /^[a-zA-Z]$/
+        canonical = raw_sequence
+      else
+        canonical = raw_sequence.sub(/(Shift-|Control-|Alt-)+(?!Key)/, '\1Key-')
+        canonical = "<#{canonical}>"
+      end
+
+      tag.bind(canonical){|event|
+        enter_key canonical
         Tk.callback_break
       }
+
+      return canonical
+    end
+
+    def all_bound_sequences
+      sequences = Tk.execute(:bind, tag.name).to_a
+      sequences.map{|seq| KEYSYMS.fetch(seq, seq) }
     end
 
     # TODO: callbacks
@@ -97,7 +112,7 @@ module VER
     end
 
     def add_mode(name)
-      @modes[name.to_sym] = mode = VER::Mode.new(name, self)
+      modes[name.to_sym] = mode = VER::Mode.new(name, self)
       yield mode if block_given?
       mode
     end

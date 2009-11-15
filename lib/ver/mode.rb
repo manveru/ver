@@ -61,12 +61,12 @@ module VER
       total = hash = {}
 
       while key = keychain.shift
-        register key
+        canonical = register(key)
 
         if keychain.empty?
-          hash[key] = block || action_name
+          hash[canonical] = block || action_name
         else
-          hash = hash[key] = {}
+          hash = hash[canonical] = {}
         end
       end
 
