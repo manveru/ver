@@ -71,7 +71,7 @@ class VER::View::Terminal
       end
 
       loop do
-        c = r_pty.sysread(1) # 1024)
+        c = r_pty.sysread(1 << 20)
         return if c.nil?
         @tk_queue << c
       end
@@ -108,6 +108,13 @@ class VER::View::Terminal
   ANSI_CODES[46] = :on_cyan
   ANSI_CODES[47] = :on_white
 
+  # Trying to build a little dictionary of escape sequences:
+  #
+  # | Sequence       | Meaning         |
+  # | \e]0;          | reset fg/bg     |
+  # | \e[?1034h      | ???             |
+  # | \e[01;34mbin\e | fg: 1, bg: 34   |
+
   def on_chunk(chunk)
     @buffer ||= ''
     @buffer << chunk
@@ -126,10 +133,8 @@ class VER::View::Terminal
           color s[1]
         elsif s.scan(/\e\[(\d+);(\d+)m/) # \e[01;34m
           color s[1], s[2]
-        elsif s.scan(/\e\[(\d+);/)
-         color s[1]
         elsif s.scan(/\e\[(\d+)m/)
-         color s[1]
+          color s[1]
         elsif s.scan(/\e\[([A-Z])/)
           color s[1]
         elsif s.scan(/\e\[m/)
@@ -160,7 +165,7 @@ class VER::View::Terminal
           insert :end, s.matched
         end
       end
-      p s.matched
+     #  p s.matched
 
       if s.pos == pos
         warn("Scanner stopped at: %p" % [s])
@@ -211,7 +216,8 @@ class VER::View::Terminal
       options[:background] = nil
       options[:foreground] = nil
     when :bold
-      options[:font] = Tk::Font.new(@font_actual.merge(weight: :bold))
+      # options[:font] = Tk::Font.new(@font_actual.merge(weight: :bold))
+      options[:font] = @font
     when *FG_COLORS
       options[:foreground] = fg
     when *BG_COLORS
