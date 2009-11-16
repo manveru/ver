@@ -198,10 +198,6 @@ module VER
       view.layout
     end
 
-    def quit
-      VER.exit
-    end
-
     # lines start from 1
     # end is maximum lines + 1
     def status_projection(into)

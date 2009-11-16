@@ -9,6 +9,7 @@ require 'ver/methods/save'
 require 'ver/methods/search'
 require 'ver/methods/select'
 require 'ver/methods/views'
+require 'ver/methods/shortcuts'
 
 module VER
   module Methods
@@ -23,5 +24,6 @@ module VER
     include Search
     include Select
     include Views
+    include Shortcuts
   end
 end

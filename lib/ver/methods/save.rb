@@ -1,6 +1,10 @@
 module VER
   module Methods
     module Save
+      def quit
+        VER.exit
+      end
+
       def file_save
         save_to(filename)
       end
