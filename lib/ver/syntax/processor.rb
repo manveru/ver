@@ -14,7 +14,7 @@ module VER
         end
 
         @tag_stack.uniq!
-        @tag_stack.each_slice(2){|under, over| textarea.tag_raise(under, over) }
+        @tag_stack.each_cons(2){|under, over| textarea.tag_raise(under, over) }
 
         stack.clear
       end
