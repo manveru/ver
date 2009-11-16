@@ -5,7 +5,7 @@ module VER
         VER.exit
       end
 
-      def file_save
+      def file_save(filename = self.filename)
         save_to(filename)
       end
 
