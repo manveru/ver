@@ -159,7 +159,7 @@ module VER
       first = stack[0]
       return stack, nil if first == '0' || first == 'KeyPress-0'
 
-      pivot = stack.index{|c| c !~ /^(KeyPress-\d+|\d+)$/ }
+      pivot = stack.index{|c| c !~ /^(<KeyPress-\d+>|\d+)$/ }
 
       if pivot == 0
         return stack, nil
