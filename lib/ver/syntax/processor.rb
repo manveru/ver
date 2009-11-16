@@ -4,6 +4,7 @@ module VER
       def start_parsing(syntax_name)
         self.stack = []
         self.tags = Hash.new{|h,k| h[k] = [] }
+        @tag_stack = []
       end
 
       def end_parsing(syntax_name)
@@ -11,6 +12,9 @@ module VER
           tag_name = theme.get(name) || name
           textarea.fast_tag_add(tag_name, *indices)
         end
+
+        @tag_stack.uniq!
+        @tag_stack.each_slice(2){|under, over| textarea.tag_raise(under, over) }
 
         stack.clear
       end
@@ -27,7 +31,7 @@ module VER
             below_name = stack[-2][0]
             below = theme.get(below_name)
             return if !below || below.empty?
-            textarea.tag_raise(tag_name, below)
+            @tag_stack << tag_name << below
           end
         end
       end

@@ -54,12 +54,8 @@ module VER
       keymap_name = VER.options.fetch(:keymap)
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
-      defer do
-        sleep 1
-        # Tk::Wait.visibility(self)
-        apply_mode_style(keymap.mode) # for startup
-        setup_tags
-      end
+      apply_mode_style(keymap.mode) # for startup
+      setup_tags
 
       self.selection_start = nil
       @pristine = true
@@ -164,9 +160,9 @@ module VER
 
       edit_reset
       mark_set :insert, "#{line.to_i}.0"
-      setup_highlight
-
       @pristine = false
+
+      bind('<Map>'){ defer{ setup_highlight }}
     end
 
     def may_close
@@ -396,7 +392,7 @@ module VER
       return if @encoding == Encoding::BINARY
 
       if @syntax = Syntax.from_filename(filename)
-        defer{ syntax.highlight(self, get('0.0', :end)) }
+        defer{ syntax.highlight(self, value) }
       end
     end
 
