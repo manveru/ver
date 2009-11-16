@@ -1,6 +1,45 @@
 module VER
   module Methods
     module Move
+      GO_MATCHING_RIGHT = {
+        '(' => ')',
+        '{' => '}',
+        '[' => ']',
+        '<' => '>',
+      }
+      GO_MATCHING_LEFT = GO_MATCHING_RIGHT.invert
+
+      def go_matching_brace(count = nil)
+        opening = get(:insert)
+
+        if closing = GO_MATCHING_RIGHT[opening]
+          search = method(:search_all)
+          level = 1
+          start = 'insert + 1 chars'
+        elsif closing = GO_MATCHING_LEFT[opening]
+          search = method(:rsearch_all)
+          level = 1
+          start = 'insert'
+        else
+          return
+        end
+
+        needle = Regexp.union(opening, closing)
+
+        search.call(needle, start) do |match, pos, from|
+          if match == opening
+            level += 1
+          elsif match == closing
+            level -= 1
+          end
+
+          if level < 1
+            mark_set :insert, pos
+            return
+          end
+        end
+      end
+
       def go_char_left(count = 1)
         mark_set :insert, "insert - #{count} char"
       end

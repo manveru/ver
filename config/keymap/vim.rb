@@ -58,6 +58,7 @@ module VER
         mode.map :go_word_left,           %w[b], %w[Shift-Left]
         mode.map :go_word_right,          %w[w], %w[Shift-Right]
         mode.map :go_word_right_end,      %w[e]
+        mode.map :go_matching_brace,      %w[percent]
       end
 
       vim.add_mode :search do |mode|
