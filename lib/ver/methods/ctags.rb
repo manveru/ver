@@ -14,7 +14,6 @@ module VER
       end
 
       def ctags_execute(file_name, ex_cmd)
-        p file_name => ex_cmd
         case ex_cmd
         when /^\d+$/
           view.find_or_create(file_name, ex_cmd.to_i)
@@ -41,7 +40,6 @@ module VER
         end
 
         return unless file.file?
-        p file
 
         file.open 'rb' do |io|
           io.each_line do |line|
