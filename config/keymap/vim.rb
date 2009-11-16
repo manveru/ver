@@ -91,18 +91,16 @@ module VER
         mode.map :copy_line,                     %w[y y], %w[Y]
         mode.map :copy_right_word,               %w[y w]
         mode.map :delete_char_left,              %w[X]
-        mode.map :delete_char_left_then_insert,  %w[c h]
         mode.map :delete_char_right,             %w[x]
-        mode.map :delete_char_right_then_insert, %w[c l]
         mode.map :delete_line,                   %w[d d]
         mode.map :delete_to_eol,                 %w[D]
         mode.map :delete_to_eol_then_insert,     %w[C]
-        mode.map :delete_word_left,              %w[d b]
-        mode.map :delete_word_left_then_insert,  %w[c b]
-        mode.map :delete_word_right,             %w[d w]
-        mode.map :delete_word_right_then_insert, %w[c w]
+
+        mode.map :change_motion,                 ['c', :move]
+        mode.map :delete_motion,                 ['d', :move]
+
         mode.map :eol_then_insert_mode,          %w[A]
-        mode.map :after_char_insert_mode,          %w[a]
+        mode.map :after_char_insert_mode,        %w[a]
 
         mode.map :indent_line,                   %w[greater]
         mode.map :insert_indented_newline_above, %w[O]

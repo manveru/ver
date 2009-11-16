@@ -9,11 +9,11 @@ module VER
         mark_set :insert, "insert + #{count} char"
       end
 
-      def go_beginning_of_line
+      def go_beginning_of_line(count = nil)
         mark_set :insert, 'insert display linestart'
       end
 
-      def go_end_of_line
+      def go_end_of_line(count = nil)
         mark_set :insert, 'insert display lineend'
       end
 
@@ -21,7 +21,7 @@ module VER
         mark_set :insert, "#{number}.0"
       end
 
-      def go_end_of_file
+      def go_end_of_file(count = nil)
         mark_set :insert, :end
       end
 
@@ -31,6 +31,8 @@ module VER
         mark = index(:insert)
         mark_set :insert, pos
         return [pos, mark].sort
+      rescue => ex
+        VER.error(ex)
       end
 
       # HACK: but it's just too good to do it manually

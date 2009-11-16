@@ -10,6 +10,10 @@ module VER
 
     attr_accessor :callback, :name, :arguments
 
+    def inspect
+      "#<Mode #@name>"
+    end
+
     def initialize(name, callback)
       @name, @callback = name, callback
       @stack = []
@@ -61,7 +65,11 @@ module VER
       total = hash = {}
 
       while key = keychain.shift
-        canonical = register(key)
+        if key.is_a?(Symbol)
+          canonical = callback.modes[key]
+        else
+          canonical = register(key)
+        end
 
         if keychain.empty?
           hash[canonical] = block || action_name
@@ -85,7 +93,7 @@ module VER
       @stack << key
 
       ancestors do |ancestor|
-        result = ancestor.attempt_execute(@stack)
+        result = ancestor.attempt_execute(@stack.dup)
 
         case result
         when nil # nothing matched yet, but possible in future
@@ -112,7 +120,7 @@ module VER
       execute(@missing, key) if @missing
     end
 
-    def attempt_execute(original_stack)
+    def attempt_execute(original_stack, lookup = false)
       if arguments
         stack, arg = Mode.split_stack(original_stack)
       else
@@ -122,15 +130,39 @@ module VER
       if stack.empty?
         arg ? nil : false
       else
-        # executable = stack.inject(@map){|keys, key| keys.fetch(key) }
-
         executable = @map
-        stack.each do |key|
+        while key = stack.shift
+          previous = executable
           executable = executable[key]
-          return false if executable.nil?
+
+          case executable
+          when nil
+            # FIXME: this allows only one mode
+            if found = previous.find{|prev_key, prev_value| prev_key.is_a?(Mode) }
+              mode, action = found
+              looked = mode.attempt_execute([key, *stack], true)
+
+              case looked
+              when false
+                return false
+              when nil
+                return nil
+              else
+                cmd, cmd_arg = looked
+                return nil if cmd.is_a?(Hash)
+                return execute(action, cmd, arg)
+              end
+            else
+              return false
+            end
+          end
         end
 
-        execute(executable, *arg)
+        if lookup
+          return executable, arg
+        else
+          execute(executable, *arg)
+        end
       end
     end
 
@@ -157,7 +189,7 @@ module VER
 
     def self.split_stack(stack)
       first = stack[0]
-      return stack, nil if first == '0' || first == 'KeyPress-0'
+      return stack, nil if first == '0' || first == '<KeyPress-0>'
 
       pivot = stack.index{|c| c !~ /^(<KeyPress-\d+>|\d+)$/ }
 

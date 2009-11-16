@@ -1,6 +1,15 @@
 module VER
   module Methods
     module Delete
+      def change_motion(motion, count = 1)
+        delete_motion(motion, count)
+        start_insert_mode
+      end
+
+      def delete_motion(motion, count = 1)
+        delete(*virtual_movement(motion, count))
+      end
+
       def delete_char_left
         delete 'insert - 1 char'
       end
