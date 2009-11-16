@@ -1,6 +1,13 @@
 module VER
   module Methods
     module Insert
+      def insert_file_contents(filename)
+        content = read_file(filename)
+        insert :insert, content
+      rescue Errno::ENOENT => ex
+        VER.error(ex)
+      end
+
       def insert_selection
         insert :insert, Tk::Selection.get
       end

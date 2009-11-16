@@ -122,24 +122,7 @@ module VER
       self.filename = path
 
       begin
-        encoding_name = encoding.name
-        content = filename.open("r:#{encoding_name}"){|io| io.read.chomp }
-
-        if content.valid_encoding?
-          self.value = content
-        else # take a guess
-          @encoding = GUESS_ENCODING_ORDER.find{|enc|
-            content.force_encoding(enc)
-            content.valid_encoding?
-          }
-
-          # Now we have the source encoding, let's make it UTF-8 so Tcl can
-          # handle it.
-          content.force_encoding(@encoding)
-          content.encode!(Encoding::UTF_8)
-          self.value = content
-        end
-
+        self.value = read_file(filename)
         message "Opened #{short_filename}"
       rescue Errno::ENOENT
         delete '1.0', :end
@@ -147,6 +130,27 @@ module VER
       end
 
       after_open(line)
+    end
+
+    # Read given file into memory and convert to @encoding
+    def read_file(path)
+      path = Pathname(path.to_s).expand_path
+      encoding_name = encoding.name
+      content = path.open("r:#{encoding_name}"){|io| io.read }
+
+      unless content.valid_encoding? # take a guess
+        @encoding = GUESS_ENCODING_ORDER.find{|enc|
+          content.force_encoding(enc)
+          content.valid_encoding?
+        }
+
+        # Now we have the source encoding, let's make it UTF-8 so Tcl can
+        # handle it.
+        content.force_encoding(@encoding)
+        content.encode!(Encoding::UTF_8)
+      end
+
+      content.chomp
     end
 
     def open_empty
@@ -189,7 +193,7 @@ module VER
       return false unless filename && filename.file?
       require 'digest/md5'
 
-      on_disk = Digest::MD5.hexdigest(File.read(filename))
+      on_disk = Digest::MD5.hexdigest(filename.read)
       in_memory = Digest::MD5.hexdigest(value)
       on_disk == in_memory
     end
