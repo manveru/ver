@@ -6,8 +6,20 @@ module VER
         background: '#ff0',
       }
 
-      def status_search
-        status_ask 'Search term: ' do |term|
+      def status_search_next
+        status_search_common('/') do
+          search_next
+        end
+      end
+
+      def status_search_prev
+        status_search_common('?') do
+          search_prev
+        end
+      end
+
+      def status_search_common(question)
+        status_ask question do |term|
           begin
             needle = Regexp.new(term)
           rescue RegexpError
@@ -15,7 +27,7 @@ module VER
           end
 
           tag_all_matching(:search, needle, SEARCH_HIGHLIGHT)
-          search_next
+          yield
         end
       end
 

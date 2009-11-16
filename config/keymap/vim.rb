@@ -66,7 +66,8 @@ module VER
         mode.map :search_next_word_under_cursor, %w[asterisk]
         mode.map :search_prev,                   %w[N]
         mode.map :search_prev_word_under_cursor, %w[numbersign]
-        mode.map :status_search,                 %w[slash]
+        mode.map :status_search_next,            %w[slash]
+        mode.map :status_search_prev,            %w[question]
         mode.map :search_char_right,             %w[f]
         mode.map :search_char_left,              %w[F]
       end
