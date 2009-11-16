@@ -15,6 +15,7 @@ module VER
           end
 
           tag_all_matching(:search, needle, SEARCH_HIGHLIGHT)
+          search_next
         end
       end
 
