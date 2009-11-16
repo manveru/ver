@@ -26,7 +26,8 @@ module VER
   autoload :Status,              'ver/status'
   autoload :Syntax,              'ver/syntax'
   autoload :Text,                'ver/text'
-  autoload :Textpow,             'ver/textpow'
+  autoload :Textpow,             'ver/vendor/textpow'
+  autoload :Levenshtein,         'ver/vendor/levenshtein'
   autoload :Theme,               'ver/theme'
   autoload :View,                'ver/view'
 

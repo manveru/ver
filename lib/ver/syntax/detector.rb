@@ -30,7 +30,6 @@ module VER
       end
 
       def detect_ext(path)
-        require 'ver/levenshtein'
         basename = path.basename.to_s
         return unless basename =~ /\./
 
