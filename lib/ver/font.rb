@@ -14,21 +14,11 @@ module VER
       attr_reader :cache
     end
 
-    @cache = []
+    @cache = {}
 
     def [](options)
       options = normalize_options(options)
-      find(options) || create(options)
-    end
-
-    def find(options)
-      @cache.find{|font| font.actual_hash == options }
-    end
-
-    def create(options)
-      font = Tk::Font.new(options)
-      @cache << font
-      font
+      @cache[options] ||= Tk::Font.new(options)
     end
 
     def default
