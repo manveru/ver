@@ -22,7 +22,11 @@ module VER
       end
 
       def go_end_of_file(count = nil)
-        mark_set :insert, :end
+        if count
+          mark_set :insert, "#{count}.0"
+        else
+          mark_set :insert, :end
+        end
       end
 
       def virtual_movement(name, count = 1)
