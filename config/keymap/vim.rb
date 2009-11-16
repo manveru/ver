@@ -70,6 +70,10 @@ module VER
         mode.map :search_char_left,              %w[F]
       end
 
+      vim.add_mode :ctags do |mode|
+        mode.map :ctags_find_current, %w[Control-bracketright] # C-]
+      end
+
       vim.add_mode :complete do |mode|
         mode.arguments = false
 
@@ -81,7 +85,7 @@ module VER
       end
 
       vim.add_mode :control do |mode|
-        mode.inherits :basic, :move, :views, :search
+        mode.inherits :basic, :move, :views, :search, :ctags
 
         mode.map :copy_left_word,                %w[y b]
         mode.map :copy_line,                     %w[y y], %w[Y]

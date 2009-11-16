@@ -125,18 +125,20 @@ module VER
     def create(path = nil, line = nil)
       layout.create_view do |view|
         path ? view.open_path(path, line) : view.open_empty
+        yield(view) if block_given?
       end
     end
 
-    def find_or_create(path, line = nil)
+    def find_or_create(path, line = nil, &block)
       needle = Pathname(path.to_s).expand_path
 
       if found = layout.views.find{|view| view.filename == needle }
         found.push_top
         found.focus
         found.text.go_line(line) if line
+        yield(found) if block_given?
       else
-        create(needle, line)
+        create(needle, line, &block)
       end
     end
 
