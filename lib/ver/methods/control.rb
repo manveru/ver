@@ -1,6 +1,32 @@
 module VER
   module Methods
     module Control
+      # Substitute over all lines of the buffer
+      def gsub(regexp, with)
+        total = 0
+        index('1.0').upto(index('end')) do |index|
+          lineend = index.lineend
+          line = get(index, lineend)
+
+          if line.gsub!(regexp, with)
+            replace(index, lineend, line)
+            total += 1
+          end
+        end
+
+        message "Performed gsub on #{total} lines"
+      end
+
+      # Substitute on current line
+      def sub(regexp, with)
+        linestart = index('insert linestart')
+        lineend = linestart.lineend
+        line = get(linestart, lineend)
+
+        if line.sub!(regexp, with)
+          replace(linestart, lineend, line)
+        end
+      end
 
       def open_which_key
         require 'ver/view/which_key'
@@ -313,4 +339,3 @@ module VER
     end
   end
 end
-
