@@ -166,7 +166,10 @@ module VER
       mark_set :insert, "#{line.to_i}.0"
       @pristine = false
 
-      bind('<Map>'){ defer{ setup_highlight }}
+      bind('<Map>'){
+        defer{ setup_highlight }
+        bind('<Map>'){ see(:insert) }
+      }
     end
 
     def may_close
