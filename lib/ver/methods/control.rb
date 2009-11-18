@@ -111,7 +111,11 @@ module VER
 
       def status_evaluate
         status_ask 'Eval expression: ' do |term|
-          eval(term)
+          begin
+            eval(term)
+          rescue Exception => ex
+            ex
+          end
         end
       end
 
@@ -141,7 +145,7 @@ module VER
           stdout = rd.read
 
           yield(result, stdout)
-        rescue => exception
+        rescue Exception => exception
           yield(exception, '')
         ensure
           wr.closed? || $stdout.reopen(old_stdout) && wr.close
