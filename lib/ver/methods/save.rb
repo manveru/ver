@@ -1,6 +1,35 @@
 module VER
   module Methods
     module Save
+      def may_close
+        return yield unless edit_modified?
+        return yield if persisted?
+
+        question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
+
+        status_ask question, take: 1 do |answer|
+          case answer[0]
+          when 'Y', 'y'
+            yield if file_save
+            "saved"
+          when 'N', 'n'
+            yield
+            "closing without saving"
+          else
+            "Cancel closing"
+          end
+        end
+      end
+
+      def persisted?
+        return false unless filename && filename.file?
+        require 'digest/md5'
+
+        on_disk = Digest::MD5.hexdigest(filename.read)
+        in_memory = Digest::MD5.hexdigest(value)
+        on_disk == in_memory
+      end
+
       def quit
         VER.exit
       end
