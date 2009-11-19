@@ -4,7 +4,6 @@ module VER
       list.clear
 
       grep(entry.value).each do |choice|
-        p choice
         list.insert(:end, "#{choice[:match]} -- #{choice[:file]} +#{choice[:line]}")
       end
     end
