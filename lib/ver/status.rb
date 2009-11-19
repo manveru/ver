@@ -10,6 +10,7 @@ module VER
       options[:style] ||= self.class.obtain_style_name
       super
       self.view = view
+      @question = ''
 
       keymap_name = VER.options.fetch(:keymap)
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
@@ -31,10 +32,10 @@ module VER
     end
 
     def ask(question, options = {}, &callback)
-      @question, @backup_value, @callback = question, value, callback
+      @backup_value, @callback = value, callback
       @history_idx = -1
 
-      message @question
+      self.question = question
       submit_when_taken(options[:take])
       focus
     end
@@ -52,10 +53,11 @@ module VER
     end
 
     def ask_submit
-      answer = value.sub(@question, '')
+      answer = value
       history = HISTORY[@question]
       history.uniq!
       history << answer
+      self.question = ''
 
       case result = @callback.call(answer)
       when String
@@ -66,26 +68,38 @@ module VER
     end
 
     def ask_abort
-      message @backup_value
+      self.question = ''
+      self.value = @backup_value
       text.focus
     end
 
-    def delete_char_left
-      return if @question.size == cursor
-      super
-    end
-
-    def go_char_left
-      return if @question.size == cursor
-      super
-    end
-
-    def go_word_left
-      if index = value.rindex(/.\b\s/, cursor - 1)
-        self.cursor = index
-      else
-        self.cursor = @question.size
+    def delete(from, to = Tk::None)
+      if from < @question.size
+        from = @question.size
       end
+
+      super(from, to)
+    end
+
+    def value=(string)
+      super([@question, string].join)
+    end
+
+    def value
+      regex = Regexp.escape(@question)
+      get.sub(/^#{regex}/, '')
+    end
+
+    def question=(string)
+      execute_only(:delete, 0, :end)
+      execute_only(:insert, 0, string)
+      @question = string.to_s
+      Tk::Event.generate(self, '<<Modified>>')
+    end
+
+    def cursor=(pos)
+      return if pos < @question.size
+      super
     end
 
     def history_prev
@@ -99,7 +113,7 @@ module VER
       p prev: [history, @history_idx]
       answer = history[@history_idx]
       return unless answer
-      self.value = "#@question#{answer}"
+      self.value = answer
     end
 
     def history_next
@@ -113,7 +127,7 @@ module VER
       p next: [history, @history_idx]
       answer = history[@history_idx]
       return unless answer
-      self.value = "#@question#{answer}"
+      self.value = answer
     end
 
     def history_complete
@@ -123,7 +137,7 @@ module VER
       list = history.grep(/#{needle}/i)
       return if list.empty?
 
-      self.value = "#@question#{list.last}"
+      self.value = answer
     end
   end
 end

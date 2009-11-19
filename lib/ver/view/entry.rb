@@ -16,12 +16,12 @@ module VER
         list_view.cancel
       end
 
-      def go_line_up
-        list_view.go_line_up
+      def line_up
+        list_view.line_up
       end
 
-      def go_line_down
-        list_view.go_line_down
+      def line_down
+        list_view.line_down
       end
 
       def completion

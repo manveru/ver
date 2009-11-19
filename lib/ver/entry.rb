@@ -83,40 +83,34 @@ module VER
     end
 
     # Move forward a character.
-    def forward_char
-      self.cursor += 1
+    def forward_char(count = 1)
+      self.cursor += count
     end
 
     # Move back a character.
-    def backward_char
-      self.cursor -= 1
+    def backward_char(count = 1)
+      self.cursor -= count
     end
 
     # Move forward to the end of the next word.
     # Words are composed of alphanumeric characters (letters and digits).
-    def forward_word
-      if md = get.match(FORWARD_WORD, cursor)
+    def forward_word(count = 1)
+      count.times do
+        return unless md = get.match(FORWARD_WORD, cursor)
         self.cursor = md.offset(0).last
       end
     end
 
     # Move back to the start of the current or previous word.
     # Words are composed of alphanumeric characters (letters and digits).
-    def backward_word
+    def backward_word(count = 1)
       line = get.reverse
-      pos = get.size - cursor
+      count.times do
+        pos = get.size - cursor
 
-      if md = line.match(BACKWARD_WORD, pos)
+        return unless md = line.match(BACKWARD_WORD, pos)
         self.cursor = (line.size - md.offset(0).last)
       end
-    end
-
-    def clear_screen(argument = nil)
-      Kernel.raise NotImplementedError
-    end
-
-    def redraw_current_line
-      Kernel.raise NotImplementedError
     end
 
     # Accept the line regardless of where the cursor is.
@@ -195,6 +189,22 @@ module VER
       char = get[cursor]
       delete(cursor)
       insert(cursor - 1, char)
+    end
+
+    def delete_motion(motion, count = 1)
+      delete(*virtual_movement(motion, count))
+    end
+
+    private
+
+    def virtual_movement(name, count = 1)
+      pos = cursor
+      __send__(name, count)
+      mark = cursor
+      self.cursor = pos
+      return [pos, mark].sort
+    rescue => ex
+      VER.error(ex)
     end
   end
 end

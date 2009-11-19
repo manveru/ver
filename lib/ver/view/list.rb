@@ -67,7 +67,7 @@ module VER
       VER.exit
     end
 
-    def go_line_up
+    def line_up
       index = list.curselection.first - 1
 
       if index >= 0
@@ -76,7 +76,7 @@ module VER
       end
     end
 
-    def go_line_down
+    def line_down
       index = list.curselection.first + 1
       max = list.size
 
