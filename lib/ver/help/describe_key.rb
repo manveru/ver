@@ -1,6 +1,6 @@
 module VER
-  class View
-    class WhichKey
+  module Help
+    class DescribeKey
       def initialize(parent)
         @parent = parent
         @full = []

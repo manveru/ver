@@ -2,6 +2,7 @@ require 'ver/methods/completion'
 require 'ver/methods/control'
 require 'ver/methods/ctags'
 require 'ver/methods/delete'
+require 'ver/methods/help'
 require 'ver/methods/insert'
 require 'ver/methods/move'
 require 'ver/methods/open'
@@ -18,6 +19,7 @@ module VER
     include Control
     include Ctags
     include Delete
+    include Help
     include Insert
     include Move
     include Open

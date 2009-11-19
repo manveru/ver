@@ -28,11 +28,6 @@ module VER
         end
       end
 
-      def open_which_key
-        require 'ver/view/which_key'
-        View::WhichKey.new(self)
-      end
-
       def open_grep_list
         View::List::Grep.new self do |file, line|
           view.find_or_create(file, line)

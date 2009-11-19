@@ -17,6 +17,7 @@ require 'set'
 
 module VER
   autoload :Entry,               'ver/entry'
+  autoload :Help,                'ver/help'
   autoload :Font,                'ver/font'
   autoload :HoverCompletion,     'ver/hover_completion'
   autoload :Keymap,              'ver/keymap'
