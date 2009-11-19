@@ -52,7 +52,7 @@ module VER
   }
 
   class << self
-    attr_reader :root, :layout, :paths, :options
+    attr_reader :root, :layout, :status, :paths, :options
   end
 
   module_function
@@ -70,7 +70,7 @@ module VER
         setup_tk
         load 'rc'
         sanitize_options
-        setup
+        setup_widgets
         open_argv || open_welcome
         emergency_bindings
         Tk.mainloop
@@ -86,7 +86,7 @@ module VER
     Thread.abort_on_exception = true
   end
 
-  def setup
+  def setup_widgets
     Tk::Tile.set_theme options[:tk_theme]
 
     @paths = Set.new
@@ -94,6 +94,9 @@ module VER
     @root.wm_geometry = '160x80'
     @layout = Layout.new(@root)
     @layout.strategy = Layout::VerticalTiling
+    @status = Entry.new(@root, font: options[:font])
+    @status.insert :end, 'For information about VER, type F1'
+    @status.pack(fill: :x)
   end
 
   def sanitize_options
@@ -197,6 +200,7 @@ module VER
   end
 
   def error(exception)
+    @status.value = exception.message
     $stderr.puts("#{exception.class}: #{exception}", *exception.backtrace)
   rescue Errno::EIO
     # The original terminal has disappeared, the $stderr pipe was closed on the
