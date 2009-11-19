@@ -29,7 +29,7 @@ module VER
 
       def insert_indented_newline_above
         if index(:insert).y > 1
-          go_line_up
+          line_up
           insert_indented_newline_below
         else
           insert('insert linestart', "\n")

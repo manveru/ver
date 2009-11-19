@@ -58,6 +58,21 @@ module VER
         mark_set :insert, 'insert display lineend'
       end
 
+      def eol_then_insert_mode(count = nil)
+        end_of_line
+        start_insert_mode
+      end
+
+      def sol_then_insert_mode
+        beginning_of_line
+        start_insert_mode
+      end
+
+      def forward_char_then_insert_mode
+        forward_char
+        start_insert_mode
+      end
+
       def go_line(number = 0)
         mark_set :insert, "#{number}.0"
       end

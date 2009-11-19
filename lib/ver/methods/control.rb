@@ -196,7 +196,7 @@ module VER
         status_ask 'Replace with: ', take: 1 do |char|
           if char.size == 1
             replace('insert', 'insert + 1 chars', char)
-            go_char_left
+            backward_char
             "replaced #{char.size} chars"
           else
             status.message 'replace aborted'
@@ -225,21 +225,6 @@ module VER
         line = get(from, to)
         bare = line.rstrip
         replace(from, to, bare) if bare.empty?
-      end
-
-      def after_char_insert_mode
-        go_char_right
-        start_insert_mode
-      end
-
-      def eol_then_insert_mode
-        go_end_of_line
-        start_insert_mode
-      end
-
-      def sol_then_insert_mode
-        go_beginning_of_line
-        start_insert_mode
       end
 
       def start_insert_mode

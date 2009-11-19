@@ -104,7 +104,7 @@ module VER
         mode.map :delete_motion,                   ['d', :move]
 
         mode.map :eol_then_insert_mode,            %w[A]
-        mode.map :after_char_insert_mode,          %w[a]
+        mode.map :forward_char_then_insert_mode,   %w[a]
 
         mode.map :indent_line,                     %w[greater]
         mode.map :insert_indented_newline_above,   %w[O]
