@@ -4,13 +4,13 @@ module VER
       def initialize(parent)
         @parent = parent
         setup_widgets
-        setup_highlight
+        setup_tags
       end
 
       def setup_widgets
         font, tabs = VER.options.values_at(:font, :tabs)
 
-        @text = Tk::Text.new(@parent
+        @text = Tk::Text.new(@parent,
           autoseparators:   true, # insert separators into the undo flow
           borderwidth:      0,
           exportselection:  true, # copy into X11 buffer automatically
