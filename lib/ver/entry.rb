@@ -193,7 +193,6 @@ module VER
 
     def transpose_chars
       char = get[cursor]
-      p char
       delete(cursor)
       insert(cursor - 1, char)
     end
