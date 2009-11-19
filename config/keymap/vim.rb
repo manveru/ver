@@ -136,15 +136,21 @@ module VER
       vim.add_mode :readline do |mode|
         mode.arguments = false
 
-        mode.map :delete_char_left,        %w[BackSpace]
-        mode.map :delete_char_right,       %w[Delete]
-        mode.map :go_char_left,            %w[Left]
-        mode.map :go_char_right,           %w[Right]
-        mode.map :go_word_left,            %w[Shift-Left]
-        mode.map :go_word_right,           %w[Shift-Right]
-        mode.map :go_beginning_of_line,    %w[Home]
-        mode.map :go_end_of_line,          %w[End]
+        mode.map :backward_delete_char,    %w[BackSpace]
+        mode.map :delete_char,             %w[Delete], %w[Control-d]
+        mode.map :backward_char,           %w[Left], %w[Control-b]
+        mode.map :forward_char,            %w[Right], %w[Control-f]
+        mode.map :backward_word,           %w[Shift-Left], %w[Alt-b]
+        mode.map :forward_word,            %w[Shift-Right], %w[Alt-f]
+        mode.map :beginning_of_line,       %w[Home], %w[Control-a]
+        mode.map :end_of_line,             %w[End], %w[Control-e]
         mode.map :insert_selection,        %w[Shift-Insert]
+        mode.map :accept_line,             %w[Return]
+        mode.map :previous_history,        %w[Up], %w[Control-p]
+        mode.map :next_history,            %w[Down], %w[Control-n]
+        mode.map :beginning_of_history,    %w[Control-less]
+        mode.map :end_of_history,          %w[Control-greater]
+        mode.map :transpose_chars,         %w[Control-t]
 
         KEYSYMS.each do |sym, name|
           mode.map [:insert_string, sym], [name]

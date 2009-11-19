@@ -12,6 +12,10 @@ module VER
     STYLE_NAME_REGISTER = []
     STYLE_NAME_POOL = []
 
+    space, word = /[^[:alnum:]]+/, /[[:alnum:]]/
+    FORWARD_WORD = /#{space}+#{word}|#{word}+#{space}+#{word}/
+    BACKWARD_WORD = /#{word}+/
+
     def self.obtain_style_name
       unless style_name = STYLE_NAME_POOL.shift
         begin
@@ -68,37 +72,130 @@ module VER
     def noop(*args)
     end
 
-    def delete_char_left
-      delete(cursor - 1)
+    # Move to the start of the current line.
+    def beginning_of_line
+      self.cursor = 0
     end
 
-    def delete_char_right
+    # Move to the end of the line.
+    def end_of_line
+      self.cursor = :end
+    end
+
+    # Move forward a character.
+    def forward_char
+      self.cursor += 1
+    end
+
+    # Move back a character.
+    def backward_char
+      self.cursor -= 1
+    end
+
+    # Move forward to the end of the next word.
+    # Words are composed of alphanumeric characters (letters and digits).
+    def forward_word
+      if md = get.match(FORWARD_WORD, cursor)
+        self.cursor = md.offset(0).last
+      end
+    end
+
+    # Move back to the start of the current or previous word.
+    # Words are composed of alphanumeric characters (letters and digits).
+    def backward_word
+      line = get.reverse
+      pos = get.size - cursor
+
+      if md = line.match(BACKWARD_WORD, pos)
+        self.cursor = (line.size - md.offset(0).last)
+      end
+    end
+
+    def clear_screen(argument = nil)
+      Kernel.raise NotImplementedError
+    end
+
+    def redraw_current_line
+      Kernel.raise NotImplementedError
+    end
+
+    # Accept the line regardless of where the cursor is.
+    # If this line is non-empty, it will be added to the history list.
+    # If the line is a modified history line, the history line is restored to
+    # its original state.
+    def accept_line
+      line = get
+      @history.unshift(line) unless line.empty?
+      @history_index = nil
+      Event.generate(self, '<<AcceptLine>>')
+      delete 0, :end
+    end
+
+    # Fetch the previous command from the history list, moving back in the list.
+    def previous_history
+      history_size = @history.size
+
+      if @history_index && @history_index < history_size
+        @history_index = [@history_index + 1, history_size - 1].min
+      else
+        @history_index = 0
+      end
+
+      self.value = @history[@history_index]
+    end
+
+    # Fetch the next command from the history list, moving forward in the list.
+    def next_history
+      if @history_index && @history_index > 0
+        @history_index -= 1
+      else
+        @history_index = @history.size - 1
+      end
+
+      self.value = @history[@history_index]
+    end
+
+    def beginning_of_history
+      @history_index = @history.size - 1
+      self.value = @history[@history_index]
+    end
+
+    def end_of_history
+      @history_index = 0
+      self.value = @history[@history_index]
+    end
+
+    def delete_char
       delete(cursor)
     end
 
-    def go_char_left
-      self.cursor = cursor - 1
+    def backward_delete_char(yank = nil)
+      return if cursor == 0
+
+      if yank
+        @killring.unshift get[cursor - 2]
+      end
+
+      delete(cursor - 1)
     end
 
-    def go_char_right
-      self.cursor = cursor + 1
-    end
+    # Delete the character under the cursor, unless the cursor is at the end of
+    # the line, in which case the character behind the cursor is deleted.
+    def forward_backward_delete_char
+      pos = cursor
 
-    def go_word_left
-      if index = value.rindex(/.\b\s/, cursor - 1)
-        self.cursor = index
+      if index(:end) == pos
+        delete(cursor - 1)
       else
-        self.cursor = 0
+        delete(cursor)
       end
     end
 
-    def go_word_right
-      if match = value.match(/\s\b/, cursor)
-        offset_from, offset_to = match.offset(0)
-        self.cursor = offset_to
-      else
-        self.cursor = :end
-      end
+    def transpose_chars
+      char = get[cursor]
+      p char
+      delete(cursor)
+      insert(cursor - 1, char)
     end
   end
 end
