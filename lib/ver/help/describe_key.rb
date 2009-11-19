@@ -8,7 +8,7 @@ module VER
       end
 
       def setup_widgets
-        @label_frame = Tk::Tile::LabelFrame.new(@parent, text: 'WhichKey')
+        @label_frame = Tk::Tile::LabelFrame.new(@parent, text: 'Describe Key')
         desc = <<-DESC
 Enter any key combination.
 Escape closes the dialog.
@@ -63,7 +63,7 @@ Arguments: #{args.inspect}
       end
 
       def inspect
-        "#<VER::View::WhichKey>"
+        "#<VER::Help::DescribeKey>"
       end
 
       def destroy
