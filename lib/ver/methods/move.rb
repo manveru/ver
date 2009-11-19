@@ -40,19 +40,21 @@ module VER
         end
       end
 
-      def go_char_left(count = 1)
+      # Move cursor +count+ characters left.
+      def backward_char(count = 1)
         mark_set :insert, "insert - #{count} char"
       end
 
-      def go_char_right(count = 1)
+      # Move cursor +count+ characters right.
+      def forward_char(count = 1)
         mark_set :insert, "insert + #{count} char"
       end
 
-      def go_beginning_of_line(count = nil)
+      def beginning_of_line(count = nil)
         mark_set :insert, 'insert display linestart'
       end
 
-      def go_end_of_line(count = nil)
+      def end_of_line(count = nil)
         mark_set :insert, 'insert display lineend'
       end
 
@@ -60,7 +62,7 @@ module VER
         mark_set :insert, "#{number}.0"
       end
 
-      def go_end_of_file(count = nil)
+      def end_of_file(count = nil)
         if count
           mark_set :insert, "#{count}.0"
         else
@@ -80,23 +82,23 @@ module VER
 
       # HACK: but it's just too good to do it manually
 
-      def go_page_up(count = 1)
+      def page_up(count = 1)
         mark_set :insert, tk_prev_page_pos(count)
       end
 
-      def go_page_down(count = 1)
+      def page_down(count = 1)
         mark_set :insert, tk_next_page_pos(count)
       end
 
-      def go_line_up(count = 1)
+      def line_up(count = 1)
         mark_set :insert, tk_prev_line_pos(count)
       end
 
-      def go_line_down(count = 1)
+      def line_down(count = 1)
         mark_set :insert, tk_next_line_pos(count)
       end
 
-      def go_word_right(count = 1)
+      def forward_word(count = 1)
         count.times do
           original_type = type = char_type(get(:insert))
           changed = 0
@@ -117,13 +119,13 @@ module VER
         VER.error(ex)
       end
 
-      def go_word_right_end(count = 1)
+      def word_right_end(count = 1)
         count.times do
           mark_set :insert, tk_next_word_pos_end('insert')
         end
       end
 
-      def go_word_left(count = 1)
+      def backward_word(count = 1)
         count.times do
           original_type = type = char_type(get(:insert))
           changed = 0

@@ -15,7 +15,8 @@ module VER
         mode.map :open_method_list,   %w[F10]
         mode.map :open_terminal,      %w[F9]
         mode.map :open_grep_list,     %w[Alt-g], %w[Control-m g]
-        mode.map :open_which_key,     %w[Control-h k]
+        mode.map :describe_key,       %w[Control-h k]
+        mode.map :help_for_help,      %w[Control-h question], %w[F1], %w[Help]
 
         mode.map :buffer_switch, %w[Alt-b], %w[Control-m b]
         mode.map :window_switch, %w[Alt-B], %w[Control-m B]
@@ -43,22 +44,22 @@ module VER
       end
 
       vim.add_mode :move do |mode|
-        mode.map :go_beginning_of_line,   %w[KeyPress-0], %w[Home]
-        mode.map :go_char_left,           %w[h], %w[Left]
-        mode.map :go_char_right,          %w[l], %w[Right]
-        mode.map :go_end_of_file,         %w[G]
-        mode.map :go_end_of_line,         %w[dollar], %w[End]
+        mode.map :beginning_of_line,      %w[KeyPress-0], %w[Home]
+        mode.map :backward_char,          %w[h], %w[Left]
+        mode.map :forward_char,           %w[l], %w[Right]
+        mode.map :end_of_file,            %w[G]
+        mode.map :end_of_line,            %w[dollar], %w[End]
         mode.map :go_line,                %w[g g]
-        mode.map :go_line_down,           %w[j], %w[Down]
-        mode.map :go_line_up,             %w[k], %w[Up]
-        mode.map :go_next_newline_block,  %w[braceleft]
-        mode.map :go_page_down,           %w[Control-f], %w[Next]
-        mode.map :go_page_up,             %w[Control-b], %w[Prior]
-        mode.map :go_prev_newline_block,  %w[braceright]
-        mode.map :go_word_left,           %w[b], %w[Shift-Left]
-        mode.map :go_word_right,          %w[w], %w[Shift-Right]
-        mode.map :go_word_right_end,      %w[e]
-        mode.map :go_matching_brace,      %w[percent]
+        mode.map :line_down,              %w[j], %w[Down]
+        mode.map :line_up,                %w[k], %w[Up]
+        mode.map :next_newline_block,     %w[braceleft]
+        mode.map :page_down,              %w[Control-f], %w[Next]
+        mode.map :page_up,                %w[Control-b], %w[Prior]
+        mode.map :prev_newline_block,     %w[braceright]
+        mode.map :backward_word,          %w[b], %w[Shift-Left]
+        mode.map :forward_word,           %w[w], %w[Shift-Right]
+        mode.map :word_right_end,         %w[e]
+        mode.map :matching_brace,         %w[percent]
       end
 
       vim.add_mode :search do |mode|
@@ -161,12 +162,10 @@ module VER
         mode.inherits :basic, :views, :complete, :readline
         mode.arguments = false
 
-        mode.map :go_line_down,            %w[Down]
-        mode.map :go_line_up,              %w[Up]
-        mode.map :go_page_down,            %w[Control-f], %w[Next]
-        mode.map :go_page_down,            %w[Shift-Down]
-        mode.map :go_page_up,              %w[Control-b], %w[Prior]
-        mode.map :go_page_up,              %w[Shift-Up]
+        mode.map :next_line,               %w[Down]
+        mode.map :previous_line,           %w[Up]
+        mode.map :page_down,               %w[Control-f], %w[Next], %w[Shift-Down]
+        mode.map :page_up,                 %w[Control-b], %w[Prior], %w[Shift-Up]
         mode.map :insert_indented_newline, %w[Return]
         mode.map :smart_evaluate,          %w[Alt-e], %w[Control-e]
 
@@ -225,8 +224,8 @@ module VER
         # mode.to :update, %w[Key]
         mode.to :pick_selection, %w[Return]
         mode.to :cancel,         %w[Escape], %w[Control-c]
-        mode.to :go_line_up,     %w[Up]
-        mode.to :go_line_down,   %w[Down]
+        mode.to :line_up,        %w[Up]
+        mode.to :line_down,      %w[Down]
         mode.to :completion,     %w[Tab]
 
         mode.missing :insert_string
@@ -236,8 +235,8 @@ module VER
         mode.inherits :basic
 
         mode.to :pick_selection, %w[Double-Button-1]
-        mode.to :go_line_up,     %w[Up]
-        mode.to :go_line_down,   %w[Down]
+        mode.to :line_up,        %w[Up]
+        mode.to :line_down,      %w[Down]
       end
 
       vim.add_mode :hover_completion do |mode|
