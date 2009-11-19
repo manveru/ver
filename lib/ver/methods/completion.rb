@@ -6,8 +6,12 @@ module VER
       def smart_tab
         context = get('insert - 1 chars', 'insert + 1 chars')
 
-        if @complete_last_used && context =~ /^\S\s/
-          complete_again
+        if context =~ /^\S\s/
+          if @complete_last_used
+            complete_again
+          else
+            complete_word
+          end
         else
           insert :insert, '  '
         end
