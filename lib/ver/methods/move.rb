@@ -105,11 +105,11 @@ module VER
         mark_set :insert, tk_next_page_pos(count)
       end
 
-      def line_up(count = 1)
+      def previous_line(count = 1)
         mark_set :insert, tk_prev_line_pos(count)
       end
 
-      def line_down(count = 1)
+      def next_line(count = 1)
         mark_set :insert, tk_next_line_pos(count)
       end
 

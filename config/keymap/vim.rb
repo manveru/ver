@@ -50,8 +50,8 @@ module VER
         mode.map :end_of_file,            %w[G]
         mode.map :end_of_line,            %w[dollar], %w[End]
         mode.map :go_line,                %w[g g]
-        mode.map :line_down,              %w[j], %w[Down]
-        mode.map :line_up,                %w[k], %w[Up]
+        mode.map :next_line,              %w[j], %w[Down], %w[Control-n]
+        mode.map :previous_line,          %w[k], %w[Up], %w[Control-p]
         mode.map :next_newline_block,     %w[braceleft]
         mode.map :page_down,              %w[Control-f], %w[Next]
         mode.map :page_up,                %w[Control-b], %w[Prior]
@@ -163,8 +163,8 @@ module VER
         mode.inherits :basic, :views, :complete, :readline
         mode.arguments = false
 
-        mode.map :next_line,               %w[Down]
-        mode.map :previous_line,           %w[Up]
+        mode.map :next_line,               %w[Down], %w[Control-n]
+        mode.map :previous_line,           %w[Up], %w[Control-p]
         mode.map :page_down,               %w[Control-f], %w[Next], %w[Shift-Down]
         mode.map :page_up,                 %w[Control-b], %w[Prior], %w[Shift-Up]
         mode.map :insert_indented_newline, %w[Return]
