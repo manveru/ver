@@ -9,7 +9,7 @@ module VER
       }
       GO_MATCHING_LEFT = GO_MATCHING_RIGHT.invert
 
-      def go_matching_brace(count = nil)
+      def matching_brace(count = nil)
         opening = get(:insert)
 
         if closing = GO_MATCHING_RIGHT[opening]
