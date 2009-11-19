@@ -62,6 +62,8 @@ module VER
       case result = @callback.call(answer)
       when String
         message result
+      when Symbol
+        result
       else
         message result.inspect
       end

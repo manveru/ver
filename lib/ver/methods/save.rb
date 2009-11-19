@@ -11,10 +11,10 @@ module VER
           case answer[0]
           when 'Y', 'y'
             yield if file_save
-            "saved"
+            :saved
           when 'N', 'n'
             yield
-            "closing without saving"
+            :close_without_saving
           else
             "Cancel closing"
           end
