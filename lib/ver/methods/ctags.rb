@@ -16,7 +16,9 @@ module VER
       def ctags_execute(file_name, ex_cmd)
         case ex_cmd
         when /^\d+$/
-          view.find_or_create(file_name, ex_cmd.to_i)
+          view.find_or_create(file_name) do |view|
+            view.text.go_line(ex_cmd.to_i)
+          end
         when /^\/(.*)\/$/
           source = $1.gsub!(/(?!\\)([()])/, '\\\\\\1')
           regexp = Regexp.new(source)
