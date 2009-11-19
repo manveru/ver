@@ -1,4 +1,4 @@
-require 'ver/levenshtein'
+require 'ver/vendor/levenshtein'
 
 module VER
   # Show methods based on patterns.
