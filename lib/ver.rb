@@ -15,6 +15,10 @@ require 'json'
 require 'securerandom'
 require 'set'
 
+# this is for testing purposes, needs a platform detection to set it to true
+# when running on windows or osx, x11 needs no special handling.
+# Tk::RUN_EVENTLOOP_ON_MAIN_THREAD = true
+
 module VER
   autoload :Entry,               'ver/entry'
   autoload :Help,                'ver/help'
@@ -65,21 +69,39 @@ module VER
   def run(given_options = {})
     @options = OPTIONS.merge(given_options)
 
-    EM.run do
-      EM.defer do
-        first_startup unless options[:home_conf_dir].directory?
-        setup_tk
-        load 'rc'
-        sanitize_options
-        setup_widgets
-        open_argv || open_welcome
-        emergency_bindings
-        Tk.mainloop
-      end
+    setup_tk
+
+    if Tk::RUN_EVENTLOOP_ON_MAIN_THREAD
+      run_aqua
+    else
+      run_x11
     end
   rescue => exception
     VER.error(exception)
     exit
+  end
+
+  def run_aqua
+    run_core
+    EM.run{ Tk.mainloop }
+  end
+
+  def run_x11
+    EM.run do
+      EM.defer do
+        run_core
+        Tk.mainloop
+      end
+    end
+  end
+
+  def run_core
+    first_startup unless options[:home_conf_dir].directory?
+    load 'rc'
+    sanitize_options
+    setup_widgets
+    open_argv || open_welcome
+    emergency_bindings
   end
 
   def setup_tk
@@ -201,7 +223,7 @@ module VER
   end
 
   def error(exception)
-    @status.value = exception.message
+    @status.value = exception.message if @status
     $stderr.puts("#{exception.class}: #{exception}", *exception.backtrace)
   rescue Errno::EIO
     # The original terminal has disappeared, the $stderr pipe was closed on the
