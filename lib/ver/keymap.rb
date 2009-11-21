@@ -77,7 +77,7 @@ module VER
 
       0.upto 9 do |n|
         tag.bind("<KeyPress-#{n}>") do |key|
-          enter_key n.to_s
+          enter_key key.unicode.to_s
           Tk.callback_break
         end
       end
@@ -144,13 +144,13 @@ module VER
     "0"  => "KeyPress-0",
     "1"  => "KeyPress-1",
     "2"  => "KeyPress-2",
-    "3"  => "KeyPress-3",
-    "4"  => "KeyPress-4",
-    "5"  => "KeyPress-5",
-    "6"  => "KeyPress-6",
-    "7"  => "KeyPress-7",
-    "8"  => "KeyPress-8",
-    "9"  => "KeyPress-9",
+#    "3"  => "KeyPress-3",
+#    "4"  => "KeyPress-4",
+#    "5"  => "KeyPress-5",
+#    "6"  => "KeyPress-6",
+#    "7"  => "KeyPress-7",
+#    "8"  => "KeyPress-8",
+#    "9"  => "KeyPress-9",
     ":"  => "colon",
     ";"  => "semicolon",
     "<"  => "less",
