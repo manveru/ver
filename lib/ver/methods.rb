@@ -1,4 +1,5 @@
 require 'ver/methods/completion'
+require 'ver/methods/clipboard'
 require 'ver/methods/control'
 require 'ver/methods/ctags'
 require 'ver/methods/delete'
@@ -28,6 +29,7 @@ module VER
     include Search
     include Select
     include Shortcuts
+    include Clipboard
     include Views
   end
 end

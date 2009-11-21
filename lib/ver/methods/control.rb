@@ -235,32 +235,6 @@ module VER
         self.mode = :control
       end
 
-      def copy_line
-        copy get('insert linestart', 'insert lineend + 1 chars')
-      end
-
-      def copy_right_word
-        copy get('insert', 'insert wordend')
-      end
-
-      def copy_left_word
-        copy get('insert', 'insert wordstart')
-      end
-
-      # FIXME: nasty hack or neccesary?
-      def paste
-        text = Tk::Clipboard.get
-        paste_continous text
-
-      rescue RuntimeError => ex
-        if ex.message =~ /form "STRING" not defined/
-          array = Tk::Clipboard.get type: Array
-          paste_tk_array array
-        else
-          Kernel.raise ex
-        end
-      end
-
       def undo
         edit_undo
         touch!

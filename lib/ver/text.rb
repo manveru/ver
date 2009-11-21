@@ -321,66 +321,6 @@ module VER
       Tk::Event.generate(self, '<<Modified>>')
     end
 
-    def copy(text)
-      if text.respond_to?(:to_str)
-        copy_string(text)
-      elsif text.respond_to?(:to_ary)
-        copy_array(text)
-      else
-        copy_fallback(text)
-      end
-    end
-
-    def copy_string(text)
-      clipboard_set(text = text.to_str)
-
-      copy_message text.count("\n"), text.size
-    end
-
-    def copy_array(text)
-      clipboard_set(text, type: Array)
-
-      copy_message text.size, text.reduce(0){|s,v| s + v.size }
-    end
-
-    def copy_fallback(text)
-      clipboard_set(text)
-
-      message "Copied unkown entity of class %p" % [text.class]
-    end
-
-    def copy_message(lines, chars)
-      lines_desc = lines == 1 ? 'line' : 'lines'
-      chars_desc = chars == 1 ? 'character' : 'characters'
-
-      msg = "copied %d %s of %d %s" % [lines, lines_desc, chars, chars_desc]
-      message msg
-    end
-
-    def paste_continous(text)
-      if text =~ /\A([^\n]*)\n\Z/
-        mark_set :insert, 'insert lineend'
-        insert :insert, "\n#{$1}"
-      elsif text =~ /\n/
-        mark_set :insert, 'insert lineend'
-        insert :insert, "\n"
-        text.each_line{|line| insert(:insert, line) }
-      else
-        insert :insert, text
-      end
-    end
-
-    def paste_tk_array(tk_array)
-      chunks = Tk.send(:simplelist, tk_array)
-
-      insert_y, insert_x = index(:insert).split
-
-      chunks.each_with_index do |chunk, idx|
-        y = insert_y + idx
-        insert "#{y}.#{insert_x}", chunk
-      end
-    end
-
     def mode=(name)
       keymap.mode = mode = name.to_sym
       edit_separator
