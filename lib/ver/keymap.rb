@@ -77,7 +77,7 @@ module VER
 
       0.upto 9 do |n|
         tag.bind("<KeyPress-#{n}>") do |key|
-          enter_key key.unicode.to_s
+          enter_missing key.unicode
           Tk.callback_break
         end
       end
