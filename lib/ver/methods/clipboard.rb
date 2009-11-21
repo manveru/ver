@@ -1,6 +1,18 @@
 module VER
   module Methods
     module Clipboard
+      def copy_line
+        copy get('insert linestart', 'insert lineend + 1 chars')
+      end
+
+      def copy_right_word
+        copy get('insert', 'insert wordend')
+      end
+
+      def copy_left_word
+        copy get('insert', 'insert wordstart')
+      end
+
       def copy(text)
         if text.respond_to?(:to_str)
           copy_string(text)
@@ -61,30 +73,17 @@ module VER
         end
       end
 
-        def copy_line
-          copy get('insert linestart', 'insert lineend + 1 chars')
-        end
+      # FIXME: nasty hack or neccesary?
+      def paste
+        text = clipboard_get
+        paste_continous text.to_s
 
-        def copy_right_word
-          copy get('insert', 'insert wordend')
-        end
-
-        def copy_left_word
-          copy get('insert', 'insert wordstart')
-        end
-
-        # FIXME: nasty hack or neccesary?
-        def paste
-          text = clipboard_get
-          paste_continous text
-
-        rescue RuntimeError => ex
-          if ex.message =~ /form "STRING" not defined/
-            array = clipboard_get('ARRAY')
-            paste_tk_array array.to_a
-          else
-            Kernel.raise ex
-          end
+      rescue RuntimeError => ex
+        if ex.message =~ /form "STRING" not defined/
+          array = clipboard_get('ARRAY')
+          paste_tk_array array.to_a
+        else
+          Kernel.raise ex
         end
       end
     end
