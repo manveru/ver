@@ -64,13 +64,8 @@ module VER
 
     def prepare_default_binds
       tag.bind '<Key>' do |event|
-        case chunk = event.unicode
-        when ''
-          # enter_missing event.keysym
-          # p event
-        else
-          enter_missing(chunk)
-        end
+        chunk = event.unicode
+        enter_missing(chunk) unless chunk == ''
 
         Tk.callback_break
       end
@@ -144,13 +139,13 @@ module VER
     "0"  => "KeyPress-0",
     "1"  => "KeyPress-1",
     "2"  => "KeyPress-2",
-#    "3"  => "KeyPress-3",
-#    "4"  => "KeyPress-4",
-#    "5"  => "KeyPress-5",
-#    "6"  => "KeyPress-6",
-#    "7"  => "KeyPress-7",
-#    "8"  => "KeyPress-8",
-#    "9"  => "KeyPress-9",
+    "3"  => "KeyPress-3",
+    "4"  => "KeyPress-4",
+    "5"  => "KeyPress-5",
+    "6"  => "KeyPress-6",
+    "7"  => "KeyPress-7",
+    "8"  => "KeyPress-8",
+    "9"  => "KeyPress-9",
     ":"  => "colon",
     ";"  => "semicolon",
     "<"  => "less",
