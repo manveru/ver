@@ -1,10 +1,8 @@
 module Tk
   # Translation from Tcl: http://wiki.tcl.tk/1954
-  class Tooltip < Struct.new(:widget, :text, :tooltip)
-    def initialize(on_widget, text)
-      super
-
-      widget.bind('<Any-Enter>'   ){ Tk::After.ms(500){ show    }}
+  class Tooltip < Struct.new(:text, :tooltip)
+    def bind_to(widget)
+      widget.bind('<Any-Enter>'   ){ Tk::After.ms(500){ show(widget) }}
       widget.bind('<Any-Leave>'   ){ Tk::After.ms(500){ destroy }}
       widget.bind('<Any-KeyPress>'){ Tk::After.ms(500){ destroy }}
       widget.bind('<Any-Button>'  ){ Tk::After.ms(500){ destroy }}
@@ -15,7 +13,7 @@ module Tk
     rescue NoMethodError, RuntimeError => ex
     end
 
-    def show
+    def show_on(widget)
       root = Tk.root
       root_pointerx, root_pointery = root.winfo_pointerx, root.winfo_pointery
       return unless Tk::Winfo.containing(root_pointerx, root_pointery)
@@ -50,9 +48,12 @@ module Tk
   end
 end
 
-require 'ffi-tk'
+if __FILE__ == $0
+  require 'ffi-tk'
 
-button = Tk::Button.new(text: 'hello').pack
-Tk::Tooltip.new(button, 'Hello, World!')
+  button = Tk::Button.new(text: 'hello').pack
+  tooltip = Tk::Tooltip.new('Hello, World!')
+  tooltip.bind_to(button)
 
-Tk.mainloop
+  Tk.mainloop
+end

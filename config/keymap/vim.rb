@@ -17,6 +17,7 @@ module VER
         mode.map :open_grep_list,     %w[Alt-g], %w[Control-m g]
         mode.map :describe_key,       %w[Control-h k]
         mode.map :help_for_help,      %w[Control-h question], %w[F1], %w[Help]
+        mode.map :tags_at,            %w[Control-g t]
 
         mode.map :buffer_switch, %w[Alt-b], %w[Control-m b]
         mode.map :window_switch, %w[Alt-B], %w[Control-m B]
