@@ -23,7 +23,7 @@ module VER
         mark_set :insert, 'insert lineend'
         insert :insert, "\n#{indent}"
 
-        clean_previous_line
+        clean_line('insert - 1 line')
         start_insert_mode
       end
 
@@ -36,7 +36,7 @@ module VER
           mark_set(:insert, 'insert - 1 line')
         end
 
-        clean_previous_line
+        clean_line('insert - 1 line')
         start_insert_mode
       end
 
@@ -122,8 +122,6 @@ module VER
         else
           replace(linestart, lineend, ('  ' * indent) << line)
         end
-
-        # clean_previous_line
 
         return indent
       end

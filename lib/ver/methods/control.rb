@@ -220,8 +220,9 @@ module VER
        )
       end
 
-      def clean_previous_line
-        from, to = index('insert - 1 line linestart'), index('insert - 1 line lineend')
+      def clean_line(index)
+        index = index(index)
+        from, to = index.linestart, index.lineend
         line = get(from, to)
         bare = line.rstrip
         replace(from, to, bare) if bare.empty?
@@ -232,6 +233,7 @@ module VER
       end
 
       def start_control_mode
+        clean_line(:insert)
         self.mode = :control
       end
 
