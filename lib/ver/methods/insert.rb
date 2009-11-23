@@ -36,7 +36,7 @@ module VER
           mark_set(:insert, 'insert - 1 line')
         end
 
-        clean_line('insert - 1 line')
+        clean_line('insert + 1 line')
         start_insert_mode
       end
 
@@ -139,6 +139,8 @@ module VER
           "insert linestart + #{indentation2.size} chars",
           indentation1
         )
+
+        clean_line('insert - 1 line')
       end
 
       # Most of the input will be in US-ASCII, but an encoding can be set per view for the input.
