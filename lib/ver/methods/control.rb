@@ -148,6 +148,12 @@ module VER
         end
       end
 
+      def eval_buffer
+        result = eval(value, TOPLEVEL_BINDING)
+      rescue Exception => exception
+        VER.error(exception)
+      end
+
       def buffer_switch
         View::List::Buffer.new self do |file|
           view.find_or_create(file) if File.exists?(file)
