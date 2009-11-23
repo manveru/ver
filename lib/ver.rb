@@ -224,6 +224,7 @@ module VER
 
   def error(exception)
     @status.value = exception.message if @status
+    error_tree(exception) if @root
     $stderr.puts("#{exception.class}: #{exception}", *exception.backtrace)
   rescue Errno::EIO
     # The original terminal has disappeared, the $stderr pipe was closed on the
@@ -232,5 +233,82 @@ module VER
   rescue IOError
     # Our pipes are closed, maybe put some output to a file logger here, or display
     # in a nicer way, maybe let it bubble up to Tk handling.
+  end
+
+  def error_tree(exception)
+    @tree ||= Tk::Tile::Treeview.new(@root)
+    @tree.delete(*@tree.children(nil))
+
+    @tree.configure(
+      columns:        %w[line method],
+      displaycolumns: %w[line method]
+    )
+    @tree.heading('#0',     text: 'File')
+    @tree.heading('line',   text: 'Line')
+    @tree.heading('method', text: 'Method')
+    @tree.column('line',    width: 60, stretch: false)
+
+    context_size = 7
+    frames = {}
+
+    # from Rack::ShowExceptions
+    exception.backtrace.each do |line|
+      next unless line =~ /(.*?):(\d+)(:in `(.*)')?/
+      filename, lineno, function = $1, $2.to_i, $4
+
+      item = @tree.insert(nil, :end, text: filename, values: [lineno, function])
+
+      begin
+        lines = ::File.readlines(filename)
+        _lineno = lineno - 1
+
+        first_lineno = [_lineno - context_size, 0].max
+        last_lineno  = [_lineno + context_size, lines.size].min
+        context = lines[first_lineno..last_lineno]
+
+        frames[item.id] = {
+          filename: filename,
+          lineno: lineno,
+          function: function,
+          first_lineno: first_lineno,
+          last_lineno: last_lineno,
+          context: context,
+        }
+      rescue => ex
+        puts ex, ex.backtrace
+      end
+    end
+
+    @tree.focus
+    @tree.pack expand: true, fill: :both
+
+    @tree.bind('<<TreeviewOpen>>'){|event|
+      begin
+        item = @tree.focus_item
+        frame = frames[item.id]
+
+        case frame
+        when Hash
+          filename, lineno, first_lineno, context =
+            frame.values_at(:filename, :lineno, :first_lineno, :context)
+
+          context.each_with_index{|line, idx|
+            line_item = item.insert(:end, text: line, values: [first_lineno + idx + 1])
+            frames[line_item.id] = [filename, lineno]
+          }
+        when Array
+          filename, lineno = frame
+          @layout.views.first.find_or_create(filename, lineno){|view|
+            @tree.pack_forget
+          }
+        end
+      rescue => ex
+        puts ex, ex.backtrace
+      end
+    }
+    @tree.bind('<Escape>'){
+      @tree.pack_forget
+      @layout.views.first.focus
+    }
   end
 end
