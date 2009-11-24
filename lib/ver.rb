@@ -46,7 +46,8 @@ module VER
     theme:         'Blackboard',
     keymap:        'vim',
     tab_expand:    2,
-    global_quit:   'Control-q',
+    indent:        "    ",
+    global_quit:   '<Control-q>',
     home_conf_dir: home_conf_dir,
     core_conf_dir: core_conf_dir,
     loadpath:      [home_conf_dir, core_conf_dir],
@@ -122,7 +123,7 @@ module VER
     font, family, size = options.values_at(:font, :font_family, :font_size)
     options[:font] = Font[family: family, size: size] unless font.is_a?(Tk::Font)
 
-    tabs = options[:font].measure('0') * (options[:tab_expand] || 2)
+    tabs = options[:font].measure('0') * (options[:tab_expand] ||= 2)
     options[:tabs] = tabs
 
     encoding = options[:encoding]

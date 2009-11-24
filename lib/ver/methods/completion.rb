@@ -13,7 +13,7 @@ module VER
             complete_word
           end
         else
-          insert :insert, '  '
+          insert :insert, VER.options[:indent]
         end
       end
 

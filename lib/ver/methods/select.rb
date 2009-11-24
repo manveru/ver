@@ -57,10 +57,13 @@ module VER
       end
 
       def indent_selection
+        indent = VER.options[:indent]
+        indent_size = indent.size
+
         each_selected_line do |y, fx, tx|
-          tx = fx + 2
+          tx = fx + indent_size
           next if get("#{y}.#{fx}", "#{y}.#{tx}").empty?
-          insert("#{y}.#{fx}", '  ')
+          insert("#{y}.#{fx}", indent)
         end
 
         edit_separator
@@ -68,12 +71,14 @@ module VER
       end
 
       def unindent_selection
+        indent = VER.options[:indent]
+        indent_size = indent.size
         queue = []
 
         each_selected_line do |y, fx, tx|
-          tx = fx + 2
+          tx = fx + indent_size
           left, right = "#{y}.#{fx}", "#{y}.#{tx}"
-          next unless get(left, right) == '  '
+          next unless get(left, right) == indent
           queue << left << right
         end
 
