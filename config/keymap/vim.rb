@@ -85,6 +85,7 @@ module VER
         mode.to :complete_line,   %w[Control-x Control-l]
         mode.to :complete_word,   %w[Control-x Control-w]
         mode.to :complete_aspell, %w[Control-x Control-a]
+        mode.to :complete_tm,     %w[Control-x Control-x]
         mode.to :smart_tab,       %w[Tab]
       end
 
