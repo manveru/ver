@@ -4,9 +4,13 @@ module VER
       def tags_at(index = :insert)
         index = index(index)
         tags = tag_names(index)
+        message tags.inspect
+
         require 'ver/tooltip'
+
         tooltip = Tk::Tooltip.new(tags.inspect)
         tooltip.show_on(self)
+
         Tk::After.ms(5000){ tooltip.destroy }
       end
 

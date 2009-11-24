@@ -34,10 +34,8 @@ module VER
       end
 
       def tm_completions(from, to)
-        # index = index('insert - 1 chars')
         tags  = Set.new(tag_names(to))
         completions = []
-        # message tags.inspect
 
         @preferences.each do |key, value|
           name, scope, settings, uuid =
