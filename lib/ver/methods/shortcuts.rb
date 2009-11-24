@@ -8,6 +8,7 @@ module VER
       alias w file_save
       alias r insert_file_contents
       alias e open_path
+      alias o view_find_or_create
 
       def wq
         w and q

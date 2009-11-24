@@ -1,6 +1,10 @@
 module VER
   module Methods
     module Views
+      def view_find_or_create(file)
+        view.find_or_create(file)
+      end
+
       def view_create
         view.create
       end
