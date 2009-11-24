@@ -89,7 +89,7 @@ module VER
       return unless choices && choices.size > 0
 
       x, y = parent.tk_caret.values_at('x', 'y')
-      list.place x: x #, relheight: 0.9
+      list.place x: x, y: y
       list.configure width: @longest_choice + 2, height: choices.size
     end
 

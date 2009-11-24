@@ -15,10 +15,6 @@ require 'json'
 require 'securerandom'
 require 'set'
 
-# this is for testing purposes, needs a platform detection to set it to true
-# when running on windows or osx, x11 needs no special handling.
-# Tk::RUN_EVENTLOOP_ON_MAIN_THREAD = true
-
 module VER
   autoload :Entry,               'ver/entry'
   autoload :Help,                'ver/help'

@@ -34,7 +34,6 @@ module VER
     end
 
     def complete_command(command, arg)
-      # p command: command, arg: arg
       name = "complete_#{command}"
 
       if respond_to?(name)
