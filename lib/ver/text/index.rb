@@ -19,6 +19,16 @@ module VER
         return  0 if widget.compare(self_idx, '==', other_idx)
       end
 
+      def delta(other)
+        y_diff = other.y - y
+
+        if y_diff == 0
+          (other.x - x).abs
+        else
+          y_diff.abs
+        end
+      end
+
       def y
         self[:y] ||= idx.split('.', 2)[0].to_i
       end

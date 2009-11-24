@@ -6,7 +6,7 @@ module VER
       def smart_tab
         context = get('insert - 1 chars', 'insert + 1 chars')
 
-        if context =~ /^\S\s/
+        if context =~ /^\S\W/
           if @complete_last_used
             complete_again
           else
@@ -83,7 +83,8 @@ module VER
         return [] if prefix.empty?
         prefix = Regexp.escape(prefix)
 
-        found = search_all(/\W?(#{prefix}[\w-]*)/).
+        found = search_all(/(^|\W)(#{prefix}[\w-]*)/).
+          sort_by{|match, mf, mt| [Text::Index.new(self, mf).delta(from), match] }.
           map{|match, *_| match.strip[/[\w-]+/] }.uniq
         found.delete prefix
         found
