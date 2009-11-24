@@ -21,6 +21,56 @@ module VER
         send(@complete_last_used) if @complete_last_used
       end
 
+      def complete_tm
+        return unless load_preferences
+        require 'set'
+        require 'tempfile'
+
+        @complete_last_used = :complete_tm
+
+        from, to = 'insert - 1 chars wordstart', 'insert - 1 chars wordend'
+
+        complete{ [from, to, tm_completions(from, to)] }
+      end
+
+      def tm_completions(from, to)
+        # index = index('insert - 1 chars')
+        tags  = Set.new(tag_names(to))
+        completions = []
+        # message tags.inspect
+
+        @preferences.each do |key, value|
+          name, scope, settings, uuid =
+            value.values_at('name', 'scope', 'settings', 'uuid')
+          scopes = Set.new(scope.split(/\s*,\s*|\s+/))
+
+          next unless completion_command = settings['completionCommand']
+          next unless scope_compare(tags, scopes)
+
+          current_word = get(from, to).strip
+          ENV['TM_CURRENT_WORD'] = current_word
+
+          tmp = Tempfile.new('ver/complete_tm')
+          tmp.print(completion_command)
+          tmp.close
+          begin
+            FileUtils.chmod(0700, tmp.path)
+            result = `exec '#{tmp.path}'`
+            completions = result.scan(/[^\r\n]+/)
+          ensure
+            tmp.close!
+          end
+        end
+
+        completions
+      rescue => ex
+        VER.error(ex)
+      end
+
+      def scope_compare(tags, scopes)
+        scopes.all?{|scope| tags.any?{|tag| scope.start_with?(tag) }}
+      end
+
       def complete_line
         @complete_last_used = :complete_line
 

@@ -358,8 +358,27 @@ module VER
       message "Syntax #{found} loaded"
     end
 
+    def load_preferences
+      return unless @syntax
+
+      name = @syntax.name
+      file = VER.find_in_loadpath("preferences/#{name}.json")
+      @preferences = JSON.load(File.read(file))
+    rescue Errno::ENOENT, TypeError => ex
+      VER.error(ex)
+    end
+
     def setup_tags
+      setup_highlight_trailing_whitespace
+      setup_highlight_links
+    end
+
+    def setup_highlight_trailing_whitespace
       tag_configure 'invalid.trailing-whitespace', background: '#f00'
+      tag_all_trailing_whitespace
+    end
+
+    def setup_highlight_links
       tag_configure 'markup.underline.link' , underline: true, foreground: '#00f'
 
       tag_bind('markup.underline.link', '<1>') do |event|
@@ -378,7 +397,6 @@ module VER
         end
       end
 
-      tag_all_trailing_whitespace
       tag_all_uris
     end
 
