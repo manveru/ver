@@ -54,7 +54,7 @@ module VER
     # Setup this event, because Keymap gets very confused when you bind 'Key' and
     # we don't want to break the event-chain anyway
     def setup_events
-      entry.bind('<<Modified>>'){ on_update }
+      entry.bind('<<Inserted>>'){ on_update }
     end
 
     def on_update
@@ -128,8 +128,8 @@ module VER
       pick list.get(list.curselection.first)
     end
 
-    def pick_action(item)
-      callback.call(item) if callback
+    def pick_action(*args)
+      callback.call(*args) if callback
     end
 
     def completion

@@ -53,9 +53,9 @@ module VER
       def status_ex
         completion = method(:status_ex_filter)
 
-        View::List::Ex.new self, completion do |command|
+        View::List::Ex.new self, completion do |command, propose|
           begin
-            result = eval(command)
+            result = propose ? send(command, propose) : eval(command)
             status.message "%s # => %p" % [command, result]
           rescue Exception => ex
             status.error "%s # => %p" % [command, ex]

@@ -44,16 +44,19 @@ module VER
     def value=(string)
       execute_only(:delete, 0, :end)
       execute_only(:insert, 0, string)
+      Tk::Event.generate(self, '<<Replaced>>')
       Tk::Event.generate(self, '<<Modified>>')
     end
 
     def delete(*args)
       super
+      Tk::Event.generate(self, '<<Deleted>>')
       Tk::Event.generate(self, '<<Modified>>')
     end
 
     def insert(*args)
       super
+      Tk::Event.generate(self, '<<Inserted>>')
       Tk::Event.generate(self, '<<Modified>>')
     end
 

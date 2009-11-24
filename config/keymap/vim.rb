@@ -141,6 +141,7 @@ module VER
 
         mode.map [:delete_motion, :backward_char], %w[BackSpace]
         mode.map [:delete_motion, :forward_char],  %w[Delete], %w[Control-d]
+        mode.map [:delete_motion, :backward_word], %w[Control-w]
         mode.map :backward_char,                   %w[Left], %w[Control-b]
         mode.map :forward_char,                    %w[Right], %w[Control-f]
         mode.map :backward_word,                   %w[Shift-Left], %w[Alt-b]
@@ -236,7 +237,7 @@ module VER
       vim.add_mode :list_view_list do |mode|
         mode.inherits :basic
 
-        mode.to :pick_selection, %w[Double-Button-1]
+        mode.to :pick_selection, %w[Return], %w[Double-Button-1]
         mode.to :line_up,        %w[Up]
         mode.to :line_down,      %w[Down]
       end
