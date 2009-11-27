@@ -46,7 +46,7 @@ module VER
     theme:         'Blackboard',
     keymap:        'vim',
     tab_expand:    2,
-    indent:        "    ",
+    indent:        "  ",
     global_quit:   '<Control-q>',
     home_conf_dir: home_conf_dir,
     core_conf_dir: core_conf_dir,
