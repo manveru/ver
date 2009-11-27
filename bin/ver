@@ -81,15 +81,7 @@ module VER
   end
 end
 
-options = {
-  encoding:    'UTF-8:UTF-8',
-  fork:        true,
-  keymap:      'vim',
-  font_size:   10,
-  font_family: 'TkFixedFont',
-  theme:       'Blackboard',
-  tk_theme:    'default',
-}
+options = { fork: true }
 
 op = OptionParser.new{|o|
   o.on('-Eex[:in]', '--encoding EXTERNAL[:INTERNAL]', 'used encoding'){|enc|

@@ -12,7 +12,7 @@ module VER
       self.view = view
       @question = ''
 
-      keymap_name = VER.options.fetch(:keymap)
+      keymap_name = VER.options.keymap
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
     end
 

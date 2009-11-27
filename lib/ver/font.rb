@@ -22,7 +22,7 @@ module VER
     end
 
     def default
-      VER.options[:font]
+      VER.options.font
     end
 
     def default_options

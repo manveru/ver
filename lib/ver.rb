@@ -32,39 +32,80 @@ module VER
   autoload :Theme,               'ver/theme'
   autoload :View,                'ver/view'
 
-  home_conf_dir = Pathname('~/.config/ver').expand_path
-  core_conf_dir = Pathname(File.expand_path('../../config/', __FILE__))
-
-  # poor man's option system
-  # p Tk::Tile.themes # a list of available themes
-  #   Linux themes: "classic", "default", "clam", "alt"
-  OPTIONS = {
-    font_size:     10,
-    font_family:   'TkFixedFont',
-    encoding:      'UTF-8:UTF-8',
-    tk_theme:      'clam',
-    theme:         'Blackboard',
-    keymap:        'vim',
-    tab_expand:    2,
-    indent:        "  ",
-    global_quit:   '<Control-q>',
-    home_conf_dir: home_conf_dir,
-    core_conf_dir: core_conf_dir,
-    loadpath:      [home_conf_dir, core_conf_dir],
-  }
+  require 'ver/options'
+  @options = Options.new(:ver)
 
   class << self
     attr_reader :root, :layout, :status, :paths, :options
   end
 
+  options.dsl do
+    o "Default Font for all widgets",
+      :font, "TkFixedFont 10"
+
+    o "Internal:External encoding",
+      :encoding, "UTF-8:UTF-8"
+
+    o "Tk Tile Theme",
+      :tk_theme, 'clam'
+
+    o "Syntax highlighting theme",
+      :theme, "Blackboard"
+
+    o "Keymap used",
+      :keymap, 'vim'
+
+    o "Expand all tabs into spaces",
+      :expandtab, true
+
+    o "Use automatic indentation",
+      :autoindent, true
+
+    o "Number of spaces used in autoindent",
+      :shiftwidth, 2
+
+    o "Number of spaces a tab stands for",
+      :tabstop, 8
+
+    o "Number of characters after which wrap commands will wrap",
+      :textwidth, 80
+
+    o "In case of a total failure, this key binding should bail you out",
+      :emergency_exit, "<Control-q>"
+
+    o "Fork off on startup to avoid dying with the terminal",
+      :fork, true
+
+    o "Milliseconds that the cursor is visible when blinking",
+      :insertontime, 500
+
+    o "Milliseconds that the cursor is invisible when blinking",
+      :insertofftime, 0
+
+    o "Width of one tab in pixel",
+      :tabs, 10
+
+    o "Default filetype if no matching syntax can be found",
+      :filetype, "Plain Text"
+
+    o "Location of personal configuration",
+      :home_conf_dir,  Pathname('~/.config/ver').expand_path
+
+    o "Location of system-wide configuration",
+      :core_conf_dir, Pathname(File.expand_path('../../config/', __FILE__))
+
+    o "Locations where we look for configuration",
+      :loadpath, [home_conf_dir, core_conf_dir]
+  end
+
   module_function
 
   def loadpath
-    options[:loadpath]
+    options.loadpath
   end
 
   def run(given_options = {})
-    @options = OPTIONS.merge(given_options)
+    @options.merge!(given_options)
 
     setup_tk
 
@@ -93,7 +134,7 @@ module VER
   end
 
   def run_core
-    first_startup unless options[:home_conf_dir].directory?
+    first_startup unless options.home_conf_dir.directory?
     load 'rc'
     sanitize_options
     setup_widgets
@@ -107,24 +148,29 @@ module VER
   end
 
   def setup_widgets
-    Tk::Tile.set_theme options[:tk_theme]
+    Tk::Tile.set_theme options.tk_theme
 
     @paths = Set.new
     @root = Tk.root
     @root.wm_geometry = '160x80'
     @layout = Layout.new(@root)
     @layout.strategy = Layout::VerticalTiling
-    @status = Entry.new(@root, font: options[:font])
+    @status = Entry.new(@root, font: options.font)
     @status.insert :end, 'For information about VER, type F1'
     @status.pack(fill: :x)
   end
 
   def sanitize_options
-    font, family, size = options.values_at(:font, :font_family, :font_size)
-    options[:font] = Font[family: family, size: size] unless font.is_a?(Tk::Font)
+    font = options.font
 
-    tabs = options[:font].measure('0') * (options[:tab_expand] ||= 2)
-    options[:tabs] = tabs
+    unless font.respond_to?(:actual_hash)
+      font = Tk::Font.new(font)
+      actual_hash = font.actual_hash
+      Font.cache[actual_hash] = font
+    end
+
+    tabs = font.measure('0') * options.tabstop
+    options.tabs = tabs
 
     encoding = options[:encoding]
     unless encoding.is_a?(Encoding)
@@ -134,8 +180,11 @@ module VER
       Encoding.default_internal = Encoding.find(internal) if internal
     end
 
-    tk_theme = options[:tk_theme]
-    options[:theme] = 'default' unless Tk::Tile::Style.theme_names.include?(tk_theme)
+    # We supply a reasonable default in case the platform doesn't have the theme
+    # wished for.
+    unless Tk::Tile::Style.theme_names.include?(options.tk_theme)
+      options.tk_theme = 'default'
+    end
 
     letter = /[\w\n.-]/
     space = /[^\w.-]/
@@ -212,7 +261,7 @@ module VER
   end
 
   def emergency_bindings
-    Tk::Bind.bind(:all, options[:global_quit]){ exit }
+    Tk::Bind.bind(:all, options.emergency_exit){ exit }
   end
 
   def opened_file(text)

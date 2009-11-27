@@ -35,7 +35,8 @@ module VER
     end
 
     def setup_text
-      font, tabs = VER.options.values_at(:font, :tabs)
+      font, tabstop = VER.options.font, VER.options.tabstop
+      tabs = font.measure('0') * tabstop
 
       @text = VER::Text.new(
         self,
@@ -43,7 +44,8 @@ module VER
         borderwidth:      0,
         exportselection:  true, # copy into X11 buffer automatically
         font:             font,
-        insertofftime:    0, # blinking cursor be gone!
+        insertofftime:    VER.options.insertofftime,
+        insertontime:     VER.options.insertontime,
         setgrid:          true, # tell the wm that this is a griddy window
         takefocus:        true,
         tabs:             tabs,

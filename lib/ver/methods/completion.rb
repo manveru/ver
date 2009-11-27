@@ -13,7 +13,8 @@ module VER
             complete_word
           end
         else
-          insert :insert, VER.options[:indent]
+          indent = ' ' * VER.options.shiftwidth
+          insert :insert, indent
         end
       end
 

@@ -91,7 +91,8 @@ module VER
 
       def wrap_line
         text = get('insert linestart', 'insert lineend')
-        lines = wrap_lines_of(text, 80).join("\n")
+        textwidth = options[:textwidth]
+        lines = wrap_lines_of(text, textwidth).join("\n")
         lines.rstrip!
 
         replace('insert linestart', 'insert lineend', lines)

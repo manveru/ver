@@ -156,6 +156,7 @@ module VER
         mode.map :beginning_of_history,            %w[Control-less]
         mode.map :end_of_history,                  %w[Control-greater]
         mode.map :transpose_chars,                 %w[Control-t]
+        mode.map :insert_tab,                      %w[Control-v Tab]
 
         KEYSYMS.each do |sym, name|
           mode.map [:insert_string, sym], [name]

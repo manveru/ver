@@ -17,11 +17,16 @@ module VER
       end
 
       def insert_indented_newline_below
-        line = get('insert linestart', 'insert lineend')
+        if VER.options.autoindent
+          line = get('insert linestart', 'insert lineend')
 
-        indent = line.empty? ? "" : (line[/^\s+/] || '')
-        mark_set :insert, 'insert lineend'
-        insert :insert, "\n#{indent}"
+          indent = line.empty? ? "" : (line[/^\s+/] || '')
+          mark_set :insert, 'insert lineend'
+          insert :insert, "\n#{indent}"
+        else
+          mark_set :insert, 'insert lineend'
+          insert :insert, "\n"
+        end
 
         clean_line('insert - 1 line')
         start_insert_mode
@@ -45,7 +50,11 @@ module VER
       end
 
       def insert_indented_newline
-        fallback_insert_indented_newline
+        if VER.options.autoindent
+          fallback_insert_indented_newline
+        else
+          insert_newline
+        end
       end
 
       def insert_auto_indented_newline

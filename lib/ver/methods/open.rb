@@ -90,17 +90,28 @@ module VER
         end
       end
 
+      MODELINES = {
+        /\s+(?:ver|vim?|ex):\s*.*$/ => /\s+(?:ver|vim?|ex):\s*(.*)$/,
+        /\s+(?:ver|vim?|ex):[^:]+:/ => /\s+(?:ver|vim?|ex):([^:]+):/,
+        /^(?:ver|vim?):[^:]+:/      => /^(?:ver|vim?):([^:]+):/,
+      }
+
       def apply_modeline
-        if found = search(/\s+(?:vim?|ex):\s*.*$/, 1.0, :end, :count)
-          pos, count = ["31.1", 24]
-          p found1: found, pos: pos, count: count
+        MODELINES.each do |search_pattern, extract_pattern|
+          found = search(search_pattern, 1.0, :end, :count)
+
+          next if found.empty?
+
+          pos, count = found
+          p found: found, pos: pos, count: count
+
           line = get(pos, "#{pos} + #{count} chars")
-          line =~ /\s+(?:vim?|ex):\s*(.*)$/
-          $1.split.each{|option| apply_modeline_option(option) }
-        elsif found = search(/\s+(?:vim?|ex):[^:]+:/, 1.0)
-          p found2: found
-        elsif found = search(/^(?:vim?):[^:]+:/, 1.0)
-          p found3: found
+          p line: line
+
+          line =~ extract_pattern
+          $1.scan(/[^:\s]+/) do |option|
+            apply_modeline_option(option)
+          end
         end
       end
 
@@ -113,27 +124,14 @@ module VER
           set :autoindent, boolean
         when 'et', 'expandtab'
           set :expandtab, boolean
-
-          # In Insert mode: Use the appropriate number of spaces to insert a
-          # <Tab>. Spaces are used in indents with the '>' and '<' commands and
-          # when 'autoindent' is on.
-          # To insert a real tab when 'expandtab' is on, use CTRL-V<Tab>.
-          # See also |:retab| and |ins-expandtab|.
-          # NOTE: This option is reset when 'compatible' is set.
         when /(?:tw|textwidth)=(\d+)/
           set :textwidth, $1.to_i
         when /(?:ts|tabstop)=(\d+)/
           set :tabstop, $1.to_i
         when /(?:sw|shiftwidth)=(\d+)/
           set :shiftwidth, $1.to_i
-
-#          Number of spaces to use for each step of (auto)indent.  Used for
-#          |'cindent'|, |>>|, |<<|, etc.
         when /(?:ft|filetype)=(\w+)/
-          set(:filetype, $1) do |type|
-            name = Syntax.from_filename(Pathname("foo.#{type}"))
-            p load_syntax(name)
-          end
+          set :filetype, $1
         else
           p unknown_modeline_option: option
         end
@@ -142,11 +140,29 @@ module VER
       attr_reader :options
 
       def set(option, value)
-        @options ||= {}
-        options[option] = value
+        method = "set_#{option}"
+
+        if respond_to?(method)
+          if block_given?
+            __send__(method, value, &Proc.new)
+          else
+            __send__(method, value)
+          end
+        else
+          options[option] = value
+          yield(value) if block_given?
+        end
+
         require 'pp'
         pp options
-        yield(value) if block_given?
+      end
+
+      def set_filetype(type)
+        syntax = Syntax.from_filename(Pathname("foo.#{type}"))
+
+        if load_syntax(syntax)
+          options.filetype = type
+        end
       end
     end
   end

@@ -20,7 +20,7 @@ module VER
     end
 
     def setup_keymap
-      keymap_name = VER.options.fetch(:keymap)
+      keymap_name = VER.options.keymap
       @list_keymap = Keymap.get(name: keymap_name, receiver: self,
                                 widget: list, mode: :hover_completion)
     end

@@ -51,7 +51,7 @@ module VER
       super
       self.view = view
 
-      keymap_name = VER.options.fetch(:keymap)
+      keymap_name = VER.options.keymap
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
       apply_mode_style(keymap.mode) # for startup
@@ -60,6 +60,7 @@ module VER
       self.selection_start = nil
       @pristine = true
       @syntax = nil
+      @options = Options.new(:text, VER.options)
       @encoding = Encoding.default_internal
       @dirty_indices = []
 
