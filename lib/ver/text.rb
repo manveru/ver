@@ -348,14 +348,21 @@ module VER
     end
 
     def load_syntax(name)
-      return unless syntax
-      return unless found = Syntax.find(name)
+      return false unless syntax
 
       theme = syntax.theme
-      @syntax = Syntax.new(name, theme)
+
+      if name.is_a?(Syntax)
+        @syntax = Syntax.new(name.name, theme)
+      elsif found = Syntax.find(name)
+        @syntax = Syntax.new(name, theme)
+      else
+        return false
+      end
+
       schedule_highlight
 
-      message "Syntax #{found} loaded"
+      message "Syntax #{@syntax.name} loaded"
     end
 
     def load_preferences

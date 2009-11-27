@@ -22,8 +22,6 @@ module VER
         path = Pathname(filename.to_s)
         path = path.readlink if path.symlink?
 
-        return unless path.file?
-
         VER.load('detect')
 
         override_name || detect_ext(path) || detect_head(path)
