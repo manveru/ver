@@ -196,7 +196,7 @@ module VER
   end
 
   def first_startup
-    home, core = options.values_at(:home_conf_dir, :core_conf_dir)
+    home, core = options.home_conf_dir, options.core_conf_dir
     home.mkpath
 
     (core/'rc.rb').cp(home/'rc.rb')
