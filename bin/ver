@@ -39,7 +39,7 @@ module VER
   end
 
   def install_tm_bundle(path)
-    require 'ver/plist'
+    require File.join(ROOT, 'ver/plist')
     require 'json'
     require 'fileutils'
 
