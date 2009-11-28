@@ -283,7 +283,7 @@ module VER
 
   def error_tree(exception)
     @tree ||= Tk::Tile::Treeview.new(@root)
-    @tree.delete(*@tree.children(nil))
+    @tree.clear
 
     @tree.configure(
       columns:        %w[line method],
@@ -292,7 +292,6 @@ module VER
     @tree.heading('#0',     text: 'File')
     @tree.heading('line',   text: 'Line')
     @tree.heading('method', text: 'Method')
-    @tree.column('line',    width: 60, stretch: false)
 
     context_size = 7
     frames = {}
