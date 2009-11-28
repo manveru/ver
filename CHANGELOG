@@ -1,3 +1,19 @@
+[34796ca | 2009-11-28 15:29:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix tasks and gemspec
+
+[f96b0f1 | 2009-11-28 11:37:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Rescue error when opening non-existing file
+
+[0386b04 | 2009-11-28 10:32:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update gemspec and related files
+
+[e791042 | 2009-11-28 10:31:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally add a README
+
 [401fdfd | 2009-11-28 10:16:04 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * Make backtrace a bit more colorful

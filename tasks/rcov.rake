@@ -1,10 +1,9 @@
 desc 'code coverage'
 task :rcov => :clean do
-  specs = PROJECT_SPECS
+  specs = Dir['spec/ffi-tk/**/*.rb']
 
   # we ignore adapter as this has extensive specs in rack already.
-  ignore = %w[ gem rack bacon innate/adapter\.rb ]
-  ignore << 'fiber\.rb' if RUBY_VERSION < '1.9'
+  ignore = %w[ gem bacon ]
 
   ignored = ignore.join(',')
 

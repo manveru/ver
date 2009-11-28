@@ -374,10 +374,12 @@ lib/ver/view/list/syntax.rb
 lib/ver/view/list/theme.rb
 lib/ver/view/term.rb
 spec/keymap.rb
+tasks/authors.rake
 tasks/bacon.rake
 tasks/changelog.rake
 tasks/gem.rake
 tasks/gem_installer.rake
+tasks/gem_setup.rake
 tasks/grancher.rake
 tasks/install_dependencies.rake
 tasks/manifest.rake
@@ -385,5 +387,7 @@ tasks/plist2json.rake
 tasks/rcov.rake
 tasks/release.rake
 tasks/reversion.rake
+tasks/setup.rake
 tasks/syntax_list.rake
+tasks/ycov.rake
 ver.gemspec

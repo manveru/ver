@@ -1,12 +1,65 @@
-desc 'publish to github'
-task :release => [:reversion, :gemspec] do
-  name, version = GEMSPEC.name, GEMSPEC.version
+namespace :release do
+  task :prepare => [:reversion, :authors, :gemspec]
+  task :all => ['release:github', 'release:rubyforge', 'release:gemcutter']
 
-  sh("git add MANIFEST CHANGELOG #{name}.gemspec lib/#{name}/version.rb")
+  desc 'Release on github'
+  task :github => :prepare do
+    name, version = GEMSPEC.name, GEMSPEC.version
 
-  puts "I added the relevant files, you can now run:", ''
-  puts "git commit -m 'Version #{version}'"
-  puts "git tag -a -m '#{version}' '#{version}'"
-  puts "git push"
-  puts
+    sh('git', 'add',
+       'MANIFEST', 'CHANGELOG', 'AUTHORS',
+       "#{name}.gemspec",
+       "lib/#{name}/version.rb")
+
+    puts <<-INSTRUCTIONS
+================================================================================
+
+I added the relevant files, you can commit them, tag the commit, and push:
+
+git commit -m 'Version #{version}'
+git tag -a -m '#{version}' '#{version}'
+git push
+
+================================================================================
+    INSTRUCTIONS
+  end
+
+  desc 'Release on rubyforge'
+  task :rubyforge => ['release:prepare', :package] do
+    name, version = GEMSPEC.name, GEMSPEC.version
+
+    pkgs = Dir["pkg/#{name}-#{version}.{tgz,zip}"].map{|file|
+      "rubyforge add_file #{name} #{name} '#{version}' '#{file}'"
+    }
+
+    puts <<-INSTRUCTIONS
+================================================================================
+
+To publish to rubyforge do following:
+
+rubyforge login
+rubyforge add_release #{name} #{name} '#{version}' pkg/#{name}-#{version}.gem
+
+To publish the archives for distro packagers:
+
+#{pkgs.join "\n"}
+
+================================================================================
+    INSTRUCTIONS
+  end
+
+  desc 'Release on gemcutter'
+  task :gemcutter => ['release:prepare', :package] do
+    name, version = GEMSPEC.name, GEMSPEC.version
+
+    puts <<-INSTRUCTIONS
+================================================================================
+
+To publish to gemcutter do following:
+
+gem push pkg/#{name}-#{version}.gem
+
+================================================================================
+    INSTRUCTIONS
+  end
 end

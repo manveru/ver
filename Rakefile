@@ -6,6 +6,12 @@ require 'date'
 
 PROJECT_SPECS = Dir['spec/**/*.rb']
 PROJECT_MODULE = 'VER'
+PROJECT_README = 'README.textile'
+PROJECT_VERSION = ENV['VERSION'] || Date.today.strftime('%Y.%m.%d')
+
+DEPENDENCIES = {
+  'ffi-tk' => {:version => '2009.11.29'},
+}
 
 GEMSPEC = Gem::Specification.new{|s|
   s.name         = 'ver'
@@ -22,6 +28,11 @@ GEMSPEC = Gem::Specification.new{|s|
   s.bindir       = 'bin'
   s.executables  = ['ver']
 }
+
+
+DEPENDENCIES.each do |name, options|
+  GEMSPEC.add_dependency(name, options[:version])
+end
 
 Dir['tasks/*.rake'].each{|f| import(f) }
 
