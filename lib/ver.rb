@@ -163,10 +163,10 @@ module VER
   def sanitize_options
     font = options.font
 
-    unless font.respond_to?(:actual_hash)
+    unless font.respond_to?(:measure)
       font = Tk::Font.new(font)
       actual_hash = font.actual_hash
-      Font.cache[actual_hash] = font
+      options.font = Font.cache[actual_hash] = font
     end
 
     tabs = font.measure('0') * options.tabstop
