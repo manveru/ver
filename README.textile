@@ -1,0 +1,185 @@
+h1. VER - Vim & Emacs in Ruby
+
+h2. Description
+
+VER is a "text editor" in the tradition of Emacs, providing a whole environment
+around your editing experience.
+It also borrows heavily from Vim, most prominently modal editing and the
+default keyboard map.
+Finally, I also have to thank the TextMate developers and community, because we
+are standing on their shoulders by reusing the syntax definitions and completion
+routines as long as they are under an acceptable license (no code of TM is
+used).
+
+At the time of writing, around 140 different languages have syntax highlighting
+and around 130 languages have extended capabilities like completion or automatic
+indentation.
+
+h2. Dependencies
+
+* You will need to install tk if it isn't on your system already.
+  Detailed installation instructions for all major platforms and more
+  information about Tcl/Tk are available at: "Tcl/Tk Project":http://tcl.tk
+
+* In an attempt to make VER available for all Ruby implementations, I wrote an
+  alternative for ruby-tk, called ffi-tk.
+  Eventually it should be available as a gem, but for now you can get the source
+  from "manveru/ffi-tk on github":http://github.com/manveru/ffi-tk
+  No compilation required.
+
+* Only a `gem install eventmachine` away:
+  "Ruby/EventMachine library":http://rubyeventmachine.com
+
+h2. Features
+
+* VER and ffi-tk are 100% (hopefully straightforward) Ruby.
+* Syntax highlighting for around 140 file types.
+* Intelligent indentation based on file type.
+* Automatic completion for words, lines, aspell, and more.
+* Integrated window management
+* Terminal emulator and console
+* Recursive fuzzy file finding
+* Recusive pattern grepping
+* Find and replace using oniguruma
+* Unlimited undo
+* In-buffer ruby evaluation, can also be used for text manipulation
+* CTags support
+* much more...
+
+h2. Installation
+
+For Tcl/Tk there are various instructions available from
+"Tk Docs":http://tkdocs.org
+VER only runs on Ruby 1.9.1+, but should run on any implementation conforming to
+the corresponding specification because no C extensions are involved.
+
+h3. ArchLinux
+
+[@
+  pacman -S tcl tk ruby rubygems
+  gem install ver
+@]
+
+h2. Configuration
+
+At the time of writing, there are only a few options exposed.
+Options can be changed in your ~/.config/ver/rc.rb where you can find a few
+default settings already.
+In earlier revisions of VER, options are often to subject change, so be aware
+that at some point they might not work as expected anymore.
+If options are deprecated or replaced, I will try to keep the configuration
+working, but in early stages this is no priority.
+
+h3. Keymap
+
+At the time of writing, only the vim keymap covers all features of VER and is
+actively maintained.
+We are searching for contributors that can provide keymaps for other editors.
+To add a new keymap, put it under config/keymap/$name.rb and start VER with
+
+<shell>
+ver -k $name
+</shell>
+
+Where @$name@ is a placeholder for the filename of the keymap you created.
+
+h2. Yet another editor?
+
+h3. A little bit of philosophy
+
+After many years of being a code ninja, it became apparent to me that there
+could be as many editors as there are developers.
+
+It feels to me, like there are many useless religious wars going on around this
+seemingly simple topic, there is the church of emacs, the cult of vi, and many
+other groups that don't have chosen how to call themselves yet.
+
+I'm guilty myself of telling people what to use, without really considering what
+the consequences of my actions are.
+
+A text editor should not be treated like a religion.
+
+For one, everybody should be given an objective overview over the choices out
+there. Recently, Wikipedia seems to have taken over this role, so I won't invest
+much energy into this topic.
+
+What I find really interesting, is that only very few people even think of
+attempting to write their own editor.
+
+Maybe I'm suffering from a severe case of NIH, but i want to give everybody a
+chance to see what's involved. You can write an equivalent of nano in a couple
+of days, but how much does it take to improve on the concepts of the great
+editors?
+
+I won't say it's an easy task, it's more in the spirit of a Jedis building their
+own laser-sword, once you reach a good enough proficiency in programming it
+should be good practice to build your own tools, and what tool is more to
+writing programs than an editor?
+
+It also has other benefits, teaching you new things about yourself and the way
+you work.
+You will learn more about the strengths and weaknesses your language.
+The next time you curse your editor, you can make it better.
+
+h3. Background
+
+I've used many editors over the years, and a lot of them have inspired me,
+amongst them are Proton, JEdit, SciTE, Vim, Emacs, Nano, Gobby, GEdit, Kate...
+However, Vim and Emacs can be considered the most prominent of the editors that
+try to do much more than just editing text.
+
+I've never had a big interest in IDEs, maybe because Ruby saves you from most of
+the boilerplate that is usually associated with programming, and for most
+dynamic languages they just don't provide you that much.
+
+Maybe, someday, VER will become for Ruby what Emacs is for Lisp.
+I have very mixed feelings about that.
+
+h3. The name
+
+I tried to come up with a short name, that would give credit to my biggest
+inspirations.
+There is not much more to it.
+
+h2. Thanks
+
+I'd like to thank following people:
+
+* Aman Gupta and the folks in #eventmachine
+  Helping me and keeping me going crazy when I hit some weird C syntax.
+* Francis Cianfrocca
+  EventMachine, making evented programming fun and even profitable.
+* Julian Langschaedel
+  First user and contributor.
+* Pistos
+  Inspiration through Diakonos and patience testing just about anything I throw
+  at him.
+* Richard M. Stallman
+  Emacs
+* Yukihiro Matsumoto
+  Ruby, ruby-tk, and the knowledge that programmers can make a deep impact if
+  they are just persistent enough.
+
+h2. License
+
+(The MIT License)
+
+Copyright (c) 2009 Michael Fellinger
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the 'Software'), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
