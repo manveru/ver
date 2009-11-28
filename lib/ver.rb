@@ -292,16 +292,21 @@ module VER
     @tree.heading('#0',     text: 'File')
     @tree.heading('line',   text: 'Line')
     @tree.heading('method', text: 'Method')
+    @tree.tag_configure('error', background: '#f88')
+    @tree.tag_configure('backtrace', background: '#8f8')
 
     context_size = 7
     frames = {}
+    error_tags = ['error']
+    backtrace_tags = ['backtrace']
 
     # from Rack::ShowExceptions
     exception.backtrace.each do |line|
       next unless line =~ /(.*?):(\d+)(:in `(.*)')?/
       filename, lineno, function = $1, $2.to_i, $4
 
-      item = @tree.insert(nil, :end, text: filename, values: [lineno, function])
+      item = @tree.insert(nil, :end,
+        text: filename, values: [lineno, function], tags: error_tags)
 
       begin
         lines = ::File.readlines(filename)
@@ -338,7 +343,10 @@ module VER
             frame.values_at(:filename, :lineno, :first_lineno, :context)
 
           context.each_with_index{|line, idx|
-            line_item = item.insert(:end, text: line, values: [first_lineno + idx + 1])
+            line_lineno = first_lineno + idx + 1
+            tags = line_lineno == lineno ? error_tags : backtrace_tags
+            line_item = item.insert(:end,
+              text: line, values: [line_lineno], tags: tags)
             frames[line_item.id] = [filename, lineno]
           }
         when Array
