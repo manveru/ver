@@ -57,6 +57,7 @@ module VER
         HEAD_LIST.find do |name, head|
           return name if line =~ head
         end
+      rescue Errno::ENOENT
       end
     end
   end
