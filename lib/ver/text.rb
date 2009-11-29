@@ -411,8 +411,12 @@ module VER
       end
     end
 
-    def font(options)
-      VER.options[:font].configure options
+    def font(given_options = nil)
+      if given_options
+        options.font.configure(options)
+      else
+        options.font
+      end
     end
   end
 end
