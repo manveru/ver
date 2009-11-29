@@ -208,21 +208,6 @@ module VER
       end
     end
 
-    # fix the ruby definition of delete, Tk allows more than 2 indices
-    def delete(*args)
-      if args.size > 2
-        deleted = args.each_slice(2).map{|left, right| get(left, right) }
-      else
-        deleted = get(*args)
-      end
-
-      copy(deleted)
-
-      execute('delete', *args)
-
-      touch!(*args)
-    end
-
     def insert(*args)
       super
       touch!(args.first)

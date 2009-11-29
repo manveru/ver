@@ -48,9 +48,19 @@ module VER
         end
       end
 
+      # Delete selection without copying it.
       def delete_selection
         queue = tag_ranges(:sel).flatten
         delete(*queue)
+        mark_set(:insert, queue.first)
+
+        finish_selection
+      end
+
+      # Copy selection and delete it.
+      def kill_selection
+        queue = tag_ranges(:sel).flatten
+        kill(*queue)
         mark_set(:insert, queue.first)
 
         finish_selection

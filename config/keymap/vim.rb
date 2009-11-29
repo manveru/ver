@@ -95,15 +95,15 @@ module VER
         mode.map :copy_left_word,                  %w[y b]
         mode.map :copy_line,                       %w[y y], %w[Y]
         mode.map :copy_right_word,                 %w[y w]
-        mode.map :delete_line,                     %w[d d]
+        mode.map :kill_line,                       %w[d d]
         mode.map :change_line,                     %w[c c]
-        mode.map [:delete_motion, :backward_char], %w[X]
-        mode.map [:delete_motion, :forward_char],  %w[x]
-        mode.map [:delete_motion, :end_of_line],   %w[D]
+        mode.map [:kill_motion, :backward_char],   %w[X]
+        mode.map [:kill_motion, :forward_char],    %w[x]
+        mode.map [:kill_motion, :end_of_line],     %w[D]
         mode.map [:change_motion, :end_of_line],   %w[C]
 
         mode.map :change_motion,                   ['c', :move]
-        mode.map :delete_motion,                   ['d', :move]
+        mode.map :kill_motion,                     ['d', :move]
 
         mode.map :eol_then_insert_mode,            %w[A]
         mode.map :forward_char_then_insert_mode,   %w[a]
@@ -140,9 +140,9 @@ module VER
       vim.add_mode :readline do |mode|
         mode.arguments = false
 
-        mode.map [:delete_motion, :backward_char], %w[BackSpace]
-        mode.map [:delete_motion, :forward_char],  %w[Delete], %w[Control-d]
-        mode.map [:delete_motion, :backward_word], %w[Control-w]
+        mode.map [:kill_motion, :backward_char], %w[BackSpace]
+        mode.map [:kill_motion, :forward_char],  %w[Delete], %w[Control-d]
+        mode.map [:kill_motion, :backward_word], %w[Control-w]
         mode.map :backward_char,                   %w[Left], %w[Control-b]
         mode.map :forward_char,                    %w[Right], %w[Control-f]
         mode.map :backward_word,                   %w[Shift-Left], %w[Alt-b]
@@ -181,7 +181,7 @@ module VER
         mode.inherits :basic, :move, :search
 
         mode.map :copy_selection,               %w[y], %w[Y]
-        mode.map :delete_selection,             %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
+        mode.map :kill_selection,               %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
         mode.map :indent_selection,             %w[greater]
         mode.map :pipe_selection,               %w[exclam]
         mode.map :smart_evaluate,               %w[Alt-e], %w[Control-e]
