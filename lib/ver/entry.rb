@@ -198,6 +198,10 @@ module VER
       delete(*virtual_movement(motion, count))
     end
 
+    def kill_motion(motion, count = 1)
+      kill(*virtual_movement(motion, count))
+    end
+
     private
 
     def virtual_movement(name, count = 1)

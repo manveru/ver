@@ -140,9 +140,9 @@ module VER
       vim.add_mode :readline do |mode|
         mode.arguments = false
 
-        mode.map [:kill_motion, :backward_char], %w[BackSpace]
-        mode.map [:kill_motion, :forward_char],  %w[Delete], %w[Control-d]
-        mode.map [:kill_motion, :backward_word], %w[Control-w]
+        mode.map [:kill_motion, :backward_char],   %w[BackSpace]
+        mode.map [:kill_motion, :forward_char],    %w[Delete], %w[Control-d]
+        mode.map [:kill_motion, :backward_word],   %w[Control-w]
         mode.map :backward_char,                   %w[Left], %w[Control-b]
         mode.map :forward_char,                    %w[Right], %w[Control-f]
         mode.map :backward_word,                   %w[Shift-Left], %w[Alt-b]
