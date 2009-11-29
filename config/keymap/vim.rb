@@ -254,6 +254,12 @@ module VER
         mode.to :cancel,              %w[Escape], %w[BackSpace]
       end
 
+      vim
+    end
+  end
+end
+
+__END__
       vim.add_mode :console_entry do |mode|
         mode.inherits :basic, :readline
         mode.arguments = false
@@ -342,8 +348,3 @@ module VER
 
         mode.missing :insert_string
       end
-
-      vim
-    end
-  end
-end
