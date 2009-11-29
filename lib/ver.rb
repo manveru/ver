@@ -31,6 +31,7 @@ module VER
   autoload :Levenshtein,         'ver/vendor/levenshtein'
   autoload :Theme,               'ver/theme'
   autoload :View,                'ver/view'
+  autoload :ExceptionView,       'ver/exception_view'
 
   require 'ver/options'
   @options = Options.new(:ver)
@@ -163,13 +164,18 @@ module VER
     Tk::Tile.set_theme options.tk_theme
 
     @paths = Set.new
+
     @root = Tk.root
     @root.wm_geometry = '160x80'
+
     @layout = Layout.new(@root)
     @layout.strategy = Layout::VerticalTiling
+
     @status = Entry.new(@root, font: options.font)
     @status.insert :end, 'For information about VER, type F1'
     @status.pack(fill: :x)
+
+    @exception_view = nil
   end
 
   def sanitize_options
@@ -282,7 +288,7 @@ module VER
 
   def error(exception)
     @status.value = exception.message if @status
-    error_tree(exception) if @root
+    exception_view(exception) if @root
     $stderr.puts("#{exception.class}: #{exception}", *exception.backtrace)
   rescue Errno::EIO
     # The original terminal has disappeared, the $stderr pipe was closed on the
@@ -293,87 +299,20 @@ module VER
     # in a nicer way, maybe let it bubble up to Tk handling.
   end
 
-  def error_tree(exception)
-    @tree ||= Tk::Tile::Treeview.new(@root)
-    @tree.clear
+  def exception_view(exception)
+    unless @exception_view
+      @exception_view ||= ExceptionView.new(@root)
 
-    @tree.configure(
-      columns:        %w[line method],
-      displaycolumns: %w[line method]
-    )
-    @tree.heading('#0',     text: 'File')
-    @tree.heading('line',   text: 'Line')
-    @tree.heading('method', text: 'Method')
-    @tree.tag_configure('error', background: '#f88')
-    @tree.tag_configure('backtrace', background: '#8f8')
+      @exception_view.bind '<<TreeviewOpen>>' do
+        @exception_view.on_treeview_open
+      end
 
-    context_size = 7
-    frames = {}
-    error_tags = ['error']
-    backtrace_tags = ['backtrace']
-
-    # from Rack::ShowExceptions
-    exception.backtrace.each do |line|
-      next unless line =~ /(.*?):(\d+)(:in `(.*)')?/
-      filename, lineno, function = $1, $2.to_i, $4
-
-      item = @tree.insert(nil, :end,
-        text: filename, values: [lineno, function], tags: error_tags)
-
-      begin
-        lines = ::File.readlines(filename)
-        _lineno = lineno - 1
-
-        first_lineno = [_lineno - context_size, 0].max
-        last_lineno  = [_lineno + context_size, lines.size].min
-        context = lines[first_lineno..last_lineno]
-
-        frames[item.id] = {
-          filename: filename,
-          lineno: lineno,
-          function: function,
-          first_lineno: first_lineno,
-          last_lineno: last_lineno,
-          context: context,
-        }
-      rescue => ex
-        puts ex, ex.backtrace
+      @exception_view.bind '<Escape>' do
+        @exception_view.pack_forget
+        @layout.views.first.focus
       end
     end
 
-    @tree.focus
-    @tree.pack expand: true, fill: :both
-
-    @tree.bind('<<TreeviewOpen>>'){|event|
-      begin
-        item = @tree.focus_item
-        frame = frames[item.id]
-
-        case frame
-        when Hash
-          filename, lineno, first_lineno, context =
-            frame.values_at(:filename, :lineno, :first_lineno, :context)
-
-          context.each_with_index{|line, idx|
-            line_lineno = first_lineno + idx + 1
-            tags = line_lineno == lineno ? error_tags : backtrace_tags
-            line_item = item.insert(:end,
-              text: line, values: [line_lineno], tags: tags)
-            frames[line_item.id] = [filename, lineno]
-          }
-        when Array
-          filename, lineno = frame
-          @layout.views.first.find_or_create(filename, lineno){|view|
-            @tree.pack_forget
-          }
-        end
-      rescue => ex
-        puts ex, ex.backtrace
-      end
-    }
-    @tree.bind('<Escape>'){
-      @tree.pack_forget
-      @layout.views.first.focus
-    }
+    @exception_view.show(exception)
   end
 end
