@@ -414,7 +414,7 @@ module VER
 
     def font(given_options = nil)
       if given_options
-        options.font.configure(options)
+        options.font.configure(given_options)
       else
         options.font
       end
