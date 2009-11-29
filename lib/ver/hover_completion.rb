@@ -118,7 +118,7 @@ module VER
       list.configure height: -1 # fit as many into the list as possible
 
       # let's place it so we can see how big it is.
-      list.place x: x, y: y, height: height, in: parent, anchor: "#{hemisphere}#{side}"
+      list.place x: x, y: y, in: parent, anchor: "#{hemisphere}#{side}"
     end
 
     def cancel
