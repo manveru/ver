@@ -53,6 +53,7 @@ module VER
       Tk::Event.generate(self, '<<Deleted>>')
       Tk::Event.generate(self, '<<Modified>>')
     end
+    alias kill delete # nobody wants to copy that way, right? ;)
 
     def insert(*args)
       super
