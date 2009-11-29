@@ -112,18 +112,40 @@ module VER
         end
       end
 
-      def comment_selection
+      def comment_selection(comment = '# ')
+        indent = nil
+        lines = []
+
         each_selected_line do |y, fx, tx|
-          insert("#{y}.0 linestart", '# ')
+          lines << y
+
+          next if indent == 0 # can't get lower
+
+          line = get("#{y}.#{fx}", "#{y}.#{tx}")
+
+          next unless start = line =~ /\S/
+
+          indent ||= start
+          indent = start if start < indent
+        end
+
+        lines.each do |y|
+          insert("#{y}.#{indent}", comment)
         end
 
         edit_separator
         refresh_selection
       end
 
-      def uncomment_selection
+      def uncomment_selection(comment = '# ')
+        regex = /#{Regexp.escape(comment)}/
         each_selected_line do |y, fx, tx|
-          delete("#{y}.0 linestart", "#{y}.0 linestart + 2 chars")
+          from, to = "#{y}.#{fx}", "#{y}.#{tx}"
+          line = get(from, to)
+
+          if line.sub!(regex, '')
+            replace(from, to, line)
+          end
         end
 
         edit_separator
