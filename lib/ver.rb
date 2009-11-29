@@ -70,6 +70,12 @@ module VER
     o "Number of characters after which wrap commands will wrap",
       :textwidth, 80
 
+    o "Show vertical scrollbar",
+      :vertical_scrollbar, false
+
+    o "Show horizontal scrollbar",
+      :horizontal_scrollbar, false
+
     o "In case of a total failure, this key binding should bail you out",
       :emergency_exit, "<Control-q>"
 

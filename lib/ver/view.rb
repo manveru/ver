@@ -26,12 +26,17 @@ module VER
     # |  @status  |
     # +-----------+
     def setup
-      setup_text
-      # setup_scrollbars # enable if you really want some.
-      setup_status
+      setup_widgets
       setup_grid
       setup_misc
       setup_events
+    end
+
+    def setup_widgets
+      setup_text
+      setup_vertical_scrollbar if VER.options.vertical_scrollbar
+      setup_horizontal_scrollbar if VER.options.horizontal_scrollbar
+      setup_status
     end
 
     def setup_text
@@ -55,12 +60,12 @@ module VER
       )
     end
 
-    def setup_scrollbars
-      # vertical scrollbar
+    def setup_vertical_scrollbar
       @ybar = Tk::Tile::YScrollbar.new(self)
       @text.yscrollbar(@ybar)
+    end
 
-      # horizontal scrollbar
+    def setup_horizontal_scrollbar
       @xbar = Tk::Tile::XScrollbar.new(self)
       @text.xscrollbar(@xbar)
     end
