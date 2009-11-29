@@ -17,7 +17,7 @@ module VER
       end
 
       def insert_indented_newline_below
-        if VER.options.autoindent
+        if options.autoindent
           line = get('insert linestart', 'insert lineend')
 
           indent = line.empty? ? "" : (line[/^\s+/] || '')
@@ -50,7 +50,7 @@ module VER
       end
 
       def insert_indented_newline
-        if VER.options.autoindent
+        if options.autoindent
           fallback_insert_indented_newline
         else
           insert_newline

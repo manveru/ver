@@ -67,7 +67,7 @@ module VER
       end
 
       def indent_selection
-        indent_size = VER.options.shiftwidth
+        indent_size = options.shiftwidth
         indent = ' ' * indent_size
 
         each_selected_line do |y, fx, tx|
@@ -81,7 +81,7 @@ module VER
       end
 
       def unindent_selection
-        indent_size = VER.options.shiftwidth
+        indent_size = options.shiftwidth
         indent = ' ' * indent_size
         queue = []
 
