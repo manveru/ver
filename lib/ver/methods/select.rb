@@ -112,7 +112,8 @@ module VER
         end
       end
 
-      def comment_selection(comment = '# ')
+      def comment_selection
+        comment = "#{options.comment_line} "
         indent = nil
         lines = []
 
@@ -137,8 +138,10 @@ module VER
         refresh_selection
       end
 
-      def uncomment_selection(comment = '# ')
+      def uncomment_selection
+        comment = "#{options.comment_line} "
         regex = /#{Regexp.escape(comment)}/
+
         each_selected_line do |y, fx, tx|
           from, to = "#{y}.#{fx}", "#{y}.#{tx}"
           line = get(from, to)

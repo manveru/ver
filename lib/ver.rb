@@ -91,6 +91,12 @@ module VER
     o "Width of one tab in pixel",
       :tabs, 10
 
+    o "Sequence to comment a line, may change through file type preferences",
+      :comment_line, '#'
+
+    o "Start and end sequence to comment a region, may change through file type preferences",
+      :comment_region, ['=begin', '=end']
+
     o "Default filetype if no matching syntax can be found",
       :filetype, "Plain Text"
 
