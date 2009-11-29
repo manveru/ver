@@ -1,5 +1,5 @@
-# Well begun is half done.
-#             -- Aristotle
+# Man must shape his tools lest they shape him.
+#               -- Arthur R. Miller
 
 # lazy stdlib
 autoload :Benchmark, 'benchmark'
