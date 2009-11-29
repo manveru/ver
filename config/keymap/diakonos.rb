@@ -7,6 +7,7 @@ module VER
       diakonos.add_mode :buffer do |mode|
         mode.arguments = false
 
+        mode.map :quit,               %w[Control-q]
         mode.map :backward_char,      %w[Left]
         mode.map :forward_char,       %w[Right]
         mode.map :previous_line,      %w[Up]

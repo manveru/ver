@@ -50,8 +50,9 @@ module VER
     def initialize(view, options = {})
       super
       self.view = view
+      @options = Options.new(:text, VER.options)
 
-      keymap_name = VER.options.keymap
+      keymap_name = @options.keymap
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
       apply_mode_style(keymap.mode) # for startup
@@ -60,7 +61,6 @@ module VER
       self.selection_start = nil
       @pristine = true
       @syntax = nil
-      @options = Options.new(:text, VER.options)
       @encoding = Encoding.default_internal
       @dirty_indices = []
 
@@ -316,6 +316,7 @@ module VER
 
     def apply_mode_style(mode)
       cursor = MODE_CURSOR[mode]
+      return unless cursor
       configure cursor
 
       return unless status && color = cursor[:insertbackground]
