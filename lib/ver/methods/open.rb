@@ -152,9 +152,6 @@ module VER
           options[option] = value
           yield(value) if block_given?
         end
-
-        require 'pp'
-        pp options
       end
 
       def set_filetype(type)
@@ -167,42 +164,3 @@ module VER
     end
   end
 end
-
-=begin
-There are two forms of modelines.  The first form:
-	[text]{white}{vi:|vim:|ex:}[white]{options}
-
-[text]		any text or empty
-{white}		at least one blank character (<Space> or <Tab>)
-{vi:|vim:|ex:}	the string "vi:", "vim:" or "ex:"
-[white]		optional white space
-{options}	a list of option settings, separated with white space or ':',
-		where each part between ':' is the argument for a ":set"
-		command (can be empty)
-
-Example:
-   vi:noai:sw=3 ts=6 ~
-
-The second form (this is compatible with some versions of Vi):
-
-	[text]{white}{vi:|vim:|ex:}[white]se[t] {options}:[text]
-
-[text]		any text or empty
-{white}		at least one blank character (<Space> or <Tab>)
-{vi:|vim:|ex:}	the string "vi:", "vim:" or "ex:"
-[white]		optional white space
-se[t]		the string "set " or "se " (note the space)
-{options}	a list of options, separated with white space, which is the
-		argument for a ":set" command
-:		a colon
-[text]		any text or empty
-
-Example:
-   /* vim: set ai tw=75: */ ~
-
-The white space before {vi:|vim:|ex:} is required.  This minimizes the chance
-that a normal word like "lex:" is caught.  There is one exception: "vi:" and
-"vim:" can also be at the start of the line (for compatibility with version
-3.0).  Using "ex:" at the start of the line will be ignored (this could be
-short for "example:").
-=end
