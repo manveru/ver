@@ -37,7 +37,8 @@ module VER
       # @see delete
       # @see kill_line
       def delete_line(count = 1)
-        from = index(:insert)
+        from = index('insert linestart')
+        count = count.abs - 1
         to = index("#{from.y + count}.#{from.x} lineend + 1 char")
         delete(from, to)
       end
@@ -49,7 +50,8 @@ module VER
       # @see kill
       # @see delete_line
       def kill_line(count = 1)
-        from = index(:insert)
+        from = index('insert linestart')
+        count = count.abs - 1
         to = index("#{from.y + count.to_i}.#{from.x} lineend + 1 char")
         kill(from, to)
       end
