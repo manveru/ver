@@ -32,6 +32,8 @@ module VER
   autoload :Theme,               'ver/theme'
   autoload :View,                'ver/view'
   autoload :ExceptionView,       'ver/exception_view'
+  autoload :Bookmarks,           'ver/methods/bookmark'
+  autoload :Bookmark,            'ver/methods/bookmark'
 
   require 'ver/options'
   @options = Options.new(:ver)
@@ -176,93 +178,7 @@ module VER
     @status.pack(fill: :x)
 
     @exception_view = nil
-    @bookmarks = Bookmarks.new
-  end
-
-  class Bookmarks
-    include Enumerable
-
-    def initialize
-      @bm = []
-      @idx = nil
-    end
-
-    def each(&block)
-      @bm.each(&block)
-    end
-
-    def add_named(name, value)
-      if value.is_a?(Bookmark)
-        bm = value.dup
-      else
-        bm = Bookmark.new(name, *value.to_a)
-      end
-
-      @bm << bm
-      @bm.uniq!
-      @bm.sort!
-      bm
-    end
-    alias []= add_named
-
-    def add_unnamed(value)
-      if value.is_a?(Bookmark)
-        bm = value
-      else
-        bm = Bookmark.new(nil, *value.to_a)
-      end
-
-      @bm << bm
-      @bm.uniq!
-      @bm.sort!
-      bm
-    end
-
-    def <<(value)
-      add_unnamed(value)
-      self
-    end
-
-    def [](name)
-      @bm.find{|bm| bm.name == name }
-    end
-
-    def key?(name)
-      @bm.any?{|bm| bm.name == name }
-    end
-
-    def delete(name)
-      if found = @bm.find{|bm| bm.name == name }
-        @bm.delete(found)
-      end
-    end
-
-    def next_from(pos)
-      needle = Bookmark.new(nil, *pos)
-      @bm.find{|bm| bm > needle }
-    end
-
-    def prev_from(pos)
-      needle = Bookmark.new(nil, *pos)
-      @bm.reverse.find{|bm| needle > bm }
-    end
-
-    def at(pos)
-      needle = Bookmark.new(nil, *pos)
-      @bm.find{|bm| needle == bm }
-    end
-
-    class Bookmark < Struct.new(:name, :file, :index)
-      include Comparable
-
-      def <=>(other)
-        [file, index] <=> [other.file, other.index]
-      end
-
-      def to_a
-        [name, file, index.y, index.x]
-      end
-    end
+    @bookmarks, @ctag_stack = Bookmarks.new, Bookmarks.new
   end
 
   def sanitize_options
