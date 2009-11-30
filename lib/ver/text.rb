@@ -91,34 +91,96 @@ module VER
       view.layout
     end
 
-    # lines start from 1
-    # end is maximum lines + 1
-    def status_projection(into)
-      format = "%s  %s  %s [%s]"
-
-      top, bot = yview
-
-      if top < 0.5
-        percent = '[top]'
-      elsif bot > 99.5
-        percent = '[bot]'
-      else
-        percent = "#{bot.to_i}%"
+    class StatusContext < Struct.new(:text)
+      def filename(width = 0)
+        "%#{width}s" % text.filename
       end
+      alias F filename
 
-      additional = [keymap.mode]
-      syntax_name = syntax.name if syntax
-      additional << syntax_name if syntax_name
-      additional << @encoding
+      def basename(width = 0)
+        "%#{width}s" % text.filename.basename
+      end
+      alias f basename
 
-      values = [
-        short_filename,
-        index(:insert).idx,
-        percent,
-        additional.join(' | '),
-      ]
+      def relative(width = 0)
+        "%#{width}s" % text.short_filename
+      end
+      alias r relative
 
-      into.value = format % values
+      def dir(width = 0)
+        "%#{width}s" % text.filename.directory
+      end
+      alias d dir
+
+      def line(width = 0)
+        "%#{width}s" % text.count('1.0', 'insert', :lines)
+      end
+      alias l line
+
+      def lines(width = 0)
+        "%#{width}s" % text.count('1.0', 'end', :lines)
+      end
+      alias L lines
+
+      def column(width = 0)
+        "%#{width}s" % text.count('insert linestart', 'insert', :displaychars)
+      end
+      alias c column
+
+      def percent
+        here = text.count('1.0', 'insert', :lines)
+        total = text.count('1.0', 'end', :lines)
+        percent = ((100.0 / total) * here).round
+
+        case percent
+        when 100; 'Bot'
+        when 0  ; 'Top'
+        else    ; '%2d%%' % percent
+        end
+      end
+      alias p percent
+
+      def buffer(width = 0)
+        "%#{width}s" % text.layout.views.index(text.view)
+      end
+      alias b buffer
+
+      def buffers(width = 0)
+        "%#{width}s" % text.layout.views.size
+      end
+      alias B buffers
+
+      def encoding(width = 0)
+        "%#{width}s" % text.encoding
+      end
+      alias e encoding
+
+      def syntax(width = 0)
+        "%#{width}s" % text.syntax.name if text.syntax
+      end
+      alias s syntax
+
+      def mode(width = 0)
+        "%#{width}s" % text.keymap.mode
+      end
+      alias m mode
+    end
+
+    def status_projection(into)
+      format = '%<%f %m%r%=%-14.(%l,%c%V%) %P'
+
+      format = '%r\t%4l,%c %p\t[%m%_s%_e]'
+      # format = '-- %F -- (%s) --- Buf %b of %B --- L %3l/%3L C %2c --'
+      format.gsub!(/%([[:alpha:]])/, '#{\1()}')
+      format.gsub!(/%_([[:alpha:]])/, '#{(e = \1()) ? " #{e}" : ""}')
+      format.gsub!(/%([+-]?\d+)([[:alpha:]])/, '#{\2(\1)}')
+      format = "%{#{format}}"
+      # puts format
+      context = StatusContext.new(self)
+      line = context.instance_eval(format)
+      # p line
+
+      into.value = line
     end
 
     TAG_ALL_MATCHING_OPTIONS = { from: '1.0', to: 'end - 1 chars' }
@@ -267,6 +329,7 @@ module VER
 
       if @syntax = Syntax.from_filename(filename)
         defer{ syntax.highlight(self, value) }
+        status_projection(status) if status
       end
     end
 
