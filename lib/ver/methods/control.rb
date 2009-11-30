@@ -1,6 +1,21 @@
 module VER
   module Methods
     module Control
+      def exec_into_new
+        status_ask 'Command: ' do |command|
+          target = options.home_conf_dir/'shell-result.txt'
+          target.open('w+'){|io| io.write(`#{command}`) }
+          view.find_or_create(target)
+        end
+      end
+
+      def exec_into_void
+        status_ask 'Command: ' do |command|
+          system(command)
+          message("Exit code: #{$?}")
+        end
+      end
+
       def tags_at(index = :insert)
         index = index(index)
         tags = tag_names(index)
