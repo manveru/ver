@@ -153,6 +153,7 @@ module VER
     first_startup unless options.home_conf_dir.directory?
     load 'rc'
     sanitize_options
+    # dump_options
     setup_widgets
     open_argv || open_welcome
     emergency_bindings
@@ -288,6 +289,27 @@ module VER
 
   def opened_file(text)
     @paths << text.filename
+  end
+
+  def dump_options
+    out = []
+
+    options.each_pair do |key, value|
+      out << [key,
+        case value
+        when Tk::Font
+          "VER::Font[%p]" % [value.actual_hash]
+        when Pathname
+          value.to_s
+        else
+          value
+        end
+        ]
+    end
+
+    out.each do |pair|
+      puts("VER.options.%s = %p" % pair)
+    end
   end
 
   def error(exception)
