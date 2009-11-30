@@ -98,6 +98,10 @@ module VER
           end
         end
       end
+
+      def search_clear
+        tag_remove('search', '1.0', 'end')
+      end
     end
   end
 end

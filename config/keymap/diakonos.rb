@@ -85,6 +85,7 @@ module VER
 
         mode.map :status_search_next, %w[Control-f]
         mode.map :search_next,        %w[F3]
+        mode.map :search_clear,       %w[Control-Alt-u]
 
         # TODO: this doesn't work, investiate.
         mode.map :search_prev,        %w[Shift-F3]
