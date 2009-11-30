@@ -7,28 +7,48 @@ module VER
       }
 
       def status_search_next
-        status_search_common('/') do
-          search_next
-        end
+        status_search_common('/'){ search_next }
       end
 
       def status_search_prev
-        status_search_common('?') do
-          search_prev
-        end
+        status_search_common('?'){ search_prev }
       end
 
       def status_search_common(question)
-        status_ask question do |term|
-          begin
-            needle = Regexp.new(term)
-          rescue RegexpError
-            needle = Regexp.escape(term)
-          end
+        status.bind('<<Modified>>') do
+          search_incremental(status.value)
+        end
 
-          tag_all_matching(:search, needle, SEARCH_HIGHLIGHT)
+        status_ask question do |term|
+          status.bind('<<Modified>>'){ }
+          search_incremental(term)
+          search_prev
           yield
         end
+      end
+
+      def search_incremental(term)
+        return if !term || term.empty?
+
+        begin
+          needle = Regexp.new(term)
+        rescue RegexpError, SyntaxError
+          needle = Regexp.escape(term)
+        end
+
+        tag_all_matching(:search, needle, SEARCH_HIGHLIGHT)
+        from, to = tag_nextrange('search', '1.0', 'end')
+        see(from) if from
+      end
+
+      def search_first
+        from, to = tag_nextrange('search', '1.0', 'end')
+        mark_set(:insert, from) if from
+      end
+
+      def search_last
+        from, to = tag_prevrange('search', 'end', '1.0')
+        mark_set(:insert, from) if from
       end
 
       def search_next
