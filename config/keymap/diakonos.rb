@@ -8,6 +8,14 @@ module VER
         mode.map :quit, %w[Control-q]
       end
 
+      diakonos.add_mode :buffers do |mode|
+        mode.map :view_close, %w[Control-w]
+
+        1.upto(9) do |n|
+          mode.map [:view_focus, n], ["Alt-#{n}"]
+        end
+      end
+
       diakonos.add_mode :readline do |mode|
         mode.arguments = false
 
@@ -92,7 +100,7 @@ module VER
       end
 
       diakonos.add_mode :buffer do |mode|
-        mode.inherits :basic, :readline, :bookmark, :search
+        mode.inherits :basic, :buffers, :readline, :bookmark, :search
         mode.arguments = false
 
         mode.map :backward_char,      %w[Left]
@@ -119,6 +127,13 @@ module VER
 
         mode.map :indent_line,   %w[Alt-i], %w[Escape i]
         mode.map :unindent_line, %w[Escape I]
+
+        mode.map :complete_word, %w[Alt-e]
+
+        mode.map :exec_into_new,  %w[F2]
+        mode.map :exec_into_void, %w[F8]
+        mode.map [:exec_into_new, 'ruby -c $f'], %w[Control-Alt-c]
+
 =begin
         # TODO
         mode.map :top_of_view,        %w[Alt-comma]
@@ -138,6 +153,16 @@ module VER
         end
 
         mode.missing :insert_string
+      end
+
+      diakonos.add_mode :hover_completion do |mode|
+        mode.inherits :basic
+
+        mode.to :go_up,               %w[Up], %w[Control-n]
+        mode.to :go_down,             %w[Down], %w[Control-p]
+        mode.to :continue_completion, %w[Right], %w[Tab]
+        mode.to :submit,              %w[Return]
+        mode.to :cancel,              %w[Escape], %w[BackSpace]
       end
 
       diakonos

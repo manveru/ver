@@ -1,13 +1,17 @@
 module VER
   class Layout < Tk::Tile::Frame
-    attr_reader :strategy, :views, :options
+    attr_reader :strategy, :views, :stack, :options
 
     def initialize(parent, options = {})
       super
 
       pack(fill: :both, expand: true)
 
-      @views = []
+      # These two have to be kept in sync
+      # @views contains the views in the order they were opened
+      # @stack contains the views in the order they are displayed
+      @views, @stack = [], []
+
       @options = {}
       self.strategy = Layout::VerticalTiling
     end
@@ -20,14 +24,16 @@ module VER
     def create_view
       view = View.new(self)
       yield view
-      @views.unshift view
+      @views.push(view)
+      @stack.unshift(view)
 
       apply
       view.focus
     end
 
     def close_view(view)
-      @views.delete view
+      @views.delete(view)
+      @stack.delete(view)
       view.destroy
 
       if previous = @views.first
@@ -62,10 +68,10 @@ module VER
     # |     |  3  | > |     |  2  | > |     |  2  | > |     |  2  |
     # +-----+-----+ > +-----+-----+ > +-----+-----+ > +-----+-----+
     def push_up(current)
-      return unless index = @views.index(current)
-      previous = @views[index - 1]
+      return unless index = @stack.index(current)
+      previous = @stack[index - 1]
       current.raise(previous)
-      @views[index - 1], @views[index] = current, previous
+      @stack[index - 1], @stack[index] = current, previous
 
       apply
     end
@@ -77,21 +83,21 @@ module VER
     # |     |  3  | > |     |  2  | > |     |  2  | > |     |  3  |
     # +-----+-----+ > +-----+-----+ > +-----+-----+ > +-----+-----+
     def push_down(current)
-      return unless index = @views.index(current)
-      following = @views[index + 1] || @views[0]
+      return unless index = @stack.index(current)
+      following = @stack[index + 1] || @stack[0]
       current.raise(following)
-      @views[@views.index(following)], @views[index] = current, following
+      @stack[@stack.index(following)], @stack[index] = current, following
 
       apply
     end
 
     def push_top(current)
-      @views.unshift(@views.delete(current))
+      @stack.unshift(@stack.delete(current))
       apply
     end
 
     def push_bottom(view)
-      @views.push(@views.delete(view))
+      @stack.push(@stack.delete(view))
       apply
     end
 
@@ -109,7 +115,7 @@ module VER
       DEFAULT = { master: 1, stacking: 3 }
 
       def prepare(layout, options)
-        slaves = layout.views
+        slaves = layout.stack
         master, stacking = DEFAULT.merge(options).values_at(:master, :stacking)
         options.merge! master: master, stacking: stacking
         head, tail, hidden = slaves[0...master], slaves[master..stacking], slaves[stacking..-1]

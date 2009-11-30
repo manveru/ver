@@ -1,11 +1,67 @@
 module VER
   module Methods
     module Control
-      def exec_into_new
-        status_ask 'Command: ' do |command|
+      # Assigns env variables used in the given command.
+      # - $f: The current buffer's filename
+      # - $d: The current buffer's directory
+      # - $F: A space-separated list of all buffer filenames
+      # - $i: A string acquired from the user with a prompt
+      # - $c: The current clipboard text
+      # - $s: The currently selected text
+      #
+      # @param [String] command
+      #   The string containing the command executed
+      def prepare_exec(command)
+        prepare_exec_f if command =~ /\$f/
+        prepare_exec_d if command =~ /\$d/
+        prepare_exec_F if command =~ /\$F/
+        prepare_exec_i if command =~ /\$i/
+        prepare_exec_c if command =~ /\$c/
+        prepare_exec_s if command =~ /\$s/
+      end
+
+      def prepare_exec_f
+        p f: (ENV['f'] = filename.to_s)
+      end
+
+      def prepare_exec_d
+        p d: (ENV['d'] = filename.directory.to_s)
+      end
+
+      def prepare_exec_F
+        p F: (ENV['F'] = layout.views.map{|v| v.text.filename }.join(' '))
+      end
+
+      def prepare_exec_i
+        raise NotImplementedError
+      end
+
+      def prepare_exec_c
+        p c: (ENV['c'] = clipboard_get)
+      end
+
+      def prepare_exec_s
+        content = []
+
+        each_selected_line do |y, fx, tx|
+          content << get("#{y}.#{fx}", "#{y}.#{tx}")
+        end
+
+        ENV['s'] = content.join("\n")
+      end
+
+      def exec_into_new(command = nil)
+        if command
           target = options.home_conf_dir/'shell-result.txt'
+          prepare_exec(command)
+          p command
+          system(command)
           target.open('w+'){|io| io.write(`#{command}`) }
           view.find_or_create(target)
+        else
+          status_ask 'Command: ' do |command|
+            exec_into_new(command)
+          end
         end
       end
 

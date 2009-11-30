@@ -1,6 +1,11 @@
 module VER
   module Methods
     module Views
+      def view_focus(index = 0)
+        return unless found = layout.views[index - 1]
+        found.push_top
+      end
+
       def view_find_or_create(file)
         view.find_or_create(file)
       end
