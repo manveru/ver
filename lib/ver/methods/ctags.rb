@@ -37,11 +37,11 @@ module VER
       def ctags_execute(file_name, ex_cmd)
         case ex_cmd
         when /^\d+$/
-          VER.ctag_stack.add_unnamed(bookmark_value)
+          VER.ctag_stack << Bookmarks::Bookmark.new(nil, *bookmark_value)
 
           view.find_or_create(file_name, ex_cmd.to_i)
         when /^\/(.*)\/$/
-          VER.ctag_stack.add_unnamed(bookmark_value)
+          VER.ctag_stack << Bookmarks::Bookmark.new(nil, *bookmark_value)
 
           source = $1.gsub(/(?!\\)([()])/, '\\\\\\1')
           regexp = Regexp.new(source)

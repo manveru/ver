@@ -180,7 +180,8 @@ module VER
     @status.pack(fill: :x)
 
     @exception_view = nil
-    @bookmarks, @ctag_stack = Bookmarks.new, Bookmarks.new
+    @bookmarks = Bookmarks.new
+    @ctag_stack = []
   end
 
   def sanitize_options
