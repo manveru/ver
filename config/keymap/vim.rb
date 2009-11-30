@@ -78,6 +78,15 @@ module VER
         mode.map :ctags_find_current, %w[Control-bracketright] # C-]
       end
 
+      vim.add_mode :bookmark do |mode|
+        mode.arguments = false
+
+        mode.map :char_bookmark_add,   %w[m]
+        mode.map :char_bookmark_visit, %w[quoteleft]
+        # vim also has quoteright to jump to the start of the line, but who
+        # needs that *_*
+      end
+
       vim.add_mode :complete do |mode|
         mode.arguments = false
 
@@ -90,7 +99,7 @@ module VER
       end
 
       vim.add_mode :control do |mode|
-        mode.inherits :basic, :move, :views, :search, :ctags
+        mode.inherits :basic, :move, :views, :search, :ctags, :bookmark
 
         mode.map :copy_left_word,                  %w[y b]
         mode.map :copy_line,                       %w[y y], %w[Y]

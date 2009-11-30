@@ -1,6 +1,26 @@
 module VER
   module Methods
     module Bookmark
+      def char_bookmark_visit(name = nil)
+        if name
+          named_bookmark_visit(name)
+        else
+          status_ask 'Bookmark name: ', take: 1 do |bm_name|
+            named_bookmark_visit(bm_name)
+          end
+        end
+      end
+
+      def char_bookmark_add(name = nil)
+        if name
+          named_bookmark_add(name)
+        else
+          status_ask 'Bookmark name: ', take: 1 do |bm_name|
+            named_bookmark_add(bm_name)
+          end
+        end
+      end
+
       def named_bookmark_add(name = nil)
         if name
           bm = bookmarks.add_named(name, bookmark_value)
@@ -72,11 +92,12 @@ module VER
         [filename, index(:insert)]
       end
 
-      def bookmark_open(bookmark)
+      def bookmark_open(bookmark, use_x = true)
         return unless bookmark.respond_to?(:file) && bookmark.respond_to?(:index)
 
         view.find_or_create(bookmark.file) do |view|
-          view.text.mark_set(:insert, bookmark.index)
+          y, x = use_x ? bookmark.index.split : [bookmark.index.y, 0]
+          view.text.mark_set(:insert, "#{y}.#{x}")
         end
       end
     end
