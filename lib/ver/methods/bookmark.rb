@@ -1,6 +1,90 @@
 module VER
-  module Methods
-    module Bookmark
+  class Bookmarks
+    include Enumerable
+
+    def initialize
+      @bm = []
+      @idx = nil
+    end
+
+    def each(&block)
+      @bm.each(&block)
+    end
+
+    def add_named(name, value)
+      if value.is_a?(Bookmark)
+        bm = value.dup
+      else
+        bm = Bookmark.new(name, *value.to_a)
+      end
+
+      @bm << bm
+      @bm.uniq!
+      @bm.sort!
+      bm
+    end
+    alias []= add_named
+
+    def add_unnamed(value)
+      if value.is_a?(Bookmark)
+        bm = value
+      else
+        bm = Bookmark.new(nil, *value.to_a)
+      end
+
+      @bm << bm
+      @bm.uniq!
+      @bm.sort!
+      bm
+    end
+
+    def <<(value)
+      add_unnamed(value)
+      self
+    end
+
+    def [](name)
+      @bm.find{|bm| bm.name == name }
+    end
+
+    def key?(name)
+      @bm.any?{|bm| bm.name == name }
+    end
+
+    def delete(name)
+      if found = @bm.find{|bm| bm.name == name }
+        @bm.delete(found)
+      end
+    end
+
+    def next_from(pos)
+      needle = Bookmark.new(nil, *pos)
+      @bm.find{|bm| bm > needle }
+    end
+
+    def prev_from(pos)
+      needle = Bookmark.new(nil, *pos)
+      @bm.reverse.find{|bm| needle > bm }
+    end
+
+    def at(pos)
+      needle = Bookmark.new(nil, *pos)
+      @bm.find{|bm| needle == bm }
+    end
+
+    class Bookmark < Struct.new(:name, :file, :index)
+      include Comparable
+
+      def <=>(other)
+        [file, index] <=> [other.file, other.index]
+      end
+
+      def to_a
+        [name, file, index.y, index.x]
+      end
+    end
+
+    module Methods
       def char_bookmark_visit(name = nil)
         if name
           named_bookmark_visit(name)
@@ -100,92 +184,6 @@ module VER
           view.text.mark_set(:insert, "#{y}.#{x}")
         end
       end
-    end
-  end
-
-  class Bookmarks
-    include Enumerable
-
-    def initialize
-      @bm = []
-      @idx = nil
-    end
-
-    def each(&block)
-      @bm.each(&block)
-    end
-
-    def add_named(name, value)
-      if value.is_a?(Bookmark)
-        bm = value.dup
-      else
-        bm = Bookmark.new(name, *value.to_a)
-      end
-
-      @bm << bm
-      @bm.uniq!
-      @bm.sort!
-      bm
-    end
-    alias []= add_named
-
-    def add_unnamed(value)
-      if value.is_a?(Bookmark)
-        bm = value
-      else
-        bm = Bookmark.new(nil, *value.to_a)
-      end
-
-      @bm << bm
-      @bm.uniq!
-      @bm.sort!
-      bm
-    end
-
-    def <<(value)
-      add_unnamed(value)
-      self
-    end
-
-    def [](name)
-      @bm.find{|bm| bm.name == name }
-    end
-
-    def key?(name)
-      @bm.any?{|bm| bm.name == name }
-    end
-
-    def delete(name)
-      if found = @bm.find{|bm| bm.name == name }
-        @bm.delete(found)
-      end
-    end
-
-    def next_from(pos)
-      needle = Bookmark.new(nil, *pos)
-      @bm.find{|bm| bm > needle }
-    end
-
-    def prev_from(pos)
-      needle = Bookmark.new(nil, *pos)
-      @bm.reverse.find{|bm| needle > bm }
-    end
-
-    def at(pos)
-      needle = Bookmark.new(nil, *pos)
-      @bm.find{|bm| needle == bm }
-    end
-  end
-
-  class Bookmark < Struct.new(:name, :file, :index)
-    include Comparable
-
-    def <=>(other)
-      [file, index] <=> [other.file, other.index]
-    end
-
-    def to_a
-      [name, file, index.y, index.x]
     end
   end
 end

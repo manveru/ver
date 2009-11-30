@@ -18,7 +18,7 @@ require 'ver/methods/shortcuts'
 module VER
   module Methods
     include(Completion, Control, Ctags, Delete, Help, Insert, Move, Open,
-            Preview, Save, Search, Select, Clipboard, Bookmark, Views)
+            Preview, Save, Search, Select, Clipboard, Bookmarks::Methods, Views)
     include Shortcuts
   end
 end
