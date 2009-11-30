@@ -1,5 +1,12 @@
 module VER
   class View::List::Grep < View::List
+    def initialize(parent, glob = nil, &block)
+      super(parent, &block)
+
+      @glob = nil
+      @glob = glob.to_s unless glob.nil?
+    end
+
     def update
       list.clear
 
@@ -17,11 +24,15 @@ module VER
     def grep(input)
       @choices = []
 
-      input, query = input.split(/ /, 2)
-      input, query = nil, input unless query
-      input ||= '*'
+      if @glob
+        input, query = @glob, input
+      else
+        input, query = input.split(/ /, 2)
+        input, query = nil, input unless query
+        input ||= '*'
 
-      return [] if !query || query.size < 3 # protect a little
+        return [] if !query || query.size < 3 # protect a little
+      end
 
       regex = /#{Regexp.escape(query)}/
 

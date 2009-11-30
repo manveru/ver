@@ -47,6 +47,20 @@ module VER
         end
       end
 
+      def grep_buffer
+        View::List::Grep.new self, filename do |file, line|
+          view.find_or_create(file, line)
+        end
+      end
+
+      def grep_buffers
+        glob = '{' << layout.views.map{|v| v.text.filename }.join(',') << '}'
+
+        View::List::Grep.new self, glob do |file, line|
+          view.find_or_create(file, line)
+        end
+      end
+
       def open_method_list
         View::List::Methods.new self do |file, line|
           view.find_or_create(file, line)
