@@ -87,14 +87,15 @@ module VER
         mode.map :ctags_find_current, %w[Alt-parenright]
         mode.map :ctags_prev,         %w[Alt-parenleft]
 
+        mode.map :forward_scroll,  %w[Alt-n]
+        mode.map :backward_scroll, %w[Alt-p]
 =begin
         # TODO
         mode.map :top_of_view,        %w[Alt-comma]
         mode.map :bottom_of_view,     %w[Alt-period]
         mode.map :previous_cursor,    %w[Control-j]
         mode.map :forward_cursor,     %w[Control-l]
-        mode.map :scroll_down,        %w[Alt-n]
-        mode.map :scroll_up,          %w[Alt-p]
+
         mode.map :ask_go_line,        %w[Control-g]
 
         mode.map [:delete_motion, :backward_char], %w[BackSpace]

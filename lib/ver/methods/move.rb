@@ -113,6 +113,18 @@ module VER
         mark_set :insert, tk_next_line_pos(count)
       end
 
+      def forward_scroll(count = 1)
+        count_abs = count.abs
+        yview_scroll(count_abs, :units)
+        next_line(count_abs)
+      end
+
+      def backward_scroll(count = 1)
+        count_abs = count.abs
+        yview_scroll(-count_abs, :units)
+        previous_line(count_abs)
+      end
+
       def forward_word(count = 1)
         count.times do
           original_type = type = char_type(get(:insert))
