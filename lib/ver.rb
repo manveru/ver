@@ -95,6 +95,9 @@ module VER
     o "Width of one tab in pixel",
       :tabs, 10
 
+    o "Format for Statusline",
+      :statusline, '%r\t%4l,%c %p\t[%m%_s%_e]'
+
     o "Sequence to comment a line, may change through file type preferences",
       :comment_line, '#'
 
