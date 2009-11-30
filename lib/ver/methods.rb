@@ -12,24 +12,13 @@ require 'ver/methods/save'
 require 'ver/methods/search'
 require 'ver/methods/select'
 require 'ver/methods/views'
+require 'ver/methods/bookmark'
 require 'ver/methods/shortcuts'
 
 module VER
   module Methods
-    include Completion
-    include Control
-    include Ctags
-    include Delete
-    include Help
-    include Insert
-    include Move
-    include Open
-    include Preview
-    include Save
-    include Search
-    include Select
+    include(Completion, Control, Ctags, Delete, Help, Insert, Move, Open,
+            Preview, Save, Search, Select, Clipboard, Bookmark, Views)
     include Shortcuts
-    include Clipboard
-    include Views
   end
 end
