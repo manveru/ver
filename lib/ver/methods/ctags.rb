@@ -6,6 +6,19 @@ module VER
         ctags_find(word)
       end
 
+      def ctags_go(name = nil)
+        if name
+          ctags_content do |tag_name, file_name, ex_cmd|
+            next unless tag_name == name
+            return ctags_execute(file_name, ex_cmd)
+          end
+        else
+          status_ask 'Tag name: ' do |tag_name|
+            ctags_go(tag_name)
+          end
+        end
+      end
+
       def ctags_find(needle)
         ctags_content do |tag_name, file_name, ex_cmd|
           next unless tag_name == needle
@@ -13,13 +26,26 @@ module VER
         end
       end
 
+      def ctags_prev
+        if bm = VER.ctag_stack.pop
+          bookmark_open(bm)
+        else
+          message("Tag stack empty.")
+        end
+      end
+
       def ctags_execute(file_name, ex_cmd)
         case ex_cmd
         when /^\d+$/
+          VER.ctag_stack.add_unnamed(bookmark_value)
+
           view.find_or_create(file_name, ex_cmd.to_i)
         when /^\/(.*)\/$/
-          source = $1.gsub!(/(?!\\)([()])/, '\\\\\\1')
+          VER.ctag_stack.add_unnamed(bookmark_value)
+
+          source = $1.gsub(/(?!\\)([()])/, '\\\\\\1')
           regexp = Regexp.new(source)
+
           self.view.find_or_create(file_name) do |view|
             view.text.tag_all_matching(:search, regexp, Search::SEARCH_HIGHLIGHT)
             view.text.search_next

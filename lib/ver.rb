@@ -39,7 +39,8 @@ module VER
   @options = Options.new(:ver)
 
   class << self
-    attr_reader :root, :layout, :status, :paths, :options, :bookmarks
+    attr_reader(:root, :layout, :status, :paths, :options, :bookmarks,
+                :ctag_stack)
   end
 
   options.dsl do

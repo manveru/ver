@@ -76,6 +76,7 @@ module VER
 
       vim.add_mode :ctags do |mode|
         mode.map :ctags_find_current, %w[Control-bracketright] # C-]
+        mode.map :ctags_prev,         %w[Control-bracketleft]  # C-[
       end
 
       vim.add_mode :bookmark do |mode|

@@ -83,9 +83,9 @@ module VER
         mode.map [:named_bookmark_visit, '4'], %w[Alt-b Alt-4]
         mode.map [:named_bookmark_visit, '5'], %w[Alt-b Alt-5]
 
-        mode.map :go_tag,              %w[Alt-t]
-        mode.map :go_tag_under_cursor, %w[Alt-parenright]
-        mode.map :pop_tag,             %w[Alt-parenleft]
+        mode.map :ctags_go,           %w[Alt-t]
+        mode.map :ctags_find_current, %w[Alt-parenright]
+        mode.map :ctags_prev,         %w[Alt-parenleft]
 
 =begin
         # TODO
