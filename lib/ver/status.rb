@@ -112,7 +112,7 @@ module VER
         @history_idx = history.size - 1
       end
 
-      p prev: [history, @history_idx]
+      # p prev: [history, @history_idx]
       answer = history[@history_idx]
       return unless answer
       self.value = answer
@@ -126,7 +126,7 @@ module VER
         @history_idx = 0
       end
 
-      p next: [history, @history_idx]
+      # p next: [history, @history_idx]
       answer = history[@history_idx]
       return unless answer
       self.value = answer
