@@ -137,23 +137,24 @@ module VER
 
           case executable
           when nil
-            # FIXME: this allows only one mode
-            if found = previous.find{|prev_key, prev_value| prev_key.is_a?(Mode) }
-              mode, action = found
-              looked = mode.attempt_execute([key, *stack], true)
+            return false unless previous.respond_to?(:find)
 
-              case looked
-              when false
-                return false
-              when nil
-                return nil
-              else
-                cmd, cmd_arg = looked
-                return nil if cmd.is_a?(Hash)
-                return execute(action, cmd, arg)
-              end
-            else
+            # FIXME: this allows only one mode
+            found = previous.find{|prev_key, prev_value| prev_key.is_a?(Mode) }
+            return false unless found
+
+            mode, action = found
+            looked = mode.attempt_execute([key, *stack], true)
+
+            case looked
+            when false
               return false
+            when nil
+              return nil
+            else
+              cmd, cmd_arg = looked
+              return nil if cmd.is_a?(Hash)
+              return execute(action, cmd, arg)
             end
           end
         end
