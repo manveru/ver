@@ -126,24 +126,11 @@ module VER
       end
 
       def forward_word(count = 1)
-        count.times do
-          original_type = type = char_type(get(:insert))
-          changed = 0
+        forward_jump(count, &method(:word_char_type))
+      end
 
-          begin
-            original_pos = index(:insert)
-            execute :mark, :set, :insert, 'insert + 1 chars'
-            break if  original_pos == index(:insert)
-
-            type = char_type(get(:insert))
-            changed += 1 if type != original_type
-            original_type = type
-          end until changed > 0 && type != :space
-        end
-
-        Tk::Event.generate(self, '<<Movement>>')
-      rescue => ex
-        VER.error(ex)
+      def forward_chunk(count = 1)
+        forward_jump(count, &method(:chunk_char_type))
       end
 
       def word_right_end(count = 1)
@@ -153,29 +140,46 @@ module VER
       end
 
       def backward_word(count = 1)
+        backward_jump(count, &method(:word_char_type))
+      end
+
+      def backward_chunk(count = 1)
+        backward_jump(count, &method(:chunk_char_type))
+      end
+
+      private
+
+      def word_char_type(char)
+        case char
+        when /\w/; :word
+        when /\S/; :special
+        when /\s/; :space
+        else; raise "You cannot get here"
+        end
+      end
+
+      def chunk_char_type(char)
+        case char
+        when /\S/; :nonspace
+        when /\s/; :space
+        else; raise "You cannot get here"
+        end
+      end
+
+      def forward_jump(count)
         count.times do
-          original_type = type = char_type(get(:insert))
+          original_type = type = yield(get(:insert))
           changed = 0
 
           begin
             original_pos = index(:insert)
-            execute :mark, :set, :insert, 'insert - 1 chars'
-            break if index(:insert) == original_pos
+            execute :mark, :set, :insert, 'insert + 1 chars'
+            break if  original_pos == index(:insert)
 
-            type = char_type(get(:insert))
+            type = yield(get(:insert))
             changed += 1 if type != original_type
             original_type = type
           end until changed > 0 && type != :space
-
-          type = char_type(get('insert - 1 chars'))
-
-          while type == original_type
-            original_pos = index(:insert)
-            execute :mark, :set, :insert, 'insert - 1 chars'
-            break if index(:insert) == original_pos
-
-            type = char_type(get('insert - 1 chars'))
-          end
         end
 
         Tk::Event.generate(self, '<<Movement>>')
@@ -183,15 +187,35 @@ module VER
         VER.error(ex)
       end
 
-      private
+      def backward_jump(count = 1)
+        count.times do
+          original_type = type = yield(get(:insert))
+          changed = 0
 
-      def char_type(char)
-        case char
-        when /\w/; :word
-        when /\S/; :special
-        when /\s/; :space
-        else; raise "You cannot get here"
+          begin
+            original_pos = index(:insert)
+            execute :mark, :set, :insert, 'insert - 1 chars'
+            break if index(:insert) == original_pos
+
+            type = yield(get(:insert))
+            changed += 1 if type != original_type
+            original_type = type
+          end until changed > 0 && type != :space
+
+          type = yield(get('insert - 1 chars'))
+
+          while type == original_type
+            original_pos = index(:insert)
+            execute :mark, :set, :insert, 'insert - 1 chars'
+            break if index(:insert) == original_pos
+
+            type = yield(get('insert - 1 chars'))
+          end
         end
+
+        Tk::Event.generate(self, '<<Movement>>')
+      rescue => ex
+        VER.error(ex)
       end
 
       def tk_prev_word_pos(start)

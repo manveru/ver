@@ -61,7 +61,9 @@ module VER
         mode.map :page_up,                %w[Control-b], %w[Prior]
         mode.map :prev_newline_block,     %w[braceright]
         mode.map :backward_word,          %w[b], %w[Shift-Left]
+        mode.map :backward_chunk,         %w[B]
         mode.map :forward_word,           %w[w], %w[Shift-Right]
+        mode.map :forward_chunk,          %w[W]
         mode.map :word_right_end,         %w[e]
         mode.map :matching_brace,         %w[percent]
       end
