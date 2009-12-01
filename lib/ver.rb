@@ -48,6 +48,12 @@ module VER
     o "Fork off on startup to avoid dying with the terminal",
       :fork, true
 
+    o "Internal:External encoding",
+      :encoding, "UTF-8:UTF-8"
+
+    o "Keymap used",
+      :keymap, 'vim'
+
     o "Location of personal configuration",
       :home_conf_dir,  Pathname('~/.config/ver').expand_path
 
@@ -65,10 +71,8 @@ module VER
   end
 
   def run(given_options = {})
-    @options.merge!(given_options)
-
     setup_tk
-    run_startup
+    run_startup(given_options)
 
     forking do
       if Tk::RUN_EVENTLOOP_ON_MAIN_THREAD
@@ -105,9 +109,10 @@ module VER
     end
   end
 
-  def run_startup
+  def run_startup(given_options)
     first_startup unless options.home_conf_dir.directory?
     load 'rc'
+    @options.merge!(given_options)
   end
 
   def run_core
