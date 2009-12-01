@@ -134,6 +134,8 @@ module VER
         mode.map :exec_into_void, %w[F8]
         mode.map [:exec_into_new, 'ruby -c $f'], %w[Control-Alt-c]
 
+        mode.map :insert_tab, %w[Control-t]
+
 =begin
         # TODO
         mode.map :top_of_view,        %w[Alt-comma]
