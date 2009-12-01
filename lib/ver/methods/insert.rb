@@ -170,6 +170,16 @@ module VER
         insert :insert, string
       end
 
+      def start_replace_mode
+        self.mode = :replace
+      end
+
+      def replace_string(string)
+        return if string.empty?
+        execute :delete, :insert
+        insert_string(string)
+      end
+
       def auto_indent_line
         if @syntax
           syntax_indent_line

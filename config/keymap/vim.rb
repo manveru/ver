@@ -149,10 +149,6 @@ module VER
         mode.map :repeat_command,                  %w[period]
       end
 
-      vim.add_mode :replace do |mode|
-        mode.inherits :basic
-      end
-
       vim.add_mode :readline do |mode|
         mode.arguments = false
 
@@ -191,6 +187,13 @@ module VER
         mode.map :smart_evaluate,          %w[Alt-e], %w[Control-e]
 
         mode.missing :insert_string
+      end
+
+      vim.add_mode :replace do |mode|
+        mode.inherits :insert
+        mode.arguments = false
+
+        mode.missing :replace_string
       end
 
       vim.add_mode :select do |mode|
