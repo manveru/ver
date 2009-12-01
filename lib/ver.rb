@@ -96,7 +96,7 @@ module VER
       :tabs, 10
 
     o "Format for Statusline",
-      :statusline, '%r\t%4l,%c %p\t[%m%_s%_e]'
+      :statusline, '%r\t%4l,%c %P\t[%m%_s%_e]\t%battery'
 
     o "Sequence to comment a line, may change through file type preferences",
       :comment_line, '#'

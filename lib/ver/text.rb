@@ -138,7 +138,7 @@ module VER
         else    ; '%2d%%' % percent
         end
       end
-      alias p percent
+      alias P percent
 
       def buffer(width = 0)
         "%#{width}s" % text.layout.views.index(text.view)
@@ -164,23 +164,100 @@ module VER
         "%#{width}s" % text.keymap.mode
       end
       alias m mode
+
+      # format sequences:
+      #
+      # %c Current capacity (mAh)
+      # %r Current rate
+      # %b short battery status, '+', '-', '!'
+      # %p battery load percentage
+      # %m remaining time in minutes
+      # %h remaining time in hours
+      # %t remaining time in as 'H:M'
+      def battery(format = '[%b] %p% %t')
+        now = Time.now
+
+        if @battery_last
+          if @battery_last < (now - 60)
+            @battery_last = now
+            @battery_value = battery_build(format)
+          else
+            @battery_value
+          end
+        else
+          @battery_last = now
+          @battery_value = battery_build(format)
+        end
+      end
+
+      def battery_build(format)
+        total = {}
+
+        Dir.glob('/proc/acpi/battery/*/{state,info}') do |file|
+          parsed = battery_parse(file)
+          next unless parsed[:present] == 'yes'
+          # FIXME: doesn't take care of multiple batteries
+          total.merge!(parsed)
+        end
+
+        capacity = total[:remaining_capacity].to_i
+        rate = total[:present_rate].to_i
+        hours, minutes = ((capacity * 60.0) / rate).divmod(60)
+        minutes = minutes.round
+
+        percent = ((100 / total[:last_full_capacity].to_f) * capacity).round
+
+        case total[:charging_state]
+        when 'discharging'
+          b = hours < 1 ? '!' : '-'
+        when 'charging'
+          b = '+'
+        end
+
+        final = {
+          '%c' => capacity,
+          '%r' => rate,
+          '%b' => b,
+          '%p' => percent,
+          '%m' => ((hours / 60.0) + minutes),
+          '%h' => (hours + (minutes / 60.0)).round,
+          '%t' => "#{hours}:#{minutes}",
+        }
+
+        @last = Time.now
+        format.gsub(/%\w/, final)
+      end
+
+      def battery_parse(file)
+        data = {}
+
+        File.open(file) do |io|
+          io.each_line do |line|
+            next unless line =~ /^([^:]+):\s*(.+)$/
+            data[$1.downcase.tr(' ', '_').to_sym] = $2
+          end
+        end
+
+        data
+      end
     end
 
     def status_projection(into)
-      format = '%<%f %m%r%=%-14.(%l,%c%V%) %P'
+      format = options.statusline.dup
 
-      format = '%r\t%4l,%c %p\t[%m%_s%_e]'
-      # format = '-- %F -- (%s) --- Buf %b of %B --- L %3l/%3L C %2c --'
-      format.gsub!(/%([[:alpha:]])/, '#{\1()}')
-      format.gsub!(/%_([[:alpha:]])/, '#{(e = \1()) ? " #{e}" : ""}')
-      format.gsub!(/%([+-]?\d+)([[:alpha:]])/, '#{\2(\1)}')
+      format.gsub!(/%([[:alpha:]]+)/, '#{\1()}')
+      format.gsub!(/%_([[:alpha:]]+)/, '#{(_ = \1()) ? " #{_}" : ""}')
+      format.gsub!(/%([+-]?\d+)([[:alpha:]]+)/, '#{\2(\1)}')
       format = "%{#{format}}"
+
       # puts format
       context = StatusContext.new(self)
       line = context.instance_eval(format)
       # p line
 
       into.value = line
+    rescue => ex
+      puts ex, ex.backtrace
     end
 
     TAG_ALL_MATCHING_OPTIONS = { from: '1.0', to: 'end - 1 chars' }
