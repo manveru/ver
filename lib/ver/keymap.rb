@@ -20,16 +20,19 @@ module VER
       end
     end
 
-    attr_accessor :modes, :callback, :widget, :tag, :previous_mode, :last_send
-    attr_reader :mode, :history
+    attr_accessor :modes, :callback, :widget, :tag, :previous_mode, :last_send,
+                  :ignore_sends, :accumulate_sends, :history
+    attr_reader :mode
 
     def initialize(options)
       self.callback = options.fetch(:receiver)
       self.widget = options.fetch(:widget, callback)
       self.previous_mode = nil
       self.modes = {}
-      @history = SizedArray.new(50)
-      @last_send = nil
+      self.history = SizedArray.new(50)
+      self.last_send = nil
+      self.ignore_sends ||= []
+      self.accumulate_sends ||= []
 
       prepare_tag
       prepare_default_binds
@@ -42,7 +45,25 @@ module VER
     def send(*args)
       callback.send(*args)
     ensure
-      @last_send = args unless args.first == :repeat_command
+      name = args.first
+
+      if accumulate_sends.include?(name)
+        if last_send && last_send.first == name
+          arg = (last_send[1..-1] + args[1..-1]).join
+          self.last_send = [name, arg]
+        else
+          self.last_send = args
+        end
+      else
+        if ignore_sends.include?(name)
+          # self.last_send = nil
+        else
+          self.last_send = args
+        end
+      end
+
+      # p history
+      # p last_send
     end
 
     def enter_key(key)
