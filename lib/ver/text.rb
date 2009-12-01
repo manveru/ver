@@ -113,7 +113,7 @@ module VER
       alias d dir
 
       def line(width = 0)
-        "%#{width}s" % text.count('1.0', 'insert', :lines)
+        "%#{width}s" % (text.count('1.0', 'insert', :lines) + 1)
       end
       alias l line
 
