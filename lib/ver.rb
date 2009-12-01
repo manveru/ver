@@ -43,69 +43,10 @@ module VER
                 :ctag_stack)
   end
 
+  # the rest of the options are in config/rc.rb
   options.dsl do
-    o "Default Font for all widgets",
-      :font, "TkFixedFont 10"
-
-    o "Internal:External encoding",
-      :encoding, "UTF-8:UTF-8"
-
-    o "Tk Tile Theme",
-      :tk_theme, 'clam'
-
-    o "Syntax highlighting theme",
-      :theme, "Blackboard"
-
-    o "Keymap used",
-      :keymap, 'vim'
-
-    o "Expand all tabs into spaces",
-      :expandtab, true
-
-    o "Use automatic indentation",
-      :autoindent, true
-
-    o "Number of spaces used in autoindent",
-      :shiftwidth, 2
-
-    o "Number of spaces a tab stands for",
-      :tabstop, 8
-
-    o "Number of characters after which wrap commands will wrap",
-      :textwidth, 80
-
-    o "Show vertical scrollbar",
-      :vertical_scrollbar, false
-
-    o "Show horizontal scrollbar",
-      :horizontal_scrollbar, false
-
-    o "In case of a total failure, this key binding should bail you out",
-      :emergency_exit, "<Control-q>"
-
     o "Fork off on startup to avoid dying with the terminal",
       :fork, true
-
-    o "Milliseconds that the cursor is visible when blinking",
-      :insertontime, 500
-
-    o "Milliseconds that the cursor is invisible when blinking",
-      :insertofftime, 0
-
-    o "Width of one tab in pixel",
-      :tabs, 10
-
-    o "Format for Statusline",
-      :statusline, '%r\t%4l,%c %P\t[%m%_s%_e]\t%battery'
-
-    o "Sequence to comment a line, may change through file type preferences",
-      :comment_line, '#'
-
-    o "Start and end sequence to comment a region, may change through file type preferences",
-      :comment_region, ['=begin', '=end']
-
-    o "Default filetype if no matching syntax can be found",
-      :filetype, "Plain Text"
 
     o "Location of personal configuration",
       :home_conf_dir,  Pathname('~/.config/ver').expand_path
@@ -127,11 +68,14 @@ module VER
     @options.merge!(given_options)
 
     setup_tk
+    run_startup
 
-    if Tk::RUN_EVENTLOOP_ON_MAIN_THREAD
-      run_aqua
-    else
-      run_x11
+    forking do
+      if Tk::RUN_EVENTLOOP_ON_MAIN_THREAD
+        run_aqua
+      else
+        run_x11
+      end
     end
   rescue => exception
     VER.error(exception)
@@ -140,21 +84,33 @@ module VER
 
   def run_aqua
     run_core
-    EM.run{ Tk.mainloop }
+    Tk.mainloop
   end
 
   def run_x11
-    EM.run do
-      EM.defer do
-        run_core
-        Tk.mainloop
-      end
+    EM.defer do
+      run_core
+      Tk.mainloop
     end
   end
 
-  def run_core
+  def forking
+    if options.fork
+      fork do
+        trap(:HUP){ 'terminal disconnected' }
+        EM.run{ yield }
+      end
+    else
+      EM.run{ yield }
+    end
+  end
+
+  def run_startup
     first_startup unless options.home_conf_dir.directory?
     load 'rc'
+  end
+
+  def run_core
     sanitize_options
     # dump_options
     setup_widgets

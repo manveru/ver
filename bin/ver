@@ -26,16 +26,8 @@ module VER
     # TODO: remove before release
     $LOAD_PATH.unshift(ROOT)
 
-    if options[:fork]
-      fork do
-        trap(:HUP){ 'terminal disconnected' }
-        require 'ver'
-        run(options)
-      end
-    else
-      require 'ver'
-      run(options)
-    end
+    require 'ver'
+    run(options)
   end
 
   def install_tm_bundle(path)

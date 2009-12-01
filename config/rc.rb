@@ -1,9 +1,27 @@
 VER.options.dsl do
-  o "Default Font for all widgets",
-    :font, "TkFixedFont 10"
+  o "Use automatic indentation",
+    :autoindent, true
+
+  o "Sequence to comment a line, may change through file type preferences",
+    :comment_line, '#'
+
+  o "Start and end sequence to comment a region, may change through file type preferences",
+    :comment_region, ['=begin', '=end']
 
   o "Internal:External encoding",
     :encoding, "UTF-8:UTF-8"
+
+  o "Expand all tabs into spaces",
+    :expandtab, true
+
+  o "In case of a total failure, this key binding should bail you out",
+    :emergency_exit, "<Control-q>"
+
+  o "Default Font for all widgets",
+    :font, "TkFixedFont 10"
+
+  o "Fork off on startup to avoid dying with the terminal",
+    :fork, true
 
   o "Tk Tile Theme",
     :tk_theme, 'clam'
@@ -14,12 +32,6 @@ VER.options.dsl do
   o "Keymap used",
     :keymap, 'vim'
 
-  o "Expand all tabs into spaces",
-    :expandtab, true
-
-  o "Use automatic indentation",
-    :autoindent, true
-
   o "Number of spaces used in autoindent",
     :shiftwidth, 2
 
@@ -29,11 +41,11 @@ VER.options.dsl do
   o "Number of characters after which wrap commands will wrap",
     :textwidth, 80
 
-  o "In case of a total failure, this key binding should bail you out",
-    :emergency_exit, "<Control-q>"
+  o "Show vertical scrollbar",
+    :vertical_scrollbar, false
 
-  o "Fork off on startup to avoid dying with the terminal",
-    :fork, true
+  o "Show horizontal scrollbar",
+    :horizontal_scrollbar, false
 
   o "Milliseconds that the cursor is visible when blinking",
     :insertontime, 500
@@ -43,6 +55,9 @@ VER.options.dsl do
 
   o "Width of one tab in pixel",
     :tabs, 10
+
+  o "Format for Statusline",
+    :statusline, '%r\t%4l,%c %P\t[%m%_s%_e]\t%battery'
 
   o "Default filetype if no matching syntax can be found",
     :filetype, "Plain Text"
