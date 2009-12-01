@@ -1,6 +1,13 @@
 module VER
   module Methods
     module Control
+      def repeat_command(count = 1)
+        return unless command = keymap.last_send
+        return if command.first == __method__
+        count.times{ send(*command) }
+        keymap.last_send = command
+      end
+
       # Assigns env variables used in the given command.
       # - $f: The current buffer's filename
       # - $d: The current buffer's directory

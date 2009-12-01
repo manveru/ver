@@ -20,14 +20,16 @@ module VER
       end
     end
 
-    attr_accessor :modes, :callback, :widget, :tag, :previous_mode
-    attr_reader :mode
+    attr_accessor :modes, :callback, :widget, :tag, :previous_mode, :last_send
+    attr_reader :mode, :history
 
     def initialize(options)
       self.callback = options.fetch(:receiver)
       self.widget = options.fetch(:widget, callback)
       self.previous_mode = nil
       self.modes = {}
+      @history = SizedArray.new(50)
+      @last_send = nil
 
       prepare_tag
       prepare_default_binds
@@ -39,13 +41,17 @@ module VER
 
     def send(*args)
       callback.send(*args)
+    ensure
+      @last_send = args unless args.first == :repeat_command
     end
 
     def enter_key(key)
+      @history << key
       modes[mode].enter_key key
     end
 
     def enter_missing(key)
+      @history << key
       modes[mode].enter_missing key
     end
 

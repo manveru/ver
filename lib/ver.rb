@@ -15,6 +15,8 @@ require 'json'
 require 'securerandom'
 require 'set'
 
+autoload :SizedArray, 'ver/vendor/sized_array'
+
 module VER
   autoload :Entry,               'ver/entry'
   autoload :Help,                'ver/help'

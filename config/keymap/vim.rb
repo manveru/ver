@@ -146,6 +146,7 @@ module VER
         mode.map :preview,                         %w[F5]
         mode.map :status_ex,                       %w[colon]
         mode.map :syntax_indent_file,              %w[equal]
+        mode.map :repeat_command,                  %w[period]
       end
 
       vim.add_mode :replace do |mode|
