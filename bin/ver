@@ -78,8 +78,7 @@ options = { fork: true }
 op = OptionParser.new{|o|
   o.on('-Eex[:in]', '--encoding EXTERNAL[:INTERNAL]', 'used encoding'){|enc|
     options[:encoding] = enc }
-  o.on('--font-family NAME', 'font family'){|fn| options[:font_family] = fn }
-  o.on('--font-size INT', 'font size'){|fs| options[:font_size] = fs }
+  o.on('--font FONT', 'font family'){|fn| options[:font] = fn }
   o.on('-f', '--nofork', 'stay attached to terminal'){ options[:fork] = false }
   o.on('-k', '--keymap NAME', 'vim or emacs'){|k| options[:keymap] = k }
   o.separator ' '
