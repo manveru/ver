@@ -56,6 +56,9 @@ module VER
     o "Keymap used",
       :keymap, 'vim'
 
+    o "Width of one tab in pixel",
+      :tabs, 10
+
     o "Location of personal configuration",
       :home_conf_dir,  Pathname('~/.config/ver').expand_path
 

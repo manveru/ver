@@ -53,9 +53,6 @@ VER.options.dsl do
   o "Milliseconds that the cursor is invisible when blinking",
     :insertofftime, 0
 
-  o "Width of one tab in pixel",
-    :tabs, 10
-
   o "Format for Statusline",
     :statusline, '%r\t%4l,%c %P\t[%m%_s%_e]'
 
