@@ -13,7 +13,7 @@ module VER
         key :view_close, %w[Control-w]
 
         1.upto(9) do |n|
-          key [:view_focus, n], ["Alt-#{n}"]
+          key [:view_focus, n], ["Alt-#{n}"], ["Escape", n.to_s]
         end
       end
 
@@ -122,9 +122,9 @@ module VER
         key :insert_indented_newline, %w[Return]
 
         key :indent_line,   %w[Alt-i], %w[Escape i]
-        key :unindent_line, %w[Escape I]
+        key :unindent_line, %w[Alt-I], %w[Escape I]
 
-        key :complete_word, %w[Alt-e]
+        key :complete_word, %w[Alt-e], %w[Escape e]
 
         key :exec_into_new,  %w[F2]
         key :exec_into_void, %w[F8]
@@ -135,19 +135,18 @@ module VER
         key :undo,       %w[Control-z]
         key :redo,       %w[Control-y]
 
-
 =begin
         # TODO
-        key :top_of_view,        %w[Alt-comma]
-        key :bottom_of_view,     %w[Alt-period]
+        key :top_of_view,        %w[Alt-comma], %w[Escape comma]
+        key :bottom_of_view,     %w[Alt-period], %w[Escape period]
         key :previous_cursor,    %w[Control-j]
         key :forward_cursor,     %w[Control-l]
 
         key :ask_go_line,        %w[Control-g]
 
 
-        key :forward_join_lines, %w[Alt-j]
-        key :backward_join_lines, %w[Escape J]
+        key :forward_join_lines, %w[Alt-j], %w[Escape j]
+        key :backward_join_lines, %w[Alt-J], %w[Escape J]
 =end
 
         KEYSYMS.each do |sym, name|
