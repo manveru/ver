@@ -140,6 +140,10 @@ module VER
       mode
     end
 
+    def in_mode(name, &block)
+      add_mode(name){|mode| mode.instance_eval(&block) }
+    end
+
     def use_previous_mode
       return unless mode = previous_mode
       self.mode = previous_mode

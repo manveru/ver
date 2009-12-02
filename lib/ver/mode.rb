@@ -58,7 +58,7 @@ module VER
         bind(keychain.flatten, sym)
       end
     end
-    alias to map
+    alias key map
 
     def bind(keychain, action_name = nil, &block)
       keychain = keychain.dup
