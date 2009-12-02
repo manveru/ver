@@ -93,6 +93,7 @@ module VER
 
       diakonos.in_mode :select do
         key :start_select_char_mode, %w[Control-space]
+        key :start_select_line_mode, %w[Escape Control-space], %w[Control-Alt-space]
       end
 
       diakonos.in_mode :buffer do
@@ -162,6 +163,7 @@ module VER
         key :copy_selection, %w[Control-c]
         key :kill_selection, %w[Control-x]
         key :delete_selection, %w[BackSpace], %w[Delete]
+        key :replace_selection_with_clipboard, %w[Control-v]
       end
 
       diakonos.in_mode :hover_completion do

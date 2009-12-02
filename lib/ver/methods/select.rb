@@ -187,6 +187,16 @@ module VER
         end
       end
 
+      def replace_selection_with_clipboard
+        string = clipboard_get
+        ranges = tag_ranges(:sel)
+        from, to = ranges.first.first, ranges.last.last
+        edit_separator
+        replace(from, to, string)
+        finish_selection
+        mark_set :insert, from
+      end
+
       private
 
       # TODO: find better name for +full+
