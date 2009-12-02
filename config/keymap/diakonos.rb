@@ -5,158 +5,173 @@ module VER
       diakonos.mode = options.fetch(:mode, :buffer)
       diakonos.arguments = false
 
-      diakonos.add_mode :basic do |mode|
-        mode.map :quit, %w[Control-q]
+      diakonos.in_mode :basic do
+        key :quit, %w[Control-q]
       end
 
-      diakonos.add_mode :buffers do |mode|
-        mode.map :view_close, %w[Control-w]
+      diakonos.in_mode :buffers do
+        key :view_close, %w[Control-w]
 
         1.upto(9) do |n|
-          mode.map [:view_focus, n], ["Alt-#{n}"]
+          key [:view_focus, n], ["Alt-#{n}"]
         end
       end
 
-      diakonos.add_mode :readline do |mode|
-        mode.map [:kill_motion, :backward_char],   %w[BackSpace]
-        mode.map [:kill_motion, :forward_char],    %w[Delete], %w[Control-d]
-        mode.map [:kill_motion, :backward_word],   %w[Control-w]
-        mode.map :backward_char,                   %w[Left], %w[Control-b]
-        mode.map :forward_char,                    %w[Right], %w[Control-f]
-        mode.map :backward_word,                   %w[Shift-Left], %w[Alt-b]
-        mode.map :forward_word,                    %w[Shift-Right], %w[Alt-f]
-        mode.map :beginning_of_line,               %w[Home], %w[Control-a]
-        mode.map :end_of_line,                     %w[End], %w[Control-e]
-        mode.map :insert_selection,                %w[Shift-Insert]
-        mode.map :accept_line,                     %w[Return]
-        mode.map :previous_history,                %w[Up], %w[Control-p]
-        mode.map :next_history,                    %w[Down], %w[Control-n]
-        mode.map :beginning_of_history,            %w[Control-less]
-        mode.map :end_of_history,                  %w[Control-greater]
-        mode.map :transpose_chars,                 %w[Control-t]
-        mode.map :insert_tab,                      %w[Control-v Tab]
+      diakonos.in_mode :readline do
+        key [:kill_motion, :backward_char],   %w[BackSpace]
+        key [:kill_motion, :forward_char],    %w[Delete], %w[Control-d]
+        key [:kill_motion, :backward_word],   %w[Control-w]
+        key :backward_char,                   %w[Left], %w[Control-b]
+        key :forward_char,                    %w[Right], %w[Control-f]
+        key :backward_word,                   %w[Shift-Left], %w[Alt-b]
+        key :forward_word,                    %w[Shift-Right], %w[Alt-f]
+        key :beginning_of_line,               %w[Home], %w[Control-a]
+        key :end_of_line,                     %w[End], %w[Control-e]
+        key :insert_selection,                %w[Shift-Insert]
+        key :accept_line,                     %w[Return]
+        key :previous_history,                %w[Up], %w[Control-p]
+        key :next_history,                    %w[Down], %w[Control-n]
+        key :beginning_of_history,            %w[Control-less]
+        key :end_of_history,                  %w[Control-greater]
+        key :transpose_chars,                 %w[Control-t]
+        key :insert_tab,                      %w[Control-v Tab]
 
         KEYSYMS.each do |sym, name|
-          mode.map [:insert_string, sym], [name]
+          key [:insert_string, sym], [name]
         end
       end
 
-      diakonos.add_mode :status_query do |mode|
-        mode.inherits :basic, :readline
+      diakonos.in_mode :status_query do
+        inherits :basic, :readline
 
-        mode.to :ask_abort,        %w[Escape], %w[Control-c]
-        mode.to :history_prev,     %w[Up], %w[Control-p]
-        mode.to :history_next,     %w[Down], %w[Control-n]
-        mode.to :history_complete, %w[Tab]
-        mode.to :ask_submit,       %w[Return]
+        key :ask_abort,        %w[Escape], %w[Control-c]
+        key :history_prev,     %w[Up], %w[Control-p]
+        key :history_next,     %w[Down], %w[Control-n]
+        key :history_complete, %w[Tab]
+        key :ask_submit,       %w[Return]
 
-        mode.missing :insert_string
+        missing :insert_string
       end
 
-      diakonos.add_mode :bookmark do |mode|
-        mode.map :bookmark_toggle, %w[Alt-b Alt-b]
-        mode.map :next_bookmark,   %w[Alt-b Alt-n]
-        mode.map :prev_bookmark,   %w[Alt-b Alt-p]
+      diakonos.in_mode :bookmark do
+        key :bookmark_toggle, %w[Alt-b Alt-b]
+        key :next_bookmark,   %w[Alt-b Alt-n]
+        key :prev_bookmark,   %w[Alt-b Alt-p]
 
-        mode.map :named_bookmark_add,    %w[Alt-b Alt-a]
-        mode.map :named_bookmark_remove, %w[Alt-b Alt-r]
-        mode.map :named_bookmark_visit,  %w[Alt-b Alt-g]
+        key :named_bookmark_add,    %w[Alt-b Alt-a]
+        key :named_bookmark_remove, %w[Alt-b Alt-r]
+        key :named_bookmark_visit,  %w[Alt-b Alt-g]
 
         # these are only valid on US keymap, don't know a better way.
-        mode.map [:named_bookmark_add, '1'], %w[Alt-b Alt-exclam]
-        mode.map [:named_bookmark_add, '2'], %w[Alt-b Alt-at]
-        mode.map [:named_bookmark_add, '3'], %w[Alt-b Alt-numbersign]
-        mode.map [:named_bookmark_add, '4'], %w[Alt-b Alt-dollar]
-        mode.map [:named_bookmark_add, '5'], %w[Alt-b Alt-percent]
+        key [:named_bookmark_add, '1'], %w[Alt-b Alt-exclam]
+        key [:named_bookmark_add, '2'], %w[Alt-b Alt-at]
+        key [:named_bookmark_add, '3'], %w[Alt-b Alt-numbersign]
+        key [:named_bookmark_add, '4'], %w[Alt-b Alt-dollar]
+        key [:named_bookmark_add, '5'], %w[Alt-b Alt-percent]
 
-        mode.map [:named_bookmark_visit, '1'], %w[Alt-b Alt-1]
-        mode.map [:named_bookmark_visit, '2'], %w[Alt-b Alt-2]
-        mode.map [:named_bookmark_visit, '3'], %w[Alt-b Alt-3]
-        mode.map [:named_bookmark_visit, '4'], %w[Alt-b Alt-4]
-        mode.map [:named_bookmark_visit, '5'], %w[Alt-b Alt-5]
+        key [:named_bookmark_visit, '1'], %w[Alt-b Alt-1]
+        key [:named_bookmark_visit, '2'], %w[Alt-b Alt-2]
+        key [:named_bookmark_visit, '3'], %w[Alt-b Alt-3]
+        key [:named_bookmark_visit, '4'], %w[Alt-b Alt-4]
+        key [:named_bookmark_visit, '5'], %w[Alt-b Alt-5]
       end
 
-      diakonos.add_mode :ctags do |mode|
-        mode.map :ctags_go,           %w[Alt-t]
-        mode.map :ctags_find_current, %w[Alt-parenright]
-        mode.map :ctags_prev,         %w[Alt-parenleft]
+      diakonos.in_mode :ctags do
+        key :ctags_go,           %w[Alt-t]
+        key :ctags_find_current, %w[Alt-parenright]
+        key :ctags_prev,         %w[Alt-parenleft]
       end
 
-      diakonos.add_mode :search do |mode|
-        mode.map :status_search_next, %w[Control-f]
-        mode.map :search_next,        %w[F3]
-        mode.map :search_clear,       %w[Control-Alt-u]
+      diakonos.in_mode :search do
+        key :status_search_next, %w[Control-f]
+        key :search_next,        %w[F3]
+        key :search_clear,       %w[Control-Alt-u]
 
         # TODO: this doesn't work, investiate.
-        mode.map :search_prev,        %w[Shift-F3]
+        key :search_prev,        %w[Shift-F3]
       end
 
-      diakonos.add_mode :buffer do |mode|
-        mode.inherits :basic, :buffers, :readline, :bookmark, :search
-        mode.arguments = false
+      diakonos.in_mode :select do
+        key :start_select_char_mode, %w[Control-space]
+      end
 
-        mode.map :backward_char,      %w[Left]
-        mode.map :forward_char,       %w[Right]
-        mode.map :previous_line,      %w[Up]
-        mode.map :next_line,          %w[Down]
-        mode.map :beginning_of_line,  %w[Home]
-        mode.map :end_of_line,        %w[End]
-        mode.map :page_up,            %w[Prior]
-        mode.map :page_down,          %w[Next]
-        mode.map :end_of_file,        %w[Alt-greater]
-        mode.map :go_line,            %w[Alt-less]
+      diakonos.in_mode :buffer do
+        inherits :basic, :buffers, :readline, :bookmark, :search, :select
 
-        mode.map :forward_scroll,  %w[Alt-n]
-        mode.map :backward_scroll, %w[Alt-p]
+        key :backward_char,      %w[Left]
+        key :forward_char,       %w[Right]
+        key :previous_line,      %w[Up]
+        key :next_line,          %w[Down]
+        key :beginning_of_line,  %w[Home]
+        key :end_of_line,        %w[End]
+        key :page_up,            %w[Prior]
+        key :page_down,          %w[Next]
+        key :end_of_file,        %w[Alt-greater]
+        key :go_line,            %w[Alt-less]
 
-        mode.map [:delete_motion, :backward_char], %w[BackSpace]
-        mode.map [:delete_motion, :forward_char],  %w[Delete]
-        mode.map :kill_line,                       %w[Control-k], %w[Control-d Control-d]
-        mode.map [:delete_motion, :end_of_line],   %w[Control-Alt-k], %w[Control-d dollar]
-        mode.map [:delete_motion, :end_of_line],   %w[Control-Alt-k], %w[Control-d dollar]
+        key :forward_scroll,  %w[Alt-n]
+        key :backward_scroll, %w[Alt-p]
 
-        mode.map :insert_indented_newline, %w[Return]
+        key [:delete_motion, :backward_char], %w[BackSpace]
+        key [:delete_motion, :forward_char],  %w[Delete]
+        key :kill_line,                       %w[Control-k], %w[Control-d Control-d]
+        key [:delete_motion, :end_of_line],   %w[Control-Alt-k], %w[Control-d dollar]
+        key [:delete_motion, :end_of_line],   %w[Control-Alt-k], %w[Control-d dollar]
 
-        mode.map :indent_line,   %w[Alt-i], %w[Escape i]
-        mode.map :unindent_line, %w[Escape I]
+        key :insert_indented_newline, %w[Return]
 
-        mode.map :complete_word, %w[Alt-e]
+        key :indent_line,   %w[Alt-i], %w[Escape i]
+        key :unindent_line, %w[Escape I]
 
-        mode.map :exec_into_new,  %w[F2]
-        mode.map :exec_into_void, %w[F8]
-        mode.map [:exec_into_new, 'ruby -c $f'], %w[Control-Alt-c]
+        key :complete_word, %w[Alt-e]
 
-        mode.map :insert_tab, %w[Control-t]
+        key :exec_into_new,  %w[F2]
+        key :exec_into_void, %w[F8]
+        key [:exec_into_new, 'ruby -c $f'], %w[Control-Alt-c]
+
+        key :insert_tab, %w[Control-t]
+        key :paste,      %w[Control-v]
+        key :undo,       %w[Control-z]
+        key :redo,       %w[Control-y]
+
 
 =begin
         # TODO
-        mode.map :top_of_view,        %w[Alt-comma]
-        mode.map :bottom_of_view,     %w[Alt-period]
-        mode.map :previous_cursor,    %w[Control-j]
-        mode.map :forward_cursor,     %w[Control-l]
+        key :top_of_view,        %w[Alt-comma]
+        key :bottom_of_view,     %w[Alt-period]
+        key :previous_cursor,    %w[Control-j]
+        key :forward_cursor,     %w[Control-l]
 
-        mode.map :ask_go_line,        %w[Control-g]
+        key :ask_go_line,        %w[Control-g]
 
 
-        mode.map :forward_join_lines, %w[Alt-j]
-        mode.map :backward_join_lines, %w[Escape J]
+        key :forward_join_lines, %w[Alt-j]
+        key :backward_join_lines, %w[Escape J]
 =end
 
         KEYSYMS.each do |sym, name|
-          mode.map [:insert_string, sym], [name]
+          key [:insert_string, sym], [name]
         end
 
-        mode.missing :insert_string
+        missing :insert_string
       end
 
-      diakonos.add_mode :hover_completion do |mode|
-        mode.inherits :basic
+      diakonos.in_mode :select_char do
+        inherits :buffer
 
-        mode.to :go_up,               %w[Up], %w[Control-n]
-        mode.to :go_down,             %w[Down], %w[Control-p]
-        mode.to :continue_completion, %w[Right], %w[Tab]
-        mode.to :submit,              %w[Return]
-        mode.to :cancel,              %w[Escape], %w[BackSpace]
+        key :copy_selection, %w[Control-c]
+        key :kill_selection, %w[Control-x]
+        key :delete_selection, %w[BackSpace], %w[Delete]
+      end
+
+      diakonos.in_mode :hover_completion do
+        inherits :basic
+
+        key :go_up,               %w[Up], %w[Control-n]
+        key :go_down,             %w[Down], %w[Control-p]
+        key :continue_completion, %w[Right], %w[Tab]
+        key :submit,              %w[Return]
+        key :cancel,              %w[Escape], %w[BackSpace]
       end
 
       diakonos
