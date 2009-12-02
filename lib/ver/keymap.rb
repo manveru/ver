@@ -21,7 +21,7 @@ module VER
     end
 
     attr_accessor :modes, :callback, :widget, :tag, :previous_mode, :last_send,
-                  :ignore_sends, :accumulate_sends, :history
+                  :ignore_sends, :accumulate_sends, :history, :arguments
     attr_reader :mode
 
     def initialize(options)
@@ -33,6 +33,7 @@ module VER
       self.last_send = nil
       self.ignore_sends ||= []
       self.accumulate_sends ||= []
+      self.arguments = true
 
       prepare_tag
       prepare_default_binds

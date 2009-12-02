@@ -3,6 +3,7 @@ module VER
     def self.diakonos(options)
       diakonos = new(options)
       diakonos.mode = options.fetch(:mode, :buffer)
+      diakonos.arguments = false
 
       diakonos.add_mode :basic do |mode|
         mode.map :quit, %w[Control-q]
@@ -17,8 +18,6 @@ module VER
       end
 
       diakonos.add_mode :readline do |mode|
-        mode.arguments = false
-
         mode.map [:kill_motion, :backward_char],   %w[BackSpace]
         mode.map [:kill_motion, :forward_char],    %w[Delete], %w[Control-d]
         mode.map [:kill_motion, :backward_word],   %w[Control-w]
@@ -44,7 +43,6 @@ module VER
 
       diakonos.add_mode :status_query do |mode|
         mode.inherits :basic, :readline
-        mode.arguments = false
 
         mode.to :ask_abort,        %w[Escape], %w[Control-c]
         mode.to :history_prev,     %w[Up], %w[Control-p]
@@ -56,8 +54,6 @@ module VER
       end
 
       diakonos.add_mode :bookmark do |mode|
-        mode.arguments = false
-
         mode.map :bookmark_toggle, %w[Alt-b Alt-b]
         mode.map :next_bookmark,   %w[Alt-b Alt-n]
         mode.map :prev_bookmark,   %w[Alt-b Alt-p]
@@ -81,16 +77,12 @@ module VER
       end
 
       diakonos.add_mode :ctags do |mode|
-        mode.arguments = false
-
         mode.map :ctags_go,           %w[Alt-t]
         mode.map :ctags_find_current, %w[Alt-parenright]
         mode.map :ctags_prev,         %w[Alt-parenleft]
       end
 
       diakonos.add_mode :search do |mode|
-        mode.arguments = false
-
         mode.map :status_search_next, %w[Control-f]
         mode.map :search_next,        %w[F3]
         mode.map :search_clear,       %w[Control-Alt-u]

@@ -20,7 +20,7 @@ module VER
       @map = {}
       @ancestors = []
       @missing = nil
-      @arguments = true
+      @arguments = callback.arguments
     end
 
     def inherits(*others)
