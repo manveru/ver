@@ -188,6 +188,9 @@ module VER
           @battery_last = now
           @battery_value = battery_build(format)
         end
+      rescue => ex
+        puts ex, *ex.backtrace
+        ex.message
       end
 
       def battery_build(format)
@@ -200,12 +203,21 @@ module VER
           total.merge!(parsed)
         end
 
-        capacity = total[:remaining_capacity].to_i
+        # rate might be 0
         rate = total[:present_rate].to_i
-        hours, minutes = ((capacity * 60.0) / rate).divmod(60)
-        minutes = minutes.round
+        capacity = total[:remaining_capacity].to_i
 
-        percent = ((100 / total[:last_full_capacity].to_f) * capacity).round
+        if rate == 0
+          hours, percent = 2, 100
+          time = hours_left = minutes_left = 'N/A'
+        else
+          hours, minutes = ((capacity * 60.0) / rate).divmod(60)
+          minutes = minutes.round
+          percent = ((100 / total[:last_full_capacity].to_f) * capacity).round
+          hours_left = (hours + (minutes / 60.0)).round
+          minutes_left = (hours / 60.0) + minutes
+          time = "#{hours}:#{minutes}"
+        end
 
         case total[:charging_state]
         when 'discharging'
@@ -219,9 +231,9 @@ module VER
           '%r' => rate,
           '%b' => b,
           '%p' => percent,
-          '%m' => ((hours / 60.0) + minutes),
-          '%h' => (hours + (minutes / 60.0)).round,
-          '%t' => "#{hours}:#{minutes}",
+          '%m' => minutes_left,
+          '%h' => hours_left,
+          '%t' => time,
         }
 
         @last = Time.now
