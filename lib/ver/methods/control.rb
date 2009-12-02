@@ -353,14 +353,14 @@ module VER
         edit_undo
         touch!
       rescue RuntimeError => ex
-        status.value = ex.message
+        message('Nothing to undo')
       end
 
       def redo
         edit_redo
         touch!
       rescue RuntimeError => ex
-        status.value = ex.message
+        message('Nothing to redo')
       end
 
       private
