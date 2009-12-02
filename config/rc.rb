@@ -57,7 +57,7 @@ VER.options.dsl do
     :tabs, 10
 
   o "Format for Statusline",
-    :statusline, '%r\t%4l,%c %P\t[%m%_s%_e]\t%battery'
+    :statusline, '%r\t%4l,%c %P\t[%m%_s%_e]'
 
   o "Default filetype if no matching syntax can be found",
     :filetype, "Plain Text"
