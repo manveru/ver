@@ -199,7 +199,7 @@ module VER
     end
 
     def insert(index, string)
-      index = index(index) unless index.is_a?(Index)
+      index = index(index) unless index.respond_to?(:to_index)
       # p insert: [index, string]
 
       undo_record do |record|
@@ -223,8 +223,8 @@ module VER
     #
     # replace index1 index2 chars ?tagList chars tagList ...?
     def replace(index1, index2, string)
-      index1 = index(index1) unless index1.is_a?(Index)
-      index2 = index(index2) unless index1.is_a?(Index)
+      index1 = index(index1) unless index1.respond_to?(:to_index)
+      index2 = index(index2) unless index2.respond_to?(:to_index)
       return if index1 == index2
 
       undo_record do |record|
