@@ -38,6 +38,8 @@ class VER::View::Terminal
 
   def destroy
     @text.destroy
+  rescue Errno::EIO, PTY::ChildExited
+  ensure
     @parent.focus
   end
 
@@ -55,9 +57,13 @@ class VER::View::Terminal
           end
         end
 
-        loop do
-          c = r_pty.sysread(1 << 15)
-          on_chunk(c) if c
+        begin
+          loop do
+            c = r_pty.sysread(1 << 15)
+            on_chunk(c) if c
+          end
+        rescue Errno::EIO, PTY::ChildExited
+          destroy
         end
       end
     end
