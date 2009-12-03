@@ -58,9 +58,7 @@ module VER
       apply_mode_style(keymap.mode) # for startup
       setup_tags
 
-
-      require 'ver/undo'
-      @undoer = Undo::Tree.new(self)
+      @undoer = VER::Undo::Tree.new(self)
 
       self.selection_start = nil
       @pristine = true
@@ -204,7 +202,7 @@ module VER
       index = index(index) unless index.is_a?(Index)
       # p insert: [index, string]
 
-      record_multi do |record|
+      undo_record do |record|
         record.insert(index, string)
       end
 
@@ -225,10 +223,11 @@ module VER
     #
     # replace index1 index2 chars ?tagList chars tagList ...?
     def replace(index1, index2, string)
-      index1, index2 = index(index1), index(index2)
+      index1 = index(index1) unless index1.is_a?(Index)
+      index2 = index(index2) unless index1.is_a?(Index)
       return if index1 == index2
 
-      record_multi do |record|
+      undo_record do |record|
         record.replace(index1, index2, string)
       end
 
@@ -314,7 +313,7 @@ module VER
 
     def mode=(name)
       keymap.mode = mode = name.to_sym
-      @undoer.separate!
+      undo_separator
       apply_mode_style(mode)
       status_projection(status) if status
     end

@@ -82,7 +82,7 @@ module VER
         mark_set :insert, "#{line.to_i}.0"
         @pristine = false
 
-        @undoer = Undo::Tree.new(self)
+        @undoer = VER::Undo::Tree.new(self)
 
         bind('<Map>') do
           defer do

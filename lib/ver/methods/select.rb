@@ -70,7 +70,7 @@ module VER
         indent_size = options.shiftwidth
         indent = ' ' * indent_size
 
-        record_multi do |record|
+        undo_record do |record|
           each_selected_line do |y, fx, tx|
             tx = fx + indent_size
             next if get("#{y}.#{fx}", "#{y}.#{tx}").empty?
@@ -144,7 +144,7 @@ module VER
           insert("#{y}.#{indent}", comment)
         end
 
-        @undoer.separate!
+        undo_separator
         refresh_selection
       end
 
@@ -152,7 +152,7 @@ module VER
         comment = "#{options.comment_line} "
         regex = /#{Regexp.escape(comment)}/
 
-        record_multi do |record|
+        undo_record do |record|
           each_selected_line do |y, fx, tx|
             from, to = "#{y}.#{fx}", "#{y}.#{tx}"
             line = get(from, to)
@@ -164,10 +164,6 @@ module VER
         end
 
         refresh_selection
-      end
-
-      def record_multi(&block)
-        @undoer.record_multi(&block)
       end
 
       def selection_replace_char
@@ -196,7 +192,6 @@ module VER
         string = clipboard_get
         ranges = tag_ranges(:sel)
         from, to = ranges.first.first, ranges.last.last
-        @undoer.separate!
         replace(from, to, string)
         finish_selection
         mark_set :insert, from
@@ -208,7 +203,7 @@ module VER
       def replace_selection_with(string, full)
         origin = index(:insert)
 
-        record_multi do |record|
+        undo_record do |record|
           if full
             each_selected_line do |y, fx, tx|
               diff = tx - fx
@@ -226,7 +221,7 @@ module VER
       end
 
       def finish_selection(mode = nil)
-        @undoer.separate!
+        undo_separator
         clear_selection
         mode ? self.mode = mode : keymap.use_previous_mode
         apply_mode_style(keymap.mode)

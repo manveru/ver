@@ -146,10 +146,8 @@ module VER
         mode.map :syntax_indent_file,              %w[equal]
         mode.map :repeat_command,                  %w[period]
 
-        # mode.map :undo,                            %w[u]
-        # mode.map :redo,                            %w[Control-r]
-        mode.map :rb_undo,                         %w[u]
-        mode.map :rb_redo,                         %w[Control-r]
+        mode.map :undo,                            %w[u]
+        mode.map :redo,                            %w[Control-r]
       end
 
       vim.add_mode :readline do |mode|

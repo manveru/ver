@@ -79,7 +79,7 @@ module VER
         indices_size = indices.size
         return if indices_size == 0
 
-        record_multi do |record|
+        undo_record do |record|
           if indices_size == 1
             record.delete(indices.first)
           else

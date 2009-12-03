@@ -183,7 +183,7 @@ module VER
       end
 
       def complete(options = {}, &block)
-        @undoer.separate!
+        undo_separator
         HoverCompletion.new(self, options, &block)
       end
     end
