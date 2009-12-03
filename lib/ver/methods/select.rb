@@ -70,13 +70,14 @@ module VER
         indent_size = options.shiftwidth
         indent = ' ' * indent_size
 
-        each_selected_line do |y, fx, tx|
-          tx = fx + indent_size
-          next if get("#{y}.#{fx}", "#{y}.#{tx}").empty?
-          insert("#{y}.#{fx}", indent)
+        record_multi do |record|
+          each_selected_line do |y, fx, tx|
+            tx = fx + indent_size
+            next if get("#{y}.#{fx}", "#{y}.#{tx}").empty?
+            record.insert("#{y}.#{fx}", indent)
+          end
         end
 
-        edit_separator
         refresh_selection
       end
 
@@ -93,7 +94,6 @@ module VER
         end
 
         delete(*queue)
-        edit_separator
         refresh_selection
       end
 
@@ -144,7 +144,7 @@ module VER
           insert("#{y}.#{indent}", comment)
         end
 
-        edit_separator
+        @undoer.separate!
         refresh_selection
       end
 
@@ -152,17 +152,22 @@ module VER
         comment = "#{options.comment_line} "
         regex = /#{Regexp.escape(comment)}/
 
-        each_selected_line do |y, fx, tx|
-          from, to = "#{y}.#{fx}", "#{y}.#{tx}"
-          line = get(from, to)
+        record_multi do |record|
+          each_selected_line do |y, fx, tx|
+            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
+            line = get(from, to)
 
-          if line.sub!(regex, '')
-            replace(from, to, line)
+            if line.sub!(regex, '')
+              record.replace(from, to, line)
+            end
           end
         end
 
-        edit_separator
         refresh_selection
+      end
+
+      def record_multi(&block)
+        @undoer.record_multi(&block)
       end
 
       def selection_replace_char
@@ -191,7 +196,7 @@ module VER
         string = clipboard_get
         ranges = tag_ranges(:sel)
         from, to = ranges.first.first, ranges.last.last
-        edit_separator
+        @undoer.separate!
         replace(from, to, string)
         finish_selection
         mark_set :insert, from
@@ -203,24 +208,25 @@ module VER
       def replace_selection_with(string, full)
         origin = index(:insert)
 
-        if full
-          each_selected_line do |y, fx, tx|
-            diff = tx - fx
-            replace("#{y}.#{fx}", "#{y}.#{tx}", string * diff)
-          end
-        else
-          string_size = string.size
-          each_selected_line do |y, fx, tx|
-            replace("#{y}.#{fx}", "#{y}.#{tx}", string)
+        record_multi do |record|
+          if full
+            each_selected_line do |y, fx, tx|
+              diff = tx - fx
+              record.replace("#{y}.#{fx}", "#{y}.#{tx}", string * diff)
+            end
+          else
+            string_size = string.size
+            each_selected_line do |y, fx, tx|
+              record.replace("#{y}.#{fx}", "#{y}.#{tx}", string)
+            end
           end
         end
 
-        edit_separator
         mark_set :insert, origin
       end
 
       def finish_selection(mode = nil)
-        edit_separator
+        @undoer.separate!
         clear_selection
         mode ? self.mode = mode : keymap.use_previous_mode
         apply_mode_style(keymap.mode)

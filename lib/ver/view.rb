@@ -45,7 +45,6 @@ module VER
 
       @text = VER::Text.new(
         self,
-        autoseparators:   true, # insert separators into the undo flow
         borderwidth:      0,
         exportselection:  true, # copy into X11 buffer automatically
         font:             font,
@@ -55,7 +54,6 @@ module VER
         takefocus:        true,
         tabs:             tabs,
         tabstyle:         :wordprocessor,
-        undo:             true, # enable undo capabilities
         wrap:             :word
       )
     end

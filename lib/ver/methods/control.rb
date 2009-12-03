@@ -363,6 +363,24 @@ module VER
         message('Nothing to redo')
       end
 
+      def rb_redo
+        undoer.redo
+      end
+
+      def rb_undo
+        undoer.undo
+      end
+
+      def [](pos, len)
+        pos = index(pos)
+        get(pos, pos + len)
+      end
+
+      def []=(pos, len, string)
+        pos = index(pos)
+        replace(pos, pos + len, string)
+      end
+
       private
 
       def wrap_lines_of(text, wrap = 80)

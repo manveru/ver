@@ -37,7 +37,8 @@ module VER
         self.filename = path
 
         begin
-          self.value = read_file(filename)
+          clear
+          insert 1.0, read_file(filename)
           message "Opened #{short_filename}"
         rescue Errno::ENOENT
           delete '1.0', :end
@@ -80,6 +81,8 @@ module VER
         edit_reset
         mark_set :insert, "#{line.to_i}.0"
         @pristine = false
+
+        @undoer = Undo::Tree.new(self)
 
         bind('<Map>') do
           defer do

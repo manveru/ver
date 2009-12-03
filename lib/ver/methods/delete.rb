@@ -76,8 +76,21 @@ module VER
 
       # Delete text between +indices+
       def delete(*indices)
-        execute('delete', *indices)
-        touch!(*indices)
+        indices_size = indices.size
+        return if indices_size == 0
+
+        record_multi do |record|
+          if indices_size == 1
+            record.delete(indices.first)
+          else
+            indices.each_slice(2) do |from, to|
+              next if from == to
+              record.delete(from, to)
+            end
+          end
+        end
+
+        touch!(*indices.first.upto(indices.last).to_a)
       end
 
       # Copy text between +indices+ and delete it.
@@ -86,6 +99,7 @@ module VER
       #   one or more indices within the buffer, must be an even number of
       #   indices if more than one.
       def kill(*indices)
+        p kill: indices
         if indices.size > 2
           deleted = indices.each_slice(2).map{|left, right| get(left, right) }
         else

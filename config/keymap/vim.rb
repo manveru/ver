@@ -128,7 +128,6 @@ module VER
         mode.map :insert_indented_newline_below,   %w[o]
         mode.map :join_lines,                      %w[J]
         mode.map :paste,                           %w[p]
-        mode.map :redo,                            %w[Control-r]
         mode.map :replace_char,                    %w[r]
         mode.map :smart_evaluate,                  %w[Alt-e], %w[Control-m e]
         mode.map :sol_then_insert_mode,            %w[I]
@@ -140,13 +139,17 @@ module VER
         mode.map :status_theme_select,             %w[Alt-t], %w[Control-m t]
         mode.map :syntax_switch,                   %w[Control-y]
         mode.map :theme_switch,                    %w[Control-t]
-        mode.map :undo,                            %w[u]
         mode.map :unindent_line,                   %w[less]
         mode.map :wrap_line,                       %w[g w]
         mode.map :preview,                         %w[F5]
         mode.map :status_ex,                       %w[colon]
         mode.map :syntax_indent_file,              %w[equal]
         mode.map :repeat_command,                  %w[period]
+
+        # mode.map :undo,                            %w[u]
+        # mode.map :redo,                            %w[Control-r]
+        mode.map :rb_undo,                         %w[u]
+        mode.map :rb_redo,                         %w[Control-r]
       end
 
       vim.add_mode :readline do |mode|

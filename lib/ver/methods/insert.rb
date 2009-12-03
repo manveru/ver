@@ -9,7 +9,7 @@ module VER
       end
 
       def insert_selection
-        insert :insert, Tk::Selection.get
+        insert :insert, selection_get
       end
 
       def insert_tab
@@ -176,7 +176,7 @@ module VER
 
       def replace_string(string)
         return if string.empty?
-        execute :delete, :insert
+        execute_only :delete, :insert
         insert_string(string)
       end
 

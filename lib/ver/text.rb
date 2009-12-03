@@ -42,7 +42,7 @@ module VER
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
     attr_accessor :keymap, :view, :status
-    attr_reader :filename, :encoding, :pristine, :syntax
+    attr_reader :filename, :encoding, :pristine, :syntax, :undoer
 
     # attributes for diverse functionality
     attr_accessor :selection_mode, :selection_start
@@ -57,6 +57,10 @@ module VER
 
       apply_mode_style(keymap.mode) # for startup
       setup_tags
+
+
+      require 'ver/undo'
+      @undoer = Undo::Tree.new(self)
 
       self.selection_start = nil
       @pristine = true
@@ -359,9 +363,15 @@ module VER
       end
     end
 
-    def insert(*args)
-      super
-      touch!(args.first)
+    def insert(index, string)
+      index = index(index) unless index.is_a?(Index)
+      # p insert: [index, string]
+
+      record_multi do |record|
+        record.insert(index, string)
+      end
+
+      touch!(index)
     end
 
     # Replaces the range of characters between index1 and index2 with the given
@@ -377,9 +387,18 @@ module VER
     # are active in the text widget.
     #
     # replace index1 index2 chars ?tagList chars tagList ...?
-    def replace(index1, index2, *rest)
-      super
-      touch!(*index(index1).upto(index(index2)).to_a)
+    def replace(index1, index2, string)
+      index1, index2 = index(index1), index(index2)
+      return if index1 == index2
+      p replace: [index1, index2, string]
+
+      undoer.record do |record|
+        record.replace(index1, index2, string)
+        p record
+      end
+
+      undoer.compact!
+      touch!(*index1.upto(index2).to_a)
     end
 
     def focus
@@ -461,7 +480,7 @@ module VER
 
     def mode=(name)
       keymap.mode = mode = name.to_sym
-      edit_separator
+      @undoer.separate!
       apply_mode_style(mode)
       status_projection(status) if status
     end

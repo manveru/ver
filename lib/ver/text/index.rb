@@ -19,6 +19,11 @@ module VER
         return  0 if widget.compare(self_idx, '==', other_idx)
       end
 
+      def ==(other)
+        self_idx, other_idx = idx, other.to_index.idx
+        widget.compare(self_idx, '==', other_idx)
+      end
+
       def delta(other)
         y_diff = other.y - y
 
@@ -38,27 +43,39 @@ module VER
       end
 
       def linestart
-        "#{idx} linestart"
+        widget.index "#{idx} linestart"
       end
 
       def lineend
-        "#{idx} lineend"
+        widget.index "#{idx} lineend"
       end
 
       def wordstart
-        "#{idx} wordstart"
+        widget.index "#{idx} wordstart"
       end
 
       def wordend
-        "#{idx} wordend"
+        widget.index "#{idx} wordend"
       end
 
       def next
-        self.class.new(widget, "#{y + 1}.#{x}")
+        widget.index "#{y + 1}.#{x}"
       end
 
       def prev
-        self.class.new(widget, "#{y - 1}.#{x}")
+        widget.index "#{y - 1}.#{x}"
+      end
+
+      def +(chars)
+        widget.index "#{idx} + #{chars} chars"
+      end
+
+      def -(other)
+        if other.is_a?(self.class)
+          widget.count(other, self, :displaychars)
+        else
+          widget.index "#{idx} - #{other.to_int} chars"
+        end
       end
 
       def split
@@ -66,7 +83,7 @@ module VER
       end
 
       def inspect
-        "#<Text::Index #{self}>"
+        to_s # "#<Text::Index #{self}>"
       end
 
       def to_str
