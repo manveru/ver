@@ -1,6 +1,8 @@
 module VER
   # The status bar
   class Status < VER::Entry
+    autoload :Context, 'ver/status/context'
+
     attr_accessor :keymap, :view
     attr_reader :mode
 
