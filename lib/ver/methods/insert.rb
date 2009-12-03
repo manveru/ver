@@ -17,32 +17,35 @@ module VER
       end
 
       def insert_indented_newline_below
-        if options.autoindent
-          line = get('insert linestart', 'insert lineend')
+        undo_record do |record|
+          if options.autoindent
+            line = get('insert linestart', 'insert lineend')
 
-          indent = line.empty? ? "" : (line[/^\s+/] || '')
-          mark_set :insert, 'insert lineend'
-          insert :insert, "\n#{indent}"
-        else
-          mark_set :insert, 'insert lineend'
-          insert :insert, "\n"
+            indent = line.empty? ? "" : (line[/^\s+/] || '')
+            mark_set :insert, 'insert lineend'
+            record.insert :insert, "\n#{indent}"
+          else
+            mark_set :insert, 'insert lineend'
+            record.insert :insert, "\n"
+          end
+
+          clean_line('insert - 1 line', record)
+          start_insert_mode
         end
-
-        clean_line('insert - 1 line')
-        start_insert_mode
       end
 
       def insert_indented_newline_above
-        if index(:insert).y > 1
-          previous_line
-          insert_indented_newline_below
-        else
-          insert('insert linestart', "\n")
-          mark_set(:insert, 'insert - 1 line')
+        undo_record do |record|
+          if index(:insert).y > 1
+            previous_line
+            insert_indented_newline_below
+          else
+            record.insert('insert linestart', "\n")
+            mark_set(:insert, 'insert - 1 line')
+            clean_line('insert - 1 line', record)
+            start_insert_mode
+          end
         end
-
-        clean_line('insert + 1 line')
-        start_insert_mode
       end
 
       def insert_newline
@@ -136,26 +139,28 @@ module VER
       end
 
       def fallback_insert_indented_newline
-        line1 = get('insert linestart', 'insert lineend')
-        indentation1 = line1[/^\s+/] || ''
-        insert :insert, "\n"
+        undo_record do |record|
+          line1 = get('insert linestart', 'insert lineend')
+          indentation1 = line1[/^\s+/] || ''
+          record.insert :insert, "\n"
 
-        line2 = get('insert linestart', 'insert lineend')
-        indentation2 = line2[/^\s+/] || ''
+          line2 = get('insert linestart', 'insert lineend')
+          indentation2 = line2[/^\s+/] || ''
 
-        replace(
-          'insert linestart',
-          "insert linestart + #{indentation2.size} chars",
-          indentation1
-        )
+          record.replace(
+            'insert linestart',
+            "insert linestart + #{indentation2.size} chars",
+            indentation1
+          )
 
-        clean_line('insert - 1 line')
+          clean_line('insert - 1 line', record)
+        end
       end
 
       # Most of the input will be in US-ASCII, but an encoding can be set per view for the input.
       # For just about all purposes, UTF-8 should be what you want to input, and it's what Tk
       # can handle best.
-      def insert_string(string)
+      def insert_string(string, record = self)
         return if string.empty?
 
         if !string.frozen? && string.encoding == Encoding::ASCII_8BIT
@@ -167,7 +172,7 @@ module VER
         end
 
         # puts "Insert %p in mode %p" % [string, keymap.mode]
-        insert :insert, string
+        record.insert(:insert, string)
       end
 
       def start_replace_mode
@@ -176,8 +181,11 @@ module VER
 
       def replace_string(string)
         return if string.empty?
-        execute_only :delete, :insert
-        insert_string(string)
+
+        undo_record do |record|
+          record.delete(:insert, 'insert + 1 chars')
+          insert_string(string, record)
+        end
       end
 
       def auto_indent_line

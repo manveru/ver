@@ -332,12 +332,12 @@ module VER
        )
       end
 
-      def clean_line(index)
+      def clean_line(index, record = self)
         index = index(index)
         from, to = index.linestart, index.lineend
         line = get(from, to)
         bare = line.rstrip
-        replace(from, to, bare) if bare.empty?
+        record.replace(from, to, bare) if bare.empty?
       end
 
       def start_insert_mode
