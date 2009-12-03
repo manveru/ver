@@ -390,14 +390,11 @@ module VER
     def replace(index1, index2, string)
       index1, index2 = index(index1), index(index2)
       return if index1 == index2
-      p replace: [index1, index2, string]
 
-      undoer.record do |record|
+      record_multi do |record|
         record.replace(index1, index2, string)
-        p record
       end
 
-      undoer.compact!
       touch!(*index1.upto(index2).to_a)
     end
 

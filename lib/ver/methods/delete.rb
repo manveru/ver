@@ -99,7 +99,6 @@ module VER
       #   one or more indices within the buffer, must be an even number of
       #   indices if more than one.
       def kill(*indices)
-        p kill: indices
         if indices.size > 2
           deleted = indices.each_slice(2).map{|left, right| get(left, right) }
         else

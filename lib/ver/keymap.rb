@@ -62,9 +62,6 @@ module VER
           self.last_send = args
         end
       end
-
-      # p history
-      # p last_send
     end
 
     def enter_key(key)

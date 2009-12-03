@@ -50,7 +50,6 @@ module VER
       def undo
         loop do
           break unless applied = self.applied
-          p applied
 
           applied.undo
 
@@ -66,7 +65,6 @@ module VER
       def redo
         loop do
           break unless pending = self.pending
-          p pending
 
           pending.redo
 
@@ -98,7 +96,6 @@ module VER
 
         yield(self) if block_given?
 
-        p records
         records.last.separator = true
       end
 
@@ -219,8 +216,6 @@ module VER
         # only compact identical methods
         return unless predo_name == sredo_name
 
-        # p pre_compact: [predo_name, parent, self]
-
         case predo_name
         when :insert
           predo_pos, predo_string = predo_args
@@ -267,8 +262,6 @@ module VER
 
         # the parent of our parent (grandparent) becomes our parent
         self.parent = grandparent = parent.parent
-
-        # p post_compact: [predo_name, self]
 
         # recurse into a new compact cycle if we have a grandparent
         if grandparent
