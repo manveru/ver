@@ -14,6 +14,7 @@ require 'json'
 # require 'pp'
 require 'securerandom'
 require 'set'
+require 'pathname'
 
 autoload :SizedArray, 'ver/vendor/sized_array'
 
@@ -79,15 +80,15 @@ module VER
     options.loadpath
   end
 
-  def run(given_options = {})
+  def run(given_options = {}, &block)
     setup_tk
     run_startup(given_options)
 
     forking do
       if Tk::RUN_EVENTLOOP_ON_MAIN_THREAD
-        run_aqua
+        run_aqua(&block)
       else
-        run_x11
+        run_x11(&block)
       end
     end
   rescue => exception
@@ -95,14 +96,16 @@ module VER
     exit
   end
 
-  def run_aqua
+  def run_aqua(&block)
     run_core
+    EM.defer(&block) if block
     Tk.mainloop
   end
 
-  def run_x11
+  def run_x11(&block)
     EM.defer do
       run_core
+      EM.defer(&block) if block
       Tk.mainloop
     end
   end
