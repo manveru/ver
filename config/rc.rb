@@ -41,6 +41,9 @@ VER.options.dsl do
   o "Number of characters after which wrap commands will wrap",
     :textwidth, 80
 
+  o "Minimum size of search term to start incremental highlighting",
+    :search_incremental_min, 1
+
   o "Show vertical scrollbar",
     :vertical_scrollbar, false
 

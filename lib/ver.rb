@@ -60,6 +60,9 @@ module VER
     o "Width of one tab in pixel",
       :tabs, 10
 
+    o "Minimum size of search term to start incremental highlighting",
+      :search_incremental_min, 1
+
     o "Location of personal configuration",
       :home_conf_dir,  Pathname('~/.config/ver').expand_path
 

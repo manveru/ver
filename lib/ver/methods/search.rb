@@ -21,14 +21,15 @@ module VER
 
         status_ask question do |term|
           status.bind('<<Modified>>'){ }
-          search_incremental(term)
+          search_incremental(term, force = true)
           search_prev
           yield
         end
       end
 
-      def search_incremental(term)
+      def search_incremental(term, force = false)
         return if !term || term.empty?
+        return if !force && term.size <= options.search_incremental_min
 
         begin
           needle = Regexp.new(term)
