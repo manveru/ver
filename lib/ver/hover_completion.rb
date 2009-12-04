@@ -65,7 +65,7 @@ module VER
 
     def update
       self.from, self.to, self.choices = completer.call
-      # @longest_choice = choices.map{|choice| choice.size }.max
+      @longest_choice = choices.map{|choice| choice.size }.max
 
       if choices && choices.size > 0
         list.value = choices
@@ -91,9 +91,8 @@ module VER
       x, y, caret_height =
         parent.tk_caret.values_at(:x, :y, :height)
 
-      height, width= parent.winfo_height, parent.winfo_width
+      height, width = parent.winfo_height, parent.winfo_width
       height -= parent.status.winfo_height
-
 
       # use side with most space, east or west
       if x > (width / 2)
@@ -115,10 +114,18 @@ module VER
         height -= (height - y)
       end
 
-      list.configure height: -1 # fit as many into the list as possible
+      list.configure width: @longest_choice + 2, height: -1
+      height = [height, list.winfo_reqheight].min
+      width = [width, list.winfo_reqwidth].min
 
-      # let's place it so we can see how big it is.
-      list.place x: x, y: y, in: parent, anchor: "#{hemisphere}#{side}"
+      list.place(
+        x: x,
+        y: y,
+        height: height,
+        width: width,
+        in: parent,
+        anchor: "#{hemisphere}#{side}"
+      )
     end
 
     def cancel
