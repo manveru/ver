@@ -49,7 +49,6 @@ module VER
       # Parent of the applied change becomes the next applied change.
       def undo
         while applied = self.applied
-          p applied
           applied.undo
 
           self.pending = applied
@@ -63,7 +62,6 @@ module VER
       # If the pending change has a next child, it becomes the new pending one.
       def redo
         while pending = self.pending
-          p pending
           pending.redo
 
           self.applied = pending
@@ -154,7 +152,6 @@ module VER
       end
 
       def insert(pos, string)
-        p insert: [pos, string]
         pos = widget.index(pos) unless pos.respond_to?(:to_index)
 
         widget.execute_only(:insert, pos, string)
@@ -166,7 +163,6 @@ module VER
       end
 
       def replace(from, to, string)
-        p replace: [from, to, string]
         from = widget.index(from) unless from.respond_to?(:to_index)
         to = widget.index(to) unless to.respond_to?(:to_index)
 
@@ -180,7 +176,6 @@ module VER
       end
 
       def delete(from, to)
-        p delete: [from, to]
         from = widget.index(from) unless from.respond_to?(:to_index)
         to = widget.index(to) unless to.respond_to?(:to_index)
 

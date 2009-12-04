@@ -101,10 +101,8 @@ module VER
       format.gsub!(/%([+-]?\d+)([[:alpha:]]+)/, '#{\2(\1)}')
       format = "%{#{format}}"
 
-      # puts format
       context = Status::Context.new(self)
       line = context.instance_eval(format)
-      # p line
 
       into.value = line
     rescue => ex
@@ -200,7 +198,6 @@ module VER
 
     def insert(index, string)
       index = index(index) unless index.respond_to?(:to_index)
-      # p insert: [index, string]
 
       undo_record do |record|
         record.insert(index, string)
@@ -284,7 +281,6 @@ module VER
     # TODO: maybe we can make this one faster when many lines are going to be
     #       highlighted at once by bundling them.
     def touch!(*args)
-      p args
       args.each{|arg| schedule_line_highlight(arg) } if @syntax
       Tk::Event.generate(self, '<<Modified>>')
     end

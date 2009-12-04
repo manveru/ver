@@ -89,9 +89,6 @@ module VER
             end
           end
         end
-
-        # p indices.first.upto(indices.last).to_a
-        # touch!(*indices.first.upto(indices.last).to_a)
       end
 
       # Copy text between +indices+ and delete it.
