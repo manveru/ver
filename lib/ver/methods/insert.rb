@@ -9,7 +9,7 @@ module VER
       end
 
       def insert_selection
-        insert :insert, selection_get
+        insert :insert, Tk::Selection.get
       end
 
       def insert_tab
