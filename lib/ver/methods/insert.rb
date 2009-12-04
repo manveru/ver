@@ -230,24 +230,27 @@ module VER
 
         empty_line = /^\s*$/
         indent = 0
+        indent_token = ' ' * options.shiftwidth
 
-        index('1.0').upto(index('end')) do |pos|
-          pos_lineend = pos.lineend
-          line = get(pos, pos_lineend).strip
+        undo_record do |record|
+          index('1.0').upto(index('end')) do |pos|
+            pos_lineend = pos.lineend
+            line = get(pos, pos_lineend).strip
 
-          if increase && decrease && line =~ increase && line =~ decrease
-            indent -= 1
-            replace(pos, pos_lineend, ('  ' * indent) << line)
-            indent += 1
-          elsif decrease && line =~ decrease
-            indent -= 1
-            replace(pos, pos_lineend, ('  ' * indent) << line)
-          elsif increase && line =~ increase
-            replace(pos, pos_lineend, ('  ' * indent) << line)
-            indent += 1
-          elsif line =~ empty_line
-          else
-            replace(pos, pos_lineend, ('  ' * indent) << line)
+            if increase && decrease && line =~ increase && line =~ decrease
+              indent -= 1
+              record.replace(pos, pos_lineend, (indent_token * indent) << line)
+              indent += 1
+            elsif decrease && line =~ decrease
+              indent -= 1
+              record.replace(pos, pos_lineend, (indent_token * indent) << line)
+            elsif increase && line =~ increase
+              record.replace(pos, pos_lineend, (indent_token * indent) << line)
+              indent += 1
+            elsif line =~ empty_line
+            else
+              record.replace(pos, pos_lineend, (indent_token * indent) << line)
+            end
           end
         end
       end
