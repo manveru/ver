@@ -205,8 +205,6 @@ module VER
       undo_record do |record|
         record.insert(index, string)
       end
-
-      touch!(index)
     end
 
     # Replaces the range of characters between index1 and index2 with the given
@@ -230,8 +228,6 @@ module VER
       undo_record do |record|
         record.replace(index1, index2, string)
       end
-
-      touch!(*index1.upto(index2).to_a)
     end
 
     def focus
@@ -285,6 +281,14 @@ module VER
       schedule_highlight!
     end
 
+    # TODO: maybe we can make this one faster when many lines are going to be
+    #       highlighted at once by bundling them.
+    def touch!(*args)
+      p args
+      args.each{|arg| schedule_line_highlight(arg) } if @syntax
+      Tk::Event.generate(self, '<<Modified>>')
+    end
+
     private
 
     def schedule_highlight!(*args)
@@ -302,13 +306,6 @@ module VER
         tag_all_trailing_whitespace(from: from, to: to)
         tag_all_uris(from: from, to: to)
       end
-    end
-
-    # TODO: maybe we can make this one faster when many lines are going to be
-    #       highlighted at once by bundling them.
-    def touch!(*args)
-      args.each{|arg| schedule_line_highlight(arg) } if @syntax
-      Tk::Event.generate(self, '<<Modified>>')
     end
 
     def mode=(name)

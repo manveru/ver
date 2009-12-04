@@ -48,9 +48,8 @@ module VER
       # Undo last applied change so it becomes the next pending change.
       # Parent of the applied change becomes the next applied change.
       def undo
-        loop do
-          break unless applied = self.applied
-
+        while applied = self.applied
+          p applied
           applied.undo
 
           self.pending = applied
@@ -63,15 +62,14 @@ module VER
       # Redo pending change so it becomes the new applied change.
       # If the pending change has a next child, it becomes the new pending one.
       def redo
-        loop do
-          break unless pending = self.pending
-
+        while pending = self.pending
+          p pending
           pending.redo
 
           self.applied = pending
           self.pending = pending.next
 
-          break if pending.separator
+          break if pending && pending.separator
         end
       end
 
@@ -156,9 +154,11 @@ module VER
       end
 
       def insert(pos, string)
+        p insert: [pos, string]
         pos = widget.index(pos) unless pos.respond_to?(:to_index)
 
         widget.execute_only(:insert, pos, string)
+        widget.touch!(pos)
 
         self.redo_info = [:insert, pos, string]
         self.undo_info = [pos, pos + string.size, '']
@@ -166,23 +166,27 @@ module VER
       end
 
       def replace(from, to, string)
+        p replace: [from, to, string]
         from = widget.index(from) unless from.respond_to?(:to_index)
         to = widget.index(to) unless to.respond_to?(:to_index)
 
         data = widget.get(from, to)
         widget.execute_only(:replace, from, to, string)
+        widget.touch!(*from.upto(to))
 
         self.redo_info = [:replace, from, to, string]
-        self.undo_info = [from, to, data]
+        self.undo_info = [from, from + string.size, data]
         self.applied = true
       end
 
       def delete(from, to)
+        p delete: [from, to]
         from = widget.index(from) unless from.respond_to?(:to_index)
         to = widget.index(to) unless to.respond_to?(:to_index)
 
         data = widget.get(from, to)
         widget.execute_only(:delete, from, to)
+        widget.touch!(*from.upto(to))
 
         self.redo_info = [:delete, from, to]
         self.undo_info = [from, from, data]
@@ -204,8 +208,8 @@ module VER
       end
 
       def compact!
+        return if separator
         return unless parent = self.parent
-        return if parent.separator
 
         pundo_from, pundo_to, pundo_string = parent.undo_info
         sundo_from, sundo_to, sundo_string = undo_info
