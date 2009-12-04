@@ -42,20 +42,37 @@ module VER
 
       # Move cursor +count+ characters left.
       def backward_char(count = 1)
-        mark_set :insert, "insert - #{count} char"
+        mark_set :insert, "insert - #{count} displaychars"
       end
 
       # Move cursor +count+ characters right.
       def forward_char(count = 1)
-        mark_set :insert, "insert + #{count} char"
+        mark_set :insert, "insert + #{count} displaychars"
       end
 
+      # Move to the beginning of the line where insert mark is located.
+      #
+      # With +count+ it will move to the beginning of the display line, which
+      # takes line wraps into account.
       def beginning_of_line(count = nil)
-        mark_set :insert, 'insert display linestart'
+        if count
+          mark_set :insert, 'insert display linestart'
+        else
+          mark_set :insert, 'insert linestart'
+        end
       end
 
+      # Move to the end of the line where insert mark is located.
+      #
+      # With +count+ it moves to the end of the display line, so when there is
+      # a line wrap it will move to the place where the line wraps instead of the
+      # real end of the line.
       def end_of_line(count = nil)
-        mark_set :insert, 'insert display lineend'
+        if count
+          mark_set :insert, 'insert display lineend'
+        else
+          mark_set :insert, 'insert lineend'
+        end
       end
 
       def eol_then_insert_mode(count = nil)
