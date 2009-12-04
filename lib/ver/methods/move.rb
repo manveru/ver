@@ -76,17 +76,17 @@ module VER
       end
 
       def eol_then_insert_mode(count = nil)
-        end_of_line
+        end_of_line(count)
         start_insert_mode
       end
 
-      def sol_then_insert_mode
-        beginning_of_line
+      def sol_then_insert_mode(count = nil)
+        beginning_of_line(count)
         start_insert_mode
       end
 
-      def forward_char_then_insert_mode
-        forward_char
+      def forward_char_then_insert_mode(count = 1)
+        forward_char(count)
         start_insert_mode
       end
 
