@@ -92,7 +92,7 @@ module VER
 
         yield(self) if block_given?
 
-        records.last.separator = true
+        records.last.separator = true if records.any?
       end
 
       def insert(*args)
