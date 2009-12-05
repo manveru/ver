@@ -38,10 +38,11 @@ VER.run fork: false do
       text = VER.layout.views.first.text
 
       moving = lambda{|from, to, *args|
+        from, to = text.index(from), text.index(to)
         $DEBUG = true
         text.mark_set(:insert, from)
         text.send(*args)
-        text.index(:insert).to_s.should == to
+        text.index(:insert).should == to
         $DEBUG = false
       }
 
@@ -50,9 +51,17 @@ VER.run fork: false do
         moving['1.1', '1.2', :forward_char]
       end
 
+      should 'go multiple chars forward' do
+        moving['1.0', '1.10', :forward_char, 10]
+      end
+
       should 'go a char backward' do
         moving['1.2', '1.1', :backward_char]
         moving['1.1', '1.0', :backward_char]
+      end
+
+      should 'go multiple chars backward' do
+        moving['1.11', '1.1', :backward_char, 10]
       end
 
       should 'go to the beginning of a lines' do
@@ -60,7 +69,23 @@ VER.run fork: false do
       end
 
       should 'go to the end of a line' do
-        moving['2.0', '2.52', :end_of_line]
+        moving['2.0', '2.0 lineend', :end_of_line]
+      end
+
+      should 'go to a line number' do
+        moving['2.0', '10.0', :go_line, 10]
+      end
+
+      should 'go to the end of a file' do
+        moving['2.0', 'end - 1 chars', :end_of_file]
+      end
+
+      should 'go a page down' do
+        moving['2.0', '2.1', :page_down]
+      end
+
+      should 'go a page up' do
+        moving['2.0', '1.51', :page_up]
       end
     end
 
