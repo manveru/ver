@@ -122,12 +122,21 @@ module VER
         mark_set :insert, tk_next_page_pos(count)
       end
 
+      TEXT_UP_DOWN_LINE = Tk::TclString.new(<<-TCL)
+%s mark set insert [tk::TextUpDownLine %s %d]
+%s see insert
+      TCL
+
       def previous_line(count = 1)
-        mark_set :insert, tk_prev_line_pos(count)
+        path = tk_pathname
+        Tk.eval(TEXT_UP_DOWN_LINE % [path, path, -count.abs, path])
+        refresh_selection
       end
 
       def next_line(count = 1)
-        mark_set :insert, tk_next_line_pos(count)
+        path = tk_pathname
+        Tk.eval(TEXT_UP_DOWN_LINE % [path, path, count.abs, path])
+        refresh_selection
       end
 
       def forward_scroll(count = 1)
