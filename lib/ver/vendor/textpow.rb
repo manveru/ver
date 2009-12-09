@@ -352,7 +352,11 @@ module Textpow
           end
         end
 
-        position = end_pos
+        if position >= end_pos
+          raise "Parser didn't move forward on line: %p" % [line]
+        else
+          position = end_pos
+        end
       end
     end
   end
