@@ -52,14 +52,18 @@ module VER
         mark_set(:insert, from) if from
       end
 
-      def search_next
-        from, to = tag_nextrange('search', 'insert + 1 chars', 'end')
-        mark_set(:insert, from) if from
+      def search_next(count = 1)
+        count.times do
+          from, to = tag_nextrange('search', 'insert + 1 chars', 'end')
+          mark_set(:insert, from) if from
+        end
       end
 
-      def search_prev
-        from, to = tag_prevrange('search', 'insert - 1 chars', '1.0')
-        mark_set(:insert, from) if from
+      def search_prev(count = 1)
+        count.times do
+          from, to = tag_prevrange('search', 'insert - 1 chars', '1.0')
+          mark_set(:insert, from) if from
+        end
       end
 
       def search_next_word_under_cursor
