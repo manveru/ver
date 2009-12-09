@@ -2,8 +2,8 @@
   "fileTypes": [
     "n"
   ],
-  "foldingStartMarker": "(\\{|(|<\\[)",
-  "foldingStopMarker": "(\\}|)|]>)",
+  "foldingStartMarker": "(\\{|\\(|<\\[)",
+  "foldingStopMarker": "(\\}|\\)|\\]>)",
   "keyEquivalent": "^~N",
   "name": "Nemerle",
   "patterns": [
