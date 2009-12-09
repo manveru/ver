@@ -66,7 +66,7 @@ module VER::Syntax::Detector
   exts "HTML (ASP.net)", ["aspx", "ascx"]
   exts "HTML (Active4D)", ["a4d", "a4p"]
   exts "HTML (Erlang)", ["yaws"]
-  exts "HTML (Tcl)", ["tcl", "adp", "inc"]
+  exts "HTML (Tcl)", ["adp", "inc"]
   exts "HTML", ["html", "htm", "shtml", "xhtml", "phtml", "php", "inc", "tmpl", "tpl", "ctp"]
   head "HTML", /<!DOCTYPE|<(?i:html)|<\?(?i:php)/
   exts "Haskell", ["hs"]
