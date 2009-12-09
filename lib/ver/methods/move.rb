@@ -122,21 +122,46 @@ module VER
         mark_set :insert, tk_next_page_pos(count)
       end
 
-      TEXT_UP_DOWN_LINE = Tk::TclString.new(<<-TCL)
-%s mark set insert "insert + %d display line"
-%s see insert
-      TCL
-
       def previous_line(count = 1)
-        path = tk_pathname
-        Tk.eval(TEXT_UP_DOWN_LINE % [path, -count.abs, path])
+        up_down_line(-count.abs)
         refresh_selection
       end
 
       def next_line(count = 1)
-        path = tk_pathname
-        Tk.eval(TEXT_UP_DOWN_LINE % [path, count.abs, path])
+        up_down_line(count.abs)
         refresh_selection
+      end
+
+      # OK, finally found the issue.
+      #
+      # the implementation of tk::TextUpDownLine is smart, but not smart enough.
+      # It doesn't assume large deltas between the start of up/down movement and
+      # the last other modification of the insert mark.
+      #
+      # This means that, after scrolling with up/down for a few hundred lines,
+      # it has to calculate the amount of display lines in between, which is a
+      # very expensive calculation and time increases O(delta_lines).
+      #
+      # We'll try to solve this another way, by assuming that there are at least
+      # a few other lines of same or greater length in between, we simply
+      # compare against a closer position and make delta_lines as small as
+      # possible.
+      #
+      # Now, if you go to, like column 100 of a line, and there is never a line
+      # as long for the rest of the file, the scrolling will still slow down a
+      # lot. This is an issue we can fix if we "forget" the @udl_pos_orig after
+      # a user-defined maximum delta (something around 200 should do), will
+      # implement that on demand.
+      def up_down_line(count)
+        insert = index(:insert)
+
+        @udl_pos_orig = insert if @udl_pos_prev != insert
+
+        lines = count(@udl_pos_orig, insert, :displaylines)
+        target = index("#@udl_pos_orig + #{lines + count} displaylines")
+        @udl_pos_prev = target
+        mark_set :insert, target
+        @udl_pos_orig = target if target.x == @udl_pos_orig.x
       end
 
       def forward_scroll(count = 1)
