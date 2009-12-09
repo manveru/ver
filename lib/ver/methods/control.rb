@@ -316,20 +316,25 @@ module VER
         end
       end
 
-      def indent_line
-        insert('insert linestart', '  ')
+      def indent_line(count = 1)
+        indent = (' ' * options[:shiftwidth] * count)
+        insert('insert linestart', indent)
       end
 
-      def unindent_line
-       line = get('insert linestart', 'insert lineend')
+      def unindent_line(count = 1)
+        indent = ' ' * options[:shiftwidth]
+        replace_from = 'insert linestart'
+        replace_to = "insert linestart + #{indent.size} chars"
 
-       return unless line =~ /^(\s\s?)/
+        undo_record do |record|
+          count.times do
+            line = get('insert linestart', 'insert lineend')
 
-       replace(
-         'insert linestart',
-         "insert linestart + #{$1.size} chars",
-         ''
-       )
+            return unless line.start_with?(indent)
+
+            record.replace(replace_from, replace_to, '')
+          end
+        end
       end
 
       def clean_line(index, record = self)
