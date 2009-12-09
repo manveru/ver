@@ -197,6 +197,18 @@ module VER
         mark_set :insert, from
       end
 
+      def refresh_selection
+        return unless start = selection_start
+
+        tag_remove :sel, 1.0, :end
+
+        case selection_mode
+        when :select_char; refresh_selection_char(start)
+        when :select_line; refresh_selection_line(start)
+        when :select_block; refresh_selection_block(start)
+        end
+      end
+
       private
 
       # TODO: find better name for +full+
@@ -264,6 +276,45 @@ module VER
 
           delete(*queue)
           insert(queue.first, output)
+        end
+      end
+
+      # FIXME: yes, i know i'm calling `tag add` for every line, which makes
+      #        things slower, but it seems like there is a bug in the text widget.
+      #        So we aggregate the information into a single eval.
+      def refresh_selection_block(start)
+        ly, lx, ry, rx =
+          if compare('insert', '>', start)
+            [*index('insert').split, *start.split]
+          else
+            [*start.split, *index('insert').split]
+          end
+
+        from_y, to_y = [ly, ry].sort
+        from_x, to_x = [lx, rx].sort
+
+        code = [%(set win "#{tk_pathname}")]
+
+        from_y.upto to_y do |y|
+          code << "$win tag add sel #{y}.#{from_x} #{y}.#{to_x + 1}"
+        end
+
+        Tk.execute_only(Tk::TclString.new(code.join("\n")))
+      end
+
+      def refresh_selection_char(start)
+        if compare('insert', '>', start)
+          tag_add :sel, start, "insert + 1 chars"
+        else
+          tag_add :sel, "insert", "#{start} + 1 chars"
+        end
+      end
+
+      def refresh_selection_line(start)
+        if compare('insert', '>', start)
+          tag_add :sel, "#{start} linestart", 'insert lineend'
+        else
+          tag_add :sel, 'insert linestart', "#{start} lineend"
         end
       end
     end
