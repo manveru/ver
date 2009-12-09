@@ -123,19 +123,19 @@ module VER
       end
 
       TEXT_UP_DOWN_LINE = Tk::TclString.new(<<-TCL)
-%s mark set insert [tk::TextUpDownLine %s %d]
+%s mark set insert "insert + %d display line"
 %s see insert
       TCL
 
       def previous_line(count = 1)
         path = tk_pathname
-        Tk.eval(TEXT_UP_DOWN_LINE % [path, path, -count.abs, path])
+        Tk.eval(TEXT_UP_DOWN_LINE % [path, -count.abs, path])
         refresh_selection
       end
 
       def next_line(count = 1)
         path = tk_pathname
-        Tk.eval(TEXT_UP_DOWN_LINE % [path, path, count.abs, path])
+        Tk.eval(TEXT_UP_DOWN_LINE % [path, count.abs, path])
         refresh_selection
       end
 
