@@ -62,8 +62,8 @@ module VER
       preferences[plist['uuid']] = plist
     end
 
-    pref = File.expand_path("../config/preferences/#{info_name}.json", ROOT)
-    pref.gsub!(/[\/\u2014]/, '-')
+    filename = info_name.gsub(/[\/\u2014]/, '-')
+    pref = File.expand_path("../config/preferences/#{filename}.json", ROOT)
     FileUtils.mkdir_p(File.dirname(pref))
     json = JSON.pretty_unparse(preferences)
     puts "Writing to #{pref}"
