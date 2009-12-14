@@ -1,10 +1,13 @@
+AUTHORS
 CHANGELOG
+LICENSE
 MANIFEST
 README.textile
 Rakefile
 TODO
 bin/ver
 config/detect.rb
+config/keymap/diakonos.rb
 config/keymap/emacs.rb
 config/keymap/vim.rb
 config/preferences/ANTLR.json
@@ -323,6 +326,7 @@ config/welcome
 help/index.verh
 lib/ver.rb
 lib/ver/entry.rb
+lib/ver/exception_view.rb
 lib/ver/font.rb
 lib/ver/help.rb
 lib/ver/help/describe_key.rb
@@ -331,6 +335,7 @@ lib/ver/hover_completion.rb
 lib/ver/keymap.rb
 lib/ver/layout.rb
 lib/ver/methods.rb
+lib/ver/methods/bookmark.rb
 lib/ver/methods/clipboard.rb
 lib/ver/methods/completion.rb
 lib/ver/methods/control.rb
@@ -345,11 +350,13 @@ lib/ver/methods/save.rb
 lib/ver/methods/search.rb
 lib/ver/methods/select.rb
 lib/ver/methods/shortcuts.rb
+lib/ver/methods/undo.rb
 lib/ver/methods/views.rb
 lib/ver/mode.rb
 lib/ver/options.rb
 lib/ver/plist.rb
 lib/ver/status.rb
+lib/ver/status/context.rb
 lib/ver/syntax.rb
 lib/ver/syntax/detector.rb
 lib/ver/syntax/processor.rb
@@ -357,10 +364,13 @@ lib/ver/text.rb
 lib/ver/text/index.rb
 lib/ver/theme.rb
 lib/ver/tooltip.rb
+lib/ver/undo.rb
 lib/ver/vendor/binary_search.rb
 lib/ver/vendor/fuzzy_file_finder.rb
 lib/ver/vendor/levenshtein.rb
+lib/ver/vendor/sized_array.rb
 lib/ver/vendor/textpow.rb
+lib/ver/version.rb
 lib/ver/view.rb
 lib/ver/view/console.rb
 lib/ver/view/entry.rb
@@ -373,7 +383,7 @@ lib/ver/view/list/methods.rb
 lib/ver/view/list/syntax.rb
 lib/ver/view/list/theme.rb
 lib/ver/view/term.rb
-spec/keymap.rb
+spec/helper.rb
 tasks/authors.rake
 tasks/bacon.rake
 tasks/changelog.rake

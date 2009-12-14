@@ -10,7 +10,8 @@ PROJECT_README = 'README.textile'
 PROJECT_VERSION = ENV['VERSION'] || Date.today.strftime('%Y.%m.%d')
 
 DEPENDENCIES = {
-  'ffi-tk' => {:version => '2009.11.29'},
+  'ffi-tk'       => {:version => '2009.12.14'},
+  'eventmachine' => {:version => '0.12.10'},
 }
 
 GEMSPEC = Gem::Specification.new{|s|

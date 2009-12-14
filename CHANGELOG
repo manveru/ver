@@ -1,6 +1,354 @@
-[34796ca | 2009-11-28 15:29:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+[6f4c711 | 2009-12-09 15:47:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Better not to raise but to return
+
+[122c1f1 | 2009-12-09 15:40:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Raise when parser doesn't move
+
+[59b8f6e | 2009-12-09 15:11:47 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix broken regexps for nemerle
+
+[48412a6 | 2009-12-09 15:03:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Put selection related code into correct module, fix block selections
+
+[96f5845 | 2009-12-09 07:54:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally found the issue for tk::TextUpDownLine, implemented faster version in ruby
+
+[5c4535e | 2009-12-09 06:34:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make .tcl files default to Tcl
+
+[ea17755 | 2009-12-09 06:26:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Respect count and shiftwidth option for <>
+
+[1831ad2 | 2009-12-08 17:33:21 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * Adjust search_next
+
+[22cd07f | 2009-12-08 17:31:44 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * Speed up previous_line/next_line
+
+[274d831 | 2009-12-08 05:52:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Speed up previous_line/next_line, preparation for next step in refactor of status line
+
+[88c3092 | 2009-12-08 05:51:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Speed up and improve refresh_selection
+
+[95afc17 | 2009-12-05 12:31:24 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add some more specs
+
+[35d2b60 | 2009-12-05 08:02:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Only insert record separator if there's a record
+
+[ab3f71d | 2009-12-04 08:50:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Proper arguments for some other movement methods
+
+[1d3e24a | 2009-12-04 08:46:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First draft of how specs could be done
+
+[280d15d | 2009-12-04 08:46:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Accept a block for VER.run, used for specs
+
+[724d574 | 2009-12-04 08:46:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve some movement commands
+
+[6dd483f | 2009-12-04 06:58:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve placement of hover completion
+
+[bd1de42 | 2009-12-04 06:43:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix insert_selection
+
+[230110c | 2009-12-04 06:36:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * cleanup
+
+[b288b95 | 2009-12-04 06:35:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make syntax_indent_file undo atomic
+
+[9c4f3ae | 2009-12-04 06:34:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Avoid lots of useless re-highlighting and fix undo of replacements
+
+[7817869 | 2009-12-04 06:18:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Option for incremental search speedup
+
+[e596e87 | 2009-12-03 11:51:47 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Proper undo separation for some insert commands
+
+[f982abc | 2009-12-03 11:30:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix invalid conversion of indices
+
+[7ab2e44 | 2009-12-03 11:30:08 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make the term a bit less crashy
+
+[874e32e | 2009-12-03 10:38:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * More cleanup regarding undo
+
+[8557b62 | 2009-12-03 10:23:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Single out Status::Context
+
+[d496067 | 2009-12-03 10:16:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * cleanup
+
+[30e3ac5 | 2009-12-03 10:12:33 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement undo/redo in ruby
+
+[dc44ee1 | 2009-12-02 07:09:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Custom errors for undo/redo since ffi-tk ones aren't as pretty
+
+[8e41e04 | 2009-12-02 07:08:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Under ncurses, Escape <Key> behaves like Alt-Key, map a few of those
+
+[6dbc9c6 | 2009-12-02 07:07:24 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * This should allow selections to behave mostly as in diakonos
+
+[e520bd9 | 2009-12-02 06:44:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Use new keymap syntax for diakonos
+
+[ad06882 | 2009-12-02 06:44:42 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Change keymapping syntax to allow a bit more diakonos-like language
+
+[c2ac3b7 | 2009-12-02 06:26:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make mode arguments inheritable from keymap to cut down boilerplate
+
+[e583f6b | 2009-12-02 06:11:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * options.tabs really doesn't need user config
+
+[91e6a01 | 2009-12-02 06:11:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove battery from standard statusline
+
+[2d8e946 | 2009-12-02 06:08:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure statusline doesn't fail when charging
+
+[049e37e | 2009-11-28 15:29:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * Fix tasks and gemspec
+
+[c3c842b | 2009-12-01 12:22:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally license
+
+[6c8dad8 | 2009-12-01 12:21:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Try to improve repetition, just a prototype
+
+[e7d19f9 | 2009-12-01 12:18:33 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement replace mode
+
+[606ed97 | 2009-12-01 12:13:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Map C-t for diakonos
+
+[a3d4e85 | 2009-12-01 12:13:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * fix off-by-one error
+
+[916a915 | 2009-12-01 11:49:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally implement something like vims repeating .; Add SizedArray
+
+[9119a89 | 2009-12-01 11:12:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally added W and B movements
+
+[f970f8a | 2009-12-01 10:59:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix font option
+
+[551114a | 2009-12-01 10:54:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make passed options more important than the rc
+
+[96ef651 | 2009-12-01 10:42:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Refactor a bit so the rc.rb can influence forking
+
+[d4da06b | 2009-12-01 10:20:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve statusline and add battery info
+
+[e1aed2d | 2009-11-30 18:18:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add stub option for statusline
+
+[0408027 | 2009-11-30 18:17:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Some more stuff for diakonos keymap, better exec and switching buffers
+
+[4971e89 | 2009-11-30 18:15:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make a more or less advanced statusline syntax hack
+
+[59349b6 | 2009-11-30 13:55:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add exec_into_new and exec_into_void for diakonos
+
+[537961b | 2009-11-30 07:59:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Some more reasonable ways to grep
+
+[e8ffd9a | 2009-11-30 07:51:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Clear search for diakonos
+
+[9ada101 | 2009-11-30 07:49:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Map some more stuff in diakonos keymap
+
+[e3c6aa7 | 2009-11-30 07:36:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Incremental highlight when searching
+
+[8d559d6 | 2009-11-30 07:20:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add scrolling for diakonos
+
+[8b2576d | 2009-11-30 07:13:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix ctag stack
+
+[c7c4fc2 | 2009-11-30 07:09:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * cleanup
+
+[febbe25 | 2009-11-30 07:08:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * VER.dump_options prototype
+
+[7eb180d | 2009-11-30 07:08:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Restructure bookmark code again
+
+[e739f13 | 2009-11-30 07:04:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A ctags stack reusing the bookmark code
+
+[e936e32 | 2009-11-30 07:03:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Extract Bookmarks into the methods file
+
+[270fdf7 | 2009-11-30 06:57:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add bookmark keybinds as they are in vim
+
+[03de119 | 2009-11-30 06:28:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * cleanup
+
+[a0ddfa9 | 2009-11-30 06:28:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Avoid exceptions by weird key sequences
+
+[1d9aef7 | 2009-11-30 06:27:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add support for bookmarks in diakonos keymap
+
+[40db1e2 | 2009-11-29 05:37:46 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * Fix Text#font typo
+
+[661272e | 2009-11-29 05:36:00 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * Drop height option at completion list
+
+[aa2fe3b | 2009-11-29 13:07:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make emacs mapping functional again, add quit for diakonos
+
+[7d3adff | 2009-11-29 12:56:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add incomplete diakonos keymap
+
+[9b73951 | 2009-11-29 12:56:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * And another fix for status kill
+
+[0baa71c | 2009-11-29 12:42:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * finally found a proper quote in fortune
+
+[57181de | 2009-11-29 12:33:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Extract the exception tree into own class
+
+[388c91b | 2009-11-29 12:19:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Give VER::Entry a kill_motion method
+
+[68501d5 | 2009-11-29 12:11:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix delete|kill line
+
+[036ce7d | 2009-11-29 12:09:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove outdated spec for keymap, leaving us with zero...
+
+[4281c18 | 2009-11-29 12:05:33 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Second form of Text#font, returns font if no options given
+
+[54218b1 | 2009-11-29 12:05:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * cleanup
+
+[3a9da44 | 2009-11-29 12:03:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Use Text#options where possible, so a buffer can have local options
+
+[5b9baf1 | 2009-11-29 11:57:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make distinction between killing and deleting like emacs, default to killing for most
+
+[47e9ae8 | 2009-11-29 11:56:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make startup a bit faster by removing definition of unused console_entry
+
+[0f2d412 | 2009-11-29 11:54:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Options for comment
+
+[8179b7d | 2009-11-29 11:43:47 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Options for scrollbars
+
+[b4c624f | 2009-11-29 11:41:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Better (un)comment_selection
 
 [f96b0f1 | 2009-11-28 11:37:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
