@@ -36,7 +36,6 @@ module VER
   autoload :View,                'ver/view'
   autoload :ExceptionView,       'ver/exception_view'
   autoload :Bookmarks,           'ver/methods/bookmark'
-  autoload :Bookmark,            'ver/methods/bookmark'
   autoload :Undo,                'ver/undo'
 
   require 'ver/options'
@@ -156,7 +155,7 @@ module VER
     @status.pack(fill: :x)
 
     @exception_view = nil
-    @bookmarks = Bookmarks.new
+    @bookmarks = Bookmarks::Bookmark.new
     @ctag_stack = []
   end
 
