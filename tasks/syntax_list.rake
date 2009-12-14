@@ -1,18 +1,16 @@
 desc "Create syntax detection definitions"
 task 'syntax_list' do
-  require 'json'
-
   File.open 'config/detect.rb', 'w+' do |file|
     file.puts '# Encoding: UTF-8'
     file.puts
     file.puts 'module VER::Syntax::Detector'
 
-    Dir.glob 'config/syntax/*.json' do |syntax|
-      basename = File.basename(syntax, '.json')
-      plist = JSON.load(File.read(syntax))
-      name = plist['name']
-      file_types = plist['fileTypes']
-      regex = plist['firstLineMatch']
+    Dir.glob 'config/syntax/*.rb' do |syntax|
+      basename = File.basename(syntax, '.rb')
+      plist = eval(File.read(syntax))
+      name = plist[:name]
+      file_types = plist[:fileTypes]
+      regex = plist[:firstLineMatch]
 
       if file_types && file_types.any?
         # this syntax is next to useless for ruby

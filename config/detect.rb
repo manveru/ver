@@ -23,6 +23,8 @@ module VER::Syntax::Detector
   head "Blog - Text", /^Type: Blog Post \(Text\)/
   exts "Blog - Textile", ["blog.textile"]
   head "Blog - Textile", /^Type: Blog Post \(Textile\)/
+  exts "Bulletin Board", ["bbcode"]
+  head "C++ Qt", /-\*- C\+\+ -\*-/
   exts "C++", ["cc", "cpp", "cp", "cxx", "c++", "C", "h", "hh", "hpp", "h++"]
   head "C++", /-\*- C\+\+ -\*-/
   exts "C", ["c", "h"]
@@ -31,6 +33,7 @@ module VER::Syntax::Detector
   exts "CSS", ["css", "css.erb"]
   exts "CSV", ["csv"]
   exts "ColdFusion", ["cfm", "cfml", "cfc"]
+  exts "Context Free", ["cfdg", "context free"]
   exts "D", ["d", "di"]
   head "D", /^#!.*\bg?dmd\b./
   exts "Diff", ["diff", "patch"]
@@ -56,7 +59,6 @@ module VER::Syntax::Detector
   exts "GTD", ["gtd"]
   exts "GTDalt", ["gtd", "gtdlog"]
   exts "Gettext", ["po", "potx"]
-  exts "Go", ["go"]
   exts "Graphviz (DOT)", ["dot", "DOT"]
   exts "Greasemonkey", ["user.js"]
   head "Greasemonkey", /\/\/ ==UserScript==/
@@ -66,7 +68,11 @@ module VER::Syntax::Detector
   exts "HTML (ASP.net)", ["aspx", "ascx"]
   exts "HTML (Active4D)", ["a4d", "a4p"]
   exts "HTML (Erlang)", ["yaws"]
-  exts "HTML (Tcl)", ["adp", "inc"]
+  exts "HTML (Mason)", ["mhtml", "autohandler", "dhandler", "md", "mc"]
+  exts "HTML (Rails)", ["rhtml", "erb", "html.erb"]
+  exts "HTML (Tcl)", ["tcl", "adp", "inc"]
+  exts "HTML (Template Toolkit)", ["tt"]
+  head "HTML (Template Toolkit)", /\[%.+?%\]/
   exts "HTML", ["html", "htm", "shtml", "xhtml", "phtml", "php", "inc", "tmpl", "tpl", "ctp"]
   head "HTML", /<!DOCTYPE|<(?i:html)|<\?(?i:php)/
   exts "Haskell", ["hs"]
@@ -74,16 +80,21 @@ module VER::Syntax::Detector
   exts "Ini", ["ini", "conf"]
   exts "Installer Distribution Script", ["dist"]
   exts "Io", ["io"]
+  exts "JSFL", ["jsfl"]
   exts "JSON", ["json"]
   exts "Java Properties", ["properties"]
   exts "Java Server Page (JSP)", ["jsp"]
   exts "Java", ["java", "bsh"]
+  exts "JavaScript (Rails)", ["js.erb"]
   exts "JavaScript", ["js", "htc", "jsx"]
   head "LaTeX Beamer", /^\\documentclass(\[.*\])?\{beamer\}/
   head "LaTeX Log", /This is (pdf|pdfe)?TeXk?, Version/
   head "LaTeX Memoir", /^\\documentclass(\[.*\])?\{memoir\}/
+  head "LaTeX Rdaemon", /^\\documentclass(?!.*\{beamer\})/
   exts "LaTeX", ["tex"]
   head "LaTeX", /^\\documentclass(?!.*\{beamer\})/
+  exts "Language Grammar", ["textmate"]
+  head "Language Grammar", /^\{\s*scopeName = .*$/
   exts "Lex-Flex", ["l"]
   exts "LilyPond", ["ly", "lily", "ily"]
   exts "Lisp", ["lisp", "cl", "l", "mud", "el"]
@@ -96,31 +107,40 @@ module VER::Syntax::Detector
   exts "Mail", ["mail"]
   head "Mail", /^From: .*(?=\w+@[\w-]+\.\w+)/
   exts "Makefile", ["GNUmakefile", "makefile", "Makefile", "OCamlMakefile"]
-  exts "Markdown", ["mdown", "markdown", "markdn", "md"]
+  exts "Man", ["man"]
   exts "Maven POM", ["pom.xml"]
   exts "Mediawiki", ["mediawiki", "wikipedia", "wiki"]
   exts "Modula-3", ["m3", "cm3"]
   exts "MoinMoin", ["moinmoin"]
-  head "MultiMarkdown", /^Format:\s*(?i:complete)\s*$/
+  exts "Movable Type (MT only)", ["mtml"]
+  head "Movable Type (MT only)", /<\$?[Mm][Tt]/
+  exts "Movable Type", ["mtml"]
+  head "Movable Type", /<\$?[Mm][Tt]/
   exts "Nemerle", ["n"]
   exts "OCaml", ["ml", "mli"]
   exts "OCamllex", ["mll"]
   exts "OCamlyacc", ["mly"]
   exts "Objective-C++", ["mm", "M", "h"]
   exts "Objective-C", ["m", "h"]
-  head "PHP", /^#!.*(?<!-)php[0-9]{0,1}\b/
+  exts "Objective-J", ["j", "J"]
   exts "Pascal", ["pas", "p"]
+  exts "Perl HTML-Template", ["tmpl"]
+  head "Perl HTML-Template", /<(?i:TMPL)_.+?>/
   exts "Perl", ["pl", "pm", "pod", "t", "PL"]
   head "Perl", /^#!.*\bperl\b/
   exts "Plain Text", ["txt"]
-  exts "PmWiki", ["pmwiki"]
   exts "Postscript", ["ps", "eps"]
   head "Postscript", /^%!PS/
   exts "Processing", ["pde"]
+  exts "Property List", ["plist", "dict", "tmCommand", "tmDelta", "tmDragCommand", "tmLanguage", "tmMacro", "tmPreferences", "tmSnippet", "tmTheme", "scriptSuite", "scriptTerminology", "savedSearch"]
   exts "Python", ["py", "rpy", "pyw", "cpy", "SConstruct", "Sconstruct", "sconstruct", "SConscript"]
   head "Python", /^#!\/.*\bpython\b/
   exts "Quake Style .cfg", ["cfg"]
+  exts "R Console (Rdaemon) Plain", ["Rcon"]
+  exts "R Console (Rdaemon)", ["Rcon"]
   exts "R", ["R", "r", "s", "S", "Rprofile"]
+  exts "RJS", ["rjs"]
+  exts "RSpec", ["spec.rb"]
   exts "Ragel", ["rl", "ragel"]
   exts "Rd (R Documentation)", ["rd", "Rd"]
   exts "Regular Expressions (Oniguruma)", ["re"]
@@ -129,9 +149,12 @@ module VER::Syntax::Detector
   exts "Remind", ["defs.rem", "REM*.txt", ".reminders"]
   head "Remind", /^REM*/
   exts "Rez", ["r"]
+  exts "Ruby Haml", ["haml", "sass"]
+  exts "Ruby on Rails", ["rxml", "builder"]
   exts "Ruby", ["rb", "rbx", "rjs", "Rakefile", "rake", "cgi", "fcgi", "gemspec", "irbrc", "capfile"]
   head "Ruby", /^#!\/.*\bruby\b/
   exts "S5 Slide Show", ["s5"]
+  exts "SQL (Rails)", ["erbsql", "sql.erb"]
   exts "SQL", ["sql", "ddl", "dml"]
   exts "SSH Config", ["ssh_config", ".ssh/config", "sshd_config"]
   exts "SWIG", ["i", "swg"]
@@ -143,6 +166,8 @@ module VER::Syntax::Detector
   exts "Shell Script (Bash)", ["sh", "ss", "bashrc", "bash_profile", "bash_login", "profile", "bash_logout", ".textmate_init"]
   head "Shell Script (Bash)", /^#!.*(bash|zsh|sh|tcsh)/
   exts "Slate", ["slate"]
+  exts "Standard ML - CM", ["cm"]
+  exts "Standard ML", ["sml", "sig"]
   exts "Strings File", ["strings"]
   exts "TSV", ["tsv"]
   exts "Tcl", ["tcl"]
@@ -156,6 +181,7 @@ module VER::Syntax::Detector
   exts "XSL", ["xsl", "xslt"]
   exts "YAML", ["yaml", "yml"]
   exts "iCalendar", ["ics", "ifb"]
+  exts "qmake Project file", ["pro", "pri"]
   exts "reStructuredText", ["rst", "rest"]
   exts "svn-commit.tmp", ["svn-commit.tmp", "svn-commit.2.tmp"]
 end
