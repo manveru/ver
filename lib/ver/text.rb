@@ -328,8 +328,8 @@ module VER
       return unless @syntax
 
       name = @syntax.name
-      file = VER.find_in_loadpath("preferences/#{name}.json")
-      @preferences = JSON.load(File.read(file))
+      file = VER.find_in_loadpath("preferences/#{name}.rb")
+      @preferences = eval(file.read)
     rescue Errno::ENOENT, TypeError => ex
       VER.error(ex)
     end

@@ -1,0 +1,61 @@
+# Encoding: UTF-8
+
+{fileTypes: ["gri"],
+ firstLineMatch: "-[*]-( Mode:)? Gri -[*]-",
+ foldingStartMarker: /(\/\*\*|\{\s*$)/,
+ foldingStopMarker: /(\*\*\/|^\s*\})/,
+ name: "Gri",
+ patterns: 
+  [{captures: 
+     {1 => {name: "punctuation.definition.function.gri"},
+      2 => {name: "entity.name.function.gri"},
+      3 => {name: "punctuation.definition.function.gri"}},
+    match: /(\`)(.*)(')/,
+    name: "meta.function.gri"},
+   {begin: /#/,
+    beginCaptures: {0 => {name: "punctuation.definition.comment.gri"}},
+    end: "$\\n?",
+    name: "comment.line.number-sign.gri",
+    patterns: 
+     [{match: /(?>\\\s*\n)/, name: "punctuation.separator.continuation.gri"}]},
+   {begin: /\/\//,
+    beginCaptures: {0 => {name: "punctuation.definition.comment.gri"}},
+    end: "$\\n?",
+    name: "comment.line.double-slash.gri",
+    patterns: 
+     [{match: /(?>\\\s*\n)/, name: "punctuation.separator.continuation.gri"}]},
+   {match: /\b(break|else|end|if|return|rpn|while)\b/,
+    name: "keyword.control.gri"},
+   {match: /(\-|\+|\*|\/|%\/%|%%|\^)/,
+    name: "keyword.operator.arithmetic.gri"},
+   {match: /(=|<-)/, name: "keyword.operator.assignment.gri"},
+   {match: /(==|!=)/, name: "keyword.operator.comparison.gri"},
+   {match: 
+     /\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)\b/,
+    name: "constant.numeric.gri"},
+   {begin: /(<< *")([^"]*)(")/,
+    captures: 
+     {1 => {name: "punctuation.definition.heredoc.gri"},
+      3 => {name: "punctuation.definition.heredoc.gri"}},
+    end: "^\\2$",
+    name: "string.unquoted.heredoc.doublequote.gri"},
+   {captures: {1 => {name: "punctuation.definition.variable.gri"}},
+    match: /(\\)[\.a-zA-Z0-9_][\.a-zA-Z0-9_]*\b/,
+    name: "variable.other.synonym.gri"},
+   {captures: 
+     {1 => {name: "punctuation.definition.variable.gri"},
+      2 => {name: "punctuation.definition.variable.gri"}},
+    match: /(\.)[a-zA-Z0-9_][a-zA-Z0-9_]*(\.)/,
+    name: "variable.other.variable.gri"},
+   {captures: 
+     {1 => {name: "punctuation.definition.variable.gri"},
+      2 => {name: "punctuation.definition.variable.gri"}},
+    match: /(\.\.)[a-zA-Z0-9_][a-zA-Z0-9_]*(\.\.)/,
+    name: "variable.other.variabledot.gri"},
+   {begin: /"/,
+    beginCaptures: {0 => {name: "punctuation.definition.string.begin.gri"}},
+    end: "\"",
+    endCaptures: {0 => {name: "punctuation.definition.string.end.gri"}},
+    name: "string.quoted.double.gri"}],
+ scopeName: "source.gri",
+ uuid: "A7E000BE-6A87-4D7E-A053-469DA0DFEA02"}

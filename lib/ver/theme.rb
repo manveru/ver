@@ -3,31 +3,31 @@ module VER
     CACHE = {}
 
     def self.list
-      VER.loadpath.map{|path| Dir[(path/'theme/*.json').to_s] }.flatten
+      VER.loadpath.map{|path| Dir[(path/'theme/*.rb').to_s] }.flatten
     end
 
     def self.find(theme_name)
-      VER.find_in_loadpath("theme/#{theme_name}.json")
+      VER.find_in_loadpath("theme/#{theme_name}.rb")
     end
 
     def self.load(filename)
        raise(ArgumentError, "No path to theme file given") unless filename
 
-      json = JSON.load(File.read(filename.to_s))
-      uuid = json['uuid']
+      hash = eval(File.read(filename.to_s))
+      uuid = hash[:uuid]
 
-      CACHE[uuid] ||= create(uuid, json)
+      CACHE[uuid] ||= create(uuid, hash)
     end
 
     def self.create(uuid, hash)
       instance = new
-      instance.name = hash['name']
+      instance.name = hash[:name]
       instance.uuid = uuid
 
-      hash['settings'].each do |setting|
-        next unless settings = setting['settings']
+      hash[:settings].each do |setting|
+        next unless settings = setting[:settings]
 
-        if scope_names = setting['scope']
+        if scope_names = setting[:scope]
           # specific settings
           scope_names.split(/\s*,\s*/).each do |scope_name|
             instance.set(scope_name, settings)
@@ -77,8 +77,8 @@ module VER
 
         if value =~ /^(#\h{6})/
           settings[key] = $1
-        elsif key.downcase == 'fontstyle'
-          settings['font'] = fontstyle_as_font(value)
+        elsif key.downcase == :fontstyle
+          settings[:font] = fontstyle_as_font(value)
         else
           settings[key] = value
         end
@@ -131,19 +131,19 @@ module VER
     def apply_default_on(widget)
       default.each do |key, value|
         case key.downcase
-        when 'background'
+        when :background
           widget.configure background: value
-        when 'caret'
+        when :caret
           widget.configure insertbackground: value
-        when 'foreground', 'fg'
+        when :foreground, :fg
           widget.configure foreground: value
-        when 'invisibles'
+        when :invisibles
           # TODO
           # widget.configure key => value
-        when 'linehighlight'
+        when :linehighlight
           # TODO
           # widget.configure key => value
-        when 'selection'
+        when :selection
           widget.configure selectbackground: value
         else
           warn key => value

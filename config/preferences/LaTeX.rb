@@ -1,0 +1,96 @@
+# Encoding: UTF-8
+
+[{name: "Cite Completion",
+  scope: "text.tex.latex meta.citation.latex",
+  settings: 
+   {completionCommand: "\"$TM_SUPPORT_PATH/bin/LatexCiteKeys.rb\"",
+    disableDefaultCompletion: 1},
+  uuid: "086F7794-CE1E-423A-9BF2-E27466A56067"},
+ {name: "Comments",
+  scope: "text.tex",
+  settings: {shellVariables: [{name: "TM_COMMENT_START", value: "% "}]},
+  uuid: "678850E6-C630-4EEF-B307-14ADEE2B2994"},
+ {name: "Label Completion",
+  scope: "text.tex.latex meta.reference.label",
+  settings: 
+   {completionCommand: "\"$TM_SUPPORT_PATH/bin/LatexLabelCompletions.rb\"",
+    disableDefaultCompletion: 1},
+  uuid: "76086A65-97AA-48FE-B3C6-026B25E15958"},
+ {name: "Miscellaneous",
+  scope: "text.tex.latex",
+  settings: 
+   {completions: 
+     ["corollary",
+      "definition",
+      "description",
+      "enumerate",
+      "equation",
+      "itemize",
+      "lemma",
+      "proof",
+      "proposition",
+      "verbatim"],
+    decreaseIndentPattern: "^\\s*\\\\end(\\{.*\\})?$",
+    highlightPairs: 
+     [["\"", "\""],
+      ["(", ")"],
+      ["{", "}"],
+      ["[", "]"],
+      ["“", "”"],
+      ["$", "$"],
+      ["`", "'"]],
+    increaseIndentPattern: "^\\s*\\\\begin\\{.*\\}",
+    smartTypingPairs: 
+     [["\"", "\""],
+      ["(", ")"],
+      ["{", "}"],
+      ["[", "]"],
+      ["“", "”"],
+      ["$", "$"],
+      ["`", "'"]]},
+  uuid: "4830CA58-1F08-421C-9703-BE586DC1FE7A"},
+ {name: "Symbol List",
+  scope: "text.tex.latex meta.function.section.latex",
+  settings: 
+   {showInSymbolList: 1,
+    symbolTransformation: 
+     "\n\t\ts/^\\\\part\\*?(?:\\[[^]]*\\])?\\{(.+)\\}/$1/; # \\part\n\t\ts/^\\\\chapter\\*?(?:\\[[^]]*\\])?\\{(.+)\\}/ $1/; # \\part\n\t\ts/^\\\\section\\*?(?:\\[[^]]*\\])?\\{(.+)\\}/  $1/; # \\section\n\t\ts/^\\\\subsection\\*?(?:\\[[^]]*\\])?\\{(.+)\\}/   $1/; # \\section\n\t\ts/^\\\\subsubsection\\*?(?:\\[[^]]*\\])?\\{(.+)\\}/    $1/; # \\section\n\t\ts/^\\\\paragraph\\*?(?:\\[[^]]*\\])?\\{(.+)\\}/     $1/; # \\paragraph\n\t\ts/^\\\\subparagraph\\*?(?:\\[[^]]*\\])?\\{(.+)\\}/      $1/; # \\paragraph\n\t\ts/^\\\\.*\\{(.+)\\}/$1/;     # take care of everything else\n\t"},
+  uuid: "AF20835B-CB64-46F3-9E91-F3330378C4AE"},
+ {name: "TexShop %: comments",
+  scope: "text.tex.latex comment.line.percentage.semicolon.texshop.tex",
+  settings: {showInSymbolList: 1},
+  uuid: "955AA9F7-F8BA-4A46-9A8D-F7C88DB3FB26"},
+ {name: "Beamer Symbol List",
+  scope: "text.tex.latex.beamer meta.function.frametitle.latex",
+  settings: 
+   {showInSymbolList: 1,
+    symbolTransformation: 
+     "\n\t\ts/^\\\\frametitle\\*?(?:\\[[^]]*\\])?\\{(.+)\\}/    fr: $1/; # \\frametitle\n\t"},
+  uuid: "4192C345-63CB-4B38-A873-6C185E377C71"},
+ {name: "Disable Smart Typing after Backslashes",
+  scope: "text.tex constant.character.escape.tex",
+  settings: {highlightPairs: [], smartTypingPairs: []},
+  uuid: "C8BC77A9-CF8E-4510-A8C2-F48C6E7BC93E"},
+ {name: "Miscellaneous (BibTeX)",
+  scope: "text.bibtex",
+  settings: 
+   {highlightPairs: [["(", ")"], ["[", "]"], ["{", "}"], ["\"", "\""]],
+    smartTypingPairs: [["(", ")"], ["[", "]"], ["{", "}"], ["\"", "\""]]},
+  uuid: "73CE04EB-B78D-456A-AB07-CAED9C4E2BDB"},
+ {name: "Smart Typing (Strings)",
+  scope: 
+   "text.tex.latex string.quoted.double, text.tex.latex string.quoted.single",
+  settings: 
+   {highlightPairs: 
+     [["(", ")"], ["{", "}"], ["[", "]"], ["“", "”"], ["$", "$"]],
+    smartTypingPairs: 
+     [["(", ")"], ["`", "'"], ["{", "}"], ["[", "]"], ["“", "”"], ["$", "$"]]},
+  uuid: "D4961019-E3EF-4D0C-904F-FBE2C74A6DE9"},
+ {name: "Spell Checking in Strings",
+  scope: "text.tex string.quoted",
+  settings: {spellChecking: 1},
+  uuid: "C6B468AE-5BD0-48D1-9D54-F4D09C42C505"},
+ {name: "Spell Checking: Disable for Comments",
+  scope: "text.tex comment",
+  settings: {spellChecking: 0},
+  uuid: "B4EEDFA2-5AD3-4F15-875A-6D3498ED1477"}]

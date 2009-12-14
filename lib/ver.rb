@@ -10,7 +10,7 @@ require 'eventmachine'
 
 # eager stdlib
 require 'digest/sha1'
-require 'json'
+# require 'json'
 # require 'pp'
 require 'securerandom'
 require 'set'

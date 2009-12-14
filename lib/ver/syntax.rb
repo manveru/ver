@@ -4,7 +4,7 @@ module VER
     autoload :Processor, 'ver/syntax/processor'
 
     def self.list
-      VER.loadpath.map{|path| Dir[(path/'syntax/*.json').to_s] }.flatten
+      VER.loadpath.map{|path| Dir[(path/'syntax/*.rb').to_s] }.flatten
     end
 
     def self.from_filename(filename)
@@ -16,7 +16,7 @@ module VER
     end
 
     def self.find(syntax_name)
-      VER.find_in_loadpath("syntax/#{syntax_name}.json")
+      VER.find_in_loadpath("syntax/#{syntax_name}.rb")
     end
 
     def self.load(file)

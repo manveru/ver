@@ -77,9 +77,9 @@ module Textpow
 
     def proxy
       case @proxy
-      when /^#(?<proxy>.+)/
+      when /^#(.+)/
         return unless @syntax.repository
-        @syntax.repository[$~[:proxy]]
+        @syntax.repository[$1.to_sym]
       when "$self", "$base"
         @syntax
       else
@@ -89,14 +89,7 @@ module Textpow
   end
 
   class SyntaxNode
-    OPTIONS = {} #:options => Oniguruma::OPTION_CAPTURE_GROUP}
-
     @@syntaxes = {}
-
-    attr_accessor :processor, :syntax, :firstLineMatch, :foldingStartMarker,
-      :foldingStopMarker, :match, :begin, :content, :fileTypes, :name,
-      :contentName, :end, :scopeName, :keyEquivalent, :captures,
-      :beginCaptures, :endCaptures, :repository, :patterns
 
     def self.load(filename, name_space = :default)
       filename = filename.to_s
@@ -109,6 +102,8 @@ module Textpow
           JSON.load(File.read(filename))
         when /\.ya?ml$/i
           YAML.load_file(filename)
+        when /\.rb$/i
+          eval(File.read(filename))
         else
           raise ArgumentError, "Unknown filename extension"
         end
@@ -116,28 +111,31 @@ module Textpow
       SyntaxNode.new(table, nil, name_space) if table
     end
 
+    LITERAL_KEYS = [:firstLineMatch, :foldingStartMarker, :foldingStopMarker,
+                    :match, :begin, :content, :fileTypes, :name, :contentName,
+                    :end, :scopeName, :keyEquivalent]
+
+    attr_accessor :processor, :syntax, :firstLineMatch, :foldingStartMarker,
+      :foldingStopMarker, :match, :begin, :content, :fileTypes, :name,
+      :contentName, :end, :scopeName, :keyEquivalent, :captures,
+      :beginCaptures, :endCaptures, :repository, :patterns
+
     def initialize(hash, syntax = nil, name_space = :default)
       @name_space = name_space
 
-      prepare_scope_name(hash['scopeName'])
+      prepare_scope_name(hash[:scopeName])
 
       @syntax = syntax || self
 
       hash.each do |key, value|
         case key
-        when "firstLineMatch", "foldingStartMarker", "foldingStopMarker", "match", "begin"
-          begin
-            send("#{key}=", Regexp.new(value))
-          rescue ArgumentError, RegexpError => exception
-            warn "Parsing error in %p => %p: %s" % [key, value, exception]
-          end
-        when "content", "fileTypes", "name", "contentName", "end", "scopeName", "keyEquivalent"
+        when *LITERAL_KEYS
           send("#{key}=", value)
-        when "captures", "beginCaptures", "endCaptures"
+        when :captures, :beginCaptures, :endCaptures
           send("#{key}=", value.sort)
-        when "repository"
+        when :repository
           parse_repository value
-        when "patterns"
+        when :patterns
           create_children value
         else
           $stderr.puts "Ignoring: #{key} => #{value.to_s.gsub("\n", "\n>>")}" if $DEBUG
@@ -173,7 +171,7 @@ module Textpow
       @repository = {}
 
       repository.each do |key, value|
-        if include = value["include"]
+        if include = value[:include]
           @repository[key] = SyntaxProxy.new(include, self.syntax)
         else
           @repository[key] = SyntaxNode.new(value, self.syntax, @name_space)
@@ -186,7 +184,7 @@ module Textpow
       syntax = self.syntax
 
       patterns.each do |pattern|
-        if include = pattern["include"]
+        if include = pattern[:include]
           @patterns << SyntaxProxy.new(include, syntax)
         else
           @patterns << SyntaxNode.new(pattern, syntax, @name_space)
@@ -234,13 +232,13 @@ module Textpow
 
       if captures = send(name)
         captures.each do |key, value|
-          if key =~ /^\d*$/
-            key = key.to_i
-            matches << [key, match.offset(key), value["name"]] if key < match.size
-          else
+          if Symbol === key
             key = key.to_sym
             match_to_key = match.to_index(key)
-            matches << [match_to_key, match.offset(key), value["name"]] if match_to_key
+            matches << [match_to_key, match.offset(key), value[:name]] if match_to_key
+          else
+            key = key.to_i
+            matches << [key, match.offset(key), value[:name]] if key < match.size
           end
         end
       end
@@ -319,8 +317,8 @@ module Textpow
           top_contentName = top.contentName
           processor.close_tag top_contentName, start_pos if top_contentName
 
-          parse_captures "captures", top, pattern_match, processor
-          parse_captures "endCaptures", top, pattern_match, processor
+          parse_captures :captures, top, pattern_match, processor
+          parse_captures :endCaptures, top, pattern_match, processor
 
           top_name = top.name
           processor.close_tag top_name, end_pos if top_name
@@ -336,8 +334,8 @@ module Textpow
 
           if pattern.begin
             processor.open_tag pattern_name, start_pos if pattern_name
-            parse_captures "captures", pattern, pattern_match, processor
-            parse_captures "beginCaptures", pattern, pattern_match, processor
+            parse_captures :captures, pattern, pattern_match, processor
+            parse_captures :beginCaptures, pattern, pattern_match, processor
 
             pattern_contentName = pattern.contentName
             processor.open_tag pattern_contentName, end_pos if pattern_contentName
@@ -347,7 +345,7 @@ module Textpow
             stack << [top, match]
           elsif pattern.match
             processor.open_tag pattern_name, start_pos if pattern_name
-            parse_captures "captures", pattern, pattern_match, processor
+            parse_captures :captures, pattern, pattern_match, processor
             processor.close_tag pattern_name, end_pos if pattern_name
           end
         end

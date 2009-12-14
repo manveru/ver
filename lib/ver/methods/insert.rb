@@ -197,8 +197,8 @@ module VER
       def indent_settings
         return {} unless @syntax
         name = @syntax.name
-        file = VER.find_in_loadpath("preferences/#{name}.json")
-        pref = JSON.load(File.read(file))
+        file = VER.find_in_loadpath("preferences/#{name}.rb")
+        pref = eval(file.read)
 
         indent_settings = {}
 

@@ -30,46 +30,85 @@ module VER
     run(options)
   end
 
+  # Convert textmate bundles into ruby for use in VER.
+  #
+  # @param [String] path
+  #   points to the root directory, for example './Ruby.tmbundle'
   def install_tm_bundle(path)
     require File.join(ROOT, 'ver/plist')
-    require 'json'
+    require 'pp'
     require 'fileutils'
+    require 'shellwords'
 
+    install_tm_syntax(path)
+    install_tm_preferences(path)
+  ensure
+    exit
+  end
+
+  def install_tm_syntax(path)
     glob = File.expand_path('Syntaxes/*.{plist,tmLanguage}', path)
 
     Dir.glob(glob, File::FNM_CASEFOLD) do |syntax|
+      puts "Parsing #{syntax}" if $DEBUG
       plist = VER::Plist.parse_xml(syntax)
-      name = plist['name'].to_s.gsub(/[\/\u2014]/, '-')
-      puts "Installing #{name}"
-      target = File.expand_path("../config/syntax/#{name}.json", ROOT)
-      json = JSON.pretty_unparse(plist)
-      json.gsub!(/\\x\{(\h+)\}/, '\\\\x\1')
+      name = plist[:name]
 
-      FileUtils.mkdir_p(File.dirname(target))
-      File.open(target, 'w+'){|io| io.write(json) }
+      install_rb_source('Syntax', '../config/syntax', name, plist)
     end
+  end
 
+  def install_tm_preferences(path)
     info = Plist.parse_xml(File.join(path, 'info.plist'))
-    info_name = info['name']
+    name = info[:name]
 
     glob = File.expand_path('Preferences/*.{plist,tmPreferences}', path)
-    preferences = {}
+    preferences = []
 
     Dir.glob(glob, File::FNM_CASEFOLD) do |preference|
+      puts "Parsing #{preference}" if $DEBUG
       plist = Plist.parse_xml(preference)
-      name = plist['name'].to_s.gsub(/[\/\u2014]/, '-')
-      puts "Adding #{name}"
-      preferences[plist['uuid']] = plist
+      puts "Adding Preference: #{plist[:name]}" if $DEBUG
+      preferences << plist
     end
 
-    filename = info_name.gsub(/[\/\u2014]/, '-')
-    pref = File.expand_path("../config/preferences/#{filename}.json", ROOT)
-    FileUtils.mkdir_p(File.dirname(pref))
-    json = JSON.pretty_unparse(preferences)
-    puts "Writing to #{pref}"
-    File.open(pref, 'w+'){|io| io.write(json) }
+    install_rb_source('Preferences', '../config/preferences', name, preferences)
+  end
 
+  def install_tm_theme(path)
+    require File.join(ROOT, 'ver/plist')
+    require 'pp'
+    require 'fileutils'
+    require 'shellwords'
+
+    path = File.expand_path(path)
+    puts "Parsing #{path}" if $DEBUG
+    plist = Plist.parse_xml(path)
+
+    name = plist[:name]
+    install_rb_source('Theme', '../config/theme', name, plist)
+  ensure
     exit
+  end
+
+  def install_rb_source(type, path, name, plist)
+    filename = name.gsub(/[\/\u2014]/, '-')
+    target = File.expand_path("#{path}/#{filename}.rb", ROOT)
+
+    dirname = File.dirname(target)
+    FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
+    content = plist.pretty_inspect
+
+    puts "Writing #{type} #{name} to #{target}" if $DEBUG
+    File.open(target, 'w+') do |io|
+      io.puts "# Encoding: UTF-8"
+      io.puts
+      io.puts(content)
+    end
+
+    escaped_target = target.shellescape
+    check = `ruby -c #{escaped_target}`
+    fail "#{target}: #{check}" unless $?.exitstatus == 0
   end
 end
 
@@ -85,6 +124,9 @@ op = OptionParser.new{|o|
   o.on('--install-tm-bundle PATH',
        'Install textmate bundle for use with VER',
        &VER.method(:install_tm_bundle))
+  o.on('--install-tm-theme PATH',
+       'Install textmate theme for use with VER',
+       &VER.method(:install_tm_theme))
   o.separator ' '
   o.on('-h', '--help', 'Show this help'){ puts o; exit }
   o.on('--debug', 'turn $DEBUG on'){ $DEBUG = true }
