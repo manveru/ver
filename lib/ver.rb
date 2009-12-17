@@ -155,7 +155,7 @@ module VER
     @status.pack(fill: :x)
 
     @exception_view = nil
-    @bookmarks = Bookmarks::Bookmark.new
+    @bookmarks = Bookmarks.new
     @ctag_stack = []
   end
 
