@@ -43,6 +43,8 @@ module VER
         self.applied = current
         self.applied = current
         self.pending = nil
+
+        compact!
       end
 
       # Undo last applied change so it becomes the next pending change.
