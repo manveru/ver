@@ -193,6 +193,7 @@ module VER
 
         from, to, string = undo_info
         widget.execute_only(:replace, from, to, string)
+        widget.mark_set(:insert, to)
 
         self.applied = false
       end
