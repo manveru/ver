@@ -24,7 +24,7 @@ module VER
 
         mode.map :buffer_switch, %w[Alt-b], %w[Control-m b]
         mode.map :window_switch, %w[Alt-B], %w[Control-m B]
-        mode.map :open_console,  %w[Control-exclam]
+        mode.map :open_console,  %w[Control-exclam] if defined?(::EM)
       end
 
       vim.add_mode :views do |mode|

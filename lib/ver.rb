@@ -5,13 +5,10 @@
 autoload :Benchmark, 'benchmark'
 autoload :FileUtils, 'fileutils'
 
-# 3rd party
-require 'eventmachine'
-
 # eager stdlib
 require 'digest/sha1'
 # require 'json'
-# require 'pp'
+require 'pp'
 require 'securerandom'
 require 'set'
 require 'pathname'
@@ -51,6 +48,9 @@ module VER
     o "Fork off on startup to avoid dying with the terminal",
       :fork, true
 
+    o "Use EventMachine inside VER, at the moment only for the console",
+      :eventmachine, false
+
     o "Internal:External encoding",
       :encoding, "UTF-8:UTF-8"
 
@@ -82,42 +82,47 @@ module VER
   def run(given_options = {}, &block)
     setup_tk
     run_startup(given_options)
+    pp options if $DEBUG
 
-    forking do
-      if Tk::RUN_EVENTLOOP_ON_MAIN_THREAD
-        run_aqua(&block)
-      else
-        run_x11(&block)
-      end
+    run_maybe_forking do
+      options.eventmachine ? run_em(&block) : run_noem(&block)
     end
   rescue => exception
     VER.error(exception)
     exit
   end
 
-  def run_aqua(&block)
-    run_core
-    EM.defer(&block) if block
-    Tk.mainloop
-  end
+  def run_maybe_forking(&block)
+    return yield unless options.fork
 
-  def run_x11(&block)
-    EM.defer do
-      run_core
-      EM.defer(&block) if block
-      Tk.mainloop
+    fork do
+      trap(:HUP){ 'terminal disconnected' }
+      yield
     end
   end
 
-  def forking
-    if options.fork
-      fork do
-        trap(:HUP){ 'terminal disconnected' }
-        EM.run{ yield }
+  def run_em(&block)
+    require 'eventmachine'
+
+    EM.run do
+      if Tk::RUN_EVENTLOOP_ON_MAIN_THREAD
+        run_core
+        EM.defer(&block) if block
+        Tk.mainloop
+      else
+        EM.defer do
+          run_core
+          EM.defer(&block) if block
+          Tk.mainloop
+        end
       end
-    else
-      EM.run{ yield }
     end
+  end
+
+  def run_noem(&block)
+    run_core
+    yield if block
+    Tk.mainloop
   end
 
   def run_startup(given_options)

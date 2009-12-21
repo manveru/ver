@@ -23,6 +23,9 @@ VER.options.dsl do
   o "Fork off on startup to avoid dying with the terminal",
     :fork, true
 
+  o "Use EventMachine inside VER, at the moment only for the console",
+    :eventmachine, false
+
   o "Tk Tile Theme",
     :tk_theme, 'clam'
 
