@@ -124,7 +124,7 @@ class VER::View::Terminal
           color s[1]
         elsif s.scan(/\e\[(\d+);(\d+)m/) # \e[01;34m
           color s[1], s[2]
-        elsif s.scan(/\e\[(\d+)m/)
+        elsif s.scan(/\e\[(\d+)[m;]/)
           color s[1]
         elsif s.scan(/\e\[([A-Z])/)
           color s[1]
