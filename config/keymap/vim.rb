@@ -249,8 +249,8 @@ module VER
         # mode.map :update, %w[Key]
         mode.map :pick_selection, %w[Return]
         mode.map :cancel,         %w[Escape], %w[Control-c]
-        mode.map :line_up,        %w[Up]
-        mode.map :line_down,      %w[Down]
+        mode.map :line_up,        %w[Up], %w[Control-k], %w[Control-p]
+        mode.map :line_down,      %w[Down], %w[Control-j], %w[Control-n]
         mode.map :completion,     %w[Tab]
 
         mode.missing :insert_string
@@ -260,8 +260,8 @@ module VER
         mode.inherits :basic
 
         mode.map :pick_selection, %w[Return], %w[Double-Button-1]
-        mode.map :line_up,        %w[Up]
-        mode.map :line_down,      %w[Down]
+        mode.map :line_up,        %w[Up], %w[Control-k], %w[Control-p]
+        mode.map :line_down,      %w[Down], %w[Control-j], %w[Control-n]
       end
 
       vim.add_mode :hover_completion do |mode|
