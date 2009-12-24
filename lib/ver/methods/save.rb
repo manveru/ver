@@ -91,6 +91,13 @@ module VER
 
         status.message "Saved to #{to}"
         return true
+      rescue Errno::EACCES => ex
+        # sshfs-mounts raise error but save correctly.
+        if ex.backtrace[0].match(/chown\'$/)
+          status.message "Saved to #{to} (chown issue)"
+          return true
+        end
+        raise ex
       rescue Errno::ENOENT
         save_dumb(to)
       end
