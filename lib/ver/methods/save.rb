@@ -1,5 +1,7 @@
 module VER
   module Methods
+    # TODO: we _must_ write backup files, VER can corrupt files on a system
+    #       crash for some reason.
     module Save
       def may_close
         return yield unless edit_modified?
@@ -84,10 +86,7 @@ module VER
 
         FileUtils.mkdir_p(temp_dir)
         FileUtils.copy_file(from, temp_path, preserve = true)
-        File.open(temp_path, 'w+') do |io|
-          io.write(self.value)
-        end
-        FileUtils.mv(temp_path, to)
+        save_dumb(temp_path) && FileUtils.mv(temp_path, to)
 
         status.message "Saved to #{to}"
         return true
