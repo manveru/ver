@@ -10,34 +10,6 @@ module VER
       :select_line  => {insertbackground: 'yellow', blockcursor: true},
       :select_block => {insertbackground: 'yellow', blockcursor: true},
     }
-
-    GUESS_ENCODING_ORDER = [
-      Encoding::US_ASCII,
-      Encoding::UTF_8,
-      Encoding::Shift_JIS,
-      Encoding::EUC_JP,
-      Encoding::EucJP_ms,
-      Encoding::Big5,
-      Encoding::UTF_16BE,
-      Encoding::UTF_16LE,
-      Encoding::UTF_32BE,
-      Encoding::UTF_32LE,
-      Encoding::CP949,
-      Encoding::Emacs_Mule,
-      Encoding::EUC_KR,
-      Encoding::EUC_TW,
-      Encoding::GB18030,
-      Encoding::GBK,
-      Encoding::Stateless_ISO_2022_JP,
-      Encoding::CP51932,
-      Encoding::EUC_CN,
-      Encoding::GB12345,
-      Encoding::Windows_31J,
-      Encoding::MacJapanese,
-      Encoding::UTF8_MAC,
-      Encoding::BINARY,
-    ]
-
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
