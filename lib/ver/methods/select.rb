@@ -140,6 +140,8 @@ module VER
           indent = start if start < indent
         end
 
+        indent ||= 0
+
         lines.each do |y|
           insert("#{y}.#{indent}", comment)
         end
