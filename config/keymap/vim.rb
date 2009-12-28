@@ -145,6 +145,7 @@ module VER
         mode.map :status_ex,                       %w[colon]
         mode.map :syntax_indent_file,              %w[equal]
         mode.map :repeat_command,                  %w[period]
+        mode.map :toggle_case,                     %w[asciitilde]
 
         mode.map :undo,                            %w[u]
         mode.map :redo,                            %w[Control-r]
@@ -214,6 +215,9 @@ module VER
         mode.map :wrap_selection,               %w[g w]
         mode.map :selection_replace_char,       %w[r]
         mode.map :selection_replace_string,     %w[c]
+        mode.map :selection_toggle_case,        %w[asciitilde]
+        mode.map :selection_upper_case,         %w[U]
+        mode.map :selection_lower_case,         %w[u]
         mode.map [:finish_selection, :control], %w[Escape], %w[Control-c]
       end
 

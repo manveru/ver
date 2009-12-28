@@ -1,6 +1,16 @@
 module VER
   module Methods
     module Control
+      # Toggle case of the character under the cursor up to +count+ characters
+      # forward (+count+ is inclusive the first character).
+      # This only works for alphabetic ASCII characters, no other encodings.
+      def toggle_case(count = 1)
+        from, to = 'insert', "insert + #{count} chars"
+        chunk = get(from, to)
+        chunk.tr!('a-zA-Z', 'A-Za-z')
+        replace(from, to, chunk)
+      end
+
       def repeat_command(count = 1)
         return unless command = keymap.last_send
         return if command.first == __method__

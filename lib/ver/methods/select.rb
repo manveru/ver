@@ -1,6 +1,47 @@
 module VER
   module Methods
     module Select
+      # Convert all characters within the selection to upper-case using
+      # String#upcase.
+      # Usually only works for alphabetic ASCII characters.
+      def selection_upper_case
+        undo_record do |record|
+          each_selected_line do |y, fx, tx|
+            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
+            record.replace(from, to, get(from, to).upcase)
+          end
+        end
+
+        refresh_selection
+      end
+
+      # Convert all characters within the selection to lower-case using
+      # String#downcase.
+      # Usually only works for alphabetic ASCII characters.
+      def selection_lower_case
+        undo_record do |record|
+          each_selected_line do |y, fx, tx|
+            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
+            record.replace(from, to, get(from, to).downcase)
+          end
+        end
+
+        refresh_selection
+      end
+
+      # Toggle case within the selection.
+      # This only works for alphabetic ASCII characters, no other encodings.
+      def selection_toggle_case
+        undo_record do |record|
+          each_selected_line do |y, fx, tx|
+            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
+            record.replace(from, to, get(from, to).tr('a-zA-Z', 'A-Za-z'))
+          end
+        end
+
+        refresh_selection
+      end
+
       def wrap_selection
         queue = []
         text = []
