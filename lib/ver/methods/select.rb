@@ -290,7 +290,40 @@ module VER
       def each_selection
         tag_ranges(:sel).each do |sel|
           (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
-          yield fy, fx, ty, tx
+
+          case selection_mode
+          when :select_char
+            if fy == ty
+              yield fy, fx, ty, tx
+            elsif (ty - fy) == 1
+              efy, efx = index("#{fy}.#{fx} lineend").split
+              sty, stx = index("#{ty}.#{tx} linestart").split
+              yield fy, fx, efy, efx
+              yield sty, stx, ty, tx
+            else
+              efy, efx = index("#{fy}.#{fx} lineend").split
+              yield fy, fx, efy, efx
+
+              ((fy + 1)...ty).each do |y|
+                sy, sx = index("#{y}.0 linestart").split
+                ey, ex = index("#{y}.0 lineend").split
+                yield sy, sx, ey, ex
+              end
+
+              sty, stx = index("#{ty}.#{tx} linestart").split
+              yield sty, stx, ty, tx
+            end
+          when :select_line
+            fy.upto(ty) do |y|
+              sy, sx = index("#{y}.0 linestart").split
+              ey, ex = index("#{y}.0 lineend").split
+              yield sy, sx, ey, ex
+            end
+          when :select_block
+            yield fy, fx, ty, tx
+          else
+            raise "Not in select mode?"
+          end
         end
       end
 
