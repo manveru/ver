@@ -246,9 +246,9 @@ module VER
         tag_remove :sel, 1.0, :end
 
         case selection_mode
-        when :select_char; refresh_selection_char(start)
-        when :select_line; refresh_selection_line(start)
-        when :select_block; refresh_selection_block(start)
+        when :select_char  ; refresh_selection_char(start)
+        when :select_line  ; refresh_selection_line(start)
+        when :select_block ; refresh_selection_block(start)
         end
       end
 
@@ -287,6 +287,12 @@ module VER
         tag_remove :sel, '1.0', 'end'
       end
 
+      # For every chunk selected, this yields the corresponding coordinates as
+      # [from_y, from_x, to_y, to_x].
+      # It takes into account the current selection mode.
+      # In many cases from_y and to_y are identical, but don't rely on this.
+      #
+      # @see each_selected_line
       def each_selection
         tag_ranges(:sel).each do |sel|
           (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
@@ -327,6 +333,9 @@ module VER
         end
       end
 
+      # Abstraction for [each_selection] that yields one y coordinate per #
+      # line.
+      # You usually want to use this if you work with selections.
       def each_selected_line
         each_selection do |fy, fx, ty, tx|
           fy.upto(ty) do |y|
