@@ -267,6 +267,7 @@ module VER
       vim.add_mode :list_view_list do |mode|
         mode.inherits :basic
 
+        mode.map :cancel,         %w[Escape], %w[Control-c]
         mode.map :pick_selection, %w[Return], %w[Double-Button-1]
         mode.map :line_up,        %w[Up], %w[Control-k], %w[Control-p]
         mode.map :line_down,      %w[Down], %w[Control-j], %w[Control-n]
