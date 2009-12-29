@@ -119,6 +119,7 @@ module VER
     end
 
     def on_focus(event)
+      Dir.chdir(@text.filename.dirname.to_s) if @text.options.auto_chdir
       @text.set_window_title
       @text.see(:insert)
     end

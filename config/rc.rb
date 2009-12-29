@@ -26,6 +26,9 @@ VER.options.dsl do
   o "Use EventMachine inside VER, at the moment only for the console",
     :eventmachine, false
 
+  o "Change directory to directory of currently open buffer",
+    :auto_chdir, false
+
   o "Tk Tile Theme",
     :tk_theme, 'clam'
 

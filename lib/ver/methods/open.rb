@@ -115,6 +115,7 @@ module VER
           defer do
             setup_highlight
             apply_modeline
+            focus
           end
           bind('<Map>'){ see(:insert) }
         end
