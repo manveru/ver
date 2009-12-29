@@ -48,9 +48,9 @@ module VER
           ['Text Files', '*.txt'],
         ]
 
-        options[:filename]  ||= ::File.basename(@filename)
-        options[:extension] ||= ::File.extname(@filename)
-        options[:directory] ||= ::File.dirname(@filename)
+        options[:initialfile]      ||= ::File.basename(@filename)
+        options[:defaultextension] ||= ::File.extname(@filename)
+        options[:initialdir]       ||= ::File.dirname(@filename)
 
         fpath = Tk.get_save_file(options)
 
