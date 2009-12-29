@@ -79,6 +79,7 @@ module VER
         mode.map :status_search_prev,            %w[question]
         mode.map :search_char_right,             %w[f]
         mode.map :search_char_left,              %w[F]
+        mode.map :search_remove,                 %w[g slash]
       end
 
       vim.add_mode :ctags do |mode|

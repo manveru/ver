@@ -6,6 +6,10 @@ module VER
         background: '#ff0',
       }
 
+      def search_remove
+        tag_remove('search', '1.0', 'end')
+      end
+
       def status_search_next
         status_search_common('/'){ search_next }
       end
