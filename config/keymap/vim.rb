@@ -45,6 +45,8 @@ module VER
         mode.map :view_close,       %w[Control-w w]
         mode.map :view_push_top,    %w[Control-w Return]
         mode.map :view_push_bottom, %w[Control-w BackSpace]
+
+        mode.map :view_peer,        %w[Control-w p]
       end
 
       vim.add_mode :move do |mode|

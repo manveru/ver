@@ -7,11 +7,12 @@ module VER
     attr_reader :layout, :text, :status
 
     def initialize(layout, options = {})
+      peer = options.delete(:peer)
       super
       @layout = layout
       @text = @status = @ybar = @xbar = nil
       configure takefocus: false
-      setup
+      setup(peer)
     end
 
     # +-------+---+
@@ -25,18 +26,27 @@ module VER
     # +-------+---+
     # |  @status  |
     # +-----------+
-    def setup
-      setup_widgets
+    def setup(peer)
+      setup_widgets(peer)
       setup_grid
       setup_misc
       setup_events
     end
 
-    def setup_widgets
-      setup_text
+    def setup_widgets(peer)
+      if peer
+        setup_peer(peer)
+      else
+        setup_text
+      end
+
       setup_vertical_scrollbar if VER.options.vertical_scrollbar
       setup_horizontal_scrollbar if VER.options.horizontal_scrollbar
       setup_status
+    end
+
+    def setup_peer(peer)
+      @text = peer.peer_create(self)
     end
 
     def setup_text
@@ -176,6 +186,12 @@ module VER
 
     def push_bottom
       layout.push_bottom(self)
+    end
+
+    def create_peer
+      layout.create_view(peer: @text) do |view|
+        yield(view) if block_given?
+      end
     end
 
     def destroy

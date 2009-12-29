@@ -21,8 +21,8 @@ module VER
       apply if @views.any?
     end
 
-    def create_view
-      view = View.new(self)
+    def create_view(options = {})
+      view = View.new(self, options)
       yield view
       @views.push(view)
       @stack.unshift(view)

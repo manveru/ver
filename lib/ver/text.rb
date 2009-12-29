@@ -20,7 +20,27 @@ module VER
     attr_accessor :selection_mode, :selection_start
 
     def initialize(view, options = {})
-      super
+      if peer = options.delete(:peer)
+        @tag_commands = {}
+        @tk_parent = view
+        Tk.execute(peer.tk_pathname, 'peer', 'create', assign_pathname, options)
+        configure(peer.configure)
+      else
+        super
+      end
+
+      widget_setup(view)
+    end
+
+    def peer_create(view)
+      self.class.new(view, peer: self)
+    end
+
+    def view_peer
+      view.create_peer
+    end
+
+    def widget_setup(view)
       self.view = view
       @options = Options.new(:text, VER.options)
 
