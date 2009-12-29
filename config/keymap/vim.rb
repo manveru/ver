@@ -146,6 +146,7 @@ module VER
         mode.map :syntax_indent_file,              %w[equal]
         mode.map :repeat_command,                  %w[period]
         mode.map :toggle_case,                     %w[asciitilde]
+        mode.map :chdir,                           %w[g c]
 
         mode.map :undo,                            %w[u]
         mode.map :redo,                            %w[Control-r]

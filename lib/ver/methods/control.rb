@@ -1,6 +1,13 @@
 module VER
   module Methods
     module Control
+      def chdir
+        status_ask 'Change to: ' do |path|
+          return unless File.directory?(path.to_s)
+          Dir.chdir(path)
+        end
+      end
+
       # Toggle case of the character under the cursor up to +count+ characters
       # forward (+count+ is inclusive the first character).
       # This only works for alphabetic ASCII characters, no other encodings.

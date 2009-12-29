@@ -81,7 +81,14 @@ module VER
       end
 
       def sol_then_insert_mode(count = nil)
-        beginning_of_line(count)
+        if count
+          mark_set(:insert, 'insert display linestart')
+        else
+          x = get('insert linestart', 'insert lineend').index(/\S/) || 0
+          y = index('insert').y
+          mark_set(:insert, "#{y}.#{x}")
+        end
+
         start_insert_mode
       end
 
