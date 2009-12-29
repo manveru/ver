@@ -126,6 +126,7 @@ module VER
   end
 
   def run_startup(given_options)
+    @startup_hooks = []
     first_startup unless options.home_conf_dir.directory?
     load 'rc'
     @options.merge!(given_options)
@@ -137,6 +138,15 @@ module VER
     setup_widgets
     open_argv || open_welcome
     emergency_bindings
+    run_startup_hooks
+  end
+
+  def run_startup_hooks
+    @startup_hooks.each(&:call)
+  end
+
+  def startup_hook(&block)
+    @startup_hooks << block
   end
 
   def setup_tk
