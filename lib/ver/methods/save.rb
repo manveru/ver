@@ -4,7 +4,8 @@ module VER
     #       crash for some reason.
     module Save
       def may_close
-        return yield unless edit_modified?
+        return yield if pristine?
+        return yield unless undo_pending?
         return yield if persisted?
 
         question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
@@ -89,11 +90,13 @@ module VER
         save_dumb(temp_path) && FileUtils.mv(temp_path, to)
 
         status.message "Saved to #{to}"
+        @pristine = true
         return true
       rescue Errno::EACCES => ex
         # sshfs-mounts raise error but save correctly.
         if ex.backtrace[0].match(/chown\'$/)
           status.message "Saved to #{to} (chown issue)"
+          @pristine = true
           return true
         end
         raise ex
@@ -107,6 +110,7 @@ module VER
         end
 
         status.message "Saved to #{to}"
+        @pristine = true
         return true
       rescue Exception => ex
         VER.error(ex)

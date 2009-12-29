@@ -61,6 +61,10 @@ module VER
       self.mode = keymap.mode
     end
 
+    def pristine?
+      @pristine
+    end
+
     def index(idx)
       Index.new(self, execute('index', idx).to_s)
     end

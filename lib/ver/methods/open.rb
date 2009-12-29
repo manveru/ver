@@ -107,7 +107,7 @@ module VER
 
         edit_reset
         mark_set :insert, "#{line.to_i}.0"
-        @pristine = false
+        @pristine = true
 
         @undoer = VER::Undo::Tree.new(self)
 
