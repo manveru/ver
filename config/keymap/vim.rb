@@ -123,6 +123,8 @@ module VER
         mode.map :change_motion,                   ['c', :move]
         mode.map :kill_motion,                     ['d', :move]
 
+        mode.map [:change_motion, :word_right_end], %w[c w]
+
         mode.map :eol_then_insert_mode,            %w[A]
         mode.map :forward_char_then_insert_mode,   %w[a]
 
