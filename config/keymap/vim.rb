@@ -153,6 +153,13 @@ module VER
         mode.map :toggle_case,                     %w[asciitilde]
         mode.map :chdir,                           %w[g c]
 
+        mode.map :cursor_vertical_top,             %w[z t]
+        mode.map :cursor_vertical_top_sol,         %w[z Return]
+        mode.map :cursor_vertical_center,          %w[z z]
+        mode.map :cursor_vertical_center_sol,      %w[z period]
+        mode.map :cursor_vertical_bottom,          %w[z b]
+        mode.map :cursor_vertical_bottom_sol,      %w[z minus]
+
         mode.map :undo,                            %w[u]
         mode.map :redo,                            %w[Control-r]
       end

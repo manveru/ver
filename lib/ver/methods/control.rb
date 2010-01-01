@@ -1,6 +1,45 @@
 module VER
   module Methods
     module Control
+      def cursor_vertical_top
+        insert_line = count('1.0', 'insert', :displaylines)
+        last_line = count('1.0', 'end', :displaylines)
+        fraction = ((100.0 / last_line) * insert_line) / 100
+        yview_moveto(fraction)
+      end
+
+      def cursor_vertical_top_sol
+        cursor_vertical_top
+        start_of_line
+      end
+
+      def cursor_vertical_center
+        insert_line = count('1.0', 'insert', :displaylines)
+        last_line = count('1.0', 'end', :displaylines)
+        shown_lines = count('@0,0', "@0,#{winfo_height}", :displaylines)
+        fraction = ((100.0 / last_line) * (insert_line - (shown_lines / 2))) / 100
+        yview_moveto(fraction)
+      end
+
+      def cursor_vertical_center_sol
+        cursor_vertical_center
+        start_of_line
+      end
+
+      def cursor_vertical_bottom
+        insert_line = count('1.0', 'insert', :displaylines) + 1
+        last_line = count('1.0', 'end', :displaylines)
+        shown_lines = count('@0,0', "@0,#{winfo_height}", :displaylines)
+        fraction = ((100.0 / last_line) * (insert_line - shown_lines)) / 100
+        # p insert: insert_line, last: last_line, shown: shown_lines, fraction: fraction
+        yview_moveto(fraction)
+      end
+
+      def cursor_vertical_bottom_sol
+        cursor_vertical_bottom
+        start_of_line
+      end
+
       def chdir
         status_ask 'Change to: ' do |path|
           return unless File.directory?(path.to_s)

@@ -80,7 +80,7 @@ module VER
         start_insert_mode
       end
 
-      def sol_then_insert_mode(count = nil)
+      def start_of_line(count = nil)
         if count
           mark_set(:insert, 'insert display linestart')
         else
@@ -88,7 +88,10 @@ module VER
           y = index('insert').y
           mark_set(:insert, "#{y}.#{x}")
         end
+      end
 
+      def sol_then_insert_mode(count = nil)
+        start_of_line(count)
         start_insert_mode
       end
 
