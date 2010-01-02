@@ -201,6 +201,197 @@ module VER
         end
       end
 
+      class OpenPath
+        class Entry < VER::Entry
+          attr_accessor :keymap, :parent, :callback
+          attr_reader :mode
+
+          def initialize(parent, options = {})
+            options[:style] ||= self.class.obtain_style_name
+            super
+            self.parent = parent
+
+            keymap_name = VER.options.keymap
+            self.keymap = Keymap.get(name: keymap_name, receiver: self)
+          end
+
+          def destroy
+            style_name = style
+            super
+          ensure
+            self.class.return_style_name(style_name)
+          end
+
+          def mode=(name)
+            @keymap.mode = @mode = name.to_sym
+          end
+
+          # keymap callbacks
+
+          def pick_selection
+            callback.complete_or_pick
+          end
+
+          def cancel
+            callback.destroy
+          end
+
+          def line_up
+          end
+
+          def line_down
+          end
+
+          def completion
+            callback.completion
+          end
+        end
+
+        def initialize(caller)
+          @caller = caller
+          @last_was_tab = false
+
+          setup_widgets
+          setup_tree
+          setup_bindings
+
+          @entry.callback = self
+          @entry.mode = :open_path_entry
+          @entry.focus
+        end
+
+        def setup_widgets
+          @frame = Tk::Tile::Frame.new(VER.root)
+          @label = Tk::Tile::Label.new(@frame, text: 'Open path:')
+          @entry = OpenPath::Entry.new(@frame)
+          @tree  = Tk::Tile::Treeview.new(@frame)
+
+          @frame.place(anchor: :n, relx: 0.5, relwidth: 0.8)
+
+          @label.grid_configure(row: 0 ,column: 0, sticky: :w)
+          @entry.grid_configure(row: 0, column: 1, sticky: :we)
+          @tree. grid_configure(row: 1, column: 0, columnspan: 2, sticky: :nswe)
+          @tree. grid_forget
+
+          @frame.grid_rowconfigure(0, weight: 1)
+          @frame.grid_rowconfigure(1, weight: 2)
+          @frame.grid_columnconfigure(0, weight: 0)
+          @frame.grid_columnconfigure(1, weight: 2)
+        end
+
+        def setup_tree
+          @tree.heading '#0', text: 'Path'
+        end
+
+        def setup_bindings
+          @entry.bind('<<Deleted>>'){|event|
+            @last_was_tab = false
+            p deleted: @entry.value
+          }
+          @entry.bind('<<Inserted>>'){|event|
+            @last_was_tab = false
+            p inserted: @entry.value
+          }
+        end
+
+        def destroy
+          @label.destroy
+          @entry.destroy
+          @tree.destroy
+          @frame.destroy
+          @caller.focus
+        end
+
+        def update
+          origin = @entry.value
+          @tree.clear
+          first = nil
+          Dir.glob("#{origin}*") do |path|
+            if File.directory?(path)
+              path = "#{path}/"
+            end
+
+            item = @tree.insert(nil, :end, text: path)
+            first ||= item
+          end
+          return unless first
+          p first
+          first.focus
+          first.selection_set
+        rescue => ex
+          VER.error(ex)
+        end
+
+        def completion
+          p :completion
+          @tree.grid_configure(row: 1, column: 0, columnspan: 2, sticky: :nswe)
+          p last_was_tab: @last_was_tab
+
+          if @last_was_tab
+            # Make sure that we don't automatically venture deeper if there are
+            # multiple choices.
+            # We simply go down the list of choices and update the entry value.
+            # If there was only one choice, we go deeper once.
+            children = @tree.children(nil)
+
+            if children.size == 1
+              item = children.first
+              @entry.value = item.options(:text).to_s
+              update
+            else
+              item = @tree.focus_item.next
+
+              if item.id == ''
+                item = @tree.children(nil).first
+              end
+
+              item.focus
+              item.selection_set
+            end
+          else
+            # seems the user did input something since last time, build a new
+            # list.
+            update
+          end
+
+          @last_was_tab = true
+        rescue => ex
+          VER.error(ex)
+        end
+
+        def complete_or_pick
+          p :complete_or_pick
+          p last_was_tab: @last_was_tab
+
+          if @last_was_tab
+            # the user might want to complete with the current focused one
+            item = @tree.focus_item
+            p item: item
+            text = item.options(:text).to_s
+            p text: text
+            @entry.value = text
+          else
+            # the user accepts the input
+            path = @entry.value
+            destroy
+            @caller.view.find_or_create(path)
+          end
+
+          @last_was_tab = false
+        rescue => ex
+          VER.error(ex)
+        end
+      end
+
+      # :open <Tab> # => '', '*'
+      # :open l<Tab> # => 'lib/', 'lib/*'
+      # :open lib/v<Tab> # => 'lib/ver', 'lib/ver*'
+      # :open lib/ver<Tab> # => 'lib/ver/', 'lib/ver*'
+      # :open lib/ver/<Tab> # => 'lib/ver.rb', 'lib/ver*'
+      def status_open
+        return OpenPath.new(self)
+      end
+
       # TODO: make this better?
       def status_ex
         completion = method(:status_ex_filter)
