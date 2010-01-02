@@ -24,6 +24,7 @@ module VER
         @tag_commands = {}
         @tk_parent = view
         Tk.execute(peer.tk_pathname, 'peer', 'create', assign_pathname, options)
+        self.filename = peer.filename
         configure(peer.configure)
       else
         super
