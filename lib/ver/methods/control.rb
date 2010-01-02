@@ -31,7 +31,6 @@ module VER
         last_line = count('1.0', 'end', :displaylines)
         shown_lines = count('@0,0', "@0,#{winfo_height}", :displaylines)
         fraction = ((100.0 / last_line) * (insert_line - shown_lines)) / 100
-        # p insert: insert_line, last: last_line, shown: shown_lines, fraction: fraction
         yview_moveto(fraction)
       end
 
@@ -226,10 +225,43 @@ module VER
             @keymap.mode = @mode = name.to_sym
           end
 
+          def tree
+            callback.tree
+          end
+
           # keymap callbacks
 
+          def completion
+            callback.completion do |entry_value|
+              values = yield(entry_value)
+              tree.clear
+              first = nil
+              values.each do |value|
+                item = tree.insert(nil, :end, text: value)
+                first ||= item
+              end
+
+              return unless first
+
+              first.focus
+              first.selection_set
+            end
+          rescue => ex
+            VER.error(ex)
+          end
+
           def pick_selection
-            callback.complete_or_pick
+            callback.complete_or_pick do |value|
+              parent.destroy if yield(value)
+            end
+          rescue => ex
+            VER.error(ex)
+          end
+
+          def speed_selection
+            completion
+            pick_selection
+            pick_selection
           end
 
           def cancel
@@ -237,15 +269,82 @@ module VER
           end
 
           def line_up
+            children = tree.children(nil)
+
+            return if children.size == 1
+
+            item = tree.focus_item.prev
+
+            if item.id == ''
+              item = children.last
+            end
+
+            item.focus
+            item.see
+            item.selection_set
           end
 
           def line_down
-          end
+            children = tree.children(nil)
 
-          def completion
-            callback.completion
+            return if children.size == 1
+
+            item = tree.focus_item.next
+
+            if item.id == ''
+              item = children.first
+            end
+
+            item.focus
+            item.see
+            item.selection_set
           end
         end
+
+        class CompleteFile < OpenPath::Entry
+          def completion
+            super do |origin|
+              Dir.glob("#{origin}*").map do |path|
+                if File.directory?(path)
+                  path = "#{path}/"
+                end
+
+                path
+              end
+            end
+          end
+
+          def pick_selection
+            super do |path|
+              callback.caller.view.find_or_create(path)
+              true
+            end
+          end
+        end
+
+        class CompleteLabel < OpenPath::Entry
+          COMPLETERS = {
+            'edit'  => CompleteFile,
+            'open'  => CompleteFile,
+            'write' => CompleteFile,
+          }
+
+          def completion
+            super do |name|
+              COMPLETERS.keys.select{|key| key =~ /#{Regexp.escape(name)}/i }
+            end
+          end
+
+          def pick_selection
+            super do |name|
+              entry = callback.use_entry(COMPLETERS.fetch(name))
+              entry.focus
+              false
+            end
+          end
+        end
+
+        attr_reader :caller, :tree
 
         def initialize(caller)
           @caller = caller
@@ -255,21 +354,21 @@ module VER
           setup_tree
           setup_bindings
 
-          @entry.callback = self
-          @entry.mode = :open_path_entry
-          @entry.focus
+          @label.callback = self
+          @label.mode = :open_path_entry
+          @label.focus
+
+          @active = @label
         end
 
         def setup_widgets
           @frame = Tk::Tile::Frame.new(VER.root)
-          @label = Tk::Tile::Label.new(@frame, text: 'Open path:')
-          @entry = OpenPath::Entry.new(@frame)
+          @label = CompleteLabel.new(@frame)
           @tree  = Tk::Tile::Treeview.new(@frame)
 
           @frame.place(anchor: :n, relx: 0.5, relwidth: 0.8)
 
           @label.grid_configure(row: 0 ,column: 0, sticky: :w)
-          @entry.grid_configure(row: 0, column: 1, sticky: :we)
           @tree. grid_configure(row: 1, column: 0, columnspan: 2, sticky: :nswe)
           @tree. grid_forget
 
@@ -279,19 +378,30 @@ module VER
           @frame.grid_columnconfigure(1, weight: 2)
         end
 
+        def use_entry(klass)
+          @entry = klass.new(@frame)
+          @entry.grid_configure(row: 0, column: 1, sticky: :we)
+          @entry.callback = self
+          @entry.mode = :open_path_entry
+          @active = @entry
+          setup_bindings
+          @entry
+        end
+
         def setup_tree
           @tree.heading '#0', text: 'Path'
         end
 
         def setup_bindings
-          @entry.bind('<<Deleted>>'){|event|
-            @last_was_tab = false
-            p deleted: @entry.value
-          }
-          @entry.bind('<<Inserted>>'){|event|
-            @last_was_tab = false
-            p inserted: @entry.value
-          }
+          [@entry, @label].compact.each do |widget|
+            widget.bind('<<Deleted>>') do
+              @last_was_tab = false
+            end
+
+            widget.bind('<<Inserted>>') do
+              @last_was_tab = false
+            end
+          end
         end
 
         def destroy
@@ -302,30 +412,8 @@ module VER
           @caller.focus
         end
 
-        def update
-          origin = @entry.value
-          @tree.clear
-          first = nil
-          Dir.glob("#{origin}*") do |path|
-            if File.directory?(path)
-              path = "#{path}/"
-            end
-
-            item = @tree.insert(nil, :end, text: path)
-            first ||= item
-          end
-          return unless first
-          p first
-          first.focus
-          first.selection_set
-        rescue => ex
-          VER.error(ex)
-        end
-
         def completion
-          p :completion
           @tree.grid_configure(row: 1, column: 0, columnspan: 2, sticky: :nswe)
-          p last_was_tab: @last_was_tab
 
           if @last_was_tab
             # Make sure that we don't automatically venture deeper if there are
@@ -336,8 +424,8 @@ module VER
 
             if children.size == 1
               item = children.first
-              @entry.value = item.options(:text).to_s
-              update
+              @active.value = value = item.options(:text).to_s
+              yield(value)
             else
               item = @tree.focus_item.next
 
@@ -346,12 +434,13 @@ module VER
               end
 
               item.focus
+              item.see
               item.selection_set
             end
           else
             # seems the user did input something since last time, build a new
             # list.
-            update
+            yield(@active.value)
           end
 
           @last_was_tab = true
@@ -360,21 +449,14 @@ module VER
         end
 
         def complete_or_pick
-          p :complete_or_pick
-          p last_was_tab: @last_was_tab
-
           if @last_was_tab
             # the user might want to complete with the current focused one
             item = @tree.focus_item
-            p item: item
             text = item.options(:text).to_s
-            p text: text
-            @entry.value = text
+            @active.value = text
           else
-            # the user accepts the input
-            path = @entry.value
-            destroy
-            @caller.view.find_or_create(path)
+            # the user accepts the input?
+            yield(@active.value)
           end
 
           @last_was_tab = false

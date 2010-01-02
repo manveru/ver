@@ -147,7 +147,7 @@ module VER
         mode.map :unindent_line,                   %w[less]
         mode.map :wrap_line,                       %w[g w]
         mode.map :preview,                         %w[F5]
-        mode.map :status_ex,                       %w[colon]
+        mode.map :status_open,                     %w[colon]
         mode.map :syntax_indent_file,              %w[equal]
         mode.map :repeat_command,                  %w[period]
         mode.map :toggle_case,                     %w[asciitilde]
@@ -277,11 +277,12 @@ module VER
         mode.inherits :basic, :readline
         mode.arguments = false
 
-        mode.map :pick_selection, %w[Return]
-        mode.map :cancel,         %w[Escape], %w[Control-c]
-        mode.map :line_up,        %w[Up], %w[Control-k], %w[Control-p]
-        mode.map :line_down,      %w[Down], %w[Control-j], %w[Control-n]
-        mode.map :completion,     %w[Tab]
+        mode.map :pick_selection,  %w[Return]
+        mode.map :cancel,          %w[Escape], %w[Control-c]
+        mode.map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
+        mode.map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
+        mode.map :completion,      %w[Tab]
+        mode.map :speed_selection, %w[space]
 
         mode.missing :insert_string
       end
