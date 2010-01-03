@@ -273,7 +273,7 @@ module VER
         mode.missing :insert_string
       end
 
-      vim.add_mode :open_path_entry do |mode|
+      vim.add_mode :executor_entry do |mode|
         mode.inherits :basic, :readline
         mode.arguments = false
 
@@ -282,6 +282,14 @@ module VER
         mode.map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
         mode.map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
         mode.map :completion,      %w[Tab]
+
+        mode.missing :insert_string
+      end
+
+      vim.add_mode :executor_label do |mode|
+        mode.inherits :executor_entry
+        mode.arguments = false
+
         mode.map :speed_selection, %w[space]
 
         mode.missing :insert_string

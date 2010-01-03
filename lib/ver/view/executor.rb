@@ -13,6 +13,9 @@ module VER
         self.keymap = Keymap.get(name: keymap_name, receiver: self)
       end
 
+      def setup
+      end
+
       def destroy
         style_name = style
         super
@@ -28,11 +31,28 @@ module VER
         callback.tree
       end
 
+      def subset(needle, values)
+        lower_needle = needle.to_s.downcase
+
+        sorted = values.sort_by do |value|
+          score = 0
+
+          if value.start_with?(needle)
+            score -= (needle.size + value.size)
+          elsif value.include?(needle)
+            score -= value.size
+          end
+
+          score += Levenshtein.distance(needle, value)
+          score
+        end
+      end
+
       # keymap callbacks
 
       def completion
         callback.completion do |entry_value|
-          values = yield(entry_value)
+          values = choices(entry_value)
           tree.clear
           first = nil
           values.each do |value|
@@ -51,10 +71,19 @@ module VER
 
       def pick_selection
         callback.complete_or_pick do |value|
-          callback.destroy if yield(value)
+          if block_given?
+            callback.destroy if yield(value)
+          else
+            action(value)
+            callback.destroy
+          end
         end
       rescue => ex
         VER.error(ex)
+      end
+
+      def action(value)
+        true
       end
 
       def speed_selection
@@ -101,54 +130,81 @@ module VER
     end
 
     class CompleteFile < Entry
-      def completion
-        super do |origin|
-          Dir.glob("#{origin}*").map do |path|
-            if File.directory?(path)
-              path = "#{path}/"
-            end
-
-            path
+      def choices(origin)
+        Dir.glob("#{origin}*").map do |path|
+          if File.directory?(path)
+            path = "#{path}/"
           end
+
+          path
         end
       end
 
-      def pick_selection
-        super do |path|
-          callback.caller.view.find_or_create(path)
-          true
-        end
+      def action(path)
+        callback.caller.view.find_or_create(path)
       end
     end
 
     class CompleteMethod < Entry
+      def setup
+        @methods = callback.caller.methods.map{|m| m.to_s }
+      end
+
+      def choices(name)
+        subset(name, @methods)
+      end
+
+      def action(method)
+        callback.caller.__send__(method)
+      end
+    end
+
+    class CompleteSyntax < Entry
+      def choices(name)
+        subset(name, VER::Syntax.list.map{|fullpath|
+          File.basename(fullpath, File.extname(fullpath))
+        })
+      end
+
+      def action(name)
+        callback.caller.load_syntax(name)
+      end
+    end
+
+    class CompleteTheme < Entry
+      def choices(name)
+        subset(name, VER::Theme.list.map{|fullpath|
+          File.basename(fullpath, File.extname(fullpath))
+        })
+      end
+
+      def action(name)
+        callback.caller.load_theme(name)
+      end
+    end
+
+    class CompleteGrep < Entry
       def completion
         super do |name|
-          callback.caller.methods.sort.grep(/#{Regexp.escape(name)}/i)
         end
       end
 
       def pick_selection
-        super do |method|
-          callback.caller.__send__(method)
-          true
-        end
       end
     end
 
     class CompleteLabel < Entry
       COMPLETERS = {
-        'edit'  => CompleteFile,
-        'open'  => CompleteFile,
-        'write' => CompleteFile,
+        'edit'   => CompleteFile,
         'method' => CompleteMethod,
+        'open'   => CompleteFile,
+        'syntax' => CompleteSyntax,
+        'theme'  => CompleteTheme,
+        'write'  => CompleteFile,
       }
 
-      def completion
-        super do |name|
-          regex = /#{Regexp.escape(name)}/i
-          COMPLETERS.keys.select{|key| key =~ regex }
-        end
+      def choices(name)
+        subset(name, COMPLETERS.keys)
       end
 
       def pick_selection
@@ -167,11 +223,10 @@ module VER
       @last_was_tab = false
 
       setup_widgets
-      setup_tree
       setup_bindings
 
       @label.callback = self
-      @label.mode = :open_path_entry
+      @label.mode = :executor_label
       @label.focus
 
       @active = @label
@@ -188,7 +243,7 @@ module VER
       @tree. grid_configure(row: 1, column: 0, columnspan: 2, sticky: :nswe)
       @tree. grid_forget
 
-      @frame.grid_rowconfigure(0, weight: 1)
+      @frame.grid_rowconfigure(0, weight: 0)
       @frame.grid_rowconfigure(1, weight: 2)
       @frame.grid_columnconfigure(0, weight: 0)
       @frame.grid_columnconfigure(1, weight: 2)
@@ -198,14 +253,11 @@ module VER
       @entry = klass.new(@frame)
       @entry.grid_configure(row: 0, column: 1, sticky: :we)
       @entry.callback = self
-      @entry.mode = :open_path_entry
+      @entry.mode = :executor_entry
       @active = @entry
       setup_bindings
+      @entry.setup
       @entry
-    end
-
-    def setup_tree
-      @tree.heading '#0', text: 'Path'
     end
 
     def setup_bindings
@@ -221,15 +273,16 @@ module VER
     end
 
     def destroy
-      label: @label.destroy
-      entry: @entry.destroy
-      tree: @tree.destroy
-      frame: @frame.destroy
-      caller: @caller.focus
+      @label.destroy
+      @entry.destroy
+      @tree.destroy
+      @frame.destroy
+      @caller.focus
     end
 
     def completion
       @tree.grid_configure(row: 1, column: 0, columnspan: 2, sticky: :nswe)
+      @frame.place(relheight: 0.8)
 
       if @last_was_tab
         # Make sure that we don't automatically venture deeper if there are
