@@ -17,6 +17,7 @@ autoload :SizedArray, 'ver/vendor/sized_array'
 
 module VER
   autoload :Entry,               'ver/entry'
+  autoload :Executor,            'ver/view/executor'
   autoload :Help,                'ver/help'
   autoload :Font,                'ver/font'
   autoload :HoverCompletion,     'ver/hover_completion'
