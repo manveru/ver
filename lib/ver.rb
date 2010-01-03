@@ -166,7 +166,7 @@ module VER
     @layout.strategy = Layout::VerticalTiling
 
     @status = Entry.new(@root, font: options.font)
-    @status.insert :end, 'For information about VER, type F1'
+    @status.insert :end, 'Welcome to VER, exit by pressing Control-q'
     @status.pack(fill: :x)
 
     @exception_view = nil
