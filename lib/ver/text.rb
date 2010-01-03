@@ -257,6 +257,34 @@ module VER
       Tk::Event.generate(self, '<<Modified>>')
     end
 
+    def load_theme(name)
+      return unless syntax
+      return unless found = Theme.find(name)
+
+      syntax.theme = Theme.load(found)
+      schedule_highlight
+
+      message "Theme #{found} loaded"
+    end
+
+    def load_syntax(name)
+      return false unless syntax
+
+      theme = syntax.theme
+
+      if name.is_a?(Syntax)
+        @syntax = Syntax.new(name.name, theme)
+      elsif found = Syntax.find(name)
+        @syntax = Syntax.new(name, theme)
+      else
+        return false
+      end
+
+      schedule_highlight
+
+      message "Syntax #{@syntax.name} loaded"
+    end
+
     private
 
     def schedule_highlight!(*args)
@@ -291,34 +319,6 @@ module VER
       return unless status && color = cursor[:insertbackground]
       style = status.style
       Tk::Tile::Style.configure style, fieldbackground: color
-    end
-
-    def load_theme(name)
-      return unless syntax
-      return unless found = Theme.find(name)
-
-      syntax.theme = Theme.load(found)
-      schedule_highlight
-
-      message "Theme #{found} loaded"
-    end
-
-    def load_syntax(name)
-      return false unless syntax
-
-      theme = syntax.theme
-
-      if name.is_a?(Syntax)
-        @syntax = Syntax.new(name.name, theme)
-      elsif found = Syntax.find(name)
-        @syntax = Syntax.new(name, theme)
-      else
-        return false
-      end
-
-      schedule_highlight
-
-      message "Syntax #{@syntax.name} loaded"
     end
 
     def load_preferences
