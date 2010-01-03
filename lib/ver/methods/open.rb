@@ -28,6 +28,50 @@ module VER
         Encoding::BINARY,
       ]
 
+      # Try to determine the file under the cursor.
+      # This handles names without spaces if no quotes are found
+      # quotes may be like '', "", [], {}, () <>
+      # we also search for the file in a couple of common locations.
+      # Since some programming languages allow omission of the
+      # filename-extension, we assume that it's one of the extensions registered
+      # for the current file type if nothing could be found otherwise.
+      # if that fails, we try to use `locate`, which can yield good results.
+      # if no file could be found it simply does nothing?
+      def file_under_cursor
+        paths = %w[ . lib ext / ]
+        head = get('insert linestart', 'insert')
+        tail = get('insert', 'insert lineend')
+        tail_index = tail.index(/['"\]})>]/) || tail.index(/\s/)
+        return unless delim = $&
+
+        head_index = head.rindex(delim)
+        return unless tail_index && head_index
+
+        base = [head[(head_index + 1)..-1], tail[0...tail_index]].join
+
+        syntax_name = @syntax.name if @syntax
+        exts = Syntax::Detector::EXTS_LIST.fetch(syntax_name, [])
+
+        found = catch(:found){
+          paths.map{|path|
+            path_base = File.join(path, base)
+            throw(:found, path_base) if File.file?(path_base)
+            path_base
+          }.each do |path_base|
+            exts.each do |ext|
+              path_base_ext = "#{path_base}.#{ext}"
+              throw(:found, path_base_ext) if File.file?(path_base_ext)
+            end
+          end
+          nil
+        }
+      end
+
+      def open_file_under_cursor
+        return unless found = file_under_cursor
+        view.find_or_create(found)
+      end
+
       # TODO:
       # Binary files are still major fail.
       # We could try to copy behaviour of Vim or Emacs.

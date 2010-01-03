@@ -152,6 +152,7 @@ module VER
         mode.map :repeat_command,                  %w[period]
         mode.map :toggle_case,                     %w[asciitilde]
         mode.map :chdir,                           %w[g c]
+        mode.map :open_file_under_cursor,          %w[g f]
 
         mode.map :cursor_vertical_top,             %w[z t]
         mode.map :cursor_vertical_top_sol,         %w[z Return]
