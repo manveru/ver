@@ -70,8 +70,8 @@ module VER
 
       # Tag and delete all trailing whitespace in the current buffer.
       def delete_trailing_whitespace
-        tag_all_trailing_whitespace
-        execute :delete, *tag_ranges('invalid.trailing-whitespace').flatten
+        ranges = tag_ranges('invalid.trailing-whitespace').flatten
+        execute(:delete, *ranges) unless ranges.empty?
       end
 
       # Delete text between +indices+
