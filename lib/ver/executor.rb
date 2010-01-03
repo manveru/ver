@@ -7,6 +7,7 @@ module VER
     autoload :CompleteTheme,  'ver/executor/theme'
     autoload :CompleteGrep,   'ver/executor/grep'
     autoload :CompleteLabel,  'ver/executor/label'
+    autoload :CompleteWrite,  'ver/executor/path'
 
     attr_reader :caller, :tree, :entry, :frame
 

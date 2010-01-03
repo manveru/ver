@@ -5,7 +5,7 @@ module VER
         @themes = VER::Theme.list.map{|fullpath|
           File.basename(fullpath, File.extname(fullpath))
         }
-        tree.configure(show: [:tree])
+        tree.configure(show: [], columns: %w[theme], displaycolumns: %w[theme])
       end
 
       def choices(name)

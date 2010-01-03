@@ -8,7 +8,7 @@ module VER
         'open'   => :CompletePath,
         'syntax' => :CompleteSyntax,
         'theme'  => :CompleteTheme,
-        'write'  => :CompletePath,
+        'write'  => :CompleteWrite,
       }
 
       def setup
