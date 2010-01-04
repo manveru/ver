@@ -13,7 +13,7 @@ module VER
       end
 
       def action(name)
-        callback.caller.load_theme(name)
+        caller.load_theme(name)
       end
     end
   end

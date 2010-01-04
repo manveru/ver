@@ -13,7 +13,7 @@ module VER
       end
 
       def action(name)
-        callback.caller.load_syntax(name)
+        caller.load_syntax(name)
       end
     end
   end

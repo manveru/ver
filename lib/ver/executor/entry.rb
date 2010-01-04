@@ -2,9 +2,13 @@ module VER
   class Executor
     class Entry < VER::Entry
       attr_accessor :keymap, :parent, :callback
-      attr_reader :mode
+      attr_reader :mode, :caller, :tree
 
       def initialize(parent, options = {})
+        @callback = options.delete(:callback)
+        @caller   = @callback.caller
+        @tree     = @callback.tree
+
         options[:style] ||= self.class.obtain_style_name
         super
         self.parent = parent
@@ -25,10 +29,6 @@ module VER
 
       def mode=(name)
         @keymap.mode = @mode = name.to_sym
-      end
-
-      def tree
-        callback.tree
       end
 
       def subset(needle, values)

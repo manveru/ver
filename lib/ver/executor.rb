@@ -18,7 +18,6 @@ module VER
       setup_widgets
       setup_bindings
 
-      @label.callback = self
       @label.mode = :executor_label
       @active = @label
       @label.setup
@@ -27,8 +26,8 @@ module VER
 
     def setup_widgets
       @frame = Tk::Tile::Frame.new(VER.root)
-      @label = CompleteLabel.new(@frame)
       @tree  = Tk::Tile::Treeview.new(@frame)
+      @label = CompleteLabel.new(@frame, callback: self)
 
       @frame.place(anchor: :n, relx: 0.5)
 
@@ -43,9 +42,8 @@ module VER
     end
 
     def use_entry(klass)
-      @entry = klass.new(@frame)
+      @entry = klass.new(@frame, callback: self)
       @entry.grid_configure(row: 0, column: 1, sticky: :we)
-      @entry.callback = self
       @entry.mode = :executor_entry
       @active = @entry
       setup_bindings

@@ -14,7 +14,7 @@ module VER
 
       def action(path)
         throw(:invalid) if File.directory?(path)
-        callback.caller.view.find_or_create(path)
+        caller.view.find_or_create(path)
       end
     end
 
@@ -25,9 +25,10 @@ module VER
       def action(path)
         throw(:invalid) if File.directory?(path)
 
-        callback.caller.view.find_or_create(path) do |view|
-          view.text.value = callback.caller.value.chomp
-          view.text.file_save
+        caller.view.find_or_create(path) do |view|
+          text = view.text
+          text.value = caller.value.chomp
+          text.file_save
         end
       end
     end
