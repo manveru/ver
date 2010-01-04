@@ -71,6 +71,10 @@ module VER
 
     def gets_wrapper(key)
       return unless @gets_count && @gets_block
+
+      symbolic = key.sub(/^<(.*)>$/, '\1')
+      key = SYMKEYS.fetch(symbolic, key)
+
       @gets_got << key
 
       return true unless @gets_got.size >= @gets_count
@@ -213,4 +217,6 @@ module VER
     "}"  => "braceright",
     "~"  => "asciitilde",
   }
+
+  SYMKEYS = KEYSYMS.invert
 end
