@@ -13,6 +13,7 @@ module VER
       end
 
       def action(path)
+        throw(:invalid) if File.directory?(path)
         callback.caller.view.find_or_create(path)
       end
     end
@@ -22,6 +23,8 @@ module VER
     # Then save it for good measure.
     class CompleteWrite < CompletePath
       def action(path)
+        throw(:invalid) if File.directory?(path)
+
         callback.caller.view.find_or_create(path) do |view|
           view.text.value = callback.caller.value.chomp
           view.text.file_save

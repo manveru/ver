@@ -74,8 +74,10 @@ module VER
           if block_given?
             callback.destroy if yield(value)
           else
-            action(value)
-            callback.destroy
+            catch(:invalid){
+              action(value)
+              callback.destroy
+            }
           end
         end
       rescue => ex
