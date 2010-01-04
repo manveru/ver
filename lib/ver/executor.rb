@@ -75,6 +75,7 @@ module VER
 
     def completion
       @tree.grid_configure(row: 1, column: 0, columnspan: 2, sticky: :nswe)
+      @frame.place(relwidth: 0.9)
 
       if @last_was_tab
         # Make sure that we don't automatically venture deeper if there are
