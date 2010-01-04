@@ -64,14 +64,34 @@ module VER
       end
     end
 
+    def gets(count, &block)
+      @gets_count, @gets_block = count, block
+      @gets_got = []
+    end
+
+    def gets_wrapper(key)
+      return unless @gets_count && @gets_block
+      @gets_got << key
+
+      return true unless @gets_got.size >= @gets_count
+
+      begin
+        @gets_block.call(*@gets_got)
+      ensure
+        @gets_count = @gets_got = @gets_block = nil
+      end
+
+      true
+    end
+
     def enter_key(key)
       @history << key
-      modes[mode].enter_key key
+      gets_wrapper(key) || modes[mode].enter_key(key)
     end
 
     def enter_missing(key)
       @history << key
-      modes[mode].enter_missing key
+      gets_wrapper(key) || modes[mode].enter_missing(key)
     end
 
     def prepare_tag
