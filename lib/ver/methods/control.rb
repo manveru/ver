@@ -150,13 +150,15 @@ module VER
       # Substitute over all lines of the buffer
       def gsub(regexp, with)
         total = 0
-        index('1.0').upto(index('end')) do |index|
-          lineend = index.lineend
-          line = get(index, lineend)
+        undo_record do |record|
+          index('1.0').upto(index('end')) do |index|
+            lineend = index.lineend
+            line = get(index, lineend)
 
-          if line.gsub!(regexp, with)
-            replace(index, lineend, line)
-            total += 1
+            if line.gsub!(regexp, with)
+              record.replace(index, lineend, line)
+              total += 1
+            end
           end
         end
 
