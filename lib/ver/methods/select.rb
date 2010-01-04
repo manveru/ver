@@ -209,13 +209,16 @@ module VER
         refresh_selection
       end
 
+      # Replace every character in the selection with the character entered.
       def selection_replace_char
-        status_ask 'Replace selection with: ', take: 1 do |char|
+        VER.status.message 'Enter character to replace the selection with'
+
+        keymap.gets 1 do |char|
           if char.size == 1
             replace_selection_with(char, full = true)
-            "replaced 1 char"
+            VER.status.message "replaced 1 char"
           else
-            'replace aborted'
+            VER.status.message 'replace aborted'
           end
         end
       end

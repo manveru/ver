@@ -358,13 +358,16 @@ module VER
       end
 
       def replace_char
-        status_ask 'Replace with: ', take: 1 do |char|
+        VER.status.message(
+          'Enter character to replace the character under the cursor with')
+
+        keymap.gets 1 do |char|
           if char.size == 1
             replace('insert', 'insert + 1 chars', char)
             backward_char
-            "replaced #{char.size} chars"
+            VER.status.message "replaced #{char.size} chars"
           else
-            status.message 'replace aborted'
+            VER.status.message 'replace aborted'
           end
         end
       end

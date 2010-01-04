@@ -85,25 +85,39 @@ module VER
       end
 
       def search_char_right
-        keymap.gets 1 do |char|
-          from, to = 'insert + 1 chars', 'insert lineend'
-          regexp = Regexp.new(Regexp.escape(char))
+        VER.status.message 'Press the character to find to the right'
 
-          search_all regexp, from, to do |match, pos, mark|
-            mark_set :insert, pos
-            break
+        keymap.gets 1 do |char|
+          if char.size == 1
+            from, to = 'insert + 1 chars', 'insert lineend'
+            regexp = Regexp.new(Regexp.escape(char))
+
+            search_all regexp, from, to do |match, pos, mark|
+              mark_set :insert, pos
+              break
+            end
+            VER.status.message ""
+          else
+            VER.status.message "abort: #{char} is not a single character"
           end
         end
       end
 
       def search_char_left
-        keymap.gets 1 do |char|
-          from, to = 'insert', 'insert linestart'
-          regexp = Regexp.new(Regexp.escape(char))
+        VER.status.message 'Press the character to find to the left'
 
-          rsearch_all regexp, from, to do |match, pos, mark|
-            mark_set :insert, pos
-            break
+        keymap.gets 1 do |char|
+          if char.size == 1
+            from, to = 'insert', 'insert linestart'
+            regexp = Regexp.new(Regexp.escape(char))
+
+            rsearch_all regexp, from, to do |match, pos, mark|
+              mark_set :insert, pos
+              break
+            end
+            VER.status.message ""
+          else
+            VER.status.message "abort: #{char} is not a single character"
           end
         end
       end
