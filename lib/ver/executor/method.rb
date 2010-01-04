@@ -16,7 +16,7 @@ module VER
       end
 
       def action(method)
-        callback.caller.__send__(method)
+        eval("callback.caller.#{method}")
       end
     end
   end
