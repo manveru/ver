@@ -31,6 +31,10 @@ module VER
       end
     end
 
+    def no_arguments
+      self.arguments = false
+    end
+
     def find_ancestor(name)
       if found = callback.modes[name.to_sym]
         return found
