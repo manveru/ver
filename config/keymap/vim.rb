@@ -141,7 +141,6 @@ module VER
         mode.map :start_select_block_mode,         %w[Control-v]
         mode.map :start_select_char_mode,          %w[v]
         mode.map :start_select_line_mode,          %w[V]
-        mode.map :status_theme_select,             %w[Alt-t], %w[Control-m t]
         mode.map :syntax_switch,                   %w[Control-y]
         mode.map :theme_switch,                    %w[Control-t]
         mode.map :unindent_line,                   %w[less]

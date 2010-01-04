@@ -251,14 +251,6 @@ module VER
         replace('insert linestart', 'insert lineend', lines)
       end
 
-      def status_theme_select
-        return unless @syntax
-
-        status_ask 'Theme name: ' do |name|
-          load_theme(name) || "No theme called #{name} found"
-        end
-      end
-
       def theme_switch
         return unless @syntax
 
