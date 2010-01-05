@@ -48,7 +48,8 @@ module VER
       keymap_name = @options.keymap
       self.keymap = Keymap.get(name: keymap_name, receiver: self)
 
-      apply_mode_style(keymap.mode) # for startup
+      @default_mode = keymap.mode
+      apply_mode_style(@default_mode) # for startup
       setup_tags
 
       @undoer = VER::Undo::Tree.new(self)
@@ -310,14 +311,35 @@ module VER
       status_projection(status) if status
     end
 
-    def apply_mode_style(mode)
-      cursor = MODE_CURSOR[mode]
-      return unless cursor
-      configure cursor
+    def default_theme_config=(config)
+      @default_theme_config = config
+      apply_mode_style(@default_mode)
+    end
+    public :default_theme_config=
 
-      return unless status && color = cursor[:insertbackground]
-      style = status.style
-      Tk::Tile::Style.configure style, fieldbackground: color
+    def apply_mode_style(mode)
+      default_config = (@default_theme_config || {}).merge(blockcursor: true)
+
+      sub_config =
+        case mode
+        when @default_mode
+          default_config
+        when :insert
+          {insertbackground: 'red', blockcursor: false}
+        when /select/
+          {insertbackground: 'yellow', blockcursor: true}
+        else
+          raise "No such mode style: %p" % [mode]
+        end
+
+      config = default_config.merge(sub_config)
+      configure(config)
+      return unless status && color = config[:insertbackground]
+
+      Tk::Tile::Style.configure(status.style,
+        fieldbackground: color,
+        foreground: Theme.invert_rgb(color)
+      )
     end
 
     def load_preferences

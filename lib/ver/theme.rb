@@ -32,7 +32,7 @@ module VER
           scope_names.split(/\s*,\s*/).each do |scope_name|
             instance.set(scope_name, settings)
           end
-        else
+        elsif !settings.empty?
           # general settings
           instance.default = settings
         end
@@ -43,6 +43,23 @@ module VER
 
     def self.find_and_load(theme_name)
       load(find(theme_name))
+    end
+
+    R4G4B4 = '#%04x%04x%04x'
+
+    def self.tm_color_to_tk_color(color)
+      case color
+      when /^(#\h{6})\h{2}$/, /^(#\h{6})$/,/^(#\h{3})\h$/
+        color = $1
+      end
+
+      xcolor = FFI::Tk::get_color(Tk.interp, color)
+      R4G4B4 % [xcolor.red, xcolor.green, xcolor.blue]
+    end
+
+    def self.invert_rgb(color)
+      xcolor = FFI::Tk::get_color(Tk.interp, color)
+      R4G4B4 % [0xffff - xcolor.red, 0xffff - xcolor.green, 0xffff - xcolor.blue]
     end
 
     def initialize(colors = {}, &block)
@@ -75,8 +92,8 @@ module VER
         next unless value = settings.delete(key)
         next if value.empty?
 
-        if value =~ /^(#\h{6})/
-          settings[key] = $1
+        if value =~ /^#\h+$/
+          settings[key] = Theme.tm_color_to_tk_color(value)
         elsif key.downcase == :fontstyle
           settings[:font] = fontstyle_as_font(value)
         else
@@ -129,27 +146,29 @@ module VER
     # -spacing3, spacing3, Spacing3
 
     def apply_default_on(widget)
+      config = {}
+
       default.each do |key, value|
         case key.downcase
-        when :background
-          widget.configure background: value
+        when :background, :bg
+          config[:background] = value
         when :caret
-          widget.configure insertbackground: value
+          config[:insertbackground] = value
         when :foreground, :fg
-          widget.configure foreground: value
-        when :invisibles
-          # TODO
-          # widget.configure key => value
-        when :linehighlight
+          config[:foreground] = value
+        when :invisibles, :linehighlight
           # TODO
           # widget.configure key => value
         when :selection
-          widget.configure selectbackground: value
+          config[:selectbackground] = value
+          config[:selectforeground] = Theme.invert_rgb(value)
         else
           warn key => value
-          widget.configure(key => value)
+          config[key] = value
         end
       end
+
+      widget.default_theme_config = config
     end
 
     def create_tags_on(widget)
