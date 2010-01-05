@@ -159,8 +159,12 @@ module VER
     end
 
     def remove_tags_on(widget, from, to)
+      outer_tags = widget.tag_names(from) & widget.tag_names(to)
+
       colors.each do |name, options|
-        widget.tag_remove(name.to_s, from, to) rescue nil
+        name = name.to_s
+        next if outer_tags.include?(name)
+        widget.tag_remove(name, from, to) rescue nil
       end
     end
 

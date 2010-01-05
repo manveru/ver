@@ -41,6 +41,9 @@ module VER
     end
 
     def highlight(textarea, code, lineno = nil, from = '1.0', to = 'end')
+      multi_lineno = 0
+      single_lineno = lineno
+
       if @old_theme
         @old_theme.delete_tags_on(textarea)
         @old_theme = nil
@@ -51,12 +54,30 @@ module VER
         @theme.apply_default_on(textarea)
         @first_highlight = false
       else
-        @theme.remove_tags_on(textarea, from, to)
+        outer_tags = textarea.tag_names(from) | textarea.tag_names(to)
+
+        if outer_tags.empty?
+          @theme.remove_tags_on(textarea, from, to)
+        else
+          outer_tags.each do |tag|
+            range = textarea.tag_prevrange(tag, from)
+            range = textarea.tag_nextrange(tag, from) if range.empty?
+            prev_from, prev_to = range.map{|t| Text::Index.new(textarea, t) }
+            from = prev_from if !from || from > prev_from
+            to = prev_to if !to || to < prev_to
+          end
+          from = textarea.index("#{from} - 1 chars")
+          to = textarea.index("#{to} + 1 chars")
+
+          single_lineno = nil
+          multi_lineno = from.y - 1
+          code = textarea.get(from, to)
+        end
       end
 
-      pr = Processor.new(textarea, @theme, lineno || 0)
+      pr = Processor.new(textarea, @theme, single_lineno || multi_lineno)
 
-      if lineno
+      if single_lineno
         pr.start_parsing(parser.scopeName)
         stack = [[parser, nil]]
         parser.parse_line(stack, code, pr)
