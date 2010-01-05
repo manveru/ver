@@ -24,7 +24,7 @@ module VER
       end
 
       def open_tag(name, pos)
-        stack << [name, pos]
+        stack << [name, lineno, pos]
 
         if tag_name = theme.get(name)
           if stack.size > 1
@@ -37,9 +37,9 @@ module VER
       end
 
       def close_tag(name, mark)
-        sname, pos = stack.pop
+        from_name, from_lineno, pos = stack.pop
 
-        tags[name] << "#{lineno}.#{pos}" << "#{lineno}.#{mark}"
+        tags[name] << "#{from_lineno}.#{pos}" << "#{lineno}.#{mark}"
       rescue RuntimeError => exception
         # if you modify near the end of the textarea, sometimes the last tag
         # cannot be closed because the contents of the textarea changed since
