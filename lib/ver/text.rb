@@ -57,7 +57,6 @@ module VER
       @pristine = true
       @syntax = nil
       @encoding = Encoding.default_internal
-      @dirty_indices = []
 
       self.mode = keymap.mode
     end
