@@ -234,7 +234,7 @@ module VER
       return if @encoding == Encoding::BINARY
 
       if @syntax = Syntax.from_filename(filename)
-        defer{ syntax.highlight(self, value) }
+        schedule_highlight!
         status_projection(status) if status
       end
     end
@@ -338,7 +338,6 @@ module VER
 
     def setup_highlight_trailing_whitespace
       tag_configure 'invalid.trailing-whitespace', background: '#f00'
-      tag_all_trailing_whitespace
     end
 
     def setup_highlight_links
@@ -359,8 +358,6 @@ module VER
           message "%p opens the uri: %s" % [browser, uri]
         end
       end
-
-      tag_all_uris
     end
 
     def tag_all_uris(given_options = {})
