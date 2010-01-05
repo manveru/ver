@@ -22,7 +22,7 @@ module VER
       end
 
       def choices(name)
-        @methods
+        subset(name, @methods)
       end
 
       def action(method)

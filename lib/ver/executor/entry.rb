@@ -31,10 +31,27 @@ module VER
         @keymap.mode = @mode = name.to_sym
       end
 
+      # create a subset of the given +values+, filtered and sorted by checking
+      # relevance against the given +needle+.
+      # If +values+ is an Array of arrays, we only use the first entry of each
+      # inner array.
+      # Since updating the list is rather cheap, we only sort for now.
+      # Sorting is done in a case-insensitive manner by a few simple scoring
+      # rules.
+      # The best score is given to values that have needle as their beginning.
+      # Then come values that include the needle somewhere inside.
+      # All others are sorted after that.
+      # To account for typos and give relevant similar results, we then refine
+      # the score with the levenshtein distance between needle and value.
+      # If two values have the same score, they are sorted alphabetically.
       def subset(needle, values)
         lower_needle = needle.to_s.downcase
 
         sorted = values.sort_by do |value|
+          if value.respond_to?(:to_ary)
+            value = value.to_ary.first
+          end
+
           score = 0
           lower_value = value.downcase
 
