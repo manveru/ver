@@ -26,13 +26,12 @@ module VER
       def copy_string(text)
         clipboard_set(text = text.to_str, type: 'STRING')
 
-        copy_message text.count("\n"), text.size
+        copy_message(text.count("\n") + 1, text.size)
       end
 
       def copy_array(text)
-        array = text.to_ary
-        string = array.map(&:to_tcl).join(' ')
-        clipboard_set(string, type: 'ARRAY')
+        array = [Marshal.dump(text.to_ary)].pack('m')
+        clipboard_set(array, type: 'ARRAY')
 
         copy_message text.size, text.reduce(0){|s,v| s + v.size }
       end
@@ -64,12 +63,14 @@ module VER
         end
       end
 
-      def paste_tk_array(chunks)
+      def paste_array(marshal_array)
+        array = Marshal.load(marshal_array.unpack('m').first)
         insert_y, insert_x = index(:insert).split
 
-        chunks.each_with_index do |chunk, idx|
-          y = insert_y + idx
-          insert "#{y}.#{insert_x}", chunk
+        undo_record do |record|
+          array.each_with_index do |line, index|
+            record.insert("#{insert_y + index}.#{insert_x}", line)
+          end
         end
       end
 
@@ -80,8 +81,7 @@ module VER
 
       rescue RuntimeError => ex
         if ex.message =~ /form "STRING" not defined/
-          array = clipboard_get('ARRAY')
-          paste_tk_array array.to_a
+          paste_array(clipboard.get('ARRAY'))
         else
           Kernel.raise ex
         end
