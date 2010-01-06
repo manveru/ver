@@ -157,7 +157,7 @@ module VER
         pos = index(pos)
 
         widget.execute_only(:insert, pos, string)
-        widget.touch!(pos, pos + string.size)
+        widget.touch!(pos.linestart, (pos + string.size).lineend)
 
         self.redo_info = [:insert, pos, string]
         self.undo_info = [pos, pos + string.size, '']
@@ -169,7 +169,7 @@ module VER
 
         data = widget.get(from, to)
         widget.execute_only(:replace, from, to, string)
-        widget.touch!(*from.upto(to))
+        widget.touch!(from.linestart, to.lineend)
 
         self.redo_info = [:replace, from, to, string]
         self.undo_info = [from, from + string.size, data]
@@ -181,7 +181,7 @@ module VER
 
         data = widget.get(from, to)
         widget.execute_only(:delete, from, to)
-        widget.touch!(*from.upto(to))
+        widget.touch!(from.linestart, to.lineend)
 
         self.redo_info = [:delete, from, to]
         self.undo_info = [from, from, data]
@@ -193,7 +193,7 @@ module VER
 
         from, to, string = undo_info
         widget.execute_only(:replace, from, to, string)
-        widget.touch!(from, to)
+        widget.touch!(from.linestart, to.lineend)
         widget.mark_set(:insert, to)
 
         self.applied = false

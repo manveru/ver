@@ -253,8 +253,8 @@ module VER
 
     # TODO: maybe we can make this one faster when many lines are going to be
     #       highlighted at once by bundling them.
-    def touch!(*args)
-      tag_add('ver.highlight.pending', *args) if @syntax
+    def touch!(*indices)
+      tag_add('ver.highlight.pending', *indices) if @syntax
       Tk::Event.generate(self, '<<Modified>>')
     end
 
@@ -285,8 +285,19 @@ module VER
     end
 
     def handle_pending_syntax_highlights
+      ignore_tags = %w[ver.highlight.pending sel]
       tag_ranges('ver.highlight.pending').each do |from, to|
-        from, to = index(from), index(to)
+        (tag_names(from) - ignore_tags).each do |tag_name|
+          tag_from, _ = tag_prevrange(tag_name, from)
+          from = tag_from if tag_from && from > tag_from
+        end
+
+        (tag_names(to) - ignore_tags).each do |tag_name|
+          _, tag_to = tag_nextrange(tag_name, to)
+          to = tag_to if tag_to && to < tag_to
+        end
+
+        from, to = index(from).linestart, index(to).lineend
         lineno = from.y - 1
         syntax.highlight(self, lineno, from, to)
         tag_all_trailing_whitespace(from: from, to: to)
