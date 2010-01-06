@@ -118,6 +118,7 @@ end
 
 options = {}
 
+$0 = "#{__FILE__} #{ARGV.join(' ')}"
 op = OptionParser.new{|o|
   o.on('-Eex[:in]', '--encoding EXTERNAL[:INTERNAL]', 'used encoding'){|enc|
     options[:encoding] = enc }
