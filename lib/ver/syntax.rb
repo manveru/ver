@@ -66,14 +66,16 @@ module VER
             from = prev_from if !from || from > prev_from
             to = prev_to if !to || to < prev_to
           end
-          from = textarea.index("#{from} - 1 chars")
-          to = textarea.index("#{to} + 1 chars")
+          from = textarea.index("#{from} - 1 chars linestart")
+          to = textarea.index("#{to} + 1 chars lineend")
 
           single_lineno = nil
           multi_lineno = from.y - 1
           code = textarea.get(from, to)
         end
       end
+
+      return if code =~ /\A\s*\Z/
 
       pr = Processor.new(textarea, @theme, single_lineno || multi_lineno)
 
