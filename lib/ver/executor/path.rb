@@ -3,6 +3,9 @@ module VER
     # Open or focus a buffer with the given path.
     class CompletePath < Entry
       def choices(origin)
+        origin = origin.sub(/^.*\/\//, '/')
+        origin = File.expand_path(origin) unless File.directory?(origin)
+
         Dir.glob("#{origin}*").map do |path|
           if File.directory?(path)
             path = "#{path}/"
