@@ -154,10 +154,10 @@ module VER
       end
 
       def insert(pos, string)
-        pos = widget.index(pos) unless pos.respond_to?(:to_index)
+        pos = index(pos)
 
         widget.execute_only(:insert, pos, string)
-        widget.touch!(pos)
+        widget.touch!(pos, pos + string.size)
 
         self.redo_info = [:insert, pos, string]
         self.undo_info = [pos, pos + string.size, '']
@@ -165,8 +165,7 @@ module VER
       end
 
       def replace(from, to, string)
-        from = widget.index(from) unless from.respond_to?(:to_index)
-        to = widget.index(to) unless to.respond_to?(:to_index)
+        from, to = indices(from, to)
 
         data = widget.get(from, to)
         widget.execute_only(:replace, from, to, string)
@@ -178,8 +177,7 @@ module VER
       end
 
       def delete(from, to)
-        from = widget.index(from) unless from.respond_to?(:to_index)
-        to = widget.index(to) unless to.respond_to?(:to_index)
+        from, to = indices(from, to)
 
         data = widget.get(from, to)
         widget.execute_only(:delete, from, to)
@@ -195,6 +193,7 @@ module VER
 
         from, to, string = undo_info
         widget.execute_only(:replace, from, to, string)
+        widget.touch!(from, to)
         widget.mark_set(:insert, to)
 
         self.applied = false
@@ -282,6 +281,20 @@ module VER
 
       def applied?
         applied
+      end
+
+      def indices(*given_indices)
+        given_indices.map do |index|
+          index.respond_to?(:to_index) ? index.to_index : widget.index(index)
+        end
+      end
+
+      def index(given_index)
+        if given_index.respond_to?(:to_index)
+          given_index.to_index
+        else
+          widget.index(given_index)
+        end
       end
 
       def inspect

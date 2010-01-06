@@ -33,6 +33,11 @@ module VER
       widget_setup(view)
     end
 
+    def value=(string)
+      super
+      touch!('1.0', 'end')
+    end
+
     def peer_create(view)
       self.class.new(view, peer: self)
     end
@@ -234,26 +239,22 @@ module VER
       return if @encoding == Encoding::BINARY
 
       if @syntax = Syntax.from_filename(filename)
-        schedule_highlight!
+        VER.cancel_block(@highlight_block)
+
+        @highlight_block = VER.when_inactive_for(500){
+          handle_pending_syntax_highlights
+        }
+
+        touch!('1.0', 'end')
+
         status_projection(status) if status
       end
-    end
-
-    def schedule_line_highlight(raw_index)
-      return unless @syntax
-      index = index(raw_index)
-      schedule_line_highlight!(index.y - 1, index.linestart, index.lineend)
-    end
-
-    def schedule_highlight(options = {})
-      return unless @syntax
-      schedule_highlight!
     end
 
     # TODO: maybe we can make this one faster when many lines are going to be
     #       highlighted at once by bundling them.
     def touch!(*args)
-      args.each{|arg| schedule_line_highlight(arg) } if @syntax
+      tag_add('ver.highlight.pending', *args) if @syntax
       Tk::Event.generate(self, '<<Modified>>')
     end
 
@@ -262,7 +263,7 @@ module VER
       return unless found = Theme.find(name)
 
       syntax.theme = Theme.load(found)
-      schedule_highlight
+      touch!('1.0', 'end')
 
       message "Theme #{found} loaded"
     end
@@ -280,29 +281,31 @@ module VER
         return false
       end
 
-      schedule_highlight
-
       message "Syntax #{@syntax.name} loaded"
     end
 
-    private
-
-    def schedule_highlight!(*args)
-      defer do
-        syntax.highlight(self, value)
-        tag_all_trailing_whitespace
-        tag_all_uris
-      end
-    end
-
-    # TODO: only tag the current line.
-    def schedule_line_highlight!(line, from, to)
-      defer do
-        syntax.highlight(self, get(from, to), line, from, to)
+    def handle_pending_syntax_highlights
+      tag_ranges('ver.highlight.pending').each do |from, to|
+        from, to = index(from), index(to)
+        lineno = from.y - 1
+        syntax.highlight(self, lineno, from, to)
         tag_all_trailing_whitespace(from: from, to: to)
         tag_all_uris(from: from, to: to)
+        tag_remove('ver.highlight.pending', from, to)
       end
     end
+
+    def destroy
+      VER.cancel_block(@highlight_block)
+      super
+    end
+
+    def default_theme_config=(config)
+      @default_theme_config = config
+      apply_mode_style(@default_mode)
+    end
+
+    private
 
     def mode=(name)
       keymap.mode = mode = name.to_sym
@@ -310,12 +313,6 @@ module VER
       apply_mode_style(mode)
       status_projection(status) if status
     end
-
-    def default_theme_config=(config)
-      @default_theme_config = config
-      apply_mode_style(@default_mode)
-    end
-    public :default_theme_config=
 
     def apply_mode_style(mode)
       default_config = (@default_theme_config || {}).merge(blockcursor: true)
@@ -355,6 +352,11 @@ module VER
     def setup_tags
       setup_highlight_trailing_whitespace
       setup_highlight_links
+      setup_highlight_pending
+    end
+
+    def setup_highlight_pending
+      tag_configure 'ver.highlight.pending', background: '#600'
     end
 
     def setup_highlight_trailing_whitespace

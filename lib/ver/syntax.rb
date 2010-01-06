@@ -40,53 +40,25 @@ module VER
       @theme  = theme || Theme.find_and_load(VER.options[:theme])
     end
 
-    def highlight(textarea, code, lineno = nil, from = '1.0', to = 'end')
-      multi_lineno = 0
-      single_lineno = lineno
+    def highlight(widget, lineno, from, to)
+      check_for_theme_change(widget)
 
+      processor = Processor.new(widget, @theme, lineno)
+      @theme.remove_tags_on(widget, from, to)
+      code = widget.get(from, to)
+      parser.parse(code, processor)
+    end
+
+    def check_for_theme_change(widget)
       if @old_theme
-        @old_theme.delete_tags_on(textarea)
+        @old_theme.delete_tags_on(widget)
         @old_theme = nil
       end
 
       if @first_highlight
-        @theme.create_tags_on(textarea)
-        @theme.apply_default_on(textarea)
+        @theme.create_tags_on(widget)
+        @theme.apply_default_on(widget)
         @first_highlight = false
-      else
-        outer_tags = textarea.tag_names(from) | textarea.tag_names(to)
-
-        if outer_tags.empty?
-          @theme.remove_tags_on(textarea, from, to)
-        else
-          outer_tags.each do |tag|
-            range = textarea.tag_prevrange(tag, from)
-            range = textarea.tag_nextrange(tag, from) if range.empty?
-            prev_from, prev_to = range.map{|t| Text::Index.new(textarea, t) }
-            from = prev_from if !from || from > prev_from
-            to = prev_to if !to || to < prev_to
-          end
-          from = textarea.index("#{from} - 1 chars linestart")
-          to = textarea.index("#{to} + 1 chars lineend")
-
-          single_lineno = nil
-          multi_lineno = from.y - 1
-          code = textarea.get(from, to)
-        end
-      end
-
-      return if code =~ /\A\s*\Z/
-
-      pr = Processor.new(textarea, @theme, single_lineno || multi_lineno)
-
-      if single_lineno
-        pr.start_parsing(parser.scopeName)
-        stack = [[parser, nil]]
-        parser.parse_line(stack, code, pr)
-        pr.end_parsing(parser.scopeName)
-      else
-        @theme.remove_tags_on(textarea, from, to)
-        parser.parse(code, pr)
       end
     end
 

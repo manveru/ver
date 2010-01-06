@@ -142,6 +142,32 @@ module VER
     run_startup_hooks
   end
 
+  def when_inactive_for(ms)
+    block = lambda{
+      inactive = Tk.root.tk_inactive
+
+      if @cancel_blocks[block]
+        @cancel_blocks.delete(block)
+      else
+        if inactive > ms
+          yield
+          Tk.root.tk_inactive('reset')
+          Tk::After.ms(ms, &block)
+        else
+          Tk::After.ms(ms, &block)
+        end
+      end
+    }
+
+    @cancel_blocks[block] = false
+    Tk::After.idle(&block)
+    block
+  end
+
+  def cancel_block(block)
+    @cancel_blocks[block] = true
+  end
+
   def run_startup_hooks
     @startup_hooks.each(&:call)
   end
@@ -159,6 +185,7 @@ module VER
     Tk::Tile.set_theme options.tk_theme
 
     @paths = Set.new
+    @cancel_blocks = {}
 
     @root = Tk.root
     @root.wm_geometry = '160x80'
