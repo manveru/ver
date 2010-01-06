@@ -178,10 +178,10 @@ module VER
           next if found.empty?
 
           pos, count = found
-          p found: found, pos: pos, count: count
+          # p found: found, pos: pos, count: count
 
           line = get(pos, "#{pos} + #{count} chars")
-          p line: line
+          # p line: line
 
           line =~ extract_pattern
           $1.scan(/[^:\s]+/) do |option|
