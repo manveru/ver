@@ -112,6 +112,72 @@ module VER
         ENV['s'] = content.join("\n")
       end
 
+      ENV_EXPORTERS = %w[
+        current_line current_word directory filepath line_index line_number
+        scope selected_text
+      ]
+
+      # Set up the env for a script, then execute it.
+      # For now, I only setup the env, until we figure out a good way to find
+      # bundle commands.
+      def exec_bundle
+        ENV_EXPORTERS.each do |exporter|
+          ENV["VER_#{exporter.upcase}"] = ENV["TM_#{exporter.upcase}"] =
+            send("exec_env_#{exporter}")
+        end
+      end
+
+      # textual content of the current line
+      def exec_env_current_line
+        get('insert linestart', 'insert lineend')
+      end
+
+      # the word in which the caret is located.
+      def exec_env_current_word
+        get('insert worstart', 'insert wordend')
+      end
+
+      # the folder of the current document (may not be set).
+      def exec_env_directory
+        filename.dirname.to_s
+      end
+
+      # path (including file name) for the current document (may not be set).
+      def exec_env_filepath
+        filename.to_s
+      end
+
+      # the index in the current line which marks the caret's location.
+      # This index is zero-based and takes the utf-8 encoding of the line (e.g.
+      # read as TM_CURRENT_LINE) into account.
+      def exec_env_line_index
+        index('insert').x
+      end
+
+      # the carets line position (counting from 1).
+      def exec_env_line_number
+        index('insert').y
+      end
+
+      def exec_env_scope
+        tag_names('insert').join(', ')
+      end
+
+      # full content of the selection (may not be set).
+      # Note that environment variables have a size limitation of roughly 64 KB,
+      # so if the user selects more than that, this variable will not reflect
+      # the actual selection (commands that need to work with the selection
+      # should generally set this to be the standard input).
+      def exec_env_selected_text
+        content = []
+
+        each_selected_line do |y, fx, tx|
+          content << get("#{y}.#{fx}", "#{y}.#{tx}")
+        end
+
+        content.join("\n")
+      end
+
       def exec_into_new(command = nil)
         if command
           target = options.home_conf_dir/'shell-result.txt'
