@@ -360,7 +360,7 @@ module VER
           old_stdout = $stdout.dup
           rd, wr = IO.pipe
           $stdout.reopen(wr)
-          result = eval(code)
+          result = eval(code, nil, filename.to_s)
           $stdout.reopen old_stdout; wr.close
           stdout = rd.read
 
