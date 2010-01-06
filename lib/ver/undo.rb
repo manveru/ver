@@ -194,7 +194,7 @@ module VER
         from, to, string = undo_info
         widget.execute_only(:replace, from, to, string)
         widget.touch!(from.linestart, to.lineend)
-        widget.mark_set(:insert, to)
+        widget.mark_set(:insert, from)
 
         self.applied = false
       end
