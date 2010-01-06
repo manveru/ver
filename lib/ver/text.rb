@@ -367,7 +367,7 @@ module VER
     end
 
     def setup_highlight_pending
-      tag_configure 'ver.highlight.pending', background: '#600'
+      tag_configure 'ver.highlight.pending', background: '#200'
     end
 
     def setup_highlight_trailing_whitespace
