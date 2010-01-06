@@ -180,7 +180,6 @@ module VER
   def load_plugins
     loadpath.each do |dirname|
       (dirname/'plugin/*.rb').glob do |rb|
-        p rb
         require rb
       end
     end
