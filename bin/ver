@@ -90,7 +90,7 @@ module VER
     Dir.glob(glob, File::FNM_CASEFOLD) do |snippet|
       puts "Parsing #{snippet}" if $DEBUG
       plist = Plist.parse_xml(snippet)
-      puts "Adding Snippet: #{snippet[:name]}" if $DEBUG
+      puts "Adding Snippet: #{plist[:name]}" if $DEBUG
       snippets << plist
     end
 
