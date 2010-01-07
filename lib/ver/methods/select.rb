@@ -332,7 +332,7 @@ module VER
           when :select_block
             yield fy, fx, ty, tx
           else
-            raise "Not in select mode?"
+            Kernel.raise "Not in select mode?"
           end
         end
       end
