@@ -153,13 +153,13 @@ module VER
         self.separator = false
       end
 
-      def insert(pos, string)
+      def insert(pos, string, tag = Tk::None)
         pos = index(pos)
 
-        widget.execute_only(:insert, pos, string)
+        widget.execute_only(:insert, pos, string, tag)
         widget.touch!(pos.linestart, (pos + string.size).lineend)
 
-        self.redo_info = [:insert, pos, string]
+        self.redo_info = [:insert, pos, string, tag]
         self.undo_info = [pos, pos + string.size, '']
         self.applied = true
       end
