@@ -354,8 +354,18 @@ module VER
       return unless @syntax
 
       name = @syntax.name
-      file = VER.find_in_loadpath("preferences/#{name}.rb")
+      return unless file = VER.find_in_loadpath("preferences/#{name}.rb")
       @preferences = eval(file.read)
+    rescue Errno::ENOENT, TypeError => ex
+      VER.error(ex)
+    end
+
+    def load_snippets
+      return unless @syntax
+
+      name = @syntax.name
+      return unless file = VER.find_in_loadpath("snippets/#{name}.rb")
+      @snippets = eval(file.read)
     rescue Errno::ENOENT, TypeError => ex
       VER.error(ex)
     end

@@ -46,6 +46,7 @@ module VER
 
     install_tm_syntax(path)
     install_tm_preferences(path)
+    install_tm_snippets(path)
   ensure
     exit
   end
@@ -77,6 +78,23 @@ module VER
     end
 
     install_rb_source('Preferences', '../config/preferences', name, preferences)
+  end
+
+  def install_tm_snippets(path)
+    info = Plist.parse_xml(File.join(path, 'info.plist'))
+    name = info[:name]
+
+    glob = File.expand_path('Snippets/*.{plist,tmSnippet}', path)
+    snippets = []
+
+    Dir.glob(glob, File::FNM_CASEFOLD) do |snippet|
+      puts "Parsing #{snippet}" if $DEBUG
+      plist = Plist.parse_xml(snippet)
+      puts "Adding Snippet: #{snippet[:name]}" if $DEBUG
+      snippets << plist
+    end
+
+    install_rb_source('Snippets', '../config/snippets', name, snippets)
   end
 
   def install_tm_theme(path)
