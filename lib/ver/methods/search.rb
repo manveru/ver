@@ -2,8 +2,8 @@ module VER
   module Methods
     module Search
       SEARCH_HIGHLIGHT = {
-        foreground: '#000',
-        background: '#ff0',
+        foreground: '#fff',
+        background: '#660',
       }
 
       def search_remove
@@ -42,30 +42,31 @@ module VER
         end
 
         tag_all_matching(:search, needle, SEARCH_HIGHLIGHT)
+        tag_lower(:search)
         from, to = tag_nextrange('search', '1.0', 'end')
         see(from) if from
       end
 
       def search_first
-        from, to = tag_nextrange('search', '1.0', 'end')
+        from, to = tag_nextrange(:search, '1.0', 'end')
         mark_set(:insert, from) if from
       end
 
       def search_last
-        from, to = tag_prevrange('search', 'end', '1.0')
+        from, to = tag_prevrange(:search, 'end', '1.0')
         mark_set(:insert, from) if from
       end
 
       def search_next(count = 1)
         count.times do
-          from, to = tag_nextrange('search', 'insert + 1 chars', 'end')
+          from, to = tag_nextrange(:search, 'insert + 1 chars', 'end')
           mark_set(:insert, from) if from
         end
       end
 
       def search_prev(count = 1)
         count.times do
-          from, to = tag_prevrange('search', 'insert - 1 chars', '1.0')
+          from, to = tag_prevrange(:search, 'insert - 1 chars', '1.0')
           mark_set(:insert, from) if from
         end
       end
@@ -74,6 +75,7 @@ module VER
         word = get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
         tag_all_matching(:search, word, SEARCH_HIGHLIGHT)
+        tag_lower(:search)
         search_next
       end
 
@@ -81,6 +83,7 @@ module VER
         word = get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
         tag_all_matching(:search, word, SEARCH_HIGHLIGHT)
+        tag_lower(:search)
         search_prev
       end
 
@@ -123,7 +126,7 @@ module VER
       end
 
       def search_clear
-        tag_remove('search', '1.0', 'end')
+        tag_remove(:search, '1.0', 'end')
       end
     end
   end
