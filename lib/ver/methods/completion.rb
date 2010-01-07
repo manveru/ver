@@ -10,16 +10,129 @@ module VER
           if @complete_last_used
             complete_again
           else
-            complete_word
+            complete_snippet
           end
         else
-          indent = ' ' * options.shiftwidth
-          insert :insert, indent
+          snippet_jump || complete_fallback
         end
+      end
+
+      def complete_fallback
+        indent = ' ' * options.shiftwidth
+        insert :insert, indent
       end
 
       def complete_again
         send(@complete_last_used) if @complete_last_used
+      end
+
+      def complete_snippet
+        return unless load_snippets
+        @complete_last_used = :complete_snippet
+
+        snippet_jump || snippet_use
+      end
+
+      def snippet_use
+        from = index('insert - 1 chars wordstart')
+        to   = index('insert - 1 chars wordend')
+        word = get(from, to)
+
+        @snippets.each do |snippet|
+          if word == snippet[:tabTrigger]
+            return snippet_insert(from, to, snippet)
+          end
+        end
+      end
+
+      # if there has been a snippet used, most likely some tags or marks were set.
+      # jump there, set up selection for replacing the default values.
+      def snippet_jump
+        1.upto(9) do |n|
+          {:range=>[["1.4", "1.15"]]}
+
+          ranges = tag_ranges("ver.snippet.marker_#{n}")
+          next unless range = ranges.first
+
+          p range: range
+
+          from, to = range
+
+          status_ask 'Replace with: ', do |string|
+            replace(from, to, string)
+          end
+
+          return true
+        end
+
+        marks = self.mark_names
+        mark = marks.sort.find{|name| name =~ /^ver_snippet_marker/ }
+        mark ||= :ver_snippet_home if marks.include?(:ver_snippet_home)
+
+        if mark
+          snippet_jump_mark(mark)
+          true
+        else
+          false
+        end
+      end
+
+      def snippet_jump_mark(name)
+        mark_set(:insert, "#{name} + 1 chars")
+        mark_unset(name)
+      end
+
+      # following the rules of tm snippets isn't easy.
+      # It is a powerful construct, so we better get this right.
+      # First of all, place the insert mark at $0 (and remove $0).
+      def snippet_insert(from, to, snippet)
+        require 'pp'
+        require 'strscan'
+        pp snippet
+
+        1.upto(9) do |n|
+          tag_configure("ver.snippet.marker_#{n}", background: '#0ff')
+        end
+
+        content = snippet[:content]
+        s = StringScanner.new(content)
+        indent_size = options.shiftwidth
+        indent = ' ' * indent_size
+
+        undo_record do |record|
+          record.delete(from, to)
+
+          spos = nil
+          until s.eos?
+            spos = s.pos
+
+            if s.scan(/\$0/) # $1
+              p [:mark_set, :snippet_home, index(:insert)]
+              mark_set(:ver_snippet_home, 'insert - 1 chars')
+            elsif s.scan(/\$([1-9])/)
+              p [:mark_set, s[1], index(:insert)]
+              mark_set("ver_snippet_marker_#{s[1]}", 'insert - 1 chars')
+            elsif s.scan(/\$\{(\d):([^\}]+)\}/) # ${1:method_name}
+              p [:insert, index(:insert), s[2], "ver.snippet.marker_#{s[1]}"]
+              record.insert(:insert, s[2], "ver.snippet.marker_#{s[1]}")
+            elsif s.scan(/[^$]+/)
+              string = s[0].gsub(/^\t+/){|match| indent * match.size }
+
+              p [:insert, index(:insert), string]
+              record.insert(:insert, string)
+            else
+              p fail: s
+              break
+            end
+
+            if spos == s.pos
+              p fail: s
+              break
+            end
+          end
+        end
+      rescue => ex
+        VER.error(ex)
       end
 
       def complete_tm
