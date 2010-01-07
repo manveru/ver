@@ -375,7 +375,7 @@ module VER
     end
 
     def setup_highlight_links
-      tag_configure 'markup.underline.link' , underline: true, foreground: '#00f'
+      tag_configure 'markup.underline.link' , underline: true, foreground: '#0ff'
 
       tag_bind('markup.underline.link', '<1>') do |event|
         pos = index("@#{event.x},#{event.y}")
