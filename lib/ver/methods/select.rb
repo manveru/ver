@@ -183,11 +183,12 @@ module VER
 
         indent ||= 0
 
-        lines.each do |y|
-          insert("#{y}.#{indent}", comment)
+        undo_record do |record|
+          lines.each do |y|
+            record.insert("#{y}.#{indent}", comment)
+          end
         end
 
-        undo_separator
         refresh_selection
       end
 
