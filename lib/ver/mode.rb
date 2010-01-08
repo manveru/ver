@@ -165,9 +165,9 @@ module VER
             when nil
               return nil
             else
-              cmd, cmd_arg = looked
+              looked_widget, cmd, cmd_arg = looked
               return nil if cmd.is_a?(Hash)
-              return execute(widget, action, cmd, arg)
+              return execute(looked_widget, action, cmd, arg)
             end
           end
         end
