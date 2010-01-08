@@ -1,8 +1,10 @@
 module VER
   class Executor
     class Entry < VER::Entry
-      attr_accessor :keymap, :parent, :callback
-      attr_reader :mode, :caller, :tree
+      include Keymapped
+
+      attr_accessor :parent, :callback
+      attr_reader :caller, :tree
 
       def initialize(parent, options = {})
         @callback = options.delete(:callback)
@@ -24,10 +26,6 @@ module VER
         super
       ensure
         self.class.return_style_name(style_name)
-      end
-
-      def mode=(name)
-        @mode = name.to_sym
       end
 
       # create a subset of the given +values+, filtered and sorted by checking

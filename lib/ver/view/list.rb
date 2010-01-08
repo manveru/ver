@@ -10,7 +10,41 @@ module VER
     autoload :Ex,              'ver/view/list/ex'
 
     class Listbox < Tk::Listbox
-      attr_accessor :mode
+      include Keymapped
+
+      attr_accessor :list_view
+
+      def cancel
+        list_view.cancel
+      end
+
+      def pick_selection
+        list_view.pick_selection
+      end
+
+      def line_up
+        index = curselection.first - 1
+
+        if index >= 0
+          selection_clear(0, 'end')
+          select_index(index)
+        end
+      end
+
+      def line_down
+        index = curselection.first + 1
+
+        if index < size
+          selection_clear(0, 'end')
+          select_index(index)
+        end
+      end
+
+      def select_index(index)
+        selection_set(index)
+        activate(index)
+        see(index)
+      end
     end
 
     def initialize(parent, &block)
@@ -37,6 +71,7 @@ module VER
         font: VER.options[:font]
       )
       list.pack fill: :both, expand: true
+      list.list_view = self
 
       self.entry = entry = View::Entry.new(frame)
       entry.configure font: VER.options[:font]
@@ -46,10 +81,10 @@ module VER
     end
 
     def setup_keymap
-      @list_keymap = VER.keymap.use(
+      list.keymap = VER.keymap.use(
         receiver: self, widget: list, mode: :list_view_list)
 
-      @entry_keymap = VER.keymap.use(
+      entry.keymap = VER.keymap.use(
         receiver: entry, widget: entry, mode: :list_view_entry)
     end
 
@@ -70,28 +105,17 @@ module VER
     end
 
     def line_up
-      index = list.curselection.first - 1
+      list.line_up
 
-      if index >= 0
-        list.selection_clear(0, 'end')
-        select_index(index)
-      end
     end
 
     def line_down
-      index = list.curselection.first + 1
-      max = list.size
+      list.line_down
 
-      if index < max
-        list.selection_clear(0, 'end')
-        select_index(index)
-      end
     end
 
     def select_index(index)
-      list.selection_set(index)
-      list.activate(index)
-      list.see(index)
+      list.select_index(index)
     end
 
     def cancel

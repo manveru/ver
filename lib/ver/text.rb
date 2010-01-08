@@ -1,7 +1,7 @@
 module VER
   class Text < Tk::Text
     autoload :Index, 'ver/text/index'
-    include Methods
+    include Methods, Keymapped
 
     MODE_CURSOR = {
       :insert       => {insertbackground: 'red',    blockcursor: false},
@@ -13,7 +13,7 @@ module VER
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
-    attr_accessor :keymap, :view, :status, :mode
+    attr_accessor :view, :status
     attr_reader :filename, :encoding, :pristine, :syntax, :undoer
 
     # attributes for diverse functionality
@@ -52,18 +52,16 @@ module VER
 
       @undoer = VER::Undo::Tree.new(self)
 
-      @default_mode = :control
-      self.keymap = VER.keymap.use(receiver: self, mode: :control)
+      self.keymap = VER.keymap.use(receiver: self)
+      @default_mode = keymap.mode
 
-      apply_mode_style(keymap.mode) # for startup
+      apply_mode_style
       setup_tags
 
       self.selection_start = nil
       @pristine = true
       @syntax = nil
       @encoding = Encoding.default_internal
-
-      self.mode = keymap.mode
     end
 
     def pristine?
@@ -312,21 +310,19 @@ module VER
 
     def default_theme_config=(config)
       @default_theme_config = config
-      apply_mode_style(@default_mode)
+      apply_mode_style
     end
 
     def mode=(name)
-      @mode = name.to_sym
-      p mode: @mode
-      keymap.mode = @mode if keymap
+      super
       undo_separator
-      apply_mode_style(@mode)
+      apply_mode_style(name)
       status_projection(status) if status
     end
 
     private
 
-    def apply_mode_style(mode)
+    def apply_mode_style(mode = @default_mode)
       default_config = (@default_theme_config || {}).merge(blockcursor: true)
 
       sub_config =

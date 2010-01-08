@@ -41,7 +41,6 @@ module VER
 
       def establish
         tags = widget.bindtags
-        p tags
 
         pivot = %w[Text TEntry Listbox]
         index = tags.index{|element| pivot.include?(element) }

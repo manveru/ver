@@ -1,4 +1,4 @@
-nano = VER.keymap.new(name: :nano, mode: :buffer)
+nano = VER::Keymap.new(name: :nano, mode: :buffer)
 
 nano.in_mode :basic do
   key :quit, %w[Control-x]

@@ -1,5 +1,20 @@
 module VER
-  class Keymap
+  module Keymapped
+    attr_accessor :keymap
+
+    def mode
+      keymap.mode if keymap
+    end
+
+    def mode=(name)
+      keymap.mode = name if keymap
+    end
+  end
+
+  class Keymap < Struct.new(:modes, :tag, :previous_mode, :last_send,
+                            :ignore_sends, :accumulate_sends, :history,
+                            :arguments, :name, :mode)
+
     autoload :ArbiterTag, 'ver/keymap/arbiter_tag'
 
     LOADED = {}
@@ -16,11 +31,6 @@ module VER
         raise LoadError, "cannot find keymap: %p" % [keymap_name]
       end
     end
-
-    attr_accessor(
-      :modes, :tag, :previous_mode, :last_send, :ignore_sends,
-      :accumulate_sends, :history, :arguments, :name, :mode
-    )
 
     def initialize(options)
       self.name = options.fetch(:name).to_sym
@@ -104,12 +114,12 @@ module VER
     end
 
     def enter_key(key)
-      @history << key
+      history << key
       gets_wrapper(key) || modes[mode].enter_key(key)
     end
 
     def enter_missing(key)
-      @history << key
+      history << key
       gets_wrapper(key) || modes[mode].enter_missing(key)
     end
 
@@ -125,7 +135,7 @@ module VER
     # TODO: callbacks
     def mode=(cm)
       self.previous_mode = self.mode
-      @mode = cm.to_sym
+      self[:mode] = cm.to_sym
     end
 
     def add_mode(name)

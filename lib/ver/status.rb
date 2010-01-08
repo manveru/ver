@@ -2,9 +2,9 @@ module VER
   # The status bar
   class Status < VER::Entry
     autoload :Context, 'ver/status/context'
+    include Keymapped
 
-    attr_accessor :keymap, :view
-    attr_reader :mode
+    attr_accessor :view
 
     HISTORY = Hash.new{|k,v| k[v] = [] }
 
@@ -22,10 +22,6 @@ module VER
       super
     ensure
       self.class.return_style_name(style_name)
-    end
-
-    def mode=(name)
-      @mode = name.to_sym
     end
 
     def text
