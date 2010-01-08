@@ -62,6 +62,20 @@ module VER
           from, to = tag_nextrange(:search, 'insert + 1 chars', 'end')
           mark_set(:insert, from) if from
         end
+
+        search_display_matches_count
+      end
+
+      def search_display_matches_count
+        total = tag_ranges(:search).size
+
+        if total == 1
+          status.message "1 match found"
+        elsif total > 1
+          status.message "#{total} matches found"
+        else
+          status.message "No matches found"
+        end
       end
 
       def search_prev(count = 1)
@@ -69,6 +83,8 @@ module VER
           from, to = tag_prevrange(:search, 'insert - 1 chars', '1.0')
           mark_set(:insert, from) if from
         end
+
+        search_display_matches_count
       end
 
       def search_next_word_under_cursor
