@@ -113,14 +113,14 @@ module VER
       true
     end
 
-    def enter_key(key)
+    def enter_key(widget, key)
       history << key
-      gets_wrapper(key) || modes[mode].enter_key(key)
+      gets_wrapper(key) || modes[mode].enter_key(widget, key)
     end
 
-    def enter_missing(key)
+    def enter_missing(widget, key)
       history << key
-      gets_wrapper(key) || modes[mode].enter_missing(key)
+      gets_wrapper(key) || modes[mode].enter_missing(widget, key)
     end
 
     def register(raw_sequence)

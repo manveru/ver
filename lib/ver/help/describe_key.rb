@@ -39,13 +39,10 @@ Click on result opens the location of the associated method.
       end
 
       def lookup(sequence)
-        old_callback = @parent.keymap.callback
-        @parent.keymap.callback = self
-
         @full << sequence
-        @parent.keymap.enter_key(sequence)
-      ensure
-        @parent.keymap.callback = old_callback
+        @parent.keymap.enter_key(self, sequence)
+      rescue => ex
+        VER.error(ex)
       end
 
       def send(executable, *args)
