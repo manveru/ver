@@ -4,6 +4,7 @@
 # lazy stdlib
 autoload :Benchmark, 'benchmark'
 autoload :FileUtils, 'fileutils'
+autoload :Tempfile,  'tempfile'
 
 # eager stdlib
 require 'digest/sha1'

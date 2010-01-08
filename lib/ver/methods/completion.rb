@@ -86,7 +86,6 @@ module VER
       # It is a powerful construct, so we better get this right.
       # First of all, place the insert mark at $0 (and remove $0).
       def snippet_insert(from, to, snippet)
-        require 'pp'
         require 'strscan'
         pp snippet
 
@@ -137,8 +136,6 @@ module VER
 
       def complete_tm
         return unless load_preferences
-        require 'set'
-        require 'tempfile'
 
         @complete_last_used = :complete_tm
 
