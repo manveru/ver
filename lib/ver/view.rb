@@ -97,7 +97,6 @@ module VER
     def setup_misc
       @text.status = @status
       @text.view = self
-      @status.mode = :status_query
     end
 
     def setup_events

@@ -9,12 +9,11 @@ module VER
         @caller   = @callback.caller
         @tree     = @callback.tree
 
+        mode = options.delete(:mode) || :executor_label
         options[:style] ||= self.class.obtain_style_name
         super
         self.parent = parent
-
-        keymap_name = VER.options.keymap
-        self.keymap = Keymap.get(name: keymap_name, receiver: self)
+        self.keymap = VER.keymap.use(receiver: self, mode: mode)
       end
 
       def setup
@@ -28,7 +27,7 @@ module VER
       end
 
       def mode=(name)
-        @keymap.mode = @mode = name.to_sym
+        @mode = name.to_sym
       end
 
       # create a subset of the given +values+, filtered and sorted by checking

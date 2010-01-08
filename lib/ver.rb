@@ -41,7 +41,7 @@ module VER
 
   class << self
     attr_reader(:root, :layout, :status, :paths, :options, :bookmarks,
-                :ctag_stack)
+                :ctag_stack, :keymap)
   end
 
   # the rest of the options are in config/rc.rb
@@ -209,6 +209,8 @@ module VER
     @exception_view = nil
     @bookmarks = Bookmarks.new
     @ctag_stack = []
+
+    @keymap = Keymap.load(options.keymap)
   end
 
   def sanitize_options

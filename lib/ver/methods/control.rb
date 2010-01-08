@@ -268,7 +268,7 @@ module VER
         end
       end
 
-      def status_open
+      def executor
         Executor.new(self)
       end
 

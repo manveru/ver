@@ -1,33 +1,38 @@
 module VER
   class Keymap
-    def self.get(options)
-      name = options.fetch(:name)
+    autoload :ArbiterTag, 'ver/keymap/arbiter_tag'
 
-      find_and_load(name)
-      send(name, options)
-    end
+    LOADED = {}
 
     def self.find(keymap_name)
       VER.find_in_loadpath("keymap/#{keymap_name}.rb")
     end
 
-    def self.find_and_load(keymap_name)
+    def self.load(keymap_name)
       if path = find(keymap_name)
-        sane = path.dirname/path.basename(path.extname)
-        require sane.to_s
+        require((path.dirname/path.basename(path.extname)).to_s)
+        LOADED[keymap_name.to_sym]
       else
         raise LoadError, "cannot find keymap: %p" % [keymap_name]
       end
     end
 
-    attr_accessor :modes, :callback, :widget, :tag, :previous_mode, :last_send,
-                  :ignore_sends, :accumulate_sends, :history, :arguments
-    attr_reader :mode
+    attr_accessor(
+      :modes, :tag, :previous_mode, :last_send, :ignore_sends,
+      :accumulate_sends, :history, :arguments, :name, :mode
+    )
 
     def initialize(options)
-      self.callback = options.fetch(:receiver)
-      self.widget = options.fetch(:widget, callback)
+      self.name = options.fetch(:name).to_sym
+
+      if LOADED.key?(name)
+        raise ArgumentError, "Keymap named #{name} already exists"
+      else
+        LOADED[name] = self
+      end
+
       self.previous_mode = nil
+      self.mode = options.fetch(:mode).to_sym
       self.modes = {}
       self.history = SizedArray.new(50)
       self.last_send = nil
@@ -35,16 +40,26 @@ module VER
       self.accumulate_sends ||= []
       self.arguments = true
 
-      prepare_tag
-      prepare_default_binds
+      self.tag = ArbiterTag.new(self, "ver_keymap_#{name}")
+    end
+
+    def inspect
+      "#<Keymap #{name}>"
+    end
+
+    def use(options)
+      keymap = dup
+      keymap.tag = self.tag.reuse(options)
+      keymap.mode = options.fetch(:mode, self.mode)
+      keymap
     end
 
     def message(*args)
-      callback.message(*args)
+      tag.message(*args)
     end
 
     def send(*args)
-      callback.send(*args)
+      tag.execute(*args)
     ensure
       name = args.first
 
@@ -98,50 +113,8 @@ module VER
       gets_wrapper(key) || modes[mode].enter_missing(key)
     end
 
-    def prepare_tag
-      name="bindtag__ver::layout0_ver::view0_ver::status0"
-      uuid = widget.tk_pathname.scan(/\w+/).join('_')
-      self.tag = Tk::BindTag.new("bindtag_#{uuid}")
-      tags = widget.bindtags
-
-      pivot = %w[Text TEntry Listbox]
-      index = tags.index{|element| pivot.include?(element) }
-      tags[index - 1, 0] = self.tag
-
-      widget.bindtags(*tags)
-    end
-
-    def prepare_default_binds
-      tag.bind '<Key>' do |event|
-        chunk = event.unicode
-        enter_missing(chunk) unless chunk == ''
-
-        Tk.callback_break
-      end
-
-      0.upto 9 do |n|
-        tag.bind("<KeyPress-#{n}>") do |key|
-          enter_missing key.unicode
-          Tk.callback_break
-        end
-      end
-    end
-
     def register(raw_sequence)
-      case raw_sequence
-      when /^[a-zA-Z]$/
-        canonical = raw_sequence
-      else
-        canonical = raw_sequence.sub(/(Shift-|Control-|Alt-)+(?!Key)/, '\1Key-')
-        canonical = "<#{canonical}>"
-      end
-
-      tag.bind(canonical){|event|
-        enter_key canonical
-        Tk.callback_break
-      }
-
-      return canonical
+      tag.register(raw_sequence)
     end
 
     def all_bound_sequences
@@ -156,7 +129,7 @@ module VER
     end
 
     def add_mode(name)
-      modes[name.to_sym] = mode = VER::Mode.new(name, self)
+      modes[name.to_sym] = mode = VER::Mode.new(name, self, tag)
       yield mode if block_given?
       mode
     end

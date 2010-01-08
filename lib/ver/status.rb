@@ -14,8 +14,7 @@ module VER
       self.view = view
       @question = ''
 
-      keymap_name = VER.options.keymap
-      self.keymap = Keymap.get(name: keymap_name, receiver: self)
+      self.keymap = VER.keymap.use(receiver: self, mode: :status_query)
     end
 
     def destroy
@@ -26,7 +25,7 @@ module VER
     end
 
     def mode=(name)
-      @keymap.mode = @mode = name.to_sym
+      @mode = name.to_sym
     end
 
     def text

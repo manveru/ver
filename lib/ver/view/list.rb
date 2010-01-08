@@ -9,6 +9,10 @@ module VER
     autoload :Theme,           'ver/view/list/theme'
     autoload :Ex,              'ver/view/list/ex'
 
+    class Listbox < Tk::Listbox
+      attr_accessor :mode
+    end
+
     def initialize(parent, &block)
       self.parent, self.callback = parent, block
 
@@ -21,7 +25,7 @@ module VER
     def setup_widgets
       self.frame = Tk::Frame.new.pack fill: :both, expand: true
 
-      self.list = list = Tk::Listbox.new(frame)
+      self.list = list = Listbox.new(frame)
       list.configure(
         setgrid: true,
         width: 0,
@@ -42,13 +46,11 @@ module VER
     end
 
     def setup_keymap
-      keymap_name = VER.options.keymap
+      @list_keymap = VER.keymap.use(
+        receiver: self, widget: list, mode: :list_view_list)
 
-      @list_keymap = Keymap.get(
-        name: keymap_name, receiver: self, widget: list, mode: :list_view_list)
-
-      @entry_keymap = Keymap.get(
-        name: keymap_name, receiver: entry, widget: entry, mode: :list_view_entry)
+      @entry_keymap = VER.keymap.use(
+        receiver: entry, widget: entry, mode: :list_view_entry)
     end
 
     # Setup this event, because Keymap gets very confused when you bind 'Key' and

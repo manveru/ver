@@ -1,5 +1,7 @@
 module VER
-  class Mode
+  class Mode < Struct.new(
+    :keymap, :name, :arguments, :stack, :mapping, :ancestors, :missing, :tag
+  )
     MERGER = proc{|key, v1, v2|
       if v1.respond_to?(:merge) && v2.respond_to?(:merge)
         v1.merge(v2, &MERGER)
@@ -8,26 +10,24 @@ module VER
       end
     }
 
-    attr_accessor :callback, :name, :arguments
-
     def inspect
-      "#<Mode #@name>"
+      "#<Mode #{name}>"
     end
 
-    def initialize(name, callback)
-      @name, @callback = name, callback
-      @stack = []
-      @map = {}
-      @ancestors = []
-      @missing = nil
-      @arguments = callback.arguments
+    def initialize(name, keymap, tag)
+      self.name, self.keymap, self.tag = name, keymap, tag
+      self.stack = []
+      self.mapping = {}
+      self.ancestors = []
+      self.missing = nil
+      self.arguments = keymap.arguments
     end
 
     def inherits(*others)
       others.flatten.each do |other|
         ancestor = find_ancestor(other.to_sym)
-        @ancestors.delete ancestor
-        @ancestors.unshift ancestor
+        ancestors.delete ancestor
+        ancestors.unshift ancestor
       end
     end
 
@@ -36,25 +36,25 @@ module VER
     end
 
     def find_ancestor(name)
-      if found = callback.modes[name.to_sym]
+      if found = keymap.modes[name.to_sym]
         return found
       else
         raise "Mode #{name} is not specified yet"
       end
     end
 
-    def ancestors(*done, &block)
+    def each_ancestor(*done, &block)
       yield self
 
-      @ancestors.each do |ancestor|
+      ancestors.each do |ancestor|
         next if done.include?(ancestor)
         yield ancestor
-        ancestor.ancestors(done + [self], &block)
+        ancestor.each_ancestor(done + [self], &block)
       end
     end
 
     def missing(sym)
-      @missing = sym
+      self.missing = sym
     end
 
     def map(sym, *keychains)
@@ -70,7 +70,7 @@ module VER
 
       while key = keychain.shift
         if key.is_a?(Symbol)
-          canonical = callback.modes[key]
+          canonical = keymap.modes[key]
         else
           canonical = register(key)
         end
@@ -82,22 +82,22 @@ module VER
         end
       end
 
-      @map.replace @map.merge(total, &MERGER)
+      mapping.replace(mapping.merge(total, &MERGER))
     end
 
     def register(key)
-      callback.register(key)
+      tag.register(key)
     end
 
-    def enter_keys(*keys)
-      keys.flatten.each{|key| enter_key(key) }
+    def enter_keys(receiver, *keys)
+      keys.flatten.each{|key| enter_key(receiver, key) }
     end
 
-    def enter_key(key)
-      @stack << key
+    def enter_key(receiver, key)
+      stack << key
 
-      ancestors do |ancestor|
-        result = ancestor.attempt_execute(@stack.dup)
+      each_ancestor do |ancestor|
+        result = ancestor.attempt_execute(receiver, stack.dup)
 
         case result
         when nil # nothing matched yet, but possible in future
@@ -105,7 +105,7 @@ module VER
         when false # nothing possible
           # try next one
         when true # executed
-          @stack.clear
+          stack.clear
           return true
         else
           raise "%p is not a valid result" % [result]
@@ -113,18 +113,19 @@ module VER
       end
 
       # no ancestors or all failed
-      @stack.clear
-      enter_missing(key)
+      stack.clear
+      enter_missing(receiver, key)
     rescue => ex
       VER.error(ex)
-      @stack.clear
+      stack.clear
     end
 
-    def enter_missing(key)
-      execute(@missing, key) if @missing
+    def enter_missing(receiver, key)
+      missing = self[:missing]
+      execute(receiver, missing, key) if missing
     end
 
-    def attempt_execute(original_stack, lookup = false)
+    def attempt_execute(receiver, original_stack, lookup = false)
       if arguments
         stack, arg = Mode.split_stack(original_stack)
       else
@@ -134,7 +135,7 @@ module VER
       if stack.empty?
         arg ? nil : false
       else
-        executable = @map
+        executable = mapping
         while key = stack.shift
           previous = executable
           executable = executable[key]
@@ -148,7 +149,7 @@ module VER
             return false unless found
 
             mode, action = found
-            looked = mode.attempt_execute([key, *stack], true)
+            looked = mode.attempt_execute(receiver, [key, *stack], true)
 
             case looked
             when false
@@ -158,37 +159,37 @@ module VER
             else
               cmd, cmd_arg = looked
               return nil if cmd.is_a?(Hash)
-              return execute(action, cmd, arg)
+              return execute(receiver, action, cmd, arg)
             end
           end
         end
 
         if lookup
-          return executable, arg
+          return receiver, executable, arg
         else
-          execute(executable, *arg)
+          execute(receiver, executable, *arg)
         end
       end
     end
 
-    def execute(executable, *arg)
+    def execute(receiver, executable, *arg)
       arg = [*arg].compact # doesn't allow nil
       case executable
       when Hash
         return nil
       when Symbol
-        callback.send(executable, *arg)
+        receiver.send(executable, *arg)
       when Array
-        callback.send(*executable, *arg)
+        receiver.send(*executable, *arg)
       when Proc
-        executable.call(*arg)
+        executable.call(receiver, earg)
       else
         return false
       end
 
       true
     rescue ArgumentError => ex
-      callback.message("#{executable} : #{ex}")
+      VER.status.message("#{executable} : #{ex}")
       true
     end
 

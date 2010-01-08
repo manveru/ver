@@ -13,7 +13,7 @@ module VER
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
-    attr_accessor :keymap, :view, :status
+    attr_accessor :keymap, :view, :status, :mode
     attr_reader :filename, :encoding, :pristine, :syntax, :undoer
 
     # attributes for diverse functionality
@@ -50,14 +50,13 @@ module VER
       self.view = view
       @options = Options.new(:text, VER.options)
 
-      keymap_name = @options.keymap
-      self.keymap = Keymap.get(name: keymap_name, receiver: self)
-
-      @default_mode = keymap.mode
-      apply_mode_style(@default_mode) # for startup
-      setup_tags
-
       @undoer = VER::Undo::Tree.new(self)
+
+      @default_mode = :control
+      self.keymap = VER.keymap.use(receiver: self, mode: :control)
+
+      apply_mode_style(keymap.mode) # for startup
+      setup_tags
 
       self.selection_start = nil
       @pristine = true
@@ -316,14 +315,16 @@ module VER
       apply_mode_style(@default_mode)
     end
 
-    private
-
     def mode=(name)
-      keymap.mode = mode = name.to_sym
+      @mode = name.to_sym
+      p mode: @mode
+      keymap.mode = @mode if keymap
       undo_separator
-      apply_mode_style(mode)
+      apply_mode_style(@mode)
       status_projection(status) if status
     end
+
+    private
 
     def apply_mode_style(mode)
       default_config = (@default_theme_config || {}).merge(blockcursor: true)
@@ -337,7 +338,7 @@ module VER
         when /select/
           {insertbackground: 'yellow', blockcursor: true}
         else
-          raise "No such mode style: %p" % [mode]
+          Kernel.raise "No such mode style: %p" % [mode]
         end
 
       config = default_config.merge(sub_config)

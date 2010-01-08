@@ -18,7 +18,6 @@ module VER
       setup_widgets
       setup_bindings
 
-      @label.mode = :executor_label
       @active = @label
       @label.setup
       @label.focus
@@ -42,9 +41,8 @@ module VER
     end
 
     def use_entry(klass)
-      @entry = klass.new(@frame, callback: self)
+      @entry = klass.new(@frame, callback: self, mode: :executor_entry)
       @entry.grid_configure(row: 0, column: 1, sticky: :we)
-      @entry.mode = :executor_entry
       @active = @entry
       setup_bindings
       @entry.setup

@@ -2,7 +2,7 @@ module VER
   class View
     # This sucks, should we go method_missing?
     class Entry < VER::Entry
-      attr_accessor :list_view
+      attr_accessor :list_view, :mode
 
       def pick_first
         list_view.pick_first
