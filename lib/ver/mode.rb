@@ -31,6 +31,14 @@ module VER
       end
     end
 
+    def includes(*others)
+      others.flatten.each do |other|
+        ancestor = find_ancestor(other.to_sym)
+        ancestors.delete ancestor
+        ancestors.push ancestor
+      end
+    end
+
     def no_arguments
       self.arguments = false
     end
@@ -89,15 +97,15 @@ module VER
       tag.register(key)
     end
 
-    def enter_keys(receiver, *keys)
-      keys.flatten.each{|key| enter_key(receiver, key) }
+    def enter_keys(widget, *keys)
+      keys.flatten.each{|key| enter_key(widget, key) }
     end
 
-    def enter_key(receiver, key)
+    def enter_key(widget, key)
       stack << key
 
       each_ancestor do |ancestor|
-        result = ancestor.attempt_execute(receiver, stack.dup)
+        result = ancestor.attempt_execute(widget, stack.dup)
 
         case result
         when nil # nothing matched yet, but possible in future
@@ -114,18 +122,18 @@ module VER
 
       # no ancestors or all failed
       stack.clear
-      enter_missing(receiver, key)
+      enter_missing(widget, key)
     rescue => ex
       VER.error(ex)
       stack.clear
     end
 
-    def enter_missing(receiver, key)
+    def enter_missing(widget, key)
       missing = self[:missing]
-      execute(receiver, missing, key) if missing
+      execute(widget, missing, key) if missing
     end
 
-    def attempt_execute(receiver, original_stack, lookup = false)
+    def attempt_execute(widget, original_stack, lookup = false)
       if arguments
         stack, arg = Mode.split_stack(original_stack)
       else
@@ -149,7 +157,7 @@ module VER
             return false unless found
 
             mode, action = found
-            looked = mode.attempt_execute(receiver, [key, *stack], true)
+            looked = mode.attempt_execute(widget, [key, *stack], true)
 
             case looked
             when false
@@ -159,30 +167,30 @@ module VER
             else
               cmd, cmd_arg = looked
               return nil if cmd.is_a?(Hash)
-              return execute(receiver, action, cmd, arg)
+              return execute(widget, action, cmd, arg)
             end
           end
         end
 
         if lookup
-          return receiver, executable, arg
+          return widget, executable, arg
         else
-          execute(receiver, executable, *arg)
+          execute(widget, executable, *arg)
         end
       end
     end
 
-    def execute(receiver, executable, *arg)
+    def execute(widget, executable, *arg)
       arg = [*arg].compact # doesn't allow nil
       case executable
       when Hash
         return nil
       when Symbol
-        receiver.send(executable, *arg)
+        widget.send(executable, *arg)
       when Array
-        receiver.send(*executable, *arg)
+        widget.send(*executable, *arg)
       when Proc
-        executable.call(receiver, earg)
+        executable.call(widget, earg)
       else
         return false
       end

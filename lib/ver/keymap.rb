@@ -19,6 +19,10 @@ module VER
 
     LOADED = {}
 
+    def self.[](name)
+      LOADED[name]
+    end
+
     def self.find(keymap_name)
       VER.find_in_loadpath("keymap/#{keymap_name}.rb")
     end
@@ -139,7 +143,7 @@ module VER
     end
 
     def add_mode(name)
-      modes[name.to_sym] = mode = VER::Mode.new(name, self, tag)
+      mode = modes[name.to_sym] ||= VER::Mode.new(name, self, tag)
       yield mode if block_given?
       mode
     end

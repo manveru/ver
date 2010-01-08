@@ -52,7 +52,7 @@ module VER
 
       @undoer = VER::Undo::Tree.new(self)
 
-      self.keymap = VER.keymap.use(receiver: self)
+      self.keymap = VER.keymap.use(widget: self)
       @default_mode = keymap.mode
 
       apply_mode_style

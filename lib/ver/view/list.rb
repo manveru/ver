@@ -82,10 +82,10 @@ module VER
 
     def setup_keymap
       list.keymap = VER.keymap.use(
-        receiver: self, widget: list, mode: :list_view_list)
+        widget: list, mode: :list_view_list)
 
       entry.keymap = VER.keymap.use(
-        receiver: entry, widget: entry, mode: :list_view_entry)
+        widget: entry, mode: :list_view_entry)
     end
 
     # Setup this event, because Keymap gets very confused when you bind 'Key' and
@@ -106,12 +106,10 @@ module VER
 
     def line_up
       list.line_up
-
     end
 
     def line_down
       list.line_down
-
     end
 
     def select_index(index)

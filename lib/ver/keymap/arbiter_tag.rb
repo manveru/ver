@@ -1,7 +1,7 @@
 module VER
   class Keymap
     class ArbiterTag < Tk::BindTag
-      attr_accessor :keymap, :widget, :receiver
+      attr_accessor :keymap
 
       def initialize(keymap, *args)
         super(*args)
@@ -21,21 +21,14 @@ module VER
         VER.error(ex)
       end
 
-      def execute(*args)
-        receiver.send(*args)
-      rescue => ex
-        VER.error(ex)
-      end
-
       def reuse(options)
-        self.receiver = options.fetch(:receiver)
-        self.widget = options.fetch(:widget, receiver)
+        widget = options.fetch(:widget)
         widget.mode = options.fetch(:mode, widget.mode)
-        establish
+        establish(widget)
         self
       end
 
-      def establish
+      def establish(widget)
         tags = widget.bindtags
 
         pivot = %w[Text TEntry Listbox]
@@ -47,9 +40,12 @@ module VER
 
       def prepare_default_binds
         bind '<Key>' do |event|
-          widget = Tk.widgets[event.window_path]
           chunk = event.unicode
-          enter_missing(widget, chunk) unless chunk == ''
+
+          unless chunk == ''
+            widget = Tk.widgets[event.window_path]
+            enter_missing(widget, chunk)
+          end
 
           Tk.callback_break
         end

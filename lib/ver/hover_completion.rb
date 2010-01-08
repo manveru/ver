@@ -3,6 +3,10 @@ module VER
   # just can't get a handle on a changed position. Even using the tk-internal Expose
   # event works only sometimes.
   class HoverCompletion
+    class Listbox < Tk::Listbox
+      include Keymapped
+    end
+
     attr_reader :parent, :list
     attr_accessor :from, :to, :choices, :options, :completer
 
@@ -20,8 +24,8 @@ module VER
     end
 
     def setup_keymap
-      @list_keymap = VER.keymap.use(
-        receiver: self, widget: list, mode: :hover_completion)
+      @list.keymap = VER.keymap.use(
+        widget: list, mode: :hover_completion)
     end
 
     def setup_events

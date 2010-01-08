@@ -15,7 +15,7 @@ module VER
         options[:style] ||= self.class.obtain_style_name
         super
         self.parent = parent
-        self.keymap = VER.keymap.use(receiver: self, mode: mode)
+        self.keymap = VER.keymap.use(widget: self, mode: mode)
       end
 
       def setup
