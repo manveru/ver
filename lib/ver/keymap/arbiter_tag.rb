@@ -10,17 +10,13 @@ module VER
       end
 
       def enter_missing(widget, key)
-        keymap.modes[widget.mode].enter_missing(widget, key)
-        # @history << key
-        # gets_wrapper(key) || modes[mode].enter_missing(key)
+        widget.keymap.enter_missing(widget, key)
       rescue => ex
         VER.error(ex)
       end
 
       def enter_key(widget, key)
-        keymap.modes[widget.mode].enter_key(widget, key)
-        # @history << key
-        # gets_wrapper(key) || modes[mode].enter_key(key)
+        widget.keymap.enter_key(widget, key)
       rescue => ex
         VER.error(ex)
       end
