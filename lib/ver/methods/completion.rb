@@ -38,11 +38,8 @@ module VER
         to   = index('insert - 1 chars wordend')
         word = get(from, to)
 
-        @snippets.each do |snippet|
-          if word == snippet[:tabTrigger]
-            return snippet_insert(from, to, snippet)
-          end
-        end
+        return unless snippet = @snippets[word]
+        snippet_insert(from, to, snippet)
       end
 
       # if there has been a snippet used, most likely some tags or marks were set.
