@@ -5,6 +5,37 @@ module VER
   class HoverCompletion
     class Listbox < Tk::Listbox
       include Keymapped
+      attr_accessor :hover_completion
+
+      def cancel
+        hover_completion.cancel
+      end
+
+      def continue_completion
+        hover_completion.continue_completion
+      end
+
+      def go_down
+        index = curselection.first + 1
+        select(index) if index < size
+      end
+
+      def go_up
+        index = curselection.first - 1
+        select(index) if index >= 0
+      end
+
+      def submit
+        hover_completion.submit
+      end
+
+      def select(index)
+        selection_clear(0, :end)
+        selection_set(index)
+        see(index)
+
+        Tk::Event.generate(list, '<<ListboxSelect>>')
+      end
     end
 
     attr_reader :parent, :list
@@ -19,7 +50,8 @@ module VER
     end
 
     def setup_widgets
-      @list = Tk::Listbox.new(parent, borderwidth: 0, selectmode: :single)
+      @list = Listbox.new(parent, borderwidth: 0, selectmode: :single)
+      @list.hover_completion = self
       @list.focus
     end
 
@@ -31,23 +63,6 @@ module VER
     def setup_events
       list.bind('<<ListboxSelect>>'){ layout }
       list.bind('<Expose>'){ layout }
-    end
-
-    def go_down
-      index = list.curselection.first + 1
-      max = list.size
-
-      return unless index < max
-
-      select index
-    end
-
-    def go_up
-      index = list.curselection.first - 1
-
-      return unless index >= 0
-
-      select index
     end
 
     def continue_completion
@@ -72,20 +87,12 @@ module VER
 
       if choices && choices.size > 0
         list.value = choices
-        select 0
+        list.select 0
 
         submit if choices.size == 1
       else
         cancel
       end
-    end
-
-    def select(index)
-      list.selection_clear(0, :end)
-      list.selection_set(index)
-      list.see(index)
-
-      Tk::Event.generate(list, '<<ListboxSelect>>')
     end
 
     def layout
