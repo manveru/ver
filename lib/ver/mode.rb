@@ -195,6 +195,7 @@ module VER
         return false
       end
 
+      keymap.execute_history << [widget, executable, *arg]
       true
     rescue ArgumentError => ex
       VER.status.message("#{executable} : #{ex}")

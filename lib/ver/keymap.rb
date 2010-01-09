@@ -12,7 +12,8 @@ module VER
   end
 
   class Keymap < Struct.new(:modes, :tag, :previous_mode, :last_send,
-                            :ignore_sends, :accumulate_sends, :history,
+                            :ignore_sends, :accumulate_sends,
+                            :key_history, :execute_history,
                             :arguments, :name, :mode)
 
     autoload :ArbiterTag, 'ver/keymap/arbiter_tag'
@@ -48,7 +49,8 @@ module VER
       self.previous_mode = nil
       self.mode = options.fetch(:mode).to_sym
       self.modes = {}
-      self.history = SizedArray.new(50)
+      self.key_history = SizedArray.new(100)
+      self.execute_history = SizedArray.new(50)
       self.last_send = nil
       self.ignore_sends ||= []
       self.accumulate_sends ||= []
@@ -118,12 +120,12 @@ module VER
     end
 
     def enter_key(widget, key)
-      history << key
+      key_history << key
       gets_wrapper(key) || modes[widget.mode].enter_key(widget, key)
     end
 
     def enter_missing(widget, key)
-      history << key
+      key_history << key
       gets_wrapper(key) || modes[widget.mode].enter_missing(widget, key)
     end
 
