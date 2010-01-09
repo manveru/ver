@@ -150,8 +150,10 @@ module VER
       def exec_bundle
         ENV_EXPORTERS.each do |exporter|
           ENV["VER_#{exporter.upcase}"] = ENV["TM_#{exporter.upcase}"] =
-            send("exec_env_#{exporter}")
+            send("exec_env_#{exporter}").to_s
         end
+
+        yield if block_given?
       end
 
       # textual content of the current line
@@ -161,7 +163,7 @@ module VER
 
       # the word in which the caret is located.
       def exec_env_current_word
-        get('insert worstart', 'insert wordend')
+        get('insert wordstart', 'insert wordend')
       end
 
       # the folder of the current document (may not be set).

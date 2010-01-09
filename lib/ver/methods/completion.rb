@@ -34,11 +34,12 @@ module VER
       end
 
       def snippet_use
-        from = index('insert - 1 chars wordstart')
-        to   = index('insert - 1 chars wordend')
-        word = get(from, to)
+        head = get('insert linestart', 'insert')
+        name = head[/\S+$/]
+        from = index("insert - #{name.size} chars")
+        to = index("insert")
 
-        return unless snippet = @snippets[word]
+        return unless snippet = @snippets[name]
         snippet_insert(from, to, snippet)
       end
 
@@ -85,6 +86,7 @@ module VER
       def snippet_insert(from, to, snippet)
         require 'strscan'
         pp snippet
+        exec_bundle
 
         1.upto(9) do |n|
           tag_configure("ver.snippet.marker_#{n}", background: '#066')
@@ -111,6 +113,21 @@ module VER
             elsif s.scan(/\$\{(\d):([^\}]+)\}/) # ${1:method_name}
               p [:insert, index(:insert), s[2], "ver.snippet.marker_#{s[1]}"]
               record.insert(:insert, s[2], "ver.snippet.marker_#{s[1]}")
+            elsif s.scan(/\$\{([^:}]+):([^}]+)\}/)
+              string = ENV[s[1]] || `echo "#{s[2]}"`.chomp
+
+              p [:insert, index(:insert), string]
+              record.insert(:insert, string)
+            elsif s.scan(/\$\{([^:}]+)\}/)
+              string = ENV[s[1]]
+
+              p [:insert, index(:insert), string]
+              record.insert(:insert, string)
+            elsif s.scan(/`([^`]+)`/)
+              string = `#{s[1]}`
+
+              p [:insert, index(:insert), string]
+              record.insert(:insert, string)
             elsif s.scan(/[^$]+/)
               string = s[0].gsub(/^\t+/){|match| indent * match.size }
 
