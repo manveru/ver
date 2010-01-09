@@ -30,6 +30,15 @@ module VER
         kill(*virtual_movement(motion, count))
       end
 
+      # [word_right_end] goes to the last character, that is, the insert mark is
+      # between the second to last and last character.
+      # This means that the range to delete is off by one, account for it here.
+      def change_word_right_end(count = 1)
+        index = index_at_word_right_end(count)
+        delete(:insert, index + 1)
+        start_insert_mode
+      end
+
       # Delete current line and upto +count+ subsequent lines.
       #
       # @param [#to_i] count Number of lines to delete

@@ -160,7 +160,7 @@ vim.in_mode :control do
   key :unindent_line,                     %w[less]
   key :wrap_line,                         %w[g w]
   key [:change_motion, :end_of_line],     %w[C]
-  key [:change_motion, :word_right_end],  %w[c w]
+  key [:change_word_right_end],           %w[c w]
   key [:kill_motion, :backward_char],     %w[X]
   key [:kill_motion, :end_of_line],       %w[D]
   key [:kill_motion, :forward_char],      %w[x]

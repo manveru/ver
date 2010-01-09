@@ -194,10 +194,42 @@ module VER
         forward_jump(count, &method(:chunk_char_type))
       end
 
+      # Jump to the last character of the word the insert cursor is over currently.
       def word_right_end(count = 1)
+        mark_set(:insert, index_at_word_right_end(count))
+      end
+
+      def index_at_word_right_end(count = 1)
+        offset = 1
+        last = index('end')
+
         count.times do
-          mark_set :insert, tk_next_word_pos_end('insert')
+          pos  = index("insert + #{offset} chars")
+
+          return if pos == last
+
+          type = word_char_type(get(pos))
+
+          while type == :space
+            offset += 1
+            pos = index("insert + #{offset} chars")
+            break if pos == last
+            type = word_char_type(get(pos))
+          end
+
+          lock = type
+
+          while type == lock && type != :space
+            offset += 1
+            pos = index("insert + #{offset} chars")
+            break if pos == last
+            type = word_char_type(get(pos))
+          end
         end
+
+        index("insert + #{offset - 1} chars")
+      rescue => ex
+        VER.error(ex)
       end
 
       def backward_word(count = 1)
