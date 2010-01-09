@@ -90,7 +90,7 @@ module VER
         pp snippet
 
         1.upto(9) do |n|
-          tag_configure("ver.snippet.marker_#{n}", background: '#0ff')
+          tag_configure("ver.snippet.marker_#{n}", background: '#066')
         end
 
         content = snippet[:content]
