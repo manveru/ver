@@ -11,8 +11,9 @@ module VER
     }
 
     def inspect
-      "#<Mode #{name}>"
+      "#<VER::Mode name=#{name} keymap=#{keymap}>"
     end
+    alias pretty_inspect inspect
 
     def initialize(name, keymap, tag)
       self.name, self.keymap, self.tag = name, keymap, tag

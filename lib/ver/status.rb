@@ -17,6 +17,14 @@ module VER
       self.keymap = VER.keymap.use(widget: self, mode: :status_query)
     end
 
+    def inspect
+      details = {
+        keymap: keymap,
+        mode: mode
+      }.map{|key, value| "%s=%p" % [key, value ] }.join(' ')
+      "#<VER::Status #{details}>"
+    end
+
     def destroy
       style_name = style
       super
