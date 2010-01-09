@@ -215,7 +215,8 @@ module VER
         when /\w/; :word
         when /\S/; :special
         when /\s/; :space
-        else; raise "You cannot get here"
+        else
+          Kernel.raise "No matching char type for: %p" % [char]
         end
       end
 
@@ -223,7 +224,8 @@ module VER
         case char
         when /\S/; :nonspace
         when /\s/; :space
-        else; raise "You cannot get here"
+        else
+          Kernel.raise "No matching chunk type for: %p " % [char]
         end
       end
 
