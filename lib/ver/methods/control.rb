@@ -56,11 +56,38 @@ module VER
         replace(from, to, chunk)
       end
 
+      REPEAT_BREAK_CMD = [
+        :repeat_command,
+        :undo,
+        :redo,
+      ]
+
+      REPEAT_BREAK_MODE = [
+        :move
+      ]
+
       def repeat_command(count = 1)
-        return unless command = keymap.last_send
-        return if command.first == __method__
-        count.times{ send(*command) }
-        keymap.last_send = command
+        bundle = []
+        keymap.execute_history.reverse_each do |mode, widget, cmd, arg|
+          if bundle.empty?
+            next if REPEAT_BREAK_CMD.include?(cmd)
+            next if REPEAT_BREAK_MODE.include?(mode.name)
+          else
+            break if REPEAT_BREAK_CMD.include?(cmd)
+            break if REPEAT_BREAK_MODE.include?(mode.name)
+          end
+
+          bundle << [mode, widget, cmd, arg]
+        end
+
+        bundle.reverse!
+
+        count.times do
+          bundle.each do |mode, widget, cmd, arg|
+            # p [cmd, arg]
+            mode.execute_without_history(widget, cmd, arg)
+          end
+        end
       end
 
       # Assigns env variables used in the given command.

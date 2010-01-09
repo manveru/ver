@@ -182,6 +182,13 @@ module VER
 
     def execute(widget, executable, *arg)
       arg = [*arg].compact # doesn't allow nil
+
+      status = execute_without_history(widget, executable, arg)
+      keymap.execute_history << [self, widget, executable, arg] if status
+      status
+    end
+
+    def execute_without_history(widget, executable, arg)
       case executable
       when Hash
         return nil
@@ -190,12 +197,11 @@ module VER
       when Array
         widget.send(*executable, *arg)
       when Proc
-        executable.call(widget, earg)
+        executable.call(widget, arg)
       else
         return false
       end
 
-      keymap.execute_history << [widget, executable, *arg]
       true
     rescue ArgumentError => ex
       VER.status.message("#{executable} : #{ex}")
