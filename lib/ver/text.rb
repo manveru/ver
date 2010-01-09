@@ -33,6 +33,14 @@ module VER
       widget_setup(view)
     end
 
+    def inspect
+      details = {
+        keymap: keymap,
+        mode: mode
+      }.map{|key, value| "%s=%p" % [key, value ] }.join(' ')
+      "#<VER::Text #{details}>"
+    end
+
     def value=(string)
       super
       touch!('1.0', 'end')
