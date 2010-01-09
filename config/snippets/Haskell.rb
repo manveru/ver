@@ -1,34 +1,26 @@
 # Encoding: UTF-8
 
-[{content: "\\\\${1:t} -> ${0:f t}",
-  name: "\\t -> f t",
-  scope: "source.haskell",
-  tabTrigger: "\\",
-  uuid: "89248B78-C2C6-48EE-BC47-CF8E9A5EA0E7"},
- {content: 
-   "module ${1:Main} where\n\n${2:main = ${3:putStrLn \"Hello World\"}}",
-  name: "Module",
-  scope: "source.haskell",
-  tabTrigger: "mod",
-  uuid: "21646767-DD1B-4BA9-BF3B-15968F8672AB"},
- {content: 
-   "case ${1:a} of ${2:True} -> ${3:$1}\n\t${1/./ /g}     ${4:otherwise} -> ${0:$1}",
-  name: "Case",
-  scope: "source.haskell",
-  tabTrigger: "case",
-  uuid: "18F43074-566D-4AD9-8DCE-9C26B8516B64"},
- {content: "instance ${1:Class} ${2:Data} where\n\t${3:func} = $0",
-  name: "Instance",
-  scope: "source.haskell",
-  tabTrigger: "instance",
-  uuid: "CE424A97-E486-4DE7-9328-C6ADB99B4ABD"},
- {content: "module Main where\n\nmain = ${1:putStrLn \"Hello World\"}",
-  name: "Main",
-  scope: "source.haskell",
-  tabTrigger: "main",
-  uuid: "A3A65891-D126-4D2D-9E6B-E20ADE2EAA88"},
- {content: "${1:t} <- ${0:f t}",
-  keyEquivalent: /^,/,
-  name: "t <- f t",
-  scope: "source.haskell",
-  uuid: "4B154C05-D107-4316-9AAD-43A3DCF1860A"}]
+{"\\" => 
+  {scope: "source.haskell",
+   name: "\\t -> f t",
+   content: "\\\\${1:t} -> ${0:f t}"},
+ "mod" => 
+  {scope: "source.haskell",
+   name: "Module",
+   content: 
+    "module ${1:Main} where\n\n${2:main = ${3:putStrLn \"Hello World\"}}"},
+ "case" => 
+  {scope: "source.haskell",
+   name: "Case",
+   content: 
+    "case ${1:a} of ${2:True} -> ${3:$1}\n\t${1/./ /g}     ${4:otherwise} -> ${0:$1}"},
+ "instance" => 
+  {scope: "source.haskell",
+   name: "Instance",
+   content: "instance ${1:Class} ${2:Data} where\n\t${3:func} = $0"},
+ "main" => 
+  {scope: "source.haskell",
+   name: "Main",
+   content: "module Main where\n\nmain = ${1:putStrLn \"Hello World\"}"},
+ nil => 
+  {scope: "source.haskell", name: "t <- f t", content: "${1:t} <- ${0:f t}"}}

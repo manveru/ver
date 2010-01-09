@@ -1,39 +1,29 @@
 # Encoding: UTF-8
 
-[{content: "functor $1($2) : $3 =\nstruct\n\t$4\nend",
-  name: "Base Functor",
-  scope: "source.ml",
-  tabTrigger: "functor",
-  uuid: "37C2F4AF-A285-4455-BE67-579CE6612A09"},
- {content: "funsig $1 ($2) =\nsig\n\t$3\nend",
-  name: "Base Funsig",
-  scope: "source.ml",
-  tabTrigger: "fs",
-  uuid: "3C345A84-3C76-4D6B-9E21-9BE9C99BF4A4"},
- {content: "signature $1 =\nsig\n\t$2\nend",
-  name: "Base Signature",
-  scope: "source.ml, source.sig",
-  tabTrigger: "sig",
-  uuid: "21E2CB12-84F2-48DF-A99B-0266CD96C439"},
- {content: "structure $1 =\nstruct\n\t$2\nend",
-  name: "Base Structure",
-  scope: "source.ml",
-  tabTrigger: "struct",
-  uuid: "E757D38B-C220-4E37-9F23-52B9B23BAB36"},
- {content: 
-   "structure ${1:Map} = RedBlackMapFn(struct\n                                          type ord_key = $2\n                                          val compare = $3\n                                    end)",
-  name: "RedBlackMap",
-  scope: "source.ml",
-  tabTrigger: "rbm",
-  uuid: "11C8B9AA-1C41-479A-800D-EEE0465BF9CD"},
- {content: 
-   "structure ${1:Set} = RedBlackSetFn (struct\n                                           type ord_key = $2\n\t\t\t\t\t\t\t\t\t val compare = $3\n                                    end)\n",
-  name: "RedBlackSet",
-  scope: "source.ml",
-  tabTrigger: "rbs",
-  uuid: "292E34A2-BD32-4BD2-8B17-1B1B1A5099DC"},
- {content: "Int.toString $1",
-  name: "itos",
-  scope: "source.ml",
-  tabTrigger: "itos",
-  uuid: "10EB8449-D6DC-483F-8E6F-D354280BDD6D"}]
+{"functor" => 
+  {scope: "source.ml",
+   name: "Base Functor",
+   content: "functor $1($2) : $3 =\nstruct\n\t$4\nend"},
+ "fs" => 
+  {scope: "source.ml",
+   name: "Base Funsig",
+   content: "funsig $1 ($2) =\nsig\n\t$3\nend"},
+ "sig" => 
+  {scope: "source.ml, source.sig",
+   name: "Base Signature",
+   content: "signature $1 =\nsig\n\t$2\nend"},
+ "struct" => 
+  {scope: "source.ml",
+   name: "Base Structure",
+   content: "structure $1 =\nstruct\n\t$2\nend"},
+ "rbm" => 
+  {scope: "source.ml",
+   name: "RedBlackMap",
+   content: 
+    "structure ${1:Map} = RedBlackMapFn(struct\n                                          type ord_key = $2\n                                          val compare = $3\n                                    end)"},
+ "rbs" => 
+  {scope: "source.ml",
+   name: "RedBlackSet",
+   content: 
+    "structure ${1:Set} = RedBlackSetFn (struct\n                                           type ord_key = $2\n\t\t\t\t\t\t\t\t\t val compare = $3\n                                    end)\n"},
+ "itos" => {scope: "source.ml", name: "itos", content: "Int.toString $1"}}

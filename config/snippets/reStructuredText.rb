@@ -1,27 +1,22 @@
 # Encoding: UTF-8
 
-[{content: ".. image:: ${1:path}\n$0",
-  name: "image",
-  scope: "text.restructuredtext",
-  tabTrigger: "image",
-  uuid: "081B7322-7D71-4C38-9E33-FEE716AA4D17"},
- {content: "\n\\`${1:Title}<${2:http://link}>\\`_",
-  name: "link",
-  scope: "text.restructuredtext",
-  tabTrigger: "link",
-  uuid: "53A0FA7F-261F-4B59-8FC2-5E7E8BA44E42"},
- {content: "${1:subsection name}\n${1/(.)|\\s/(?1:=:=)/g}\n$0",
-  name: "section 1",
-  scope: "text.restructuredtext",
-  tabTrigger: "sec",
-  uuid: "7B6D031A-FF9A-475A-8FD4-F8C099F96313"},
- {content: "${1:subsection name}\n${1/(.)|\\s/(?1:*:*)/g}\n$0",
-  name: "section 2",
-  scope: "text.restructuredtext",
-  tabTrigger: "subs",
-  uuid: "CCE7CCB5-048A-4AC6-B4E0-90873466BA1A"},
- {content: "${1:subsection name}\n${1/(.)|\\s/(?1:-:-)/g}\n$0",
-  name: "section 3",
-  scope: "text.restructuredtext",
-  tabTrigger: "sss",
-  uuid: "52736608-3034-4ECE-8B85-41D3F38A4029"}]
+{"image" => 
+  {scope: "text.restructuredtext",
+   name: "image",
+   content: ".. image:: ${1:path}\n$0"},
+ "link" => 
+  {scope: "text.restructuredtext",
+   name: "link",
+   content: "\n\\`${1:Title}<${2:http://link}>\\`_"},
+ "sec" => 
+  {scope: "text.restructuredtext",
+   name: "section 1",
+   content: "${1:subsection name}\n${1/(.)|\\s/(?1:=:=)/g}\n$0"},
+ "subs" => 
+  {scope: "text.restructuredtext",
+   name: "section 2",
+   content: "${1:subsection name}\n${1/(.)|\\s/(?1:*:*)/g}\n$0"},
+ "sss" => 
+  {scope: "text.restructuredtext",
+   name: "section 3",
+   content: "${1:subsection name}\n${1/(.)|\\s/(?1:-:-)/g}\n$0"}}

@@ -1,73 +1,55 @@
 # Encoding: UTF-8
 
-[{content: 
-   "${1:class_name}.prototype.${2:method_name} = function(${3:first_argument}) {\n\t${0:// body...}\n};\n",
-  name: "Prototype",
-  scope: "source.js",
-  tabTrigger: "proto",
-  uuid: "2F96136B-0193-42F5-90FC-B6F456A3AD77"},
- {content: 
-   "function ${1:function_name} (${2:argument}) {\n\t${0:// body...}\n}",
-  name: "Function",
-  scope: "source.js",
-  tabTrigger: "fun",
-  uuid: "F0E4FB6A-4878-48C6-A777-62438DF1E14F"},
- {content: 
-   "getElement${1/(T)|.*/(?1:s)/}By${1:T}${1/(T)|(I)|.*/(?1:agName)(?2:d)/}('$2')",
-  name: "Get Elements",
-  scope: "source.js",
-  tabTrigger: "get",
-  uuid: "9E0E3BCC-7F20-4D6B-891D-A44D6EC56E31"},
- {content: "'${1:${2:#thing}:${3:click}}': function(element){\n\t$0\n}${10:,}",
-  name: "Object Method String",
-  scope: "source.js",
-  tabTrigger: "'':f",
-  uuid: "7B9AEFCC-B450-416D-8527-430FE2A08568"},
- {content: "${1:method_name}: function(${3:attribute}){\n\t$0\n}${10:,}",
-  name: "Object Method",
-  scope: "source.js",
-  tabTrigger: ":f",
-  uuid: "77065D69-742A-4FF0-9A41-AD211DFBE72F"},
- {content: "${1:value_name}:${0:value},",
-  name: "Object Value JS",
-  scope: "source.js",
-  tabTrigger: ":,",
-  uuid: "AD506BEC-B33C-4168-A900-0A4D386A4B05"},
- {content: "${1:key}: ${2:\"${3:value}\"}${4:, }",
-  keyEquivalent: /~:/,
-  name: "Object key — key: \"value\"",
-  scope: "source.js",
-  tabTrigger: ":",
-  uuid: "DC8B46FB-8ADA-45EA-8F36-94C807A0D302"},
- {content: 
-   "for (var ${20:i} = ${1:Things}.length - 1; ${20:i} >= 0; ${20:i}--){\n\t${100:${1:Things}[${20:i}]}$0\n};",
-  name: "for (…) {…} (Improved Native For-Loop)",
-  scope: "source.js",
-  tabTrigger: "for",
-  uuid: "C207B7C3-5597-4873-8AAD-C46FB8842AF2"},
- {content: 
-   "for (var ${20:i}=0; ${20:i} < ${1:Things}.length; ${20:i}++) {\n\t${100:${1:Things}[${20:i}]}$0\n};",
-  name: "for (…) {…}",
-  scope: "source.js",
-  tabTrigger: "for",
-  uuid: "011C4681-FBEC-4891-9326-3DECFCDED6D6"},
- {content: "function($1) {${0:$TM_SELECTED_TEXT}};",
-  name: "Anonymous Function",
-  scope: "source.js",
-  tabTrigger: "f",
-  uuid: "4C6EDB43-3E2E-411B-A016-13C135C59833"},
- {content: "if (${1:true}) {${0:$TM_SELECTED_TEXT}} else{};",
-  name: "if … else",
-  scope: "source.js",
-  tabTrigger: "ife",
-  uuid: "31964029-9D71-4ADC-8213-DFE5C4E222B3"},
- {content: "if (${1:true}) {${0:$TM_SELECTED_TEXT}};",
-  name: "if",
-  scope: "source.js",
-  tabTrigger: "if",
-  uuid: "F19F3732-39A7-48EC-A72B-A8F477A01795"},
- {content: "setTimeout(function() {$0}${2:}, ${1:10});",
-  name: "setTimeout function",
-  scope: "source.js",
-  tabTrigger: "timeout",
-  uuid: "009A3E6C-FE3F-4A18-8759-2DC31F17BBE2"}]
+{"proto" => 
+  {scope: "source.js",
+   name: "Prototype",
+   content: 
+    "${1:class_name}.prototype.${2:method_name} = function(${3:first_argument}) {\n\t${0:// body...}\n};\n"},
+ "fun" => 
+  {scope: "source.js",
+   name: "Function",
+   content: 
+    "function ${1:function_name} (${2:argument}) {\n\t${0:// body...}\n}"},
+ "get" => 
+  {scope: "source.js",
+   name: "Get Elements",
+   content: 
+    "getElement${1/(T)|.*/(?1:s)/}By${1:T}${1/(T)|(I)|.*/(?1:agName)(?2:d)/}('$2')"},
+ "'':f" => 
+  {scope: "source.js",
+   name: "Object Method String",
+   content: 
+    "'${1:${2:#thing}:${3:click}}': function(element){\n\t$0\n}${10:,}"},
+ ":f" => 
+  {scope: "source.js",
+   name: "Object Method",
+   content: "${1:method_name}: function(${3:attribute}){\n\t$0\n}${10:,}"},
+ ":," => 
+  {scope: "source.js",
+   name: "Object Value JS",
+   content: "${1:value_name}:${0:value},"},
+ ":" => 
+  {scope: "source.js",
+   name: "Object key — key: \"value\"",
+   content: "${1:key}: ${2:\"${3:value}\"}${4:, }"},
+ "for" => 
+  {scope: "source.js",
+   name: "for (…) {…}",
+   content: 
+    "for (var ${20:i}=0; ${20:i} < ${1:Things}.length; ${20:i}++) {\n\t${100:${1:Things}[${20:i}]}$0\n};"},
+ "f" => 
+  {scope: "source.js",
+   name: "Anonymous Function",
+   content: "function($1) {${0:$TM_SELECTED_TEXT}};"},
+ "ife" => 
+  {scope: "source.js",
+   name: "if … else",
+   content: "if (${1:true}) {${0:$TM_SELECTED_TEXT}} else{};"},
+ "if" => 
+  {scope: "source.js",
+   name: "if",
+   content: "if (${1:true}) {${0:$TM_SELECTED_TEXT}};"},
+ "timeout" => 
+  {scope: "source.js",
+   name: "setTimeout function",
+   content: "setTimeout(function() {$0}${2:}, ${1:10});"}}

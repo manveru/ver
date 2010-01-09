@@ -1,1118 +1,767 @@
 # Encoding: UTF-8
 
-[{content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_INLINE}form_tag(${1::action => \"${5:update}\"}${6:, {:${8:class} => \"${9:form}\"\\}}) do${TM_RAILS_TEMPLATE_END_RUBY_EXPR}\n  $0\n${TM_RAILS_TEMPLATE_END_RUBY_BLOCK}",
-  name: "form_tag",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ft",
-  uuid: "F0F6DACA-6A0B-11D9-BDC2-000D932CD5BA"},
- {content: "t.column ${1:title}, :${2:string}\n$0",
-  name: "Create Column in Table",
-  scope: "meta.rails.migration.create_table",
-  tabTrigger: "mcol",
-  uuid: "7592CA99-75D7-48B6-9133-00B9F148FF43"},
- {content: "t.column ${1:title}, :${2:string}\nmccc$0",
-  name: "Create Several Columns in Table",
-  scope: "meta.rails.migration.create_table",
-  tabTrigger: "mccc",
-  uuid: "67FD2F8F-5F25-45F2-A451-2F39977A9EDE"},
- {content: 
-   "drop_table :${1:table}${2: [press tab twice to generate create_table]}",
-  name: "Drop / Create Table",
-  scope: 
-   "meta.rails.migration - meta.rails.migration.create_table - meta.rails.migration.change_table",
-  tabTrigger: "mtab",
-  uuid: "20375601-B13F-4314-B8E4-362706566636"},
- {content: 
-   "remove_column :${1:table}, :${2:column}${3: [press tab twice to generate add_column]}",
-  name: "Remove / Add Column",
-  scope: 
-   "meta.rails.migration - meta.rails.migration.create_table - meta.rails.migration.change_table",
-  tabTrigger: "mcol",
-  uuid: "16A705EB-10DC-42B5-9FF2-377E206421DC"},
- {content: "RAILS_DEFAULT_LOGGER.debug \"${1:message}\"$0",
-  name: "RAILS_DEFAULT_LOGGER.debug",
-  scope: "source.ruby.rails",
-  tabTrigger: "rdb",
-  uuid: "7B15B396-1F41-4529-9253-32761E94448C"},
- {content: "assert_redirected_to ${2::action => \"${1:index}\"}",
-  name: "assert_redirected_to",
-  scope: "source.ruby.rails",
-  tabTrigger: "art",
-  uuid: "CD60F800-850D-47CF-BE32-3DE665DD5C68"},
- {content: "assert_response :${1:success}, @response.body$0",
-  name: "assert_response",
-  scope: "source.ruby.rails",
-  tabTrigger: "asre",
-  uuid: "2BD82DCB-1F19-4C8F-BC70-C0BBB06A2138"},
- {content: 
-   "belongs_to :${1:object}${2:, :class_name => \"${3:${1/[[:alpha:]]+|(_)/(?1::\\u$0)/g}}\", :foreign_key => \"${4:${1}_id}\"}",
-  name: "belongs_to",
-  scope: "source.ruby.rails",
-  tabTrigger: "bt",
-  uuid: "B8F08BD7-6160-482C-8A3D-CBC6BD2079A4"},
- {content: 
-   "has_and_belongs_to_many :${1:object}${2:, :join_table => \"${3:table_name}\", :foreign_key => \"${4:${1}_id}\"}",
-  name: "has_and_belongs_to_many",
-  scope: "source.ruby.rails",
-  tabTrigger: "habtm",
-  uuid: "2AC3AC1F-743B-4A33-863C-C37885073806"},
- {content: 
-   "has_many :${1:object}s${2:, :class_name => \"${1}\", :foreign_key => \"${4:reference}_id\"}",
-  name: "has_many",
-  scope: "source.ruby.rails",
-  tabTrigger: "hm",
-  uuid: "F396B7BD-8255-48B1-904A-06E7D7CC2741"},
- {content: 
-   "has_one :${1:object}${2:, :class_name => \"${3:${1/[[:alpha:]]+|(_)/(?1::\\u$0)/g}}\", :foreign_key => \"${4:${1}_id}\"}",
-  name: "has_one",
-  scope: "source.ruby.rails",
-  tabTrigger: "ho",
-  uuid: "BD2E4045-54E6-450E-B31B-5E1865CFFBC9"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :action => \"${2:index}\"${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to (action)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "lia",
-  uuid: "9E2B42FE-7BC8-11D9-906A-000D932CD5BA"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :action => \"${2:edit}\", :id => ${3:@item}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to (action, id)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "liai",
-  uuid: "B4F952F4-7BC8-11D9-906A-000D932CD5BA"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :controller => \"${2:items}\"${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to (controller)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "lic",
-  uuid: "74590E16-7BCB-11D9-906A-000D932CD5BA"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :controller => \"${2:items}\", :action => \"${3:index}\"${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to (controller, action)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "lica",
-  uuid: "C11C0BF5-7BC8-11D9-906A-000D932CD5BA"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :controller => \"${2:items}\", :action => \"${3:edit}\", :id => ${4:@item}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to (controller, action, id)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "licai",
-  uuid: "D21BE958-7BC8-11D9-906A-000D932CD5BA"},
- {content: "flash[:${1:notice}] = \"${2:Successfully created...}\"$0",
-  name: "flash[…]",
-  scope: "source.ruby.rails",
-  tabTrigger: "flash",
-  uuid: "D864896E-8763-11D9-897C-000393CBCE2E"},
- {content: "params[:${1:id}]",
-  keyEquivalent: /^p/,
-  name: "params[…]",
-  scope: "source.ruby.rails",
-  uuid: "AC8EDA3E-875B-11D9-897C-000393CBCE2E"},
- {content: "session[:${1:user}]",
-  keyEquivalent: /^j/,
-  name: "session[…]",
-  scope: "source.ruby.rails",
-  uuid: "7B02ABF8-8763-11D9-897C-000393CBCE2E"},
- {content: "redirect_to :action => \"${1:index}\"",
-  name: "redirect_to (action)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rea",
-  uuid: "F2F3167C-73B9-11D9-B752-000D932CD5BA"},
- {content: "redirect_to :action => \"${1:show}\", :id => ${0:@item}",
-  name: "redirect_to (action, id)",
-  scope: "source.ruby.rails",
-  tabTrigger: "reai",
-  uuid: "2233B484-73BA-11D9-B752-000D932CD5BA"},
- {content: "redirect_to :controller => \"${1:items}\"",
-  name: "redirect_to (controller)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rec",
-  uuid: "053490FE-73BA-11D9-B752-000D932CD5BA"},
- {content: 
-   "redirect_to :controller => \"${1:items}\", :action => \"${2:list}\"",
-  name: "redirect_to (controller, action)",
-  scope: "source.ruby.rails",
-  tabTrigger: "reca",
-  uuid: "0C137FBF-73BA-11D9-B752-000D932CD5BA"},
- {content: 
-   "redirect_to :controller => \"${1:items}\", :action => \"${2:show}\", :id => ${0:@item}",
-  name: "redirect_to (controller, action, id)",
-  scope: "source.ruby.rails",
-  tabTrigger: "recai",
-  uuid: "18D3C1C3-73BA-11D9-B752-000D932CD5BA"},
- {content: "render :action => \"${1:action}\"",
-  name: "render (action)",
-  scope: "source.ruby.rails",
-  tabTrigger: "ra",
-  uuid: "7B03D38B-7580-41AC-BC2B-3766AB074A43"},
- {content: "render :action => \"${1:action}\", :layout => \"${2:layoutname}\"",
-  name: "render (action, layout)",
-  scope: "source.ruby.rails",
-  tabTrigger: "ral",
-  uuid: "053F1D6A-B413-43FF-B697-E3120FD0489F"},
- {content: "render :file => \"${1:filepath}\"",
-  name: "render (file)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rf",
-  uuid: "7D43B0EA-2C3C-499B-9346-A8E48CBF29CD"},
- {content: "render :file => \"${1:filepath}\", :use_full_path => ${2:false}",
-  name: "render (file, use_full_path)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rfu",
-  uuid: "2A8FBE48-E196-4019-AE76-BF3ED4B54F47"},
- {content: "render :inline => \"${1:<%= 'hello' %>}\"",
-  name: "render (inline)",
-  scope: "source.ruby.rails",
-  tabTrigger: "ri",
-  uuid: "64E93A71-6E62-48D9-9694-123080AE6723"},
- {content: 
-   "render :inline => \"${1:<%= 'hello' %>}\", :locals => { ${2::name} => \"${3:value}\"$4 }",
-  name: "render (inline, locals)",
-  scope: "source.ruby.rails",
-  tabTrigger: "ril",
-  uuid: "1E5DE984-510C-4992-8AD5-C5FA6D7F2A88"},
- {content: "render :inline => \"${1:<%= 'hello' %>}\", :type => ${2::rxml}",
-  name: "render (inline, type)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rit",
-  uuid: "A8AF8B90-94E8-42E1-8057-DDBA57809F6A"},
- {content: "render :layout => \"${1:layoutname}\"",
-  name: "render (layout)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rl",
-  uuid: "3F83272F-62D5-4BCB-BAA3-806083078829"},
- {content: "render :nothing => ${1:true}",
-  name: "render (nothing)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rn",
-  uuid: "AC8A995F-0034-433C-905D-E5C1F29D6EFF"},
- {content: "render :nothing => ${1:true}, :status => ${2:401}",
-  name: "render (nothing, status)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rns",
-  uuid: "724A68C1-A727-46FF-AF59-288E26B09629"},
- {content: "render :partial => \"${1:item}\"",
-  name: "render (partial)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rp",
-  uuid: "498168A5-5AF8-4F59-8A2D-B517FAB98CDB"},
- {content: "render :partial => \"${1:item}\", :collection => ${2:@$1s}",
-  name: "render (partial, collection)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rpc",
-  uuid: "046FB1B6-9C65-4702-91EC-4AA9878CD949"},
- {content: 
-   "render :partial => \"${1:item}\", :locals => { :${2:$1} => ${3:@$1}$0 }",
-  name: "render (partial, locals)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rpl",
-  uuid: "6F41AFFD-B3A7-42D0-8A84-D6086C118D92"},
- {content: "render :partial => \"${1:item}\", :object => ${2:@$1}",
-  name: "render (partial, object)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rpo",
-  uuid: "BFAAC8DA-A043-4684-967B-B3E5DAE08C62"},
- {content: "render :partial => \"${1:item}\", :status => ${2:500}",
-  name: "render (partial, status)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rps",
-  uuid: "CBB06A4E-3A82-45F3-91AA-259F02314B9D"},
- {content: "render :text => \"${1:text to render...}\"",
-  name: "render (text)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rt",
-  uuid: "67C5082F-5011-434A-8EAA-6B8D3600935F"},
- {content: 
-   "render :text => \"${1:text to render...}\", :layout => \"${2:layoutname}\"",
-  name: "render (text, layout)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rtl",
-  uuid: "A3B09AFE-40B5-4623-8B85-E9F369ECE22D"},
- {content: "render :text => \"${1:text to render...}\", :layout => ${2:true}",
-  name: "render (text, layout => true)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rtlt",
-  uuid: "97C0992D-715F-4322-A3E0-DD4D2B7E2FC2"},
- {content: "render :text => \"${1:text to render...}\", :status => ${2:401}",
-  name: "render (text, status)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rts",
-  uuid: "4F636977-F7A6-4BF5-B09B-7F087683C3B9"},
- {content: "validates_associated :${1:attribute}${2:, :on => :${3:create}}",
-  name: "validates_associated",
-  scope: "source.ruby.rails",
-  tabTrigger: "va",
-  uuid: "47944705-F605-4ED4-B4C0-9E823EE25138"},
- {content: 
-   "validates_associated :${1:attribute}${2:, :on => :${3:create}, :if => proc { |obj| ${5:obj.condition?} }}",
-  name: "validates_associated if",
-  scope: "source.ruby.rails",
-  tabTrigger: "vaif",
-  uuid: "85E9264C-5414-4FA0-AC07-F305A798ED46"},
- {content: 
-   "validates_confirmation_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:should match confirmation}\"}",
-  name: "validates_confirmation_of",
-  scope: "source.ruby.rails",
-  tabTrigger: "vc",
-  uuid: "B5893618-D07C-48F1-8867-736D0AAFF0E7"},
- {content: 
-   "validates_confirmation_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:should match confirmation}\", :if => proc { |obj| ${5:obj.condition?} }}",
-  name: "validates_confirmation_of if",
-  scope: "source.ruby.rails",
-  tabTrigger: "vcif",
-  uuid: "1354726C-DA64-4CA6-A099-26626A865D8D"},
- {content: 
-   "validates_exclusion_of :${1:attribute}${2:, :in => ${3:%w( ${4:mov avi} )}, :on => :${5:create}, :message => \"${6:extension %s is not allowed}\"}",
-  name: "validates_exclusion_of",
-  scope: "source.ruby.rails",
-  tabTrigger: "ve",
-  uuid: "4CC98A56-B60B-4A89-80E0-400C5314A050"},
- {content: 
-   "validates_exclusion_of :${1:attribute}${2:, :in => ${3:%w( ${4:mov avi} )}, :on => :${5:create}, :message => \"${6:extension %s is not allowed}\"}, :if => proc { |obj| ${7:obj.condition?} }}",
-  name: "validates_exclusion_of if",
-  scope: "source.ruby.rails",
-  tabTrigger: "veif",
-  uuid: "869AB0B7-12DD-440A-905A-BFB1E0E16E1C"},
- {content: 
-   "validates_length_of :${1:attribute}, :within => ${2:3..20}${3:, :on => :${4:create}, :message => \"${5:must be present}\"}",
-  name: "validates_length_of",
-  scope: "source.ruby.rails",
-  tabTrigger: "vl",
-  uuid: "5CE8838A-BF2C-497E-B87A-E90C3BC482E0"},
- {content: 
-   "validates_presence_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:can't be blank}\"}",
-  name: "validates_presence_of",
-  scope: "source.ruby.rails",
-  tabTrigger: "vp",
-  uuid: "5DAC28A7-33C8-4DA7-9E85-56618D6BEC9F"},
- {content: 
-   "validates_presence_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:can't be blank}\"}, :if => proc { |obj| ${5:obj.condition?} }}",
-  name: "validates_presence_of if",
-  scope: "source.ruby.rails",
-  tabTrigger: "vpif",
-  uuid: "F5CBBE16-F5CC-4EDA-8BC6-30281BD7D854"},
- {content: 
-   "validates_uniqueness_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:must be unique}\"}",
-  name: "validates_uniqueness_of",
-  scope: "source.ruby.rails",
-  tabTrigger: "vu",
-  uuid: "F8316545-9AE4-4C7F-87ED-A2C00E6637FA"},
- {content: 
-   "validates_uniqueness_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:must be unique}\", :if => proc { |obj| ${6:obj.condition?} }}",
-  name: "validates_uniqueness_of if",
-  scope: "source.ruby.rails",
-  tabTrigger: "vuif",
-  uuid: "43680344-0818-42BF-95B4-58CD2D76545B"},
- {bundlePath: 
-   "/Users/tobi/Library/Application Support/TextMate/Bundles/Custom.tmbundle",
-  content: 
-   "verify :only => [:$1], :method => :post, :render => {:status => 500, :text => \"use HTTP-POST\"}\n",
-  name: "verify — render",
-  scope: "source.ruby.rails",
-  tabTrigger: "verify",
-  uuid: "9ECBF20C-003E-41D9-A881-4BAC0656F9DC"},
- {bundlePath: 
-   "/Users/tobi/Library/Application Support/TextMate/Bundles/Custom.tmbundle",
-  content: 
-   "verify :only => [:$1], :session => :user, :params => :id, :redirect_to => {:action => '${2:index}'}\n",
-  name: "verify — redirect",
-  scope: "source.ruby.rails",
-  tabTrigger: "verify",
-  uuid: "7BBD3F57-57A5-4CD0-8E79-B931021FC110"},
- {content: "\\$LABEL",
-  name: "$LABEL",
-  scope: "source.yaml",
-  tabTrigger: "$L",
-  uuid: "786980D8-FA69-4542-85A3-5E48CFAA6814"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}Fixtures.identify(:${1:name})${TM_RAILS_TEMPLATE_END_RUBY_EXPR}$0",
-  name: "<%= Fixtures.identify(:symbol) %>",
-  scope: "source.yaml",
-  tabTrigger: "fi",
-  uuid: "9671EB7A-89D6-4C23-914F-88CBEE0D177A"},
- {content: "t.binary :${1:title}${2:, :limit => ${3:2}.megabytes}\n$0",
-  name: "Table column binary",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcbi",
-  uuid: "5E9B8B0E-D532-11DC-BD8E-00112475D960"},
- {content: "t.boolean :${1:title}\n$0",
-  name: "Table column boolean",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcb",
-  uuid: "967093B4-D532-11DC-BD8E-00112475D960"},
- {content: 
-   "class ${1:Model}Controller < ApplicationController\n\tbefore_filter :find_${2:model}\n\n\t$0\n\n\tprivate\n\tdef find_${2}\n\t\t@$2 = ${3:$1}.find(params[:id]) if params[:id]\n\tend\nend",
-  name: "Create controller class",
-  scope: "source.ruby",
-  tabTrigger: "cla",
-  uuid: "4B3F798E-E3B6-48C8-8C2F-CB8631011638"},
- {content: "t.date :${1:title}\n$0",
-  name: "Table column date",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcda",
-  uuid: "56276686-D532-11DC-BD8E-00112475D960"},
- {content: "t.datetime :${1:title}\n$0",
-  name: "Table column datetime",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcdt",
-  uuid: "D6CBCA96-D52F-11DC-BD8E-00112475D960"},
- {content: 
-   "t.decimal :${1:title}${2:${3:, :precision => ${4:10}}${5:, :scale => ${6:2}}}\n$0",
-  name: "Table column decimal",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcd",
-  uuid: "93A16768-D52E-11DC-BD8E-00112475D960"},
- {content: "t.float :${1:title}\n$0",
-  name: "Table column float",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcf",
-  uuid: "8AF989C4-D52E-11DC-BD8E-00112475D960"},
- {content: 
-   "require File.dirname(__FILE__) + '/../test_helper'\n\nclass ${1:Model}ControllerTest < ActionController::TestCase\n\tdeft$0\nend\n",
-  name: "Create functional test class",
-  scope: "source.ruby",
-  tabTrigger: "cla",
-  uuid: "F60D0630-CBF5-4283-9D20-FA46C787A88D"},
- {content: "t.integer :${1:title}\n$0",
-  name: "Table column integer",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tci",
-  uuid: "729D559E-D52D-11DC-BD8E-00112475D960"},
- {content: "t.integer :lock_version, :null => false, :default => 0\n$0",
-  name: "Table column lock_version",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcl",
-  uuid: "FC2523C1-D532-11DC-BD8E-00112475D960"},
- {content: 
-   "t.references :${1:taggable}${2:, :polymorphic => ${3:{ :default => '${4:Photo}' \\}}}\n$0",
-  name: "Table column(s) references",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcr",
-  uuid: "EDA6568B-D533-11DC-BD8E-00112475D960"},
- {content: "t.string :${1:title}\n$0",
-  name: "Table column string",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcs",
-  uuid: "377BF814-D52D-11DC-BD8E-00112475D960"},
- {content: "t.text :${1:title}\n$0",
-  name: "Table column text",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tct",
-  uuid: "6A9D4C30-D52D-11DC-BD8E-00112475D960"},
- {content: "t.time :${1:title}\n$0",
-  name: "Table column time",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcti",
-  uuid: "4F5DDD37-D532-11DC-BD8E-00112475D960"},
- {content: "t.timestamp :${1:title}\n$0",
-  name: "Table column timestamp",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tcts",
-  uuid: "4600CE20-D532-11DC-BD8E-00112475D960"},
- {content: "t.timestamps\n$0",
-  name: "Table column timestamps",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tctss",
-  uuid: "E0C8FDC4-D532-11DC-BD8E-00112475D960"},
- {content: "t.rename(:${1:old_column_name}, :${2:new_column_name})\n$0",
-  name: "Table column(s) rename",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "tre",
-  uuid: "DF30226E-1111-448A-B669-7CA34EE83909"},
- {content: "after_create ",
-  name: "after_create",
-  scope: "source.ruby.rails",
-  tabTrigger: "aftc",
-  uuid: "279D1981-B055-4693-B9AF-5B571A62A6AE"},
- {content: "after_destroy ",
-  name: "after_destroy",
-  scope: "source.ruby.rails",
-  tabTrigger: "aftd",
-  uuid: "A2F3E8C1-4216-4890-8491-2F8C7534ED03"},
- {content: "after_save ",
-  name: "after_save",
-  scope: "source.ruby.rails",
-  tabTrigger: "afts",
-  uuid: "4D1787E3-1583-4CF3-8D99-CC45D7C35EED"},
- {content: "after_update ",
-  name: "after_update",
-  scope: "source.ruby.rails",
-  tabTrigger: "aftu",
-  uuid: "0C9EA1A1-66C5-4E1C-9C30-E1FFE8EC6EAE"},
- {content: "after_validation ",
-  name: "after_validation",
-  scope: "source.ruby.rails",
-  tabTrigger: "aftv",
-  uuid: "44FBD811-70A9-462B-AC56-F975ADAD62AF"},
- {content: "after_validation_on_create ",
-  name: "after_validation_on_create",
-  scope: "source.ruby.rails",
-  tabTrigger: "aftvoc",
-  uuid: "BA0DE6C7-EAD3-42C9-8ABB-2B9A5F2FE225"},
- {content: "after_validation_on_update ",
-  name: "after_validation_on_update",
-  scope: "source.ruby.rails",
-  tabTrigger: "aftvou",
-  uuid: "BCB25D36-2D3F-41E9-B2CF-37D6E883E8D1"},
- {content: "assert(${1:var} = assigns(:${1}), \"Cannot find @${1}\")\n$0",
-  name: "assert(var = assigns(:var))",
-  scope: "source.ruby",
-  tabTrigger: "asg",
-  uuid: "FE9C4B4E-860D-49F0-AAF7-5582B98F5F54"},
- {content: "assert_difference \"${1:Model}.${2:count}\", ${3:1} do\n  $0\nend",
-  name: "assert_difference",
-  scope: "source.ruby",
-  tabTrigger: "asd",
-  uuid: "30BEA6FB-301C-4460-93EC-FA3404688962"},
- {content: "assert_no_difference \"${1:Model}.${2:count}\" do\n  $0\nend",
-  name: "assert_no_difference",
-  scope: "source.ruby",
-  tabTrigger: "asnd",
-  uuid: "5C6F4462-70E6-40B4-B3F2-F371656E7784"},
- {content: 
-   "assert_redirected_to ${10:${2:parent}_${3:child}_path(${4:@}${5:${2}})}",
-  name: "assert_redirected_to (nested path plural)",
-  scope: "source.ruby.rails",
-  tabTrigger: "artnpp",
-  uuid: "4C92C020-7337-4D6E-91EE-7ABF2BFC7F41"},
- {content: 
-   "assert_redirected_to ${2:${12:parent}_${13:child}_path(${14:@}${15:${12}}, ${16:@}${17:${13}})}",
-  name: "assert_redirected_to (nested path)",
-  scope: "source.ruby.rails",
-  tabTrigger: "artnp",
-  uuid: "97021C0D-EB65-4046-B688-01F09B3B1615"},
- {content: "assert_redirected_to ${10:${2:model}s_path}",
-  name: "assert_redirected_to (path plural)",
-  scope: "source.ruby.rails",
-  tabTrigger: "artpp",
-  uuid: "0249637E-0720-46DA-A8FD-E176A2CC458B"},
- {content: "assert_redirected_to ${2:${12:model}_path(${13:@}${14:${12}})}",
-  name: "assert_redirected_to (path)",
-  scope: "source.ruby.rails",
-  tabTrigger: "artp",
-  uuid: "D33EDCE7-F8AF-48D4-AA7A-852BBF03E31D"},
- {content: "assert_rjs :${1:replace}, ${2:\"${3:dom id}\"}",
-  name: "assert_rjs",
-  scope: "source.ruby.rails",
-  tabTrigger: "asrj",
-  uuid: "E0F281EC-5311-41F8-ADD9-2E2D059DA651"},
- {content: 
-   "assert_select '${1:path}'${2:, :${3:text} => ${4:'${5:inner_html}'}}${6: do\n\t$0\nend}",
-  name: "assert_select",
-  scope: "source.ruby.rails",
-  tabTrigger: "ass",
-  uuid: "DBE14FE8-B415-4DBC-A316-F8DA63FE9FD7"},
- {content: "before_create ",
-  name: "before_create",
-  scope: "source.ruby.rails",
-  tabTrigger: "befc",
-  uuid: "D64D8863-DCB6-4397-B5B0-073E0AE04167"},
- {content: "before_destroy ",
-  name: "before_destroy",
-  scope: "source.ruby.rails",
-  tabTrigger: "befd",
-  uuid: "3F4B502B-5F68-4687-88E9-6EF3BDF9677D"},
- {content: "before_save ",
-  name: "before_save",
-  scope: "source.ruby.rails",
-  tabTrigger: "befs",
-  uuid: "523BE8A6-0845-493D-A9B6-532F73D21950"},
- {content: "before_update ",
-  name: "before_update",
-  scope: "source.ruby.rails",
-  tabTrigger: "befu",
-  uuid: "1C20EEBE-B4BA-48C8-9B33-7B5BB00D958C"},
- {content: "before_validation ",
-  name: "before_validation",
-  scope: "source.ruby.rails",
-  tabTrigger: "befv",
-  uuid: "A1776279-5396-4FE9-9218-8BF2C88C5271"},
- {content: "before_validation_on_create ",
-  name: "before_validation_on_create",
-  scope: "source.ruby.rails",
-  tabTrigger: "befvoc",
-  uuid: "E2CE2E3B-8A61-4866-9AF5-A12F44CF7233"},
- {content: "before_validation_on_update",
-  name: "before_validation_on_update",
-  scope: "source.ruby.rails",
-  tabTrigger: "befvou",
-  uuid: "86CFB156-E72B-440F-9C7D-08A3375C3ADB"},
- {content: "cattr_accessor :${0:attr_names}",
-  name: "cattr_accessor",
-  scope: "source.ruby.rails",
-  tabTrigger: "crw",
-  uuid: "F57522B2-9F5F-4DF9-AE46-9478AF019C63"},
- {content: 
-   "def create\n\t@${1:model} = ${2:${1/[[:alpha:]]+|(_)/(?1::\\u$0)/g}}.new(params[:$1])\n\t$0\n\trespond_to do |wants|\n\t\tif @$1.save\n\t\t\tflash[:notice] = '$2 was successfully created.'\n\t\t\twants.html { redirect_to(@$1) }\n\t\t\twants.xml { render :xml => @$1, :status => :created, :location => @$1 }\n\t\telse\n\t\t\twants.html { render :action => \"new\" }\n\t\t\twants.xml { render :xml => @$1.errors, :status => :unprocessable_entity }\n\t\tend\n\tend\nend\n",
-  name: "def create - resource",
-  scope: "meta.rails.controller",
-  tabTrigger: "defcreate",
-  uuid: "54F61419-001F-4B71-83AC-8DC633694AF0"},
- {content: 
-   "def test_should_get_${1:action}\n\t${2:@${3:model} = ${4:$3s}(:${5:fixture_name})\n\t}get :${1}${6:, :id => @$3.to_param}\n\tassert_response :success\n\t$0\nend",
-  name: "def test_should_get_action",
-  scope: "meta.rails.functional_test",
-  tabTrigger: "deftg",
-  uuid: "1C491A76-751F-44EF-8DFB-0A585C7EEFF6"},
- {content: 
-   "def test_should_post_${1:action}\n\t${3:@$2 = ${4:$2s}(:${5:fixture_name})\n\t}post :${1}${6:, :id => @$2.to_param}, :${2:model} => { $0 }\n\tassert_response :redirect\n\nend",
-  name: "def test_should_post_action",
-  scope: "meta.rails.functional_test",
-  tabTrigger: "deftp",
-  uuid: "8B9CD068-4338-4039-AA06-D839A6C7A9FF"},
- {content: "<% end -%>",
-  name: "end (ERB)",
-  scope: "text.html.ruby",
-  tabTrigger: "end",
-  uuid: "AC385ABF-96CD-4FCB-80AD-BF37D6EE79D2"},
- {content: 
-   "find(:all${1:, :conditions => ['${2:${3:field} = ?}', ${5:true}]})",
-  name: "find(:all)",
-  scope: "source.ruby.rails",
-  tabTrigger: "fina",
-  uuid: "A017AB39-A875-40DC-8ACF-7E3551057CA0"},
- {content: 
-   "find(:first${1:, :conditions => ['${2:${3:field} = ?}', ${5:true}]})",
-  name: "find(:first)",
-  scope: "source.ruby.rails",
-  tabTrigger: "finf",
-  uuid: "FE430ECD-5D40-4D95-A73B-F064C73992DE"},
- {content: "find(${1:id})",
-  name: "find(id)",
-  scope: "source.ruby.rails",
-  tabTrigger: "fini",
-  uuid: "59CD3A41-8164-4FB4-B462-D7ACE86BCDBF"},
- {content: 
-   "<% if !${1:list}.blank? %>\n  <% for ${2:item} in ${1} %>\n    $3\n  <% end %>\n<% else %>\n  $4\n<% end %>\n",
-  name: "for loop in rhtml",
-  scope: "text.html.ruby",
-  tabTrigger: "for",
-  uuid: "F7744F07-306C-4951-AB5A-3D69BA5516B7"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.check_box :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "form_for check_box",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ffcb",
-  uuid: "F0DB6886-4FFE-45BA-907F-44326AD8142D"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.check_box :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "f.check_box (ffcb)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "f.",
-  uuid: "F579F9E7-E072-4BCC-BFF9-C8C5BAE7FFA5"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.file_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "form_for file_field",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ffff",
-  uuid: "C8BA285D-E12E-4AB8-A941-514C963E8226"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.file_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "f.file_field (ffff)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "f.",
-  uuid: "79BC2303-3D9D-4E21-AF85-73B388B7B56D"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.hidden_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "form_for hidden_field",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ffhf",
-  uuid: "99FEFD9B-5A07-46E3-950D-5C474E42B695"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.hidden_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "f.hidden_field (ffhf)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "f.",
-  uuid: "5DBA8F72-DD6C-4CBF-83FD-76301E159BA9"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.label :${1:attribute}${2:, \"${3:${1/[[:alpha:]]+|(_)/(?1: :\\u$0)/g}}\"}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "form_for label",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ffl",
-  uuid: "B31822D9-2048-4D16-B2AF-00E0B4E5C368"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.label :${1:attribute}${2:, \"${3:${1/[[:alpha:]]+|(_)/(?1: :\\u$0)/g}}\"}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "f.label (ffl)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "f.",
-  uuid: "402C251E-595B-4A58-8EB9-41989040F280"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.password_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "form_for password_field",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ffpf",
-  uuid: "3379FB35-C664-4255-96C6-6E4B91F12759"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.password_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "f.password_field (ffpf)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "f.",
-  uuid: "42289456-C8D1-498C-AE30-5206544B349F"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.radio_box :${1:attribute}, :${2:tag_value}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "form_for radio_box",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ffrb",
-  uuid: "D4282CE1-4171-4B13-9220-3F2718BC2505"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.radio_box :${1:attribute}, :${2:tag_value}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "f.radio_box (ffrb)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "f.",
-  uuid: "A95358D2-C68A-4894-8C36-062C9F45848A"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.submit \"${1:Submit}\"${2:, :disable_with => '${3:$1ing...}'}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "form_for submit",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ffs",
-  uuid: "3000E569-4E19-4566-B08E-A3FFFAAC9075"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.submit \"${1:Submit}\"${2:, :disable_with => '${3:$1ing...}'}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "f.submit (ffs)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "f.",
-  uuid: "C315EC5D-A7F3-49CB-9795-21B78BB42FF4"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.text_area :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "form_for text_area",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ffta",
-  uuid: "4C898FA8-D09C-4B28-BE42-14BB4EA4E2B1"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.text_area :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "f.text_area (ffta)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "f.",
-  uuid: "06498926-F84D-466C-8736-B8A0AC586A94"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.text_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "form_for text_field",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "fftf",
-  uuid: "F46EE8EE-239C-46D7-980B-3F861B7D9111"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.text_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "f.text_field (fftf)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "f.",
-  uuid: "CC1BCD1C-2479-4335-B511-17B880316A75"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}error_messages_for :${1:model}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}\n\n${TM_RAILS_TEMPLATE_START_RUBY_INLINE}form_for @${2:$1} do |f|${TM_RAILS_TEMPLATE_END_RUBY_INLINE}\n  $0\n${TM_RAILS_TEMPLATE_END_RUBY_BLOCK}",
-  name: "form_for with errors",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ffe",
-  uuid: "15BDD7B6-5C15-4684-93C7-A05E3D2221AC"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_INLINE}form_for @${1:model} do |f|${TM_RAILS_TEMPLATE_END_RUBY_INLINE}\n  $0\n${TM_RAILS_TEMPLATE_END_RUBY_BLOCK}",
-  name: "form_for",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ff",
-  uuid: "7D99041D-C3B7-4940-AE64-6B1758CDB47C"},
- {content: 
-   "has_many :${1:objects}, :through => :${2:join_association}${3:, :source => :${4:${2}_table_foreign_key_to_${1}_table}}",
-  name: "has_many (through)",
-  scope: "source.ruby.rails",
-  tabTrigger: "hmt",
-  uuid: "9D58B6C9-BA52-48B3-B639-D5CB894AF810"},
- {content: 
-   "has_many :${1:object}s${2:, :class_name => \"${1}\", :foreign_key => \"${4:reference}_id\"}, :dependent => :destroy$0",
-  name: "has_many :dependent => :destroy",
-  scope: "source.ruby.rails",
-  tabTrigger: "hmd",
-  uuid: "3E3AF538-171B-4108-AB92-827AD7E24C77"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}image_submit_tag(\"${1:agree.png}\"${2:${3:, :id => \"${4:${1/^(\\w+)(\\.\\w*)?$/$1/}}\"}${5:, :name => \"${6:${1/^(\\w+)(\\.\\w*)?$/$1/}}\"}${7:, :class => \"${8:${1/^(\\w+)(\\.\\w*)?$/$1/}-button}\"}${9:, :disabled => ${10:false}}})${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "image_submit_tag",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "ist",
-  uuid: "9FB9848E-EA5A-11DC-9DE5-00112475D960"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}javascript_include_tag ${1::all}${2:, :cache => ${3:true}}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "javascript_include_tag",
-  scope: "text.html.ruby",
-  tabTrigger: "jit",
-  uuid: "FEF49C86-9386-405E-A191-684D1C963E3A"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:\"${2:link text...}\"}, ${3:${10:parent}_${11:child}_path(${12:@}${13:${10}})}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to (nested path plural)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "linpp",
-  uuid: "866AAD87-E458-4F2D-9E7C-3CE73EFC047B"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:\"${2:link text...}\"}, ${3:${12:parent}_${13:child}_path(${14:@}${15:${12}}, ${16:@}${17:${13}})}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to (nested path)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "linp",
-  uuid: "750DEEF9-18A0-40FC-8E54-574CE5EE5565"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:\"${2:link text...}\"}, ${3:${4:model}s_path}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to (path plural)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "lipp",
-  uuid: "6BA737F0-63D1-4D82-9381-4331E18B12C5"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:\"${2:link text...}\"}, ${3:${12:model}_path(${13:@}${14:${12}})}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to (path)",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "lip",
-  uuid: "326B57A7-B4A9-447B-A3D2-0EA74158E1E1"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:model}.${2:name}, ${3:${4:$1}_path(${14:$1})}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "link_to model",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "lim",
-  uuid: "E5E08AA0-4EDD-4583-BF07-5D6C49E98410"},
- {content: "logger.debug { \"${1:message}\" }$0",
-  name: "logger.debug",
-  scope: "source.ruby.rails",
-  tabTrigger: "logd",
-  uuid: "D975E5C1-42C2-40F1-8960-0DA533B18113"},
- {content: "logger.error { \"${1:message}\" }$0",
-  name: "logger.error",
-  scope: "source.ruby.rails",
-  tabTrigger: "loge",
-  uuid: "7053B86A-9B81-4154-AB3C-61B8035C5D33"},
- {content: "logger.fatal { \"${1:message}\" }$0",
-  name: "logger.fatal",
-  scope: "source.ruby.rails",
-  tabTrigger: "logf",
-  uuid: "35E95C81-22F7-4C40-8297-ED21086DDA81"},
- {content: "logger.info { \"${1:message}\" }$0",
-  name: "logger.info",
-  scope: "source.ruby.rails",
-  tabTrigger: "logi",
-  uuid: "36E2A3EE-E9CC-4B7F-A4CF-AFAF970B8699"},
- {content: "logger.warn { \"${1:message}\" }$0",
-  name: "logger.warn",
-  scope: "source.ruby.rails",
-  tabTrigger: "logw",
-  uuid: "38D5CA05-E219-4399-A244-609AF40B1D0B"},
- {content: "map(&:${1:id})",
-  name: "map(&:sym_proc)",
-  scope: "source.ruby.rails",
-  tabTrigger: "mp",
-  uuid: "EC605540-C431-4FD0-AD91-D913118DACA7"},
- {content: 
-   "${1:map}.catch_all \"*${2:anything}\", :controller => \"${3:default}\", :action => \"${4:error}\"\n",
-  name: "map.catch_all",
-  scope: "meta.rails.routes",
-  tabTrigger: "mapca",
-  uuid: "F3606586-F905-4A91-92CA-82319239221D"},
- {content: "${1:map}.${2:connect} '${3::controller/:action/:id}'",
-  name: "map.named_route",
-  scope: "meta.rails.routes",
-  tabTrigger: "map",
-  uuid: "91C543BF-7BD8-4E3A-B493-AE572C5472A0"},
- {content: "${1:map}.resource :${2:resource}${10: do |${11:$2}|\n  $0\nend}",
-  name: "map.resource",
-  scope: "meta.rails.routes",
-  tabTrigger: "mapr",
-  uuid: "2183A9A9-17ED-4A4F-ABB6-668EDDD3A6E4"},
- {content: "${1:map}.resources :${2:resource}${10: do |${11:$2}|\n  $0\nend}",
-  name: "map.resources",
-  scope: "meta.rails.routes",
-  tabTrigger: "maprs",
-  uuid: "0FF86C46-0E01-4D03-8232-72CA5BD55706"},
- {content: 
-   "${1:map}.with_options :${2:controller} => '${3:thing}' do |${4:$3}|\n\t$0\nend\n",
-  name: "map.with_options",
-  scope: "meta.rails.routes",
-  tabTrigger: "mapwo",
-  uuid: "BD4B90F7-2187-4E75-BFFB-77BE67CB8DAE"},
- {content: "mattr_accessor :${0:attr_names}",
-  name: "mattr_accessor",
-  scope: "source.ruby.rails",
-  tabTrigger: "mrw",
-  uuid: "B25B7560-FACB-4A9E-A226-B71C796BD1F3"},
- {content: 
-   "named_scope :name, lambda { |${1:param}| { :conditions => ${3:['${4:${5:field} = ?}', ${6:$1}]} } }\n",
-  name: "named_scope lambda",
-  scope: "source.ruby.rails",
-  tabTrigger: "ncl",
-  uuid: "4E286CB4-069E-474C-A970-95216FE7DE95"},
- {content: 
-   "named_scope :name${1:, :joins => :${2:table}}, :conditions => ${3:['${4:${5:field} = ?}', ${6:true}]}\n",
-  name: "named_scope",
-  scope: "source.ruby.rails",
-  tabTrigger: "nc",
-  uuid: "1CB65A0D-4FEC-4438-9B4F-8B0BD13FB875"},
- {content: "page.hide ${1:\"${2:id(s)}\"}",
-  name: "page.hide (*ids)",
-  scope: "source.ruby.rails.rjs",
-  tabTrigger: "hide",
-  uuid: "390A447F-0FA3-4F01-A10C-4F35675E0A43"},
- {content: 
-   "page.insert_html :${1:top}, ${2:\"${3:id}\"}, :${4:partial => \"${5:template}\"}",
-  name: "page.insert_html (position, id, partial)",
-  scope: "source.ruby.rails.rjs",
-  tabTrigger: "ins",
-  uuid: "62BEA590-F4EF-4001-B661-764EDFB92811"},
- {content: "page.replace ${1:\"${2:id}\"}, :${3:partial => \"${4:template}\"}",
-  name: "page.replace (id, partial)",
-  scope: "source.ruby.rails.rjs",
-  tabTrigger: "rep",
-  uuid: "273E5E76-8D13-4476-9C38-8AF87432CB96"},
- {content: 
-   "page.replace_html ${1:\"${2:id}\"}, :${3:partial => \"${4:template}\"}",
-  name: "page.replace_html (id, partial)",
-  scope: "source.ruby.rails.rjs",
-  tabTrigger: "reph",
-  uuid: "8B914165-9C66-4FA3-9AD6-1DA41B25F8F1"},
- {content: "page.show ${1:\"${2:id(s)}\"}",
-  name: "page.show (*ids)",
-  scope: "source.ruby.rails.rjs",
-  tabTrigger: "show",
-  uuid: "5ACBF49D-B5A5-495C-89D8-18AA740D9D02"},
- {content: "page.toggle ${1:\"${2:id(s)}\"}",
-  name: "page.toggle (*ids)",
-  scope: "source.ruby.rails.rjs",
-  tabTrigger: "tog",
-  uuid: "028DA0A4-B310-4BEF-8643-2A22993C21C7"},
- {content: "page.visual_effect :${1:toggle_slide}, ${2:\"${3:DOM ID}\"}",
-  name: "page.visual_effect (effect, id)",
-  scope: "source.ruby.rails.rjs",
-  tabTrigger: "vis",
-  uuid: "CFDC27A3-58CF-4198-8F93-36360978F0D0"},
- {content: 
-   "redirect_to(${2:${10:parent}_${11:child}_path(${12:@}${13:${10}})})",
-  name: "redirect_to (nested path plural)",
-  scope: "source.ruby.rails",
-  tabTrigger: "renpp",
-  uuid: "EF527A27-D1D4-4FD8-BD23-71397881C29A"},
- {content: 
-   "redirect_to(${2:${12:parent}_${13:child}_path(${14:@}${15:${12}}, ${16:@}${17:${13}})})",
-  name: "redirect_to (nested path)",
-  scope: "source.ruby.rails",
-  tabTrigger: "renp",
-  uuid: "9D7228B3-A6ED-4598-B096-032B3600864F"},
- {content: "redirect_to(${2:${10:model}s_path})",
-  name: "redirect_to (path plural)",
-  scope: "source.ruby.rails",
-  tabTrigger: "repp",
-  uuid: "AFE06B67-CE98-42A6-93D1-8EC8E3B9F83C"},
- {content: "redirect_to(${2:${12:model}_path(${13:@}${14:${12}})})",
-  name: "redirect_to (path)",
-  scope: "source.ruby.rails",
-  tabTrigger: "rep",
-  uuid: "A909C4C3-8EFE-4E39-9D96-BA8F0ABE6085"},
- {content: "render :update do |${2:page}|\n\t$2.$0\nend",
-  name: "render (update)",
-  scope: "source.ruby.rails",
-  tabTrigger: "ru",
-  uuid: "ECB10C0B-E8B7-4606-ABF5-4A2A26E5AB1A"},
- {content: 
-   "respond_to do |wants|\n\twants.html do\n\t\t$TM_SELECTED_TEXT\n\tend\n\twants.${1:js} { $0 }\nend",
-  keyEquivalent: /@H/,
-  name: "respond_to (html)",
-  scope: "meta.rails.controller",
-  uuid: "3BDD0D52-443E-4F5F-AE09-ABCC2ABE9A42"},
- {content: "respond_to do |wants|\n\twants.${1:html}${2: { $0 \\}}\nend",
-  name: "respond_to",
-  scope: "meta.rails.controller",
-  tabTrigger: "rest",
-  uuid: "B41D3164-EA53-4DDC-850E-27B82B24061F"},
- {content: 
-   "returning ${1:variable} do${2/(^(?<var>\\s*[a-z_][a-zA-Z0-9_]*\\s*)(,\\g<var>)*,?\\s*$)|.*/(?1: |)/}${2:v}${2/(^(?<var>\\s*[a-z_][a-zA-Z0-9_]*\\s*)(,\\g<var>)*,?\\s*$)|.*/(?1:|)/}\n\t$0\nend",
-  name: "returning do |variable| … end",
-  scope: "source.ruby.rails",
-  tabTrigger: "returning",
-  uuid: "D2783155-23F3-4B90-A317-5BD139471193"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}stylesheet_link_tag {1::all}${2:, :cache => ${3:true}}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "stylesheet_link_tag",
-  scope: "text.html.ruby",
-  tabTrigger: "slt",
-  uuid: "980C7667-9D60-49FF-AF74-A7B19B379F45"},
- {content: 
-   "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}submit_tag \"${1:Save changes}\"${2:, :id => \"${3:submit}\"}${4:, :name => \"${5:$3}\"}${6:, :class => \"${7:form_$3}\"}${8:, :disabled => ${9:false}}${10:, :disable_with => \"${11:Please wait...}\"}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}",
-  name: "submit_tag",
-  scope: "text.html.ruby, text.haml",
-  tabTrigger: "st",
-  uuid: "D0E29200-E910-11DC-A399-00112475D960"},
- {content: "t.binary :${1:title}${2:, :limit => ${3:2}.megabytes}\nt.$0",
-  name: "t.binary (tcbi)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "7CE57C6C-E4BE-11DC-A11A-00112475D960"},
- {content: "t.boolean :${1:title}\nt.$0",
-  name: "t.boolean (tcb)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "6BE6F315-E4BE-11DC-A11A-00112475D960"},
- {content: "t.date :${1:title}\nt.$0",
-  name: "t.date (tcda)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "61CF5B32-E4BE-11DC-A11A-00112475D960"},
- {content: "t.datetime :${1:title}\nt.$0",
-  name: "t.datetime (tcdt)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "3458B140-E4BE-11DC-A11A-00112475D960"},
- {content: 
-   "t.decimal :${1:title}${2:${3:, :precision => ${4:10}}${5:, :scale => ${6:2}}}\nt.$0",
-  name: "t.decimal (tcd)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "26C09807-E4BE-11DC-A11A-00112475D960"},
- {content: "t.float :${1:title}\nt.$0",
-  name: "t.float (tcf)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "1BDC463A-E4BE-11DC-A11A-00112475D960"},
- {content: "t.integer :${1:title}\nt.$0",
-  name: "t.integer (tci)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "0E63B7D5-E4BE-11DC-A11A-00112475D960"},
- {content: "t.integer :lock_version, :null => false, :default => 0\nt.$0",
-  name: "t.lock_version (tcl)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "A677FFD4-E4BE-11DC-A11A-00112475D960"},
- {content: 
-   "t.references :${1:taggable}${2:, :polymorphic => ${3:{ :default => '${4:Photo}' \\}}}\nt.$0",
-  name: "t.references (tcr)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "B6D9225C-E4BE-11DC-A11A-00112475D960"},
- {content: "t.rename(:${1:old_column_name}, :${2:new_column_name})\nt.$0",
-  name: "t.rename (tre)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "9D4E30E2-4A61-4941-B9F3-BEE97552747A"},
- {content: "t.string :${1:title}\nt.$0",
-  name: "t.string (tcs)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "B757F7E5-E4BD-11DC-A11A-00112475D960"},
- {content: "t.text :${1:title}\nt.$0",
-  name: "t.text (tct)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "FFE7B820-E4BD-11DC-A11A-00112475D960"},
- {content: "t.time :${1:title}\nt.$0",
-  name: "t.time (tcti)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "537BDD48-E4BE-11DC-A11A-00112475D960"},
- {content: "t.timestamp :${1:title}\nt.$0",
-  name: "t.timestamp (tcts)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "49643690-E4BE-11DC-A11A-00112475D960"},
- {content: "t.timestamps\nt.$0",
-  name: "t.timestamps (tctss)",
-  scope: 
-   "meta.rails.migration.create_table, meta.rails.migration.change_table",
-  tabTrigger: "t.",
-  uuid: "950B0BF2-E4BE-11DC-A11A-00112475D960"},
- {content: 
-   "validates_acceptance_of :${1:terms}${2:${3:, :accept => \"${4:1}\"}${5:, :message => \"${6:You must accept the terms of service}\"}}, :if => proc { |obj| ${7:obj.condition?} }}",
-  name: "validates_acceptance_of if",
-  scope: "source.ruby.rails",
-  tabTrigger: "vaoif",
-  uuid: "A2477223-AD5A-4723-8052-943CE9BA634D"},
- {content: 
-   "validates_acceptance_of :${1:terms}${2:${3:, :accept => \"${4:1}\"}${5:, :message => \"${6:You must accept the terms of service}\"}}",
-  name: "validates_acceptance_of",
-  scope: "source.ruby.rails",
-  tabTrigger: "vao",
-  uuid: "89198999-7E6D-4D97-A20E-45263E1CA993"},
- {content: 
-   "validates_format_of :${1:attribute}, :with => /${2:^[${3:\\w\\d}]+\\$}/${4:, :on => :${5:create}, :message => \"${6:is invalid}\"}, :if => proc { |obj| ${7:obj.condition?} }}",
-  name: "validates_format_of if",
-  scope: "source.ruby.rails",
-  tabTrigger: "vfif",
-  uuid: "14BF0586-F2E8-4AB3-BB4B-E49099384403"},
- {content: 
-   "validates_format_of :${1:attribute}, :with => /${2:^[${3:\\w\\d}]+\\$}/${4:, :on => :${5:create}, :message => \"${6:is invalid}\"}",
-  name: "validates_format_of",
-  scope: "source.ruby.rails",
-  tabTrigger: "vf",
-  uuid: "EB47FBA1-AFB3-42F9-94A4-552D3175C17A"},
- {content: 
-   "validates_inclusion_of :${1:attribute}${2:, :in => ${3:%w( ${4:mov avi} )}, :on => :${5:create}, :message => \"${6:extension %s is not included in the list}\"}, :if => proc { |obj| ${7:obj.condition?} }}",
-  name: "validates_inclusion_of if",
-  scope: "source.ruby.rails",
-  tabTrigger: "viif",
-  uuid: "47FF50AF-E9BF-11DC-8518-00112475D960"},
- {content: 
-   "validates_inclusion_of :${1:attribute}${2:, :in => ${3:%w( ${4:mov avi} )}, :on => :${5:create}, :message => \"${6:extension %s is not included in the list}\"}",
-  name: "validates_inclusion_of",
-  scope: "source.ruby.rails",
-  tabTrigger: "vi",
-  uuid: "4611F02E-E9BF-11DC-8518-00112475D960"},
- {content: 
-   "validates_length_of :${1:attribute}, :within => ${2:3..20}${3:, :on => :${4:create}, :message => \"${5:must be present}\"}, :if => proc { |obj| ${6:obj.condition?} }}",
-  name: "validates_length_of if",
-  scope: "source.ruby.rails",
-  tabTrigger: "vlif",
-  uuid: "EC511A43-D3B7-11DC-BA49-00112475D960"},
- {content: 
-   "validates_numericality_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:is not a number}\"}, :if => proc { |obj| ${5:obj.condition?} }}",
-  name: "validates_numericality_of if",
-  scope: "source.ruby.rails",
-  tabTrigger: "vnif",
-  uuid: "CF506019-E964-4172-A3DA-475AE3B65558"},
- {content: 
-   "validates_numericality_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:is not a number}\"}",
-  name: "validates_numericality_of",
-  scope: "source.ruby.rails",
-  tabTrigger: "vn",
-  uuid: "B21BA16D-7C04-4912-8488-425CDCC332A8"},
- {content: "wants.${1:js|xml|html}${2: { $0 \\}}",
-  name: "wants.format",
-  scope: "meta.rails.controller",
-  tabTrigger: "wants",
-  uuid: "3F26FDB4-ACF9-4856-9312-6A4D78DC8564"},
- {content: "xhr :delete, :${1:destroy}, :id => ${2:1}$0",
-  name: "xhr delete",
-  scope: "source.ruby.rails",
-  tabTrigger: "xdelete",
-  uuid: "F1BE0C3D-7203-43E9-BEFB-D1A99CDD31C1"},
- {content: "xhr :get, :${1:show}${2:, :id => ${3:1}}$0",
-  name: "xhr get",
-  scope: "source.ruby.rails",
-  tabTrigger: "xget",
-  uuid: "78FCF992-D01B-404F-BC54-5EE7B91F999A"},
- {content: "xhr :post, :${1:create}, :${2:object} => { $3 }",
-  name: "xhr post",
-  scope: "source.ruby.rails",
-  tabTrigger: "xpost",
-  uuid: "62C3838B-0790-4FC2-8425-F273A57F5D33"},
- {content: "xhr :put, :${1:update}, :id => ${2:1}, :${3:object} => { $4 }$0",
-  name: "xhr put",
-  scope: "source.ruby.rails",
-  tabTrigger: "xput",
-  uuid: "C12C98A5-74E5-4E70-9ADB-8783455D6539"}]
+{"ft" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_tag",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_INLINE}form_tag(${1::action => \"${5:update}\"}${6:, {:${8:class} => \"${9:form}\"\\}}) do${TM_RAILS_TEMPLATE_END_RUBY_EXPR}\n  $0\n${TM_RAILS_TEMPLATE_END_RUBY_BLOCK}"},
+ "mcol" => 
+  {scope: 
+    "meta.rails.migration - meta.rails.migration.create_table - meta.rails.migration.change_table",
+   name: "Remove / Add Column",
+   content: 
+    "remove_column :${1:table}, :${2:column}${3: [press tab twice to generate add_column]}"},
+ "mccc" => 
+  {scope: "meta.rails.migration.create_table",
+   name: "Create Several Columns in Table",
+   content: "t.column ${1:title}, :${2:string}\nmccc$0"},
+ "mtab" => 
+  {scope: 
+    "meta.rails.migration - meta.rails.migration.create_table - meta.rails.migration.change_table",
+   name: "Drop / Create Table",
+   content: 
+    "drop_table :${1:table}${2: [press tab twice to generate create_table]}"},
+ "rdb" => 
+  {scope: "source.ruby.rails",
+   name: "RAILS_DEFAULT_LOGGER.debug",
+   content: "RAILS_DEFAULT_LOGGER.debug \"${1:message}\"$0"},
+ "art" => 
+  {scope: "source.ruby.rails",
+   name: "assert_redirected_to",
+   content: "assert_redirected_to ${2::action => \"${1:index}\"}"},
+ "asre" => 
+  {scope: "source.ruby.rails",
+   name: "assert_response",
+   content: "assert_response :${1:success}, @response.body$0"},
+ "bt" => 
+  {scope: "source.ruby.rails",
+   name: "belongs_to",
+   content: 
+    "belongs_to :${1:object}${2:, :class_name => \"${3:${1/[[:alpha:]]+|(_)/(?1::\\u$0)/g}}\", :foreign_key => \"${4:${1}_id}\"}"},
+ "habtm" => 
+  {scope: "source.ruby.rails",
+   name: "has_and_belongs_to_many",
+   content: 
+    "has_and_belongs_to_many :${1:object}${2:, :join_table => \"${3:table_name}\", :foreign_key => \"${4:${1}_id}\"}"},
+ "hm" => 
+  {scope: "source.ruby.rails",
+   name: "has_many",
+   content: 
+    "has_many :${1:object}s${2:, :class_name => \"${1}\", :foreign_key => \"${4:reference}_id\"}"},
+ "ho" => 
+  {scope: "source.ruby.rails",
+   name: "has_one",
+   content: 
+    "has_one :${1:object}${2:, :class_name => \"${3:${1/[[:alpha:]]+|(_)/(?1::\\u$0)/g}}\", :foreign_key => \"${4:${1}_id}\"}"},
+ "lia" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to (action)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :action => \"${2:index}\"${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "liai" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to (action, id)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :action => \"${2:edit}\", :id => ${3:@item}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "lic" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to (controller)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :controller => \"${2:items}\"${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "lica" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to (controller, action)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :controller => \"${2:items}\", :action => \"${3:index}\"${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "licai" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to (controller, action, id)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to \"${1:link text...}\", :controller => \"${2:items}\", :action => \"${3:edit}\", :id => ${4:@item}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "flash" => 
+  {scope: "source.ruby.rails",
+   name: "flash[…]",
+   content: "flash[:${1:notice}] = \"${2:Successfully created...}\"$0"},
+ nil => 
+  {scope: "meta.rails.controller",
+   name: "respond_to (html)",
+   content: 
+    "respond_to do |wants|\n\twants.html do\n\t\t$TM_SELECTED_TEXT\n\tend\n\twants.${1:js} { $0 }\nend"},
+ "rea" => 
+  {scope: "source.ruby.rails",
+   name: "redirect_to (action)",
+   content: "redirect_to :action => \"${1:index}\""},
+ "reai" => 
+  {scope: "source.ruby.rails",
+   name: "redirect_to (action, id)",
+   content: "redirect_to :action => \"${1:show}\", :id => ${0:@item}"},
+ "rec" => 
+  {scope: "source.ruby.rails",
+   name: "redirect_to (controller)",
+   content: "redirect_to :controller => \"${1:items}\""},
+ "reca" => 
+  {scope: "source.ruby.rails",
+   name: "redirect_to (controller, action)",
+   content: 
+    "redirect_to :controller => \"${1:items}\", :action => \"${2:list}\""},
+ "recai" => 
+  {scope: "source.ruby.rails",
+   name: "redirect_to (controller, action, id)",
+   content: 
+    "redirect_to :controller => \"${1:items}\", :action => \"${2:show}\", :id => ${0:@item}"},
+ "ra" => 
+  {scope: "source.ruby.rails",
+   name: "render (action)",
+   content: "render :action => \"${1:action}\""},
+ "ral" => 
+  {scope: "source.ruby.rails",
+   name: "render (action, layout)",
+   content: 
+    "render :action => \"${1:action}\", :layout => \"${2:layoutname}\""},
+ "rf" => 
+  {scope: "source.ruby.rails",
+   name: "render (file)",
+   content: "render :file => \"${1:filepath}\""},
+ "rfu" => 
+  {scope: "source.ruby.rails",
+   name: "render (file, use_full_path)",
+   content: "render :file => \"${1:filepath}\", :use_full_path => ${2:false}"},
+ "ri" => 
+  {scope: "source.ruby.rails",
+   name: "render (inline)",
+   content: "render :inline => \"${1:<%= 'hello' %>}\""},
+ "ril" => 
+  {scope: "source.ruby.rails",
+   name: "render (inline, locals)",
+   content: 
+    "render :inline => \"${1:<%= 'hello' %>}\", :locals => { ${2::name} => \"${3:value}\"$4 }"},
+ "rit" => 
+  {scope: "source.ruby.rails",
+   name: "render (inline, type)",
+   content: "render :inline => \"${1:<%= 'hello' %>}\", :type => ${2::rxml}"},
+ "rl" => 
+  {scope: "source.ruby.rails",
+   name: "render (layout)",
+   content: "render :layout => \"${1:layoutname}\""},
+ "rn" => 
+  {scope: "source.ruby.rails",
+   name: "render (nothing)",
+   content: "render :nothing => ${1:true}"},
+ "rns" => 
+  {scope: "source.ruby.rails",
+   name: "render (nothing, status)",
+   content: "render :nothing => ${1:true}, :status => ${2:401}"},
+ "rp" => 
+  {scope: "source.ruby.rails",
+   name: "render (partial)",
+   content: "render :partial => \"${1:item}\""},
+ "rpc" => 
+  {scope: "source.ruby.rails",
+   name: "render (partial, collection)",
+   content: "render :partial => \"${1:item}\", :collection => ${2:@$1s}"},
+ "rpl" => 
+  {scope: "source.ruby.rails",
+   name: "render (partial, locals)",
+   content: 
+    "render :partial => \"${1:item}\", :locals => { :${2:$1} => ${3:@$1}$0 }"},
+ "rpo" => 
+  {scope: "source.ruby.rails",
+   name: "render (partial, object)",
+   content: "render :partial => \"${1:item}\", :object => ${2:@$1}"},
+ "rps" => 
+  {scope: "source.ruby.rails",
+   name: "render (partial, status)",
+   content: "render :partial => \"${1:item}\", :status => ${2:500}"},
+ "rt" => 
+  {scope: "source.ruby.rails",
+   name: "render (text)",
+   content: "render :text => \"${1:text to render...}\""},
+ "rtl" => 
+  {scope: "source.ruby.rails",
+   name: "render (text, layout)",
+   content: 
+    "render :text => \"${1:text to render...}\", :layout => \"${2:layoutname}\""},
+ "rtlt" => 
+  {scope: "source.ruby.rails",
+   name: "render (text, layout => true)",
+   content: 
+    "render :text => \"${1:text to render...}\", :layout => ${2:true}"},
+ "rts" => 
+  {scope: "source.ruby.rails",
+   name: "render (text, status)",
+   content: "render :text => \"${1:text to render...}\", :status => ${2:401}"},
+ "va" => 
+  {scope: "source.ruby.rails",
+   name: "validates_associated",
+   content: "validates_associated :${1:attribute}${2:, :on => :${3:create}}"},
+ "vaif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_associated if",
+   content: 
+    "validates_associated :${1:attribute}${2:, :on => :${3:create}, :if => proc { |obj| ${5:obj.condition?} }}"},
+ "vc" => 
+  {scope: "source.ruby.rails",
+   name: "validates_confirmation_of",
+   content: 
+    "validates_confirmation_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:should match confirmation}\"}"},
+ "vcif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_confirmation_of if",
+   content: 
+    "validates_confirmation_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:should match confirmation}\", :if => proc { |obj| ${5:obj.condition?} }}"},
+ "ve" => 
+  {scope: "source.ruby.rails",
+   name: "validates_exclusion_of",
+   content: 
+    "validates_exclusion_of :${1:attribute}${2:, :in => ${3:%w( ${4:mov avi} )}, :on => :${5:create}, :message => \"${6:extension %s is not allowed}\"}"},
+ "veif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_exclusion_of if",
+   content: 
+    "validates_exclusion_of :${1:attribute}${2:, :in => ${3:%w( ${4:mov avi} )}, :on => :${5:create}, :message => \"${6:extension %s is not allowed}\"}, :if => proc { |obj| ${7:obj.condition?} }}"},
+ "vl" => 
+  {scope: "source.ruby.rails",
+   name: "validates_length_of",
+   content: 
+    "validates_length_of :${1:attribute}, :within => ${2:3..20}${3:, :on => :${4:create}, :message => \"${5:must be present}\"}"},
+ "vp" => 
+  {scope: "source.ruby.rails",
+   name: "validates_presence_of",
+   content: 
+    "validates_presence_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:can't be blank}\"}"},
+ "vpif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_presence_of if",
+   content: 
+    "validates_presence_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:can't be blank}\"}, :if => proc { |obj| ${5:obj.condition?} }}"},
+ "vu" => 
+  {scope: "source.ruby.rails",
+   name: "validates_uniqueness_of",
+   content: 
+    "validates_uniqueness_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:must be unique}\"}"},
+ "vuif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_uniqueness_of if",
+   content: 
+    "validates_uniqueness_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:must be unique}\", :if => proc { |obj| ${6:obj.condition?} }}"},
+ "verify" => 
+  {scope: "source.ruby.rails",
+   name: "verify — redirect",
+   content: 
+    "verify :only => [:$1], :session => :user, :params => :id, :redirect_to => {:action => '${2:index}'}\n"},
+ "$L" => {scope: "source.yaml", name: "$LABEL", content: "\\$LABEL"},
+ "fi" => 
+  {scope: "source.yaml",
+   name: "<%= Fixtures.identify(:symbol) %>",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}Fixtures.identify(:${1:name})${TM_RAILS_TEMPLATE_END_RUBY_EXPR}$0"},
+ "tcbi" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column binary",
+   content: "t.binary :${1:title}${2:, :limit => ${3:2}.megabytes}\n$0"},
+ "tcb" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column boolean",
+   content: "t.boolean :${1:title}\n$0"},
+ "cla" => 
+  {scope: "source.ruby",
+   name: "Create functional test class",
+   content: 
+    "require File.dirname(__FILE__) + '/../test_helper'\n\nclass ${1:Model}ControllerTest < ActionController::TestCase\n\tdeft$0\nend\n"},
+ "tcda" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column date",
+   content: "t.date :${1:title}\n$0"},
+ "tcdt" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column datetime",
+   content: "t.datetime :${1:title}\n$0"},
+ "tcd" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column decimal",
+   content: 
+    "t.decimal :${1:title}${2:${3:, :precision => ${4:10}}${5:, :scale => ${6:2}}}\n$0"},
+ "tcf" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column float",
+   content: "t.float :${1:title}\n$0"},
+ "tci" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column integer",
+   content: "t.integer :${1:title}\n$0"},
+ "tcl" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column lock_version",
+   content: "t.integer :lock_version, :null => false, :default => 0\n$0"},
+ "tcr" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column(s) references",
+   content: 
+    "t.references :${1:taggable}${2:, :polymorphic => ${3:{ :default => '${4:Photo}' \\}}}\n$0"},
+ "tcs" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column string",
+   content: "t.string :${1:title}\n$0"},
+ "tct" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column text",
+   content: "t.text :${1:title}\n$0"},
+ "tcti" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column time",
+   content: "t.time :${1:title}\n$0"},
+ "tcts" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column timestamp",
+   content: "t.timestamp :${1:title}\n$0"},
+ "tctss" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column timestamps",
+   content: "t.timestamps\n$0"},
+ "tre" => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "Table column(s) rename",
+   content: "t.rename(:${1:old_column_name}, :${2:new_column_name})\n$0"},
+ "aftc" => 
+  {scope: "source.ruby.rails", name: "after_create", content: "after_create "},
+ "aftd" => 
+  {scope: "source.ruby.rails",
+   name: "after_destroy",
+   content: "after_destroy "},
+ "afts" => 
+  {scope: "source.ruby.rails", name: "after_save", content: "after_save "},
+ "aftu" => 
+  {scope: "source.ruby.rails", name: "after_update", content: "after_update "},
+ "aftv" => 
+  {scope: "source.ruby.rails",
+   name: "after_validation",
+   content: "after_validation "},
+ "aftvoc" => 
+  {scope: "source.ruby.rails",
+   name: "after_validation_on_create",
+   content: "after_validation_on_create "},
+ "aftvou" => 
+  {scope: "source.ruby.rails",
+   name: "after_validation_on_update",
+   content: "after_validation_on_update "},
+ "asg" => 
+  {scope: "source.ruby",
+   name: "assert(var = assigns(:var))",
+   content: "assert(${1:var} = assigns(:${1}), \"Cannot find @${1}\")\n$0"},
+ "asd" => 
+  {scope: "source.ruby",
+   name: "assert_difference",
+   content: 
+    "assert_difference \"${1:Model}.${2:count}\", ${3:1} do\n  $0\nend"},
+ "asnd" => 
+  {scope: "source.ruby",
+   name: "assert_no_difference",
+   content: "assert_no_difference \"${1:Model}.${2:count}\" do\n  $0\nend"},
+ "artnpp" => 
+  {scope: "source.ruby.rails",
+   name: "assert_redirected_to (nested path plural)",
+   content: 
+    "assert_redirected_to ${10:${2:parent}_${3:child}_path(${4:@}${5:${2}})}"},
+ "artnp" => 
+  {scope: "source.ruby.rails",
+   name: "assert_redirected_to (nested path)",
+   content: 
+    "assert_redirected_to ${2:${12:parent}_${13:child}_path(${14:@}${15:${12}}, ${16:@}${17:${13}})}"},
+ "artpp" => 
+  {scope: "source.ruby.rails",
+   name: "assert_redirected_to (path plural)",
+   content: "assert_redirected_to ${10:${2:model}s_path}"},
+ "artp" => 
+  {scope: "source.ruby.rails",
+   name: "assert_redirected_to (path)",
+   content: "assert_redirected_to ${2:${12:model}_path(${13:@}${14:${12}})}"},
+ "asrj" => 
+  {scope: "source.ruby.rails",
+   name: "assert_rjs",
+   content: "assert_rjs :${1:replace}, ${2:\"${3:dom id}\"}"},
+ "ass" => 
+  {scope: "source.ruby.rails",
+   name: "assert_select",
+   content: 
+    "assert_select '${1:path}'${2:, :${3:text} => ${4:'${5:inner_html}'}}${6: do\n\t$0\nend}"},
+ "befc" => 
+  {scope: "source.ruby.rails",
+   name: "before_create",
+   content: "before_create "},
+ "befd" => 
+  {scope: "source.ruby.rails",
+   name: "before_destroy",
+   content: "before_destroy "},
+ "befs" => 
+  {scope: "source.ruby.rails", name: "before_save", content: "before_save "},
+ "befu" => 
+  {scope: "source.ruby.rails",
+   name: "before_update",
+   content: "before_update "},
+ "befv" => 
+  {scope: "source.ruby.rails",
+   name: "before_validation",
+   content: "before_validation "},
+ "befvoc" => 
+  {scope: "source.ruby.rails",
+   name: "before_validation_on_create",
+   content: "before_validation_on_create "},
+ "befvou" => 
+  {scope: "source.ruby.rails",
+   name: "before_validation_on_update",
+   content: "before_validation_on_update"},
+ "crw" => 
+  {scope: "source.ruby.rails",
+   name: "cattr_accessor",
+   content: "cattr_accessor :${0:attr_names}"},
+ "defcreate" => 
+  {scope: "meta.rails.controller",
+   name: "def create - resource",
+   content: 
+    "def create\n\t@${1:model} = ${2:${1/[[:alpha:]]+|(_)/(?1::\\u$0)/g}}.new(params[:$1])\n\t$0\n\trespond_to do |wants|\n\t\tif @$1.save\n\t\t\tflash[:notice] = '$2 was successfully created.'\n\t\t\twants.html { redirect_to(@$1) }\n\t\t\twants.xml { render :xml => @$1, :status => :created, :location => @$1 }\n\t\telse\n\t\t\twants.html { render :action => \"new\" }\n\t\t\twants.xml { render :xml => @$1.errors, :status => :unprocessable_entity }\n\t\tend\n\tend\nend\n"},
+ "deftg" => 
+  {scope: "meta.rails.functional_test",
+   name: "def test_should_get_action",
+   content: 
+    "def test_should_get_${1:action}\n\t${2:@${3:model} = ${4:$3s}(:${5:fixture_name})\n\t}get :${1}${6:, :id => @$3.to_param}\n\tassert_response :success\n\t$0\nend"},
+ "deftp" => 
+  {scope: "meta.rails.functional_test",
+   name: "def test_should_post_action",
+   content: 
+    "def test_should_post_${1:action}\n\t${3:@$2 = ${4:$2s}(:${5:fixture_name})\n\t}post :${1}${6:, :id => @$2.to_param}, :${2:model} => { $0 }\n\tassert_response :redirect\n\nend"},
+ "end" => {scope: "text.html.ruby", name: "end (ERB)", content: "<% end -%>"},
+ "fina" => 
+  {scope: "source.ruby.rails",
+   name: "find(:all)",
+   content: 
+    "find(:all${1:, :conditions => ['${2:${3:field} = ?}', ${5:true}]})"},
+ "finf" => 
+  {scope: "source.ruby.rails",
+   name: "find(:first)",
+   content: 
+    "find(:first${1:, :conditions => ['${2:${3:field} = ?}', ${5:true}]})"},
+ "fini" => 
+  {scope: "source.ruby.rails", name: "find(id)", content: "find(${1:id})"},
+ "for" => 
+  {scope: "text.html.ruby",
+   name: "for loop in rhtml",
+   content: 
+    "<% if !${1:list}.blank? %>\n  <% for ${2:item} in ${1} %>\n    $3\n  <% end %>\n<% else %>\n  $4\n<% end %>\n"},
+ "ffcb" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for check_box",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.check_box :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "f." => 
+  {scope: "text.html.ruby, text.haml",
+   name: "f.text_field (fftf)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.text_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "ffff" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for file_field",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.file_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "ffhf" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for hidden_field",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.hidden_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "ffl" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for label",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.label :${1:attribute}${2:, \"${3:${1/[[:alpha:]]+|(_)/(?1: :\\u$0)/g}}\"}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "ffpf" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for password_field",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.password_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "ffrb" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for radio_box",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.radio_box :${1:attribute}, :${2:tag_value}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "ffs" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for submit",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.submit \"${1:Submit}\"${2:, :disable_with => '${3:$1ing...}'}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "ffta" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for text_area",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.text_area :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "fftf" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for text_field",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}f.text_field :${1:attribute}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "ffe" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for with errors",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}error_messages_for :${1:model}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}\n\n${TM_RAILS_TEMPLATE_START_RUBY_INLINE}form_for @${2:$1} do |f|${TM_RAILS_TEMPLATE_END_RUBY_INLINE}\n  $0\n${TM_RAILS_TEMPLATE_END_RUBY_BLOCK}"},
+ "ff" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "form_for",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_INLINE}form_for @${1:model} do |f|${TM_RAILS_TEMPLATE_END_RUBY_INLINE}\n  $0\n${TM_RAILS_TEMPLATE_END_RUBY_BLOCK}"},
+ "hmt" => 
+  {scope: "source.ruby.rails",
+   name: "has_many (through)",
+   content: 
+    "has_many :${1:objects}, :through => :${2:join_association}${3:, :source => :${4:${2}_table_foreign_key_to_${1}_table}}"},
+ "hmd" => 
+  {scope: "source.ruby.rails",
+   name: "has_many :dependent => :destroy",
+   content: 
+    "has_many :${1:object}s${2:, :class_name => \"${1}\", :foreign_key => \"${4:reference}_id\"}, :dependent => :destroy$0"},
+ "ist" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "image_submit_tag",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}image_submit_tag(\"${1:agree.png}\"${2:${3:, :id => \"${4:${1/^(\\w+)(\\.\\w*)?$/$1/}}\"}${5:, :name => \"${6:${1/^(\\w+)(\\.\\w*)?$/$1/}}\"}${7:, :class => \"${8:${1/^(\\w+)(\\.\\w*)?$/$1/}-button}\"}${9:, :disabled => ${10:false}}})${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "jit" => 
+  {scope: "text.html.ruby",
+   name: "javascript_include_tag",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}javascript_include_tag ${1::all}${2:, :cache => ${3:true}}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "linpp" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to (nested path plural)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:\"${2:link text...}\"}, ${3:${10:parent}_${11:child}_path(${12:@}${13:${10}})}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "linp" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to (nested path)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:\"${2:link text...}\"}, ${3:${12:parent}_${13:child}_path(${14:@}${15:${12}}, ${16:@}${17:${13}})}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "lipp" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to (path plural)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:\"${2:link text...}\"}, ${3:${4:model}s_path}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "lip" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to (path)",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:\"${2:link text...}\"}, ${3:${12:model}_path(${13:@}${14:${12}})}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "lim" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "link_to model",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}link_to ${1:model}.${2:name}, ${3:${4:$1}_path(${14:$1})}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "logd" => 
+  {scope: "source.ruby.rails",
+   name: "logger.debug",
+   content: "logger.debug { \"${1:message}\" }$0"},
+ "loge" => 
+  {scope: "source.ruby.rails",
+   name: "logger.error",
+   content: "logger.error { \"${1:message}\" }$0"},
+ "logf" => 
+  {scope: "source.ruby.rails",
+   name: "logger.fatal",
+   content: "logger.fatal { \"${1:message}\" }$0"},
+ "logi" => 
+  {scope: "source.ruby.rails",
+   name: "logger.info",
+   content: "logger.info { \"${1:message}\" }$0"},
+ "logw" => 
+  {scope: "source.ruby.rails",
+   name: "logger.warn",
+   content: "logger.warn { \"${1:message}\" }$0"},
+ "mp" => 
+  {scope: "source.ruby.rails",
+   name: "map(&:sym_proc)",
+   content: "map(&:${1:id})"},
+ "mapca" => 
+  {scope: "meta.rails.routes",
+   name: "map.catch_all",
+   content: 
+    "${1:map}.catch_all \"*${2:anything}\", :controller => \"${3:default}\", :action => \"${4:error}\"\n"},
+ "map" => 
+  {scope: "meta.rails.routes",
+   name: "map.named_route",
+   content: "${1:map}.${2:connect} '${3::controller/:action/:id}'"},
+ "mapr" => 
+  {scope: "meta.rails.routes",
+   name: "map.resource",
+   content: "${1:map}.resource :${2:resource}${10: do |${11:$2}|\n  $0\nend}"},
+ "maprs" => 
+  {scope: "meta.rails.routes",
+   name: "map.resources",
+   content: 
+    "${1:map}.resources :${2:resource}${10: do |${11:$2}|\n  $0\nend}"},
+ "mapwo" => 
+  {scope: "meta.rails.routes",
+   name: "map.with_options",
+   content: 
+    "${1:map}.with_options :${2:controller} => '${3:thing}' do |${4:$3}|\n\t$0\nend\n"},
+ "mrw" => 
+  {scope: "source.ruby.rails",
+   name: "mattr_accessor",
+   content: "mattr_accessor :${0:attr_names}"},
+ "ncl" => 
+  {scope: "source.ruby.rails",
+   name: "named_scope lambda",
+   content: 
+    "named_scope :name, lambda { |${1:param}| { :conditions => ${3:['${4:${5:field} = ?}', ${6:$1}]} } }\n"},
+ "nc" => 
+  {scope: "source.ruby.rails",
+   name: "named_scope",
+   content: 
+    "named_scope :name${1:, :joins => :${2:table}}, :conditions => ${3:['${4:${5:field} = ?}', ${6:true}]}\n"},
+ "hide" => 
+  {scope: "source.ruby.rails.rjs",
+   name: "page.hide (*ids)",
+   content: "page.hide ${1:\"${2:id(s)}\"}"},
+ "ins" => 
+  {scope: "source.ruby.rails.rjs",
+   name: "page.insert_html (position, id, partial)",
+   content: 
+    "page.insert_html :${1:top}, ${2:\"${3:id}\"}, :${4:partial => \"${5:template}\"}"},
+ "rep" => 
+  {scope: "source.ruby.rails",
+   name: "redirect_to (path)",
+   content: "redirect_to(${2:${12:model}_path(${13:@}${14:${12}})})"},
+ "reph" => 
+  {scope: "source.ruby.rails.rjs",
+   name: "page.replace_html (id, partial)",
+   content: 
+    "page.replace_html ${1:\"${2:id}\"}, :${3:partial => \"${4:template}\"}"},
+ "show" => 
+  {scope: "source.ruby.rails.rjs",
+   name: "page.show (*ids)",
+   content: "page.show ${1:\"${2:id(s)}\"}"},
+ "tog" => 
+  {scope: "source.ruby.rails.rjs",
+   name: "page.toggle (*ids)",
+   content: "page.toggle ${1:\"${2:id(s)}\"}"},
+ "vis" => 
+  {scope: "source.ruby.rails.rjs",
+   name: "page.visual_effect (effect, id)",
+   content: "page.visual_effect :${1:toggle_slide}, ${2:\"${3:DOM ID}\"}"},
+ "renpp" => 
+  {scope: "source.ruby.rails",
+   name: "redirect_to (nested path plural)",
+   content: 
+    "redirect_to(${2:${10:parent}_${11:child}_path(${12:@}${13:${10}})})"},
+ "renp" => 
+  {scope: "source.ruby.rails",
+   name: "redirect_to (nested path)",
+   content: 
+    "redirect_to(${2:${12:parent}_${13:child}_path(${14:@}${15:${12}}, ${16:@}${17:${13}})})"},
+ "repp" => 
+  {scope: "source.ruby.rails",
+   name: "redirect_to (path plural)",
+   content: "redirect_to(${2:${10:model}s_path})"},
+ "ru" => 
+  {scope: "source.ruby.rails",
+   name: "render (update)",
+   content: "render :update do |${2:page}|\n\t$2.$0\nend"},
+ "rest" => 
+  {scope: "meta.rails.controller",
+   name: "respond_to",
+   content: "respond_to do |wants|\n\twants.${1:html}${2: { $0 \\}}\nend"},
+ "returning" => 
+  {scope: "source.ruby.rails",
+   name: "returning do |variable| … end",
+   content: 
+    "returning ${1:variable} do${2/(^(?<var>\\s*[a-z_][a-zA-Z0-9_]*\\s*)(,\\g<var>)*,?\\s*$)|.*/(?1: |)/}${2:v}${2/(^(?<var>\\s*[a-z_][a-zA-Z0-9_]*\\s*)(,\\g<var>)*,?\\s*$)|.*/(?1:|)/}\n\t$0\nend"},
+ "slt" => 
+  {scope: "text.html.ruby",
+   name: "stylesheet_link_tag",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}stylesheet_link_tag {1::all}${2:, :cache => ${3:true}}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "st" => 
+  {scope: "text.html.ruby, text.haml",
+   name: "submit_tag",
+   content: 
+    "${TM_RAILS_TEMPLATE_START_RUBY_EXPR}submit_tag \"${1:Save changes}\"${2:, :id => \"${3:submit}\"}${4:, :name => \"${5:$3}\"}${6:, :class => \"${7:form_$3}\"}${8:, :disabled => ${9:false}}${10:, :disable_with => \"${11:Please wait...}\"}${TM_RAILS_TEMPLATE_END_RUBY_EXPR}"},
+ "t." => 
+  {scope: 
+    "meta.rails.migration.create_table, meta.rails.migration.change_table",
+   name: "t.timestamps (tctss)",
+   content: "t.timestamps\nt.$0"},
+ "vaoif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_acceptance_of if",
+   content: 
+    "validates_acceptance_of :${1:terms}${2:${3:, :accept => \"${4:1}\"}${5:, :message => \"${6:You must accept the terms of service}\"}}, :if => proc { |obj| ${7:obj.condition?} }}"},
+ "vao" => 
+  {scope: "source.ruby.rails",
+   name: "validates_acceptance_of",
+   content: 
+    "validates_acceptance_of :${1:terms}${2:${3:, :accept => \"${4:1}\"}${5:, :message => \"${6:You must accept the terms of service}\"}}"},
+ "vfif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_format_of if",
+   content: 
+    "validates_format_of :${1:attribute}, :with => /${2:^[${3:\\w\\d}]+\\$}/${4:, :on => :${5:create}, :message => \"${6:is invalid}\"}, :if => proc { |obj| ${7:obj.condition?} }}"},
+ "vf" => 
+  {scope: "source.ruby.rails",
+   name: "validates_format_of",
+   content: 
+    "validates_format_of :${1:attribute}, :with => /${2:^[${3:\\w\\d}]+\\$}/${4:, :on => :${5:create}, :message => \"${6:is invalid}\"}"},
+ "viif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_inclusion_of if",
+   content: 
+    "validates_inclusion_of :${1:attribute}${2:, :in => ${3:%w( ${4:mov avi} )}, :on => :${5:create}, :message => \"${6:extension %s is not included in the list}\"}, :if => proc { |obj| ${7:obj.condition?} }}"},
+ "vi" => 
+  {scope: "source.ruby.rails",
+   name: "validates_inclusion_of",
+   content: 
+    "validates_inclusion_of :${1:attribute}${2:, :in => ${3:%w( ${4:mov avi} )}, :on => :${5:create}, :message => \"${6:extension %s is not included in the list}\"}"},
+ "vlif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_length_of if",
+   content: 
+    "validates_length_of :${1:attribute}, :within => ${2:3..20}${3:, :on => :${4:create}, :message => \"${5:must be present}\"}, :if => proc { |obj| ${6:obj.condition?} }}"},
+ "vnif" => 
+  {scope: "source.ruby.rails",
+   name: "validates_numericality_of if",
+   content: 
+    "validates_numericality_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:is not a number}\"}, :if => proc { |obj| ${5:obj.condition?} }}"},
+ "vn" => 
+  {scope: "source.ruby.rails",
+   name: "validates_numericality_of",
+   content: 
+    "validates_numericality_of :${1:attribute}${2:, :on => :${3:create}, :message => \"${4:is not a number}\"}"},
+ "wants" => 
+  {scope: "meta.rails.controller",
+   name: "wants.format",
+   content: "wants.${1:js|xml|html}${2: { $0 \\}}"},
+ "xdelete" => 
+  {scope: "source.ruby.rails",
+   name: "xhr delete",
+   content: "xhr :delete, :${1:destroy}, :id => ${2:1}$0"},
+ "xget" => 
+  {scope: "source.ruby.rails",
+   name: "xhr get",
+   content: "xhr :get, :${1:show}${2:, :id => ${3:1}}$0"},
+ "xpost" => 
+  {scope: "source.ruby.rails",
+   name: "xhr post",
+   content: "xhr :post, :${1:create}, :${2:object} => { $3 }"},
+ "xput" => 
+  {scope: "source.ruby.rails",
+   name: "xhr put",
+   content: "xhr :put, :${1:update}, :id => ${2:1}, :${3:object} => { $4 }$0"}}

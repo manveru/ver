@@ -1,59 +1,26 @@
 # Encoding: UTF-8
 
-[{content: "<array>\n\t$0\n</array>",
-  name: "array",
-  scope: "text.xml.plist",
-  tabTrigger: "array",
-  uuid: "8980A4DF-5255-4F70-8D4A-ED3BE0DAED0E"},
- {content: "<data>\n\t$1\n</data>",
-  name: "data",
-  scope: "text.xml.plist",
-  tabTrigger: "data",
-  uuid: "9D710F5B-7E88-4CA1-B866-E00C3E52AAFC"},
- {content: 
-   "<date>${1:YYYY}${2/.+/-/}${2:MM}${3/.+/-/}${3:DD}${4/.+/T/}${4:hh}${5/.+/:/}${5:mm}${6/.+/:/}${6:ss}${4/.+/Z/}</date>",
-  name: "date",
-  scope: "text.xml.plist",
-  tabTrigger: "date",
-  uuid: "87529322-785A-4446-840F-6E669BE03063"},
- {content: "<dict>\n\t$0\n</dict>",
-  name: "dict",
-  scope: "text.xml.plist",
-  tabTrigger: "dict",
-  uuid: "6F380BCA-86F8-411A-9570-8479727A40C6"},
- {content: "<false/>",
-  name: "false",
-  scope: "text.xml.plist",
-  tabTrigger: "f",
-  uuid: "46E6D569-E146-4116-AB4C-D74D6463F160"},
- {content: "<integer>$1</integer>",
-  name: "integer",
-  scope: "text.xml.plist",
-  tabTrigger: "int",
-  uuid: "9A9CF12C-A358-48E2-A79D-4BA484164B21"},
- {content: "<key>$1</key>",
-  name: "key",
-  scope: "text.xml.plist",
-  tabTrigger: "key",
-  uuid: "CB054597-2636-45F7-B620-93E3E1CBE917"},
- {content: 
-   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n$0\n</plist>",
-  name: "plist",
-  scope: "text.xml.plist",
-  tabTrigger: "plist",
-  uuid: "38A33B03-FD95-47C9-9525-423BCD737932"},
- {content: "<real>$1</real>",
-  name: "real",
-  scope: "text.xml.plist",
-  tabTrigger: "real",
-  uuid: "E8DC4BC2-C315-4159-B0F7-24902F2C01BE"},
- {content: "<string>$1</string>",
-  name: "string",
-  scope: "text.xml.plist",
-  tabTrigger: "str",
-  uuid: "B454B512-8514-4293-AF58-60CE3FFDB05A"},
- {content: "<true/>",
-  name: "true",
-  scope: "text.xml.plist",
-  tabTrigger: "t",
-  uuid: "651313F5-EC36-48F2-A815-838D47B67BEF"}]
+{"array" => 
+  {scope: "text.xml.plist", name: "array", content: "<array>\n\t$0\n</array>"},
+ "data" => 
+  {scope: "text.xml.plist", name: "data", content: "<data>\n\t$1\n</data>"},
+ "date" => 
+  {scope: "text.xml.plist",
+   name: "date",
+   content: 
+    "<date>${1:YYYY}${2/.+/-/}${2:MM}${3/.+/-/}${3:DD}${4/.+/T/}${4:hh}${5/.+/:/}${5:mm}${6/.+/:/}${6:ss}${4/.+/Z/}</date>"},
+ "dict" => 
+  {scope: "text.xml.plist", name: "dict", content: "<dict>\n\t$0\n</dict>"},
+ "f" => {scope: "text.xml.plist", name: "false", content: "<false/>"},
+ "int" => 
+  {scope: "text.xml.plist", name: "integer", content: "<integer>$1</integer>"},
+ "key" => {scope: "text.xml.plist", name: "key", content: "<key>$1</key>"},
+ "plist" => 
+  {scope: "text.xml.plist",
+   name: "plist",
+   content: 
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n$0\n</plist>"},
+ "real" => {scope: "text.xml.plist", name: "real", content: "<real>$1</real>"},
+ "str" => 
+  {scope: "text.xml.plist", name: "string", content: "<string>$1</string>"},
+ "t" => {scope: "text.xml.plist", name: "true", content: "<true/>"}}

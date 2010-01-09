@@ -1,34 +1,26 @@
 # Encoding: UTF-8
 
-[{content: "Controls: ${1:visible|hidden}",
-  name: "Controls",
-  scope: "source.s5",
-  tabTrigger: "controls",
-  uuid: "5FE4E6AA-D9C1-43AB-9C44-82F2AE6A4916"},
- {content: 
-   "✂------✂------✂------✂------✂------✂------✂------✂------✂------✂------\n",
-  name: "Slide Divider",
-  scope: "source.s5",
-  tabTrigger: "cut",
-  uuid: "8761D7E2-80EE-4531-84E2-8B71B0FF7A77"},
- {content: "View: ${1:slideshow|outline}",
-  name: "View",
-  scope: "source.s5",
-  tabTrigger: "view",
-  uuid: "09734BA5-3B2D-422C-93E6-D0AEE6EA68C5"},
- {content: "__________\n\n${1:Notes for printout}\n",
-  name: "Handout",
-  scope: "source.s5",
-  tabTrigger: "hand",
-  uuid: "4DD5128E-939A-41FA-92C5-5CB62C584533"},
- {content: 
-   "✂------✂------✂------✂------✂------✂------✂------✂------✂------✂------\n\n${1:Heading}\n${1/(.)|(?m:\\n.*)/(?1:=)/g}\n${2:Subheading}\n${2/(.)|(?m:\\n.*)/(?1:-)/g}\n\n${3:* Point One\n* Point Two\n  * Subpoint\n* Point Three}\n",
-  name: "New Slide",
-  scope: "source.s5",
-  tabTrigger: "slide",
-  uuid: "9338A42C-2B70-4E7B-BBD2-34369E8B0418"},
- {content: "##########\n\n${1:Notes for presenting}\n",
-  name: "Notes",
-  scope: "source.s5",
-  tabTrigger: "note",
-  uuid: "24D8B922-37F5-43EB-AD4D-625969A16AEF"}]
+{"controls" => 
+  {scope: "source.s5",
+   name: "Controls",
+   content: "Controls: ${1:visible|hidden}"},
+ "cut" => 
+  {scope: "source.s5",
+   name: "Slide Divider",
+   content: 
+    "✂------✂------✂------✂------✂------✂------✂------✂------✂------✂------\n"},
+ "view" => 
+  {scope: "source.s5", name: "View", content: "View: ${1:slideshow|outline}"},
+ "hand" => 
+  {scope: "source.s5",
+   name: "Handout",
+   content: "__________\n\n${1:Notes for printout}\n"},
+ "slide" => 
+  {scope: "source.s5",
+   name: "New Slide",
+   content: 
+    "✂------✂------✂------✂------✂------✂------✂------✂------✂------✂------\n\n${1:Heading}\n${1/(.)|(?m:\\n.*)/(?1:=)/g}\n${2:Subheading}\n${2/(.)|(?m:\\n.*)/(?1:-)/g}\n\n${3:* Point One\n* Point Two\n  * Subpoint\n* Point Three}\n"},
+ "note" => 
+  {scope: "source.s5",
+   name: "Notes",
+   content: "##########\n\n${1:Notes for presenting}\n"}}

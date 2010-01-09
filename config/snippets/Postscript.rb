@@ -1,3 +1,3 @@
 # Encoding: UTF-8
 
-[]
+{}

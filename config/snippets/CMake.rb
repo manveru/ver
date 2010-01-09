@@ -1,44 +1,34 @@
 # Encoding: UTF-8
 
-[{content: "FILE(GLOB${1:_RECURSE} ${2:VAR} ${3:src/*.cc})",
-  name: "File(Glob …)",
-  scope: "source.cmake",
-  tabTrigger: "glob",
-  uuid: "C6535099-87C4-4FDF-9359-95C33C23B3FC"},
- {content: "FOREACH(${1:VAR} ${2:items})\n\t$0\nENDFOREACH()",
-  name: "Foreach … EndForeach",
-  scope: "source.cmake",
-  tabTrigger: "for",
-  uuid: "56F808A2-C0ED-4EC9-8E9E-6892E51E0661"},
- {content: 
-   "FUNCTION(${1:FUNCTION_NAME}${2/(.+)/(?1: )/}${2:arg1})\n\t$0\nENDFUNCTION()",
-  name: "Function … EndFunction",
-  scope: "source.cmake",
-  tabTrigger: "fun",
-  uuid: "F7CA148C-C68F-4DDC-A217-2A266D18205A"},
- {content: "IF(${1:condition})\n\t$0\nENDIF()",
-  name: "If … Endif",
-  scope: "source.cmake",
-  tabTrigger: "if",
-  uuid: "4F059A9A-EEAA-49B6-AAE5-0E29A00CFF70"},
- {content: "LIST(APPEND ${1:LIST_VARIABLE} ${2:new_element})",
-  name: "List(Append …)",
-  scope: "source.cmake",
-  tabTrigger: "append",
-  uuid: "63E216D2-69EF-4ADF-80A4-46D8A6A6F716"},
- {content: 
-   "MACRO(${1:MACRO_NAME}${2/(.+)/(?1: )/}${2:arg1})\n\t$0\nENDMACRO()",
-  name: "Macro … EndMacro",
-  scope: "source.cmake",
-  tabTrigger: "mac",
-  uuid: "DA433498-38DE-4E5D-B3DA-64D8F793CECB"},
- {content: "MESSAGE(\"$1\")$0",
-  name: "Message(…)",
-  scope: "source.cmake",
-  tabTrigger: "msg",
-  uuid: "E9362AB2-F35B-436F-A042-69135E2F3744"},
- {content: "SET(${1:VAR} ${2:value})",
-  name: "Set(Variable …)",
-  scope: "source.cmake",
-  tabTrigger: "set",
-  uuid: "725B826B-7849-4A52-8F65-FE4D78378FE1"}]
+{"glob" => 
+  {scope: "source.cmake",
+   name: "File(Glob …)",
+   content: "FILE(GLOB${1:_RECURSE} ${2:VAR} ${3:src/*.cc})"},
+ "for" => 
+  {scope: "source.cmake",
+   name: "Foreach … EndForeach",
+   content: "FOREACH(${1:VAR} ${2:items})\n\t$0\nENDFOREACH()"},
+ "fun" => 
+  {scope: "source.cmake",
+   name: "Function … EndFunction",
+   content: 
+    "FUNCTION(${1:FUNCTION_NAME}${2/(.+)/(?1: )/}${2:arg1})\n\t$0\nENDFUNCTION()"},
+ "if" => 
+  {scope: "source.cmake",
+   name: "If … Endif",
+   content: "IF(${1:condition})\n\t$0\nENDIF()"},
+ "append" => 
+  {scope: "source.cmake",
+   name: "List(Append …)",
+   content: "LIST(APPEND ${1:LIST_VARIABLE} ${2:new_element})"},
+ "mac" => 
+  {scope: "source.cmake",
+   name: "Macro … EndMacro",
+   content: 
+    "MACRO(${1:MACRO_NAME}${2/(.+)/(?1: )/}${2:arg1})\n\t$0\nENDMACRO()"},
+ "msg" => 
+  {scope: "source.cmake", name: "Message(…)", content: "MESSAGE(\"$1\")$0"},
+ "set" => 
+  {scope: "source.cmake",
+   name: "Set(Variable …)",
+   content: "SET(${1:VAR} ${2:value})"}}
