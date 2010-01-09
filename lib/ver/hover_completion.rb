@@ -34,7 +34,7 @@ module VER
         selection_set(index)
         see(index)
 
-        Tk::Event.generate(list, '<<ListboxSelect>>')
+        Tk::Event.generate(self, '<<ListboxSelect>>')
       end
     end
 
