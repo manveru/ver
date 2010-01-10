@@ -9,7 +9,7 @@
    "profile",
    "bash_logout",
    ".textmate_init"],
- firstLineMatch: "^#!.*(bash|zsh|sh|tcsh)",
+ firstLineMatch: "^#!.*\\b(bash|zsh|sh|tcsh)",
  foldingStartMarker: /\b(if|case)\b|(\{|\b(do)\b)$/,
  foldingStopMarker: /^\s*(\}|(done|fi|esac)\b)/,
  keyEquivalent: /^~S/,

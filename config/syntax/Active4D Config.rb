@@ -29,7 +29,7 @@
     name: "constant.language.boolean.active4d-ini"},
    {match: /=/, name: "keyword.operator.active4d-ini"},
    {match: 
-     /(?i)((\b(use sessions|use session cookies|session var name|session timeout|session purge interval|session cookie path|session cookie name|session cookie domain|serve nonexecutables|script timeout|safe script dirs|safe doc dirs|root|refresh interval|receive timeout|platform charset|parameter mode|output encoding|output charset|max request size|log levellocale|lib extension|lib dirs|http error page|fusebox page|expires|executable extensions|error page|encrypted source|default page|content charset|client is web server|cache control|auto relate one|auto relate many|auto refresh libs|auto create vars|auto create sessions)\b)|(\<default\>|\<web\>|\<4d volume\>|\<boot volume\>))/,
+     /(?i)((\b(use sessions|use session cookies|session var name|session timeout|session purge interval|session cookie path|session cookie name|session cookie domain|serve nonexecutables|script timeout|safe script dirs|safe doc dirs|root|refresh interval|receive timeout|platform charset|parameter mode|output encoding|output charset|max request size|log level|locale|lib extension|lib dirs|http error page|fusebox page|expires|executable extensions|error page|encrypted source|default page|content charset|client is web server|cache control|auto relate one|auto relate many|auto refresh libs|auto create vars|auto create sessions)\b)|(\<default\>|\<web\>|\<4d volume\>|\<boot volume\>))/,
     name: "support.constant.active4d-ini"}],
  repository: 
   {escaped_char: 

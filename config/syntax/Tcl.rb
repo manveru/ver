@@ -1,6 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["tcl"],
+ firstLineMatch: "^#!/.*\\btclsh\\b",
  foldingStartMarker: /\{\s*$/,
  foldingStopMarker: /^\s*\}/,
  keyEquivalent: /^~T/,

@@ -16,7 +16,7 @@
      /\b(function|if|break|next|repeat|else|for|return|switch|while|in|invisible)\b/,
     name: "keyword.control.r"},
    {match: 
-     /\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\b/,
+     /\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(i|L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\b/,
     name: "constant.numeric.r"},
    {match: /\b(T|F|TRUE|FALSE|NULL|NA|Inf|NaN)\b/,
     name: "constant.language.r"},
@@ -58,6 +58,7 @@
     match: /([[:alpha:].][[:alnum:]._]*)\s*(=)(?=[^=])/},
    {match: /\b([\d_][[:alnum:]._]+)\b/,
     name: "invalid.illegal.variable.other.r"},
+   {match: /\b([[:alnum:]_]+)(?=::)/, name: "entity.name.type.namespace.r"},
    {match: /\b([[:alnum:]._]+)\b/, name: "variable.other.r"}],
  scopeName: "source.r",
  uuid: "B2E6B78D-6E70-11D9-A369-000D93B3A10E"}

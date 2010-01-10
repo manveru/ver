@@ -69,6 +69,10 @@
   {scope: "source.r, source.rd.console",
    name: "Source",
    content: "source(${1:\"${2:}\"}${3:, chdir = ${4:TRUE}})"},
+ "fch" => 
+  {scope: "source.r, source.rd.console",
+   name: "file.choose",
+   content: "${1:file = }file.choose()${0:}"},
  "nao" => 
   {scope: "source.r, source.rd.console",
    name: "na.omit",

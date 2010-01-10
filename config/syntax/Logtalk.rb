@@ -1,6 +1,6 @@
 # Encoding: UTF-8
 
-{fileTypes: ["lgt", "config"],
+{fileTypes: ["lgt"],
  foldingStartMarker: /(\/\*|:-\s+(object|protocol|category)(?=[(]))/,
  foldingStopMarker: /(\*\/|:-\s+end_(object|protocol|category)(?=[.]))/,
  keyEquivalent: /^~L/,
@@ -29,7 +29,7 @@
     name: "storage.modifier.others.logtalk"},
    {captures: {1 => {name: "punctuation.definition.storage.modifier.logtalk"}},
     match: 
-     /(:-)\s(calls|e(lif|n(coding|sure_loaded)|xport)|i(f|n(itialization|fo))|set_(logtalk|prolog)_flag|uses)(?=[(])/,
+     /(:-)\s(calls|e(lif|n(coding|sure_loaded)|xport)|i(f|n(itialization|fo))|reexport|set_(logtalk|prolog)_flag|uses)(?=[(])/,
     name: "storage.modifier.others.logtalk"},
    {captures: {1 => {name: "punctuation.definition.storage.modifier.logtalk"}},
     match: 

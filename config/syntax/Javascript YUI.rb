@@ -1,6 +1,6 @@
 # Encoding: UTF-8
 
-{comment: "Yahoo User Interface Library",
+{comment: "Yahoo User Interface Library 2.8.0",
  foldingStartMarker: /(^.*{[^}]*$|^.*\([^\)]*$|^.*\/\*(?!.*\*\/).*$)/,
  foldingStopMarker: /(^\s*\}|^\s*\)|^(?!.*\/\*).*\*\/)/,
  keyEquivalent: /^~J/,
@@ -9,34 +9,34 @@
   [{match: /\b(YAHOO|YAHOO_config)\b/, name: "support.class.js.yui"},
    {match: /\.(util|lang|env|widget|example)\b/, name: "support.class.js.yui"},
    {match: 
-     /\.(CustomEvent|Subscriber|Event|EventProvider|Dom|Point|Region|Connect|DD|DDProxy|DDTarget|DragDrop|DragDropMgr|DDM|Anim|AnimMgr|Bezier|ColorAnim|Easing|Motion|Scroll|AutoComplete|DataSource|DS_JSArray|DS_JSFunction|DS_XHR|Config|KeyListener|Attribute|AttributeProvider|Element|History)\b/,
+     /\.(CustomEvent|Subscriber|Event|EventProvider|Dom|Point|Region|Connect|DD|DDProxy|DDTarget|DragDrop|DragDropMgr|DDM|Anim|AnimMgr|Bezier|ColorAnim|Easing|Motion|Scroll|AutoComplete|DataSource|DS_JSArray|DS_JSFunction|DS_XHR|Config|KeyListener|Attribute|AttributeProvider|Element|History|Cookie|Get|ImageLoader|Resize|Selector|Storage|StorageEngineGears|StorageEngineHTML5|StorageEngineKeyed|StorageEngineSWF|StorageEvent|StorageManager|SWFStore|StyleSheet|YUILoader)\b/,
     name: "support.class.js.yui"},
    {match: 
-     /\.(AutoComplete|DataSource|DS_JSArray|DS_JSFunction|DS_XHR|Calendar|Calendar2up|Calendar_Core|CalendarGroup|DateMath|Module|Overlay|OverlayManager|Tooltip|Panel|Dialog|SimpleDialog|ContainerEffect|Logger|LogMsg|LogReader|LogWriter|Menu|MenuItem|Menubar|MenuBarItem|MenuManager|MenuModule|MenuModuleItem|ContextMenu|ContextMenuItem|Slider|SliderThumb|Tab|TabView|TreeView|Node|HTMLNode|MenuNode|TextNode|RootNode|TVAnim|TVFadeIn|TVFadeOut|Column|ColumnEditor|ColumnSet|DataTable|Record|RecordSet|Sort|WidthResizer|Button|ButtonGroup)\b/,
+     /\.(AutoComplete|DataSource|DS_JSArray|DS_JSFunction|DS_XHR|Calendar|Calendar2up|Calendar_Core|CalendarGroup|DateMath|Module|Overlay|OverlayManager|Tooltip|Panel|Dialog|SimpleDialog|ContainerEffect|Logger|LogMsg|LogReader|LogWriter|Menu|MenuItem|Menubar|MenuBarItem|MenuManager|MenuModule|MenuModuleItem|ContextMenu|ContextMenuItem|Slider|SliderThumb|Tab|TabView|TreeView|Node|HTMLNode|MenuNode|TextNode|RootNode|TVAnim|TVFadeIn|TVFadeOut|Column|ColumnEditor|ColumnSet|DataTable|Record|RecordSet|Sort|WidthResizer|SWF|DateCellEditor|DropdownCellEditor|RadioCellEditor|ScrollingDataTable|TextareaCellEditor|TextboxCellEditor)\b/,
     name: "support.class.js.yui"},
    {match: /\.(log|namespace|register)\b(?=\()/,
     name: "support.function.YAHOO.js.yui"},
    {match: 
-     /\.(augment|extend|hasOwnProperty|isArray|isBoolean|isFunction|isNull|isNumber|isObject|isString|isUndefined)\b(?=\()/,
+     /\.(augment|augmentObject|augmentProto|dump|extend|hasOwnProperty|isArray|isBoolean|isFunction|isNull|isNumber|isObject|isString|isUndefined|isValue|later|merge|substitute|trim|JSON)\b(?=\()/,
     name: "support.function.lang.js.yui"},
    {match: /\.(getScope)\b(?=\()/, name: "support.function.Subscriber.js.yui"},
    {match: /\.(fire|subscribe|unsubscribe|unsubscribeAll)\b(?=\()/,
     name: "support.function.CustomEvent.js.yui"},
    {match: 
-     /\.(addListener|clearCache|fireLegacyEvent|generateId|getCharCode|getEl|getEvent|getLegacyIndex|getListeners|getPageX|getPageY|getRelatedTarget|getTarget|getTime|getXY|on|onAvailable|onContentReady|preventDefault|purgeElement|removeListener|resolveTextNode|startInterval|stopEvent|stopPropagation|useLegacyEvent)\b(?=\()/,
+     /\.(addListener|clearCache|delegate|fireLegacyEvent|generateId|getCharCode|getEl|getEvent|getLegacyIndex|getListeners|getPageX|getPageY|getRelatedTarget|getTarget|getTime|getXY|on|onAvailable|onContentReady|onDOMReady|preventDefault|purgeElement|removeListener|resolveTextNode|startInterval|stopEvent|stopPropagation|useLegacyEvent)\b(?=\()/,
     name: "support.function.Event.js.yui"},
    {match: /\.(createEvent|fireEvent|hasEvent|subscribe|unsubscribe)\b(?=\()/,
     name: "support.function.EventProvider.js.yui"},
    {match: 
-     /\.(addClass|batch|generateId|get|getClientHeight|getClientWidth|getDocumentHeight|getDocumentWidth|getElementsBy|getElementsByClassName|getRegion|getStyle|getViewportHeight|getViewportWidth|getX|getXY|getY|hasClass|inDocument|isAncestor|removeClass|replaceClass|setStyle|setX|setXY|setY)\b(?=\()/,
+     /\.(addClass|batch|generateId|get|getAncestorBy|getAncestorByClassName|getAncestorByTagName|getAttribute|getChildren|getChildrenBy|getClientHeight|getClientWidth|getClientRegion|getDocumentHeight|getDocumentScrollLeft|getDocumentScrollTop|getDocumentWidth|getElementBy|getElementsBy|getElementsByClassName|getFirstChild|getFirstChildBy|getLastChild|getLastChildBy|getNextSibling|getNextSiblingBy|getPreviousSibling|getPreviousSiblingBy|getRegion|getStyle|getViewportHeight|getViewportWidth|getX|getXY|getY|hasClass|inDocument|insertAfter|insertBefore|isAncestor|removeClass|replaceClass|setAttribute|setStyle|setX|setXY|setY)\b(?=\()/,
     name: "support.function.Dom.js.yui"},
    {match: /\.(contains|getArea|intersect|union|getRegion)\b(?=\()/,
     name: "support.function.Region.js.yui"},
    {match: 
-     /\.(abort|appendPostData|asyncRequest|createExceptionObject|createFrame|createResponseObject|createXhrObject|getConnectionObject|handleReadyState|handleTransactionResponse|initHeader|isCallInProgress|releaseObject|resetFormState|setDefaultPostHeader|setForm|setHeader|setPollingInterval|setProgId|uploadFile)\b(?=\()/,
+     /\.(abort|appendPostData|asyncRequest|createExceptionObject|createFrame|createResponseObject|createXhrObject|getConnectionObject|handleReadyState|handleTransactionResponse|initHeader|isCallInProgress|releaseObject|resetDefaultHeaders|resetFormState|setDefaultPostHeader|setDefaultXhrHeader|setForm|setHeader|setPollingInterval|setProgId|uploadFile)\b(?=\()/,
     name: "support.function.Connect.js.yui"},
    {match: 
-     /\.(animate|doMethod|getAttribute|getDefaultUnit|getEl|getStartTime|init|isAnimated|onTween|setAttribute|setRuntimeAttribute|stop)\b(?=\()/,
+     /\.(animate|doMethod|getAttribute|getDefaultUnit|getEl|getStartTime|init|isAnimated|onTween|setAttribute|setEl|setRuntimeAttribute|stop|toString)\b(?=\()/,
     name: "support.function.Anim.js.yui"},
    {match: 
      /\.(correctFrame|registerElement|run|start|stop|unRegister)\b(?=\()/,
@@ -62,7 +62,7 @@
     name: "support.function.DDProxy.js.yui"},
    {match: /\.()\b(?=\()/, name: "support.function.DDTarget.js.yui"},
    {match: 
-     /\.(getBookmarkedState|getCurrentState|initialize|navigate|register)\b(?=\()/,
+     /\.(getBookmarkedState|getCurrentState|getQueryStringParameter|initialize|multiNavigate|navigate|onReady|register)\b(?=\()/,
     name: "support.function.History.js.yui"},
    {match: 
      /\.(addToCache|flushCache|getCachedResponse|handleResponse|isCacheHit|makeConnection|parseArrayData|parseJSONData|parseTextData|parseXMLData|sendRequest)\b(?=\()/,
@@ -195,11 +195,51 @@
    {match: /\.(onDrag|onMouseDown|onMouseUp)\b(?=\()/,
     name: "support.function.WidthResizer.js.yui"},
    {match: 
-     /\.(addHiddenFieldsToForm|blur|createHiddenField|createInputElement|destroy|focus|getFirstElement|getForm|getMenu|hasFocus|init|initAttributes|initConfig|isActive|setAttributeFromDOMAttribute|setAttributesFromSrcElement|setFormElementProperties)\b(?=\()/,
-    name: "support.function.Button.js.yui"},
+     /\.(exists|get|getSub|getSubs|remove|removeSubs|set|setSub|setSubs)\b(?=\()/,
+    name: "support.function.Cookie.js.yui"},
+   {match: /\.(abort|css|script)\b(?=\()/,
+    name: "support.function.Get.js.yui"},
+   {match: /\.(bgImgObj|fetch|group|imgObj|pngBgImgObj|srcImgObj)\b(?=\()/,
+    name: "support.function.ImageLoader.js.yui"},
+   {match: /\.(dateToString|isSafe|parse|stringify|stringToDate)\b(?=\()/,
+    name: "support.function.JSON.js.yui"},
    {match: 
-     /\.(addButton|addButtons|check|destroy|focus|getButton|getButtons|getCount|init|initAttributes|removeButton)\b(?=\()/,
-    name: "support.function.ButtonGroup.js.yui"},
+     /\.(destroy|getActiveHandleEl|getProxyEl|getResizeById|getStatusEl|getWrapEl|isActive|isLocked|lock|reset|toString|unlock)\b(?=\()/,
+    name: "support.function.Resize.js.yui"},
+   {match: /\.(filter|query|test)\b(?=\()/,
+    name: "support.function.Selector.js.yui"},
+   {match: /\.(clear|getItem|getName|hasKey|key|setItem)\b(?=\()/,
+    name: "support.function.Storage.js.yui"},
+   {match: /\.(get|register)\b(?=\()/,
+    name: "support.function.StorageManager.js.yui"},
+   {match: 
+     /\.(addListener|calculateCurrentSize|clear|displaySettings|getItems|getLength|getModificationDate|getShareData|getTypeAt|getTypeOf|getUseCompression|getValueAt|getValueOf|hasAdequateDimensions|on|removeItem|setItem|setShareData|setSize|setUseCompression|toString)\b(?=\()/,
+    name: "support.function.SWFStore.js.yui"},
+   {match: /\.(callSWF|toString)\b(?=\()/,
+    name: "support.function.SWF.js.yui"},
+   {match: 
+     /\.(disable|enable|getCssText|getId|isEnabled|set|isValidSelector|register|toCssText|unset)\b(?=\()/,
+    name: "support.function.StyleSheet.js.yui"},
+   {match: 
+     /\.(addModule|calculate|formatSkin|getProvides|getRequires|insert|loadNext|onFailure|onProgress|onSuccess|onTimeout|parseSkin|require|sandbox)\b(?=\()/,
+    name: "support.function.YUILoader.js.yui"},
+   {match: 
+     /\.(focus|getInputValue|handleDisabledBtns|renderForm|resetForm)\b(?=\()/,
+    name: "support.function.DateCellEditor.js.yui"},
+   {match: 
+     /\.(focus|getInputValue|handleDisabledBtns|renderForm|resetForm)\b(?=\()/,
+    name: "support.function.DropdownCellEditor.js.yui"},
+   {match: 
+     /\.(focus|getInputValue|handleDisabledBtns|renderForm|resetForm)\b(?=\()/,
+    name: "support.function.RadioCellEditor.js.yui"},
+   {match: 
+     /\.(disable|getBdContainerEl|getBdTableEl|getHdContainerEl|getHdTableEl|insertColumn|onColumnChange|removeColumn|reorderColumn|scrollTo|setColumnWidth|showTableMessage|validateColumnWidths)\b(?=\()/,
+    name: "support.function.ScrollingDataTable.js.yui"},
+   {match: 
+     /\.(focus|getInputValue|handleDisabledBtns|move|renderForm|resetForm)\b(?=\()/,
+    name: "support.function.TextareaCellEditor.js.yui"},
+   {match: /\.(focus|getInputValue|move|renderForm|resetForm)\b(?=\()/,
+    name: "support.function.TextboxCellEditor.js.yui"},
    {include: "source.js"}],
  scopeName: "source.js.yui",
  uuid: "62E7EF93-5574-4063-BF18-AD38620236B9"}

@@ -33,6 +33,8 @@
       "protected",
       "public",
       "use_module",
+      "export",
+      "reexport",
       "current_object",
       "current_protocol",
       "current_category",
