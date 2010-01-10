@@ -137,6 +137,7 @@ vim.in_mode :control do
 
   key :open_file_under_cursor,            %w[g f]
   key :paste,                             %w[p]
+  key :paste_above,                       %w[P]
   key :preview,                           %w[F5]
   key :redo,                              %w[Control-r]
   key :repeat_command,                    %w[period]

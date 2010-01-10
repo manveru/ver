@@ -86,6 +86,11 @@ module VER
           Kernel.raise ex
         end
       end
+
+      def paste_above
+        mark_set(:insert, 'insert - 1 line lineend')
+        paste
+      end
     end
   end
 end
