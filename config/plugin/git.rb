@@ -2,18 +2,22 @@ module VER
   module Methods
     module Git
       def git_add
-        open_rxvt do |rxvt|
-          rxvt.puts('git add -p')
-        end
+        open_rxvt('git add -p')
       end
 
-      def open_rxvt
-        frame = Tk::Frame.new(width: 700, height: 400, container: true)
-        frame.pack(fill: :both, expand: true)
+      def git_commit
+        open_rxvt('git ci')
+      end
 
-        cmd = "urxvt -embed #{frame.winfo_id} &"
+      def open_rxvt(command)
+        frame = Tk::Frame.new(container: true)
+        frame.pack(fill: :both, expand: true)
+        frame.bind('<Destroy>'){ focus }
+
+        cmd = "urxvt -embed #{frame.winfo_id} -e $SHELL -c %p &" % [command]
         p cmd
         `#{cmd}`
+        frame.focus
       end
     end
 
@@ -27,6 +31,7 @@ module VER
   if vim = Keymap[:vim]
     vim.in_mode :git do
       key :git_add, %w[g i t a d d]
+      key :git_commit, %w[g i t c i]
     end
 
     vim.in_mode :control do
