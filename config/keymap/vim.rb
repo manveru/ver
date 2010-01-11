@@ -13,6 +13,7 @@ vim.in_mode :basic do
   key :describe_key,        %w[Control-h k]
   key :help_for_help,       %w[Control-h question], %w[F1], %w[Help]
   key :tags_at,             %w[Control-g t]
+  key :source_buffer,       %w[Control-R]
 
   key :open_grep_list,      %w[Control-Alt-g], %w[Control-m Control-g]
   key :grep_buffer,         %w[Alt-g], %w[Control-m g]

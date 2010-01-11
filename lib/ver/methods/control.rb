@@ -1,6 +1,11 @@
 module VER
   module Methods
     module Control
+      def source_buffer
+        VER.status.message "Source #{filename}"
+        load filename.to_s
+      end
+
       def cursor_vertical_top
         insert_line = count('1.0', 'insert', :displaylines)
         last_line = count('1.0', 'end', :displaylines)
