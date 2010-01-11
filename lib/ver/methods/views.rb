@@ -1,6 +1,14 @@
 module VER
   module Methods
     module Views
+      def start_views_mode
+        self.mode = :views
+      end
+
+      def view_change(method, *count)
+        __send__(method, *count)
+      end
+
       def view_focus(index = 0)
         return unless found = layout.views[index - 1]
         found.push_top
@@ -74,6 +82,18 @@ module VER
       def view_master_dec
         master = layout.options[:master]
         layout.options[:master] -= 1 if master > 0
+        layout.apply
+      end
+
+      def view_master_shrink
+        center = layout.options[:center]
+        layout.options[:center] -= 0.1 if center > 0.1
+        layout.apply
+      end
+
+      def view_master_grow
+        center = layout.options[:center]
+        layout.options[:center] += 0.1 if center < 0.9
         layout.apply
       end
     end

@@ -342,7 +342,8 @@ module VER
         when /select/
           {insertbackground: 'yellow', blockcursor: true}
         else
-          Kernel.raise "No such mode style: %p" % [mode]
+          default_config
+          # Kernel.raise "No such mode style: %p" % [mode]
         end
 
       config = default_config.merge(sub_config)

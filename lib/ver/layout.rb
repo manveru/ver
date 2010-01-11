@@ -108,27 +108,29 @@ module VER
 
     def head_tail_hidden(options = {})
       @options.merge!(options)
-      strategy.prepare(self, @options)
+      strategy.prepare(self, @options).first(3)
     end
 
     module Tiling
-      DEFAULT = { master: 1, stacking: 3 }
+      DEFAULT = { master: 1, stacking: 3, center: 0.2 }
 
-      def prepare(layout, options)
+      def prepare(layout, given_options)
+        options = DEFAULT.merge(given_options)
         slaves = layout.stack
-        master, stacking = DEFAULT.merge(options).values_at(:master, :stacking)
-        options.merge! master: master, stacking: stacking
+        master, stacking = options.values_at(:master, :stacking)
+        given_options.merge!(options)
         head, tail, hidden = slaves[0...master], slaves[master..stacking], slaves[stacking..-1]
+        return head, tail, hidden, options
       end
 
-      def apply(layout, options = {})
-        masters, stacked, hidden = prepare(layout, options)
+      def apply(layout, given_options = {})
+        masters, stacked, hidden, options = prepare(layout, given_options)
 
-        limit = stacked.size == 0 ? 1.0 : 0.5
+        center = stacked.size == 0 ? 1.0 : options[:center]
 
         apply_hidden(hidden) if hidden
-        apply_masters(masters, limit) if masters
-        apply_stacked(stacked, limit) if stacked
+        apply_masters(masters, center) if masters
+        apply_stacked(stacked, center) if stacked
       end
 
       def apply_hidden(windows)
@@ -141,16 +143,18 @@ module VER
 
       module_function
 
-      def apply_masters(windows, width, step = 1.0 / windows.size)
+      def apply_masters(windows, center, step = 1.0 / windows.size)
         windows.each_with_index{|window, idx|
           window.place(relx: 0.0, rely: (step * idx),
-                      relheight: step, relwidth: width) }
+                      relheight: step, relwidth: center) }
       end
 
-      def apply_stacked(windows, width, step = 1.0 / windows.size)
+      def apply_stacked(windows, center, step = 1.0 / windows.size)
+        relwidth = 1.0 - center
+
         windows.each_with_index{|window, idx|
-          window.place(relx: 0.5, rely: (step * idx),
-                      relheight: step, relwidth: width) }
+          window.place(relx: center, rely: (step * idx),
+                      relheight: step, relwidth: relwidth) }
       end
     end
 
@@ -159,17 +163,18 @@ module VER
 
       module_function
 
-      def apply_masters(windows, height, step = 1.0 / windows.size)
+      def apply_masters(windows, center, step = 1.0 / windows.size)
         windows.each_with_index do |window, idx|
           window.place(relx: (step * idx), rely: 0.0,
-                       relheight: height, relwidth: step)
+                       relheight: center, relwidth: step)
         end
       end
 
-      def apply_stacked(windows, height, step = 1.0 / windows.size)
+      def apply_stacked(windows, center, step = 1.0 / windows.size)
+        relheight = 1.0 - center
         windows.each_with_index do |window, idx|
-          window.place(relx: (step * idx), rely: 0.5,
-                       relheight: height, relwidth: step)
+          window.place(relx: (step * idx), rely: center,
+                       relheight: relheight, relwidth: step)
         end
       end
     end

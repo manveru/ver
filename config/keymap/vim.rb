@@ -24,25 +24,36 @@ vim.in_mode :basic do
 end
 
 vim.in_mode :views do
-  key :view_one,          %w[Control-w KeyPress-1]
-  key :view_two,          %w[Control-w KeyPress-2]
+  inherits :basic
 
-  key :view_slave_inc,    %w[Control-w plus]
-  key :view_slave_dec,    %w[Control-w minus]
+  key :view_one,           %w[KeyPress-1]
+  key :view_two,           %w[KeyPress-2]
 
-  key :view_master_inc,   %w[Control-w H]
-  key :view_master_dec,   %w[Control-w L]
+  key :view_slave_inc,     %w[plus]
+  key :view_slave_dec,     %w[minus]
 
-  key :view_create,       %w[Control-w c]
-  key :view_focus_next,   %w[Control-w j]
-  key :view_focus_prev,   %w[Control-w k]
-  key :view_push_down,    %w[Control-w J]
-  key :view_push_up,      %w[Control-w K]
-  key :view_close,        %w[Control-w w]
-  key :view_push_top,     %w[Control-w Return]
-  key :view_push_bottom,  %w[Control-w BackSpace]
+  key :view_master_inc,    %w[H]
+  key :view_master_dec,    %w[L]
 
-  key :view_peer,         %w[Control-w p]
+  key :view_create,        %w[c]
+  key :view_focus_next,    %w[j]
+  key :view_focus_prev,    %w[k]
+  key :view_push_down,     %w[J]
+  key :view_push_up,       %w[K]
+  key :view_close,         %w[w]
+  key :view_push_top,      %w[Return]
+  key :view_push_bottom,   %w[BackSpace]
+
+  key :view_master_shrink, %w[h]
+  key :view_master_grow,   %w[l]
+
+  key :view_peer,          %w[p]
+end
+
+vim.in_mode :views_control do
+  key [:view_change], ['Control-w', :views]
+
+  key :start_views_mode, %w[Control-w r]
 end
 
 vim.in_mode :move do
@@ -104,7 +115,7 @@ vim.in_mode :complete do
 end
 
 vim.in_mode :control do
-  inherits :basic, :move, :views, :search, :ctags, :bookmark
+  inherits :basic, :move, :views_control, :search, :ctags, :bookmark
 
   key :change_line,                       %w[c c]
   key :change_motion,                     ['c', :move]
@@ -194,7 +205,7 @@ vim.in_mode :readline do
 end
 
 vim.in_mode :insert do
-  inherits :basic, :views, :complete, :readline
+  inherits :basic, :views_control, :complete, :readline
   no_arguments
 
   key :insert_indented_newline,  %w[Return]
