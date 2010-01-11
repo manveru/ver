@@ -112,7 +112,7 @@ module VER
     end
 
     module Tiling
-      DEFAULT = { master: 1, stacking: 3, center: 0.2 }
+      DEFAULT = { master: 1, stacking: 3, center: 0.5 }
 
       def prepare(layout, given_options)
         options = DEFAULT.merge(given_options)
