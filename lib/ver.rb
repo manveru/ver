@@ -140,7 +140,7 @@ module VER
     setup_widgets
     open_argv || open_welcome
     emergency_bindings
-    load_plugins
+    # load_plugins
     run_startup_hooks
   end
 
@@ -176,6 +176,14 @@ module VER
 
   def startup_hook(&block)
     @startup_hooks << block
+  end
+
+  def plugin(name)
+    loadpath.each do |dirname|
+      (dirname/'plugin/#{name}.rb').glob do |rb|
+        require rb
+      end
+    end
   end
 
   def load_plugins
