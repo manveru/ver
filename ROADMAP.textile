@@ -39,10 +39,6 @@ h2. Dictionary
 Looking up dictionaries... translation.
 Maybe using something like google translate API when online?
 
-h2. Soma plugin
-
-Using the soma gem, just add some keybinds to pipe buffer or selection to soma.
-
 h2. Some kind of indication which view is the current one.
 
 maybe using relief?
