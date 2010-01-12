@@ -1,9 +1,6 @@
 require 'bacon'
 Bacon.summary_at_exit
 
-when condition
-
-
 require 'strscan'
 
 # TODO: transformations
@@ -44,7 +41,14 @@ class Snippet
   def apply_on(widget)
     parse(@snippet, out = [])
     apply_out_on(widget, out)
-    self.class.jump_to_next_mark(widget)
+    # jump_to_home(widget)
+    # self.class.jump_to_next_mark(widget)
+  end
+
+  def jump_to_home(widget)
+    return unless widget.mark_names.include?(:ver_snippet_home)
+    widget.mark_set(:insert, :ver_snippet_home)
+    widget.mark_unset(:ver_snippet_home)
   end
 
   def self.jump_to_next_mark(widget)
@@ -123,7 +127,6 @@ class Snippet
 
   def apply_out_on(widget, out)
     out.each do |atom|
-      p atom
       case atom
       when String
         widget.insert(:insert, atom)
@@ -134,7 +137,6 @@ class Snippet
         widget.mark_gravity(mark, 'left')
       when Array
         number, *content = atom
-        p number: number, content: content
         tag = "ver_snippet_#{number}"
         widget.insert(:insert, content, tag)
       end
@@ -252,7 +254,10 @@ describe 'TM Snippet' do
       s = Snippet.new(snippet, env)
       s.apply_on(text)
       dump = text.dump(:all, '1.0', 'end')
-      dump.reject!{|type, name, index| [type, name] == ['mark', 'current'] }
+      dump.reject!{|type, name, index|
+        next unless type == 'mark'
+        name == 'current' || name == 'insert'
+      }
       dump.pop if dump.last[0, 2] == ["text", "\n"] # remove last newline
       dump
     ensure
@@ -262,14 +267,13 @@ describe 'TM Snippet' do
     should 'apply plain text snippet' do
       snippet_apply('foo').should == [
         ["text", "foo", "1.0"],
-        ["mark", "insert", "1.3"]
       ]
     end
 
     should 'insert a single tab stop' do
       snippet_apply('<h1>$0</h1>').should == [
         ["text", "<h1>", "1.0"],
-        ["mark", "insert", "1.4"],
+        ["mark", "ver_snippet_home", "1.4"],
         ["text", "</h1>", "1.4"],
       ]
     end
@@ -285,7 +289,7 @@ describe 'TM Snippet' do
         ["mark", "ver_snippet_1", "1.12"],
         ["text", "'>\n", "1.12"],
         ["text", "  ", "2.0"],
-        ["mark", "insert", "2.2"],
+        ["mark", "ver_snippet_home", "2.2"],
         ["text", "\n", "2.2"],
         ["text", "</code>", "3.0"]
       ]
@@ -303,7 +307,7 @@ describe 'TM Snippet' do
         ["text", "\"ruby\"", "1.12"],
         ["tagoff", "ver_snippet_1", "1.18"],
         ["text", "'>\n", "1.18"],
-        ["text", " ", "2.0"],
+        ["text", "  ", "2.0"],
         ["mark", "ver_snippet_home", "2.2"],
         ["text", "\n", "2.2"],
         ["text", "</code>", "3.0"]
