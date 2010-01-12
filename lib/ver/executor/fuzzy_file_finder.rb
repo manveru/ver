@@ -12,6 +12,7 @@ module VER
 
       def setup
         setup_fff
+
         tree.configure(
           show: [:headings],
           columns: %w[path dir file score],
@@ -43,7 +44,7 @@ module VER
             match[:highlighted_name],
             match[:score].round(2),
           ]
-         }
+        }
       end
 
       def action(path)
