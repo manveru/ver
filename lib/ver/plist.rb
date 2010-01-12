@@ -226,6 +226,9 @@ Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:281
         SANITIZE_REGEXP[pattern] = replacement
       }
 
+      # found in newLisp.tmbundle
+      r['(?<!(?:\{|\"|]))(?:[\s\n]*)?(;+.*?)$', '(?<!(?:\{|"|\]))(?:\s*)(;+.*)$']
+
       # found in Movable Type.tmbundle
       r['(<)(\$[mM][tT]:?(?:\w+)?:?\w+)(.*?)(\$)?(>)', '(<)(\$[mM][tT]:?(?:\w*):?\w+)(.*?)(\$)?(>)']
       r['(</?)([mM][tT]:?(?:\w+)?:?\w+)(.*?)>', '(</?)([mM][tT]:?(?:\w*):?\w+)(.*?)>']
