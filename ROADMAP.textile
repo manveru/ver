@@ -1,0 +1,55 @@
+h1. VER Roadmap
+
+h2. Project Directories
+
+Given a file in a buffer, it should have an associated project directory.
+This can be used for things like FuzzFileFinder or grepping.
+Automatic detection can be done by searching for /.git, /_darcs, or /__FOSSIL__
+
+h2. Sessions
+
+Storing the current state of VER on disk for next startup.
+Possible naming sessions? default names could be generated from CLI arguments,
+so if you use `ver foo.rb` the session is called 'foo.rb'.
+We should store the currently open buffers, the mode that they are in, the
+insert mark position, and anything else we might come up with later.
+
+h2. VCS integration
+
+Mostly shortcuts for various source control systems.
+These should simply open a terminal and execute a command.
+Example can be the git plugin.
+
+h2. org-mode / remember
+
+Something to get things done and be reminded of them.
+
+h2. Code folding
+
+Exapnd sections of code, we can start out by the folding rules specified by the
+tm bundle preferences.
+Eventually this would be useful for other things like Viki.
+
+h2. Notebook tabs
+
+Using ttk::notebook we could implement tabs instead of the tiling view, or
+combine the two.
+
+h2. Markdown
+
+The current tm syntax simply doesn't compile to a clean oniguruma regexp, try to
+fix it.
+
+h2. Dictionary
+
+Looking up dictionaries... translation.
+Maybe using something like google translate API when online?
+
+h2. Soma plugin
+
+Using the soma gem, just add some keybinds to pipe buffer or selection to soma.
+
+h2. Some kind of indication which view is the current one.
+
+maybe using relief?
+view.configure relief: :sunken, borderwidth: 3
