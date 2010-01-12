@@ -107,12 +107,13 @@ end
 vim.in_mode :complete do
   no_arguments
 
-  key :complete_file,   %w[Control-x Control-f]
-  key :complete_line,   %w[Control-x Control-l]
-  key :complete_word,   %w[Control-x Control-w]
-  key :complete_aspell, %w[Control-x Control-a]
-  key :complete_tm,     %w[Control-x Control-x]
-  key :smart_tab,       %w[Tab]
+  key :complete_aspell,   %w[Control-x Control-a]
+  key :complete_file,     %w[Control-x Control-f]
+  key :complete_line,     %w[Control-x Control-l]
+  key :complete_snippet,  %w[Control-x Control-s]
+  key :complete_tm,       %w[Control-x Control-x]
+  key :complete_word,     %w[Control-x Control-w]
+  key :smart_tab,         %w[Tab]
 end
 
 vim.in_mode :control do
@@ -327,6 +328,15 @@ vim.in_mode :hover_completion do
   key :go_down,              %w[Down], %w[j]
   key :go_up,                %w[Up], %w[k]
   key :submit,               %w[Return]
+end
+
+vim.in_mode :snippet do
+  inherits :readline
+
+  key :snippet_cancel, %w[Escape], %w[Control-c]
+  key :snippet_jump,   %w[Tab]
+
+  missing :snippet_insert_string
 end
 
 vim.ignore_sends = [

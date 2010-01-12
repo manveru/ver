@@ -3,13 +3,6 @@ module VER
     autoload :Index, 'ver/text/index'
     include Methods, Keymapped
 
-    MODE_CURSOR = {
-      :insert       => {insertbackground: 'red',    blockcursor: false},
-      :control      => {insertbackground: 'green',  blockcursor: true},
-      :select_char  => {insertbackground: 'yellow', blockcursor: true},
-      :select_line  => {insertbackground: 'yellow', blockcursor: true},
-      :select_block => {insertbackground: 'yellow', blockcursor: true},
-    }
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
@@ -338,7 +331,7 @@ module VER
         case mode
         when @default_mode
           default_config
-        when :insert
+        when :insert, :snippet
           {insertbackground: 'red', blockcursor: false}
         when /select/
           {insertbackground: 'yellow', blockcursor: true}
