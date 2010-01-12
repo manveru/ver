@@ -178,11 +178,11 @@ module VER
       Tk::Event.generate(self, '<<Movement>>')
     end
 
-    def insert(index, string)
+    def insert(index, string, tag = Tk::None)
       index = index(index) unless index.respond_to?(:to_index)
 
       undo_record do |record|
-        record.insert(index, string)
+        record.insert(index, string, tag)
       end
     end
 
