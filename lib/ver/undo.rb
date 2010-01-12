@@ -162,6 +162,7 @@ module VER
         self.redo_info = [:insert, pos, string, tag]
         self.undo_info = [pos, pos + string.size, '']
         self.applied = true
+        pos
       end
 
       def replace(from, to, string)
@@ -174,6 +175,7 @@ module VER
         self.redo_info = [:replace, from, to, string]
         self.undo_info = [from, from + string.size, data]
         self.applied = true
+        from
       end
 
       def delete(from, to)
@@ -186,6 +188,7 @@ module VER
         self.redo_info = [:delete, from, to]
         self.undo_info = [from, from, data]
         self.applied = true
+        from
       end
 
       def undo
@@ -201,7 +204,8 @@ module VER
 
       def redo
         return unless redo_info && !applied
-        send(*redo_info)
+        pos = send(*redo_info)
+        widget.mark_set(:insert, pos)
       end
 
       def compact!
