@@ -53,3 +53,8 @@ h2. Some kind of indication which view is the current one.
 
 maybe using relief?
 view.configure relief: :sunken, borderwidth: 3
+
+h2. Support mirror and mirror transformation for snippets
+
+The most powerful snipets are using mirror and mirror transformations.
+In order to provide full support, we need to implement that.
