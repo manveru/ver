@@ -1,11 +1,5 @@
 h1. VER Roadmap
 
-h2. Project Directories
-
-Given a file in a buffer, it should have an associated project directory.
-This can be used for things like FuzzFileFinder or grepping.
-Automatic detection can be done by searching for /.git, /_darcs, or /__FOSSIL__
-
 h2. Sessions
 
 Storing the current state of VER on disk for next startup.

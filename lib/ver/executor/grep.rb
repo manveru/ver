@@ -3,6 +3,8 @@ module VER
     # Grepping made easy
     class CompleteGrep < Entry
       def setup
+        @root = caller.project_root || Pathname(Dir.pwd)
+
         tree.configure(
           show: [:headings],
           columns:        %w[file line source],
@@ -35,14 +37,14 @@ module VER
       def grep_with(glob, regexp)
         results = []
 
-        Dir.glob(glob) do |path|
-          next unless File.file?(path)
+        (@root/glob).glob do |path|
+          next unless path.file?
 
-          File.open(path) do |io|
+          path.open do |io|
             begin
               io.each_line.with_index do |line, index|
                 next unless line =~ regexp
-                results << [path, index + 1, line]
+                results << [path.to_s, index + 1, line]
               end
             rescue ArgumentError # why isn't that RegexpError or EncodingError
             end
