@@ -13,7 +13,6 @@ module VER
         tree.heading('source', text: 'Source')
         tree.column('file', width: 100, stretch: false, anchor: :w)
         tree.column('line', width: 50, stretch: false, anchor: :e)
-        callback.frame.place(relwidth: 0.9)
       end
 
       def choices(glob_needle)

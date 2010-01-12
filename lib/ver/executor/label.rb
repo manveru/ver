@@ -9,6 +9,7 @@ module VER
         'syntax' => :CompleteSyntax,
         'theme'  => :CompleteTheme,
         'write'  => :CompleteWrite,
+        'fuzzy'  => :CompleteFuzzyFileFinder,
       }
 
       def setup

@@ -21,6 +21,10 @@ module VER
       def setup
       end
 
+      def completed=(values)
+        self.value = values.first
+      end
+
       def destroy
         style_name = style
         super

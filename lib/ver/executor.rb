@@ -1,13 +1,14 @@
 module VER
   class Executor
-    autoload :Entry,          'ver/executor/entry'
-    autoload :CompletePath,   'ver/executor/path'
-    autoload :CompleteMethod, 'ver/executor/method'
-    autoload :CompleteSyntax, 'ver/executor/syntax'
-    autoload :CompleteTheme,  'ver/executor/theme'
-    autoload :CompleteGrep,   'ver/executor/grep'
-    autoload :CompleteLabel,  'ver/executor/label'
-    autoload :CompleteWrite,  'ver/executor/path'
+    autoload :Entry,                   'ver/executor/entry'
+    autoload :CompletePath,            'ver/executor/path'
+    autoload :CompleteMethod,          'ver/executor/method'
+    autoload :CompleteSyntax,          'ver/executor/syntax'
+    autoload :CompleteTheme,           'ver/executor/theme'
+    autoload :CompleteGrep,            'ver/executor/grep'
+    autoload :CompleteLabel,           'ver/executor/label'
+    autoload :CompleteWrite,           'ver/executor/path'
+    autoload :CompleteFuzzyFileFinder, 'ver/executor/fuzzy_file_finder'
 
     attr_reader :caller, :tree, :entry, :frame
 
@@ -111,8 +112,8 @@ module VER
       if @last_was_tab
         # the user might want to complete with the current focused one
         item = @tree.focus_item
-        value = item.options(:values).first
-        @active.value = value
+        values = item.options(:values)
+        @active.completed = values
       else
         # the user accepts the input?
         yield(@active.value)
