@@ -147,6 +147,7 @@ module VER
       end
 
       def after_open(line = 1)
+        detect_project_paths
         VER.opened_file(self)
 
         edit_reset
@@ -163,6 +164,22 @@ module VER
           end
           bind('<Map>'){ see(:insert) }
         end
+      end
+
+      PROJECT_DIRECTORY_GLOB = '{.git/,.hg/,_darcs/,_FOSSIL_}'
+
+      def detect_project_paths
+        parent = filename.expand_path.dirname
+
+        begin
+          (parent/PROJECT_DIRECTORY_GLOB).glob do |repo|
+            @project_repo = repo
+            @project_root = repo.dirname
+            return
+          end
+
+          parent = parent.dirname
+        end until parent.root?
       end
 
       MODELINES = {

@@ -6,7 +6,7 @@ module VER
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
-    attr_accessor :view, :status
+    attr_accessor :view, :status, :project_root, :project_repo
     attr_reader :filename, :encoding, :pristine, :syntax, :undoer
 
     # attributes for diverse functionality
