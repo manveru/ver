@@ -82,7 +82,13 @@ module VER
     end
 
     def short_filename
-      filename.sub(Dir.pwd + '/', '') if filename
+      return unless filename
+
+      if root = @project_root
+        filename.relative_path_from(root).to_s
+      else
+        filename.sub(Dir.pwd + '/', '')
+      end
     end
 
     def filename=(path)
