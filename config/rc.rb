@@ -67,4 +67,7 @@ VER.options.dsl do
 
   o "Default filetype if no matching syntax can be found",
     :filetype, "Plain Text"
+
+  o "Interval at which pending syntax highlights are done",
+    :syntax_highlight_interval, 500
 end

@@ -246,7 +246,8 @@ module VER
       if @syntax = Syntax.from_filename(filename)
         VER.cancel_block(@highlight_block)
 
-        @highlight_block = VER.when_inactive_for(100){
+        interval = options.syntax_highlight_interval.to_int
+        @highlight_block = VER.when_inactive_for(interval){
           handle_pending_syntax_highlights
         }
 
