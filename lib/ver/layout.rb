@@ -119,7 +119,7 @@ module VER
         slaves = layout.stack
         master, stacking = options.values_at(:master, :stacking)
         given_options.merge!(options)
-        head, tail, hidden = slaves[0...master], slaves[master..stacking], slaves[stacking..-1]
+        head, tail, hidden = slaves[0...master], slaves[master..stacking], slaves[(stacking + 1)..-1]
         return head, tail, hidden, options
       end
 
