@@ -1,14 +1,15 @@
 module VER
   class Executor
-    autoload :Entry,                   'ver/executor/entry'
-    autoload :CompletePath,            'ver/executor/path'
-    autoload :CompleteMethod,          'ver/executor/method'
-    autoload :CompleteSyntax,          'ver/executor/syntax'
-    autoload :CompleteTheme,           'ver/executor/theme'
+    autoload :CompleteFuzzyFileFinder, 'ver/executor/fuzzy_file_finder'
     autoload :CompleteGrep,            'ver/executor/grep'
     autoload :CompleteLabel,           'ver/executor/label'
+    autoload :CompleteLocate,          'ver/executor/locate'
+    autoload :CompleteMethod,          'ver/executor/method'
+    autoload :CompletePath,            'ver/executor/path'
+    autoload :CompleteSyntax,          'ver/executor/syntax'
+    autoload :CompleteTheme,           'ver/executor/theme'
     autoload :CompleteWrite,           'ver/executor/path'
-    autoload :CompleteFuzzyFileFinder, 'ver/executor/fuzzy_file_finder'
+    autoload :Entry,                   'ver/executor/entry'
 
     attr_reader :caller, :tree, :entry, :frame
 

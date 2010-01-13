@@ -3,13 +3,14 @@ module VER
     class CompleteLabel < Entry
       COMPLETERS = {
         'edit'   => :CompletePath,
+        'fuzzy'  => :CompleteFuzzyFileFinder,
         'grep'   => :CompleteGrep,
+        'locate' => :CompleteLocate,
         'method' => :CompleteMethod,
         'open'   => :CompletePath,
         'syntax' => :CompleteSyntax,
         'theme'  => :CompleteTheme,
         'write'  => :CompleteWrite,
-        'fuzzy'  => :CompleteFuzzyFileFinder,
       }
 
       def setup
