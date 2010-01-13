@@ -129,8 +129,16 @@ module VER
   end
 
   def run_startup(given_options)
-    @startup_hooks = []
     first_startup unless options.home_conf_dir.directory?
+
+    @startup_hooks = []
+    @paths = Set.new
+    @cancel_blocks = {}
+    @load_plugins = Set.new
+    @exception_view = nil
+    @bookmarks = Bookmarks.new
+    @ctag_stack = []
+
     load 'rc'
     @options.merge!(given_options)
   end
@@ -141,7 +149,7 @@ module VER
     setup_widgets
     open_argv || open_welcome
     emergency_bindings
-    # load_plugins
+    load_plugins
     run_startup_hooks
   end
 
@@ -180,19 +188,33 @@ module VER
   end
 
   def plugin(name)
-    loadpath.each do |dirname|
-      (dirname/"plugin/#{name}.rb").glob do |rb|
-        return require(rb)
-      end
-    end
+    @load_plugins << name.to_s
   end
 
   def load_plugins
+    @load_plugins.each do |plugin|
+      load_plugin(plugin)
+    end
+  end
+
+  def load_plugin(name)
+    loadpath.each do |dirname|
+      (dirname/"plugin/#{name}.rb").glob do |rb|
+        return require(rb.to_s)
+      end
+    end
+  rescue => ex
+    error(ex)
+  end
+
+  def load_all_plugins
     loadpath.each do |dirname|
       (dirname/'plugin/*.rb').glob do |rb|
         require rb
       end
     end
+  rescue => ex
+    error(ex)
   end
 
   def setup_tk
@@ -203,9 +225,6 @@ module VER
   def setup_widgets
     Tk::Tile.set_theme options.tk_theme
 
-    @paths = Set.new
-    @cancel_blocks = {}
-
     @root = Tk.root
     @root.wm_geometry = '160x80'
 
@@ -215,10 +234,6 @@ module VER
     @status = Entry.new(@root, font: options.font)
     @status.insert :end, 'Welcome to VER, exit by pressing Control-q'
     @status.pack(fill: :x)
-
-    @exception_view = nil
-    @bookmarks = Bookmarks.new
-    @ctag_stack = []
 
     @keymap = Keymap.load(options.keymap)
   end
