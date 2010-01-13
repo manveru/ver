@@ -36,6 +36,7 @@ module VER
   autoload :ExceptionView,       'ver/exception_view'
   autoload :Bookmarks,           'ver/methods/bookmark'
   autoload :Undo,                'ver/undo'
+  autoload :Keymapped,           'ver/keymap'
 
   require 'ver/options'
   @options = Options.new(:ver)
