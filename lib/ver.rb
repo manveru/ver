@@ -228,12 +228,16 @@ module VER
     @root = Tk.root
     @root.wm_geometry = '160x80'
 
+    Tk::Tile::Style.configure('Label', font: options.font, sticky: :sw)
+    # Tk::Tile::Style.configure('TLabelframe', background: '#f00')
+
     @layout = Layout.new(@root)
     @layout.strategy = Layout::VerticalTiling
 
-    @status = Entry.new(@root, font: options.font)
-    @status.insert :end, 'Welcome to VER, exit by pressing Control-q'
-    @status.pack(fill: :x)
+    @layout.configure(
+      text: 'Welcome to VER, exit by pressing Control-q',
+      labelanchor: :sw
+    )
 
     @keymap = Keymap.load(options.keymap)
   end
@@ -344,6 +348,10 @@ module VER
 
   def opened_file(text)
     @paths << text.filename
+  end
+
+  def message(string)
+    @layout.configure text: string
   end
 
   def dump_options

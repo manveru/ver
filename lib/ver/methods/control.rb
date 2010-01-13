@@ -2,7 +2,7 @@ module VER
   module Methods
     module Control
       def source_buffer
-        VER.status.message "Source #{filename}"
+        VER.message "Source #{filename}"
         load filename.to_s
       end
 
@@ -458,16 +458,16 @@ module VER
       end
 
       def replace_char
-        VER.status.message(
+        VER.message(
           'Enter character to replace the character under the cursor with')
 
         keymap.gets 1 do |char|
           if char.size == 1
             replace('insert', 'insert + 1 chars', char)
             backward_char
-            VER.status.message "replaced #{char.size} chars"
+            VER.message "replaced #{char.size} chars"
           else
-            VER.status.message 'replace aborted'
+            VER.message 'replace aborted'
           end
         end
       end

@@ -30,7 +30,7 @@ module VER
         @root = caller.project_root || Pathname(Dir.pwd)
         @fffinder = FFF.new(@root.to_s)
       rescue FFF::TooManyEntries
-        VER.status.message "The FuzzyFileFinder is overwhelmed by the amount of files"
+        VER.message "The FuzzyFileFinder is overwhelmed by the amount of files"
         callback.destroy
       end
 

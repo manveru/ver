@@ -205,7 +205,7 @@ module VER
 
       true
     rescue ArgumentError => ex
-      VER.status.message("#{executable} : #{ex}")
+      VER.message("#{executable} : #{ex}")
       true
     end
 

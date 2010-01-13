@@ -89,13 +89,13 @@ module VER
         FileUtils.copy_file(from, temp_path, preserve = true)
         save_dumb(temp_path) && FileUtils.mv(temp_path, to)
 
-        VER.status.message "Saved to #{to}"
+        VER.message "Saved to #{to}"
         @pristine = true
         return true
       rescue Errno::EACCES => ex
         # sshfs-mounts raise error but save correctly.
         if ex.backtrace[0].match(/chown\'$/)
-          VER.status.message "Saved to #{to} (chown issue)"
+          VER.message "Saved to #{to} (chown issue)"
           @pristine = true
           return true
         end
@@ -109,7 +109,7 @@ module VER
           io.write(self.value)
         end
 
-        VER.status.message "Saved to #{to}"
+        VER.message "Saved to #{to}"
         @pristine = true
         return true
       rescue Exception => ex

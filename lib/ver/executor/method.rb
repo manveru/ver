@@ -28,7 +28,7 @@ module VER
       def action(method)
         eval("caller.#{method}")
       rescue Exception => ex
-        VER.status.message ex.message
+        VER.message ex.message
       end
 
       # TODO:

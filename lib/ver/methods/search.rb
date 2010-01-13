@@ -104,7 +104,7 @@ module VER
       end
 
       def search_char_right(count = 1)
-        VER.status.message 'Press the character to find to the right'
+        VER.message 'Press the character to find to the right'
 
         keymap.gets 1 do |char|
           if char.size == 1
@@ -118,15 +118,15 @@ module VER
               break if counter == count
             end
 
-            VER.status.message ""
+            VER.message ""
           else
-            VER.status.message "abort: #{char} is not a single character"
+            VER.message "abort: #{char} is not a single character"
           end
         end
       end
 
       def search_char_left(count = 1)
-        VER.status.message 'Press the character to find to the left'
+        VER.message 'Press the character to find to the left'
 
         keymap.gets 1 do |char|
           if char.size == 1
@@ -140,9 +140,9 @@ module VER
               break if counter == count
             end
 
-            VER.status.message ""
+            VER.message ""
           else
-            VER.status.message "abort: #{char} is not a single character"
+            VER.message "abort: #{char} is not a single character"
           end
         end
       end
