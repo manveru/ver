@@ -45,6 +45,10 @@ Click on result opens the location of the associated method.
         VER.error(ex)
       end
 
+      def mode
+        @parent.keymap.mode
+      end
+
       def send(executable, *args)
         method = @parent.method(executable)
         info = <<-INFO
