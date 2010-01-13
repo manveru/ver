@@ -1,12 +1,10 @@
 module VER
   module Methods
     module Git
-      def git_add
-        open_rxvt('git add -p')
-      end
-
-      def git_commit
-        open_rxvt('git ci')
+      def git_blame(count = 1)
+        line = index(:insert).y
+        from, to = line - count, line + count
+        open_rxvt("git blame #{filename} -L#{from},#{to}")
       end
 
       def open_rxvt(command)
@@ -30,12 +28,17 @@ module VER
 
   if vim = Keymap[:vim]
     vim.in_mode :git do
-      key :git_add, %w[g i t a d d]
-      key :git_commit, %w[g i t c i]
+      key :git_blame,                        %w[g i t b]
+      key [:open_rxvt, 'git add -p'],        %w[g i t a]
+      key [:open_rxvt, 'git commit'],        %w[g i t c]
+      key [:open_rxvt, 'git diff'  ],        %w[g i t d]
+      key [:open_rxvt, 'git pull'  ],        %w[g i t p u l]
+      key [:open_rxvt, 'git push'  ],        %w[g i t p u s]
+      key [:open_rxvt, 'git status | less'], %w[g i t s]
     end
 
     vim.in_mode :control do
-      includes :git
+      inherits :git
     end
   end
 end
