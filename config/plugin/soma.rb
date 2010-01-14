@@ -1,3 +1,26 @@
+# Copyright (c) 2009 Michael Fellinger <m.fellinger@gmail.com>
+#
+# Description:
+#
+# This provides a shortcut to talk with a Soma irb instance.
+# Soma is available as a gem called "soma" or from
+# http://github.com/ichverstehe/soma
+#
+# Note that you can have only one irb console using Soma at a time.
+#
+# Usage:
+#
+# Put following line into your rc.rb
+#   VER.plugin :soma
+#
+# Install Soma, and open an irb console.
+# Then type following:
+#   require 'soma'
+#   Soma.start
+#
+# Now you can open any file in VER and press <Control-c> <Control-c> to send the
+# contents to irb.
+
 require 'tmpdir'
 
 module VER

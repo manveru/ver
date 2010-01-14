@@ -1,3 +1,16 @@
+# Copyright (c) 2009 Michael Fellinger <m.fellinger@gmail.com>
+#
+# Description:
+#
+# Shortcuts to use git within VER.
+# This simply opens an urxvt console and embeds it into VER until you finish
+# interacting with git.
+#
+# Usage:
+#
+# Put following line into your rc.rb
+#   VER.plugin :git
+
 module VER
   module Methods
     module Git
