@@ -1,8 +1,9 @@
 module VER
-  class Layout < Tk::Tile::LabelFrame
-    autoload :Tiling, 'ver/layout/tiling'
-    autoload :HorizontalTiling, 'ver/layout/horizontal_tiling'
-    autoload :VerticalTiling, 'ver/layout/vertical_tiling'
+  class TilingLayout < Tk::Tile::LabelFrame
+    autoload :CommonTiling, 'ver/layout/tiling/common'
+    autoload :HorizontalTiling, 'ver/layout/tiling/horizontal'
+    autoload :VerticalTiling, 'ver/layout/tiling/vertical'
+    # autoload :Notebook, 'ver/layout/notebook'
 
     attr_reader :strategy, :views, :stack, :options
 
@@ -17,7 +18,7 @@ module VER
       @views, @stack = [], []
 
       @options = {}
-      self.strategy = Layout::VerticalTiling
+      self.strategy = VerticalTiling
     end
 
     def strategy=(mod)

@@ -1,9 +1,7 @@
-require 'ver/layout/tiling'
-
 module VER
-  class Layout
+  class TilingLayout
     module VerticalTiling
-      extend Tiling
+      extend CommonTiling
 
       module_function
 

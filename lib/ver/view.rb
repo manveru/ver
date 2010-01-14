@@ -100,9 +100,12 @@ module VER
     end
 
     def setup_events
-      %w[Modified Focus Movement].each do |name|
+      %w[Modified Movement].each do |name|
         @text.bind("<<#{name}>>"){|event| __send__("on_#{name.downcase}", event) }
       end
+
+      @text.bind('<FocusIn>'){|event| on_focus(event) }
+      bind('<FocusIn>'){|event| on_focus(event) }
     end
 
     def open_path(path, line = 1)
@@ -128,9 +131,10 @@ module VER
     end
 
     def on_focus(event)
-      Dir.chdir(@text.filename.dirname.to_s) if @text.options.auto_chdir
-      @text.set_window_title
-      @text.see(:insert)
+      Dir.chdir(text.filename.dirname.to_s) if text.options.auto_chdir
+      text.focus
+      text.set_window_title
+      text.see(:insert)
     end
 
     def focus

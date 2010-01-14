@@ -208,11 +208,6 @@ module VER
       end
     end
 
-    def focus
-      super
-      Tk::Event.generate(self, '<<Focus>>')
-    end
-
     def fast_tag_add(tag, *indices)
       execute('tag', 'add', tag, *indices)
       self

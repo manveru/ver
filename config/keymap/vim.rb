@@ -37,10 +37,10 @@ vim.in_mode :views do
   key :view_master_dec,    %w[L]
 
   key :view_create,        %w[c]
-  key :view_focus_next,    %w[j]
-  key :view_focus_prev,    %w[k]
-  key :view_push_down,     %w[J]
-  key :view_push_up,       %w[K]
+  key :view_focus_next,    %w[j], %w[Right]
+  key :view_focus_prev,    %w[k], %w[Left]
+  key :view_push_down,     %w[J], %w[Down]
+  key :view_push_up,       %w[K], %w[Up]
   key :view_close,         %w[w]
   key :view_push_top,      %w[Return]
   key :view_push_bottom,   %w[BackSpace]
@@ -53,6 +53,8 @@ end
 
 vim.in_mode :views_control do
   key [:view_change], ['Control-w', :views]
+  key :view_focus_next, %w[Control-Key-Tab]
+  key :view_focus_prev, %w[Control-Shift-Key-Tab]
 
   key :start_views_mode, %w[Control-w r]
 end

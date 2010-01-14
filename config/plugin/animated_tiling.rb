@@ -14,8 +14,8 @@
 require 'ver/layout/tiling'
 
 module VER
-  class Layout
-    module Tiling
+  class TilingLayout
+    module CommonTiling
       # animates hiding the given +windows+
       def apply_hidden(*windows)
         target = { relheight: 0.0, relwidth: 0.5, relx: 0.5, rely: 1.0 }

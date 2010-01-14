@@ -23,7 +23,8 @@ module VER
   autoload :Font,                'ver/font'
   autoload :HoverCompletion,     'ver/hover_completion'
   autoload :Keymap,              'ver/keymap'
-  autoload :Layout,              'ver/layout'
+  autoload :TilingLayout,        'ver/layout/tiling'
+  autoload :NotebookLayout,      'ver/layout/notebook'
   autoload :Methods,             'ver/methods'
   autoload :Mode,                'ver/mode'
   autoload :Status,              'ver/status'
@@ -44,6 +45,7 @@ module VER
   class << self
     attr_reader(:root, :layout, :status, :paths, :options, :bookmarks,
                 :ctag_stack, :keymap)
+    attr_accessor :layout_class
   end
 
   # the rest of the options are in config/rc.rb
@@ -231,15 +233,17 @@ module VER
     Tk::Tile::Style.configure('Label', font: options.font, sticky: :sw)
     # Tk::Tile::Style.configure('TLabelframe', background: '#f00')
 
-    @layout = Layout.new(@root)
-    @layout.strategy = Layout::VerticalTiling
+    setup_layout
 
+    @keymap = Keymap.load(options.keymap)
+  end
+
+  def setup_layout
+    @layout = (layout_class || TilingLayout).new(root)
     @layout.configure(
       text: 'Welcome to VER, exit by pressing Control-q',
       labelanchor: :sw
     )
-
-    @keymap = Keymap.load(options.keymap)
   end
 
   def sanitize_options

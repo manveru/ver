@@ -64,7 +64,7 @@ module VER
         when /^[a-zA-Z]$/
           canonical = raw_sequence
         else
-          canonical = raw_sequence.sub(/(Shift-|Control-|Alt-)+(?!Key)/, '\1Key-')
+          canonical = raw_sequence.sub(/(Shift-|Alt-)+(?!Key)/, '\1Key-')
           canonical = "<#{canonical}>"
         end
 
