@@ -4,6 +4,7 @@ module VER
     class ExPath < Entry
       def choices(origin)
         origin = origin.sub(/^.*\/\//, '/')
+        origin = origin.sub(/^.*\/~\//, '~/')
         origin = File.expand_path(origin) unless File.directory?(origin)
 
         Dir.glob("#{origin}*").map do |path|
