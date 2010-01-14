@@ -1,6 +1,6 @@
 module VER
   class Executor
-    class CompleteTheme < Entry
+    class ExTheme < Entry
       def setup
         @themes = VER::Theme.list.map{|fullpath|
           File.basename(fullpath, File.extname(fullpath))

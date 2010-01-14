@@ -1,6 +1,6 @@
 module VER
   class Executor
-    class CompleteSyntax < Entry
+    class ExSyntax < Entry
       def setup
         @syntaxes = VER::Syntax.list.map{|fullpath|
           File.basename(fullpath, File.extname(fullpath))

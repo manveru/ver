@@ -1,15 +1,7 @@
 module VER
   class Executor
-    autoload :CompleteFuzzyFileFinder, 'ver/executor/fuzzy_file_finder'
-    autoload :CompleteGrep,            'ver/executor/grep'
-    autoload :CompleteLabel,           'ver/executor/label'
-    autoload :CompleteLocate,          'ver/executor/locate'
-    autoload :CompleteMethod,          'ver/executor/method'
-    autoload :CompletePath,            'ver/executor/path'
-    autoload :CompleteSyntax,          'ver/executor/syntax'
-    autoload :CompleteTheme,           'ver/executor/theme'
-    autoload :CompleteWrite,           'ver/executor/path'
-    autoload :Entry,                   'ver/executor/entry'
+    autoload :Entry,   'ver/executor/entry'
+    autoload :ExLabel, 'ver/executor/label'
 
     attr_reader :caller, :tree, :entry, :frame
 
@@ -28,7 +20,7 @@ module VER
     def setup_widgets
       @frame = Tk::Tile::Frame.new(VER.root)
       @tree  = Tk::Tile::Treeview.new(@frame)
-      @label = CompleteLabel.new(@frame, callback: self)
+      @label = ExLabel.new(@frame, callback: self)
 
       @frame.place(anchor: :n, relx: 0.5)
 

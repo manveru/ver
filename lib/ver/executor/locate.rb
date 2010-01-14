@@ -1,6 +1,6 @@
 module VER
   class Executor
-    class CompleteLocate < Entry
+    class ExLocate < Entry
       def setup
       end
 

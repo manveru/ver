@@ -1,6 +1,6 @@
 module VER
   class Executor
-    class CompleteMethod < Entry
+    class ExMethod < Entry
       def setup
         @methods = caller.methods.map{|name|
           method = caller.method(name)

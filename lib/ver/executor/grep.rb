@@ -1,7 +1,7 @@
 module VER
   class Executor
     # Grepping made easy
-    class CompleteGrep < Entry
+    class ExGrep < Entry
       def setup
         @root = caller.project_root || Pathname(Dir.pwd)
 

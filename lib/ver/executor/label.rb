@@ -1,16 +1,25 @@
 module VER
   class Executor
-    class CompleteLabel < Entry
+    autoload :ExFuzzyFileFinder, 'ver/executor/fuzzy_file_finder'
+    autoload :ExGrep,            'ver/executor/grep'
+    autoload :ExLocate,          'ver/executor/locate'
+    autoload :ExMethod,          'ver/executor/method'
+    autoload :ExPath,            'ver/executor/path'
+    autoload :ExSyntax,          'ver/executor/syntax'
+    autoload :ExTheme,           'ver/executor/theme'
+    autoload :ExWrite,           'ver/executor/path'
+
+    class ExLabel < Entry
       COMPLETERS = {
-        'edit'   => :CompletePath,
-        'fuzzy'  => :CompleteFuzzyFileFinder,
-        'grep'   => :CompleteGrep,
-        'locate' => :CompleteLocate,
-        'method' => :CompleteMethod,
-        'open'   => :CompletePath,
-        'syntax' => :CompleteSyntax,
-        'theme'  => :CompleteTheme,
-        'write'  => :CompleteWrite,
+        'edit'   => :ExPath,
+        'fuzzy'  => :ExFuzzyFileFinder,
+        'grep'   => :ExGrep,
+        'locate' => :ExLocate,
+        'method' => :ExMethod,
+        'open'   => :ExPath,
+        'syntax' => :ExSyntax,
+        'theme'  => :ExTheme,
+        'write'  => :ExWrite,
       }
 
       def setup

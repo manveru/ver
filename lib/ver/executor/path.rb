@@ -1,7 +1,7 @@
 module VER
   class Executor
     # Open or focus a buffer with the given path.
-    class CompletePath < Entry
+    class ExPath < Entry
       def choices(origin)
         origin = origin.sub(/^.*\/\//, '/')
         origin = File.expand_path(origin) unless File.directory?(origin)
@@ -24,7 +24,7 @@ module VER
     # Create new buffer with given filename and copy contents of current buffer
     # into it.
     # Then save it for good measure.
-    class CompleteWrite < CompletePath
+    class ExWrite < ExPath
       def action(path)
         throw(:invalid) if File.directory?(path)
 

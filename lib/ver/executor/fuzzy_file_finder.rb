@@ -2,7 +2,7 @@ require 'ver/vendor/fuzzy_file_finder'
 
 module VER
   class Executor
-    class CompleteFuzzyFileFinder < Entry
+    class ExFuzzyFileFinder < Entry
       FFF = ::FuzzyFileFinder
 
       def completed=(values)
