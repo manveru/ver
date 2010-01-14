@@ -76,14 +76,18 @@ module VER
 
       # FIXME: nasty hack or neccesary?
       def paste
-        text = clipboard_get
-        paste_continous text.to_s
+        text = clipboard_get('STRING'){
+               clipboard_get('ARRAY') }
+        paste_continous text.to_s if text
+      end
 
+      def clipboard_get(type = 'STRING')
+        super(type)
       rescue RuntimeError => ex
-        if ex.message =~ /form "STRING" not defined/
-          paste_array(clipboard.get('ARRAY'))
+        if ex.message =~ /form "#{type}" not defined/
+          yield if block_given?
         else
-          Kernel.raise ex
+          VER.error(ex)
         end
       end
 
