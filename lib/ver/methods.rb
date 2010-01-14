@@ -15,13 +15,14 @@ require 'ver/methods/select'
 require 'ver/methods/undo'
 require 'ver/methods/views'
 require 'ver/methods/snippet'
+require 'ver/methods/autofill'
 require 'ver/methods/shortcuts'
 
 module VER
   module Methods
     include(Completion, Control, Ctags, Delete, Help, Insert, Move, Open,
             Preview, Save, Search, Select, Clipboard, Bookmarks::Methods,
-            Views, Undo, Snippet)
+            Views, Undo, AutoFill, Snippet)
     include Shortcuts
   end
 end

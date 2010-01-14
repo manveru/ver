@@ -216,6 +216,7 @@ vim.in_mode :insert do
   key :page_up,                  %w[Control-b], %w[Prior], %w[Shift-Up]
   key :previous_line,            %w[Up], %w[Control-p]
   key :smart_evaluate,           %w[Alt-e], %w[Control-e]
+  key :auto_fill_space,          %w[space]
 
   missing :insert_string
 end

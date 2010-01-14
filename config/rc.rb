@@ -70,4 +70,7 @@ VER.options.dsl do
 
   o "Interval at which pending syntax highlights are done",
     :syntax_highlight_interval, 500
+
+  o "Width at which lines are cut when autofill is active",
+    :auto_fill_width = 78
 end
