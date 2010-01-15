@@ -9,28 +9,9 @@ module VER
   # Tk should get some user states, called like 'user1', 'user2', 'user3', that
   # would allow some flexibility, but still won't be able to represent every mode.
   class Entry < Tk::Tile::Entry
-    STYLE_NAME_REGISTER = []
-    STYLE_NAME_POOL = []
-
     space, word = /[^[:alnum:]]+/, /[[:alnum:]]/
     FORWARD_WORD = /#{space}+#{word}|#{word}+#{space}+#{word}/
     BACKWARD_WORD = /#{word}+/
-
-    def self.obtain_style_name
-      unless style_name = STYLE_NAME_POOL.shift
-        begin
-          id = SecureRandom.hex
-          style_name = "#{id}.#{self}.TEntry"
-        end while STYLE_NAME_REGISTER.include?(style_name)
-        STYLE_NAME_REGISTER << style_name
-      end
-
-      style_name
-    end
-
-    def self.return_style_name(style_name)
-      STYLE_NAME_POOL << style_name
-    end
 
     def style
       style = cget(:style)

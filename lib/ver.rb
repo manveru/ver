@@ -44,7 +44,7 @@ module VER
 
   class << self
     attr_reader(:root, :layout, :status, :paths, :options, :bookmarks,
-                :ctag_stack, :keymap)
+                :ctag_stack, :keymap, :style_name_register, :style_name_pool)
     attr_accessor :layout_class
   end
 
@@ -140,6 +140,8 @@ module VER
     @exception_view = nil
     @bookmarks = Bookmarks.new
     @ctag_stack = []
+    @style_name_register = []
+    @style_name_pool = []
 
     load 'rc'
     @options.merge!(given_options)
@@ -356,6 +358,22 @@ module VER
 
   def message(string)
     @layout.configure text: string
+  end
+
+  def obtain_style_name(widget_name, widget_class)
+    unless style_name = style_name_pool.shift
+      begin
+        id = SecureRandom.hex
+        style_name = "#{id}.#{widget_name}.#{widget_class}"
+      end while style_name_register.include?(style_name)
+      style_name_register << style_name
+    end
+
+    style_name
+  end
+
+  def return_style_name(style_name)
+    style_name_pool << style_name
   end
 
   def dump_options

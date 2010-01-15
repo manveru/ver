@@ -12,7 +12,7 @@ module VER
         @tree     = @callback.tree
 
         mode = options.delete(:mode) || :executor_label
-        options[:style] ||= self.class.obtain_style_name
+        options[:style] ||= VER.obtain_style_name('ExEntry', 'TEntry')
         super
         self.parent = parent
         self.keymap = VER.keymap.use(widget: self, mode: mode)
@@ -29,7 +29,7 @@ module VER
         style_name = style
         super
       ensure
-        self.class.return_style_name(style_name)
+        VER.return_style_name(style_name)
       end
 
       # create a subset of the given +values+, filtered and sorted by checking

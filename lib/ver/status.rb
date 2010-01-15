@@ -9,7 +9,7 @@ module VER
     HISTORY = Hash.new{|k,v| k[v] = [] }
 
     def initialize(view, options = {})
-      options[:style] ||= self.class.obtain_style_name
+      options[:style] ||= VER.obtain_style_name('Status', 'TEntry')
       super
       self.view = view
       @question = ''
@@ -29,7 +29,7 @@ module VER
       style_name = style
       super
     ensure
-      self.class.return_style_name(style_name)
+      VER.return_style_name(style_name)
     end
 
     def text
