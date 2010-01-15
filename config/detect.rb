@@ -99,7 +99,7 @@ module VER::Syntax::Detector
   exts "LilyPond", ["ly", "lily", "ily"]
   exts "Lisp", ["lisp", "cl", "l", "mud", "el"]
   exts "Literate Haskell", ["lhs"]
-  exts "Logtalk", ["lgt", "config"]
+  exts "Logtalk", ["lgt"]
   exts "Lua", ["lua"]
   exts "MEL", ["as"]
   exts "MIPS Assembler", ["s", "mips", "spim", "asm"]
@@ -164,13 +164,14 @@ module VER::Syntax::Detector
   exts "Setext", ["etx", "etx.txt"]
   head "Setext", /setext/
   exts "Shell Script (Bash)", ["sh", "ss", "bashrc", "bash_profile", "bash_login", "profile", "bash_logout", ".textmate_init"]
-  head "Shell Script (Bash)", /^#!.*(bash|zsh|sh|tcsh)/
+  head "Shell Script (Bash)", /^#!.*\b(bash|zsh|sh|tcsh)/
   exts "Slate", ["slate"]
   exts "Standard ML - CM", ["cm"]
   exts "Standard ML", ["sml", "sig"]
   exts "Strings File", ["strings"]
   exts "TSV", ["tsv"]
   exts "Tcl", ["tcl"]
+  head "Tcl", /^#!\/.*\btclsh\b/
   exts "TeX", ["sty", "cls"]
   exts "Textile", ["textile"]
   head "Textile", /textile/
@@ -181,6 +182,7 @@ module VER::Syntax::Detector
   exts "XSL", ["xsl", "xslt"]
   exts "YAML", ["yaml", "yml"]
   exts "iCalendar", ["ics", "ifb"]
+  exts "newLisp", ["lsp", "qwerty"]
   exts "qmake Project file", ["pro", "pri"]
   exts "reStructuredText", ["rst", "rest"]
   exts "svn-commit.tmp", ["svn-commit.tmp", "svn-commit.2.tmp"]
