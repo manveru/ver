@@ -103,9 +103,6 @@ module VER
       %w[Modified Movement].each do |name|
         @text.bind("<<#{name}>>"){|event| __send__("on_#{name.downcase}", event) }
       end
-
-      @text.bind('<FocusIn>'){|event| on_focus(event) }
-      bind('<FocusIn>'){|event| on_focus(event) }
     end
 
     def open_path(path, line = 1)
@@ -128,13 +125,6 @@ module VER
       @text.see :insert
       # @text.refresh_highlight
       @text.status_projection(@status)
-    end
-
-    def on_focus(event)
-      Dir.chdir(text.filename.dirname.to_s) if text.options.auto_chdir
-      text.focus
-      text.set_window_title
-      text.see(:insert)
     end
 
     def focus

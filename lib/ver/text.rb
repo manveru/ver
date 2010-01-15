@@ -63,6 +63,17 @@ module VER
       @pristine = true
       @syntax = nil
       @encoding = Encoding.default_internal
+
+      bind('<FocusIn>'){|event|
+        on_focus_in(event)
+        Tk.callback_break
+      }
+    end
+
+    def on_focus_in(event)
+      Dir.chdir(filename.dirname.to_s) if options.auto_chdir
+      set_window_title
+      see(:insert)
     end
 
     def pristine?
