@@ -7,7 +7,7 @@ module VER
 
       def completed=(values)
         path = Pathname(values.first)
-        self.value = path.relative_path_from(@root).to_s
+        self.value = path.relative_path_from(@pwd).to_s
       end
 
       def setup
@@ -27,8 +27,9 @@ module VER
       end
 
       def setup_fff
-        @root = caller.project_root || Pathname(Dir.pwd)
-        @fffinder = FFF.new(@root.to_s)
+        root = caller.project_root || Dir.pwd
+        @pwd = Dir.pwd
+        @fffinder = FFF.new(root.to_s)
       rescue FFF::TooManyEntries
         VER.message "The FuzzyFileFinder is overwhelmed by the amount of files"
         callback.destroy
