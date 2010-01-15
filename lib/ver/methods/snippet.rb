@@ -214,10 +214,14 @@ module VER
 
     def apply_out_on(widget, out)
       indent = ' ' * widget.options.shiftwidth
+      initial_indent = widget.get('insert linestart', 'insert lineend')[/^\s+/]
+
       out.each do |atom|
         case atom
         when String
-          atom = atom.gsub(/\t/, indent)
+          atom = atom.
+            gsub(/\t/, indent).
+            gsub(/\n/, "\n#{initial_indent}")
           widget.insert(:insert, atom)
         when Numeric
           mark = "ver_snippet_#{atom}"
