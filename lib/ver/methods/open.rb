@@ -133,7 +133,6 @@ module VER
 
           # Now we have the source encoding, let's make it UTF-8 so Tcl can
           # handle it.
-          content.force_encoding(@encoding)
           content.encode!(Encoding::UTF_8)
         end
 
