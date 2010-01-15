@@ -1,5 +1,5 @@
 module VER
-  class View < Tk::Frame
+  class View < Tk::Tile::LabelFrame
     autoload :Entry,   'ver/view/entry'
     autoload :List,    'ver/view/list'
     autoload :Console, 'ver/view/console'
@@ -8,11 +8,13 @@ module VER
 
     def initialize(layout, options = {})
       peer = options.delete(:peer)
+      options[:style] ||= VER.obtain_style_name('View', 'TFrame')
       super
       @layout = layout
       @text = @status = @ybar = @xbar = nil
-      configure takefocus: false
       setup(peer)
+      configure takefocus: false, labelwidget: @status, labelanchor: :sw
+      @status.configure width: 1000
     end
 
     # +-------+---+
@@ -188,9 +190,17 @@ module VER
     end
 
     def destroy
+      style_name = style
       [@text, @ybar, @xbar, @status].compact.each(&:destroy)
 
       super
+    ensure
+      VER.return_style_name(style_name)
+    end
+
+    def style
+      style = cget(:style)
+      style.first if style
     end
 
     def filename
