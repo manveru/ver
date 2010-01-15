@@ -1,5 +1,5 @@
 module VER
-  class View < Tk::Tile::LabelFrame
+  class View < Tk::Tile::Frame
     autoload :Entry,   'ver/view/entry'
     autoload :List,    'ver/view/list'
     autoload :Console, 'ver/view/console'
@@ -13,8 +13,7 @@ module VER
       @layout = layout
       @text = @status = @ybar = @xbar = nil
       setup(peer)
-      configure takefocus: false, labelwidget: @status, labelanchor: :sw
-      @status.configure width: 1000
+      configure takefocus: false, padding: 2, border: 0, relief: :solid
     end
 
     # +-------+---+
