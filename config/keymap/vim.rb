@@ -54,7 +54,7 @@ end
 vim.in_mode :views_control do
   key [:view_change], ['Control-w', :views]
   key :view_focus_next, %w[Control-Key-Tab]
-  key :view_focus_prev, %w[Control-Shift-Key-Tab]
+  key :view_focus_prev, %w[Control-Shift-Key-Tab], %w[Control-ISO_Left_Tab]
 
   key :start_views_mode, %w[Control-w r]
 end
