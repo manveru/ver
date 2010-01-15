@@ -28,7 +28,7 @@ module VER
 
       def setup_fff
         root = caller.project_root || Dir.pwd
-        @pwd = Dir.pwd
+        @pwd = Pathname(Dir.pwd)
         @fffinder = FFF.new(root.to_s)
       rescue FFF::TooManyEntries
         VER.message "The FuzzyFileFinder is overwhelmed by the amount of files"
