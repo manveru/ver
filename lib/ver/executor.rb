@@ -4,6 +4,7 @@ module VER
     autoload :ExLabel, 'ver/executor/label'
 
     attr_reader :caller, :tree, :entry, :frame
+    attr_accessor :update_on_change
 
     def initialize(caller)
       @caller = caller
@@ -50,7 +51,12 @@ module VER
         end
 
         widget.bind('<<Inserted>>') do
-          @last_was_tab = false
+          if update_on_change
+            @active.completion
+            @last_was_tab = false
+          else
+            @last_was_tab = false
+          end
         end
       end
     end

@@ -11,6 +11,7 @@ module VER
       end
 
       def setup
+        callback.update_on_change = true
         setup_fff
 
         tree.configure(
@@ -49,7 +50,7 @@ module VER
       end
 
       def action(path)
-        throw(:invalid) if File.directory?(path)
+        throw(:invalid) unless File.file?(path)
         caller.view.find_or_create(path)
       end
     end

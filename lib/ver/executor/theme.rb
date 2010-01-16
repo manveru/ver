@@ -2,6 +2,7 @@ module VER
   class Executor
     class ExTheme < Entry
       def setup
+        callback.update_on_change = true
         @themes = VER::Theme.list.map{|fullpath|
           File.basename(fullpath, File.extname(fullpath))
         }

@@ -2,6 +2,10 @@ module VER
   class Executor
     # Open or focus a buffer with the given path.
     class ExPath < Entry
+      def setup
+        callback.update_on_change = true
+      end
+
       def choices(origin)
         origin = origin.sub(/^.*\/\//, '/')
         origin = origin.sub(/^.*\/~\//, '~/')
