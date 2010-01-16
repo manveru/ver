@@ -68,7 +68,8 @@ module VER
       ]
 
       REPEAT_BREAK_MODE = [
-        :move
+        :move,
+        :search,
       ]
 
       def repeat_command(count = 1)
