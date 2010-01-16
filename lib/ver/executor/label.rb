@@ -8,6 +8,7 @@ module VER
     autoload :ExSyntax,          'ver/executor/syntax'
     autoload :ExTheme,           'ver/executor/theme'
     autoload :ExWrite,           'ver/executor/path'
+    autoload :ExBuffer,          'ver/executor/buffer'
 
     class ExLabel < Entry
       COMPLETERS = {
@@ -20,6 +21,7 @@ module VER
         'syntax' => :ExSyntax,
         'theme'  => :ExTheme,
         'write'  => :ExWrite,
+        'buffer' => :ExBuffer,
       }
 
       def setup
