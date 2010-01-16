@@ -26,6 +26,7 @@ end
 
 vim.in_mode :views do
   inherits :basic
+  no_arguments
 
   key :view_one,           %w[KeyPress-1]
   key :view_two,           %w[KeyPress-2]
@@ -52,6 +53,7 @@ vim.in_mode :views do
 end
 
 vim.in_mode :views_control do
+  no_arguments
   key [:view_change], ['Control-w', :views]
   key :view_focus_next, %w[Control-Key-Tab]
   key :view_focus_prev, %w[Control-Shift-Key-Tab], %w[Control-ISO_Left_Tab]
