@@ -106,6 +106,20 @@ module VER
       apply
     end
 
+    def cycle_next(current)
+      return unless index = @stack.index(current)
+      @stack.push(@stack.shift)
+      apply
+      @stack[index].focus
+    end
+
+    def cycle_prev(current)
+      return unless index = @stack.index(current)
+      @stack.unshift(@stack.pop)
+      apply
+      @stack[index].focus
+    end
+
     def apply(options = {})
       @options.merge!(options)
       strategy.apply(self, @options)

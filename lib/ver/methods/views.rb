@@ -96,6 +96,14 @@ module VER
         layout.options[:center] += 0.1 if center < 0.9
         layout.apply
       end
+
+      def view_cycle_next
+        layout.cycle_next(view)
+      end
+
+      def view_cycle_prev
+        layout.cycle_prev(view)
+      end
     end
   end
 end
