@@ -60,13 +60,7 @@ module VER
       end
 
       def register(raw_sequence)
-        case raw_sequence
-        when /^[a-zA-Z]$/
-          canonical = raw_sequence
-        else
-          canonical = raw_sequence.sub(/(Shift-|Alt-)+(?!Key)/, '\1Key-')
-          canonical = "<#{canonical}>"
-        end
+        canonical = raw_sequence_to_canonical(raw_sequence)
 
         bind canonical do |event|
           widget = Tk.widgets[event.window_path]
@@ -75,6 +69,16 @@ module VER
         end
 
         return canonical
+      end
+
+      def raw_sequence_to_canonical(raw)
+        case raw
+        when /^[a-zA-Z]$/
+          raw
+        else
+          canonical = raw.sub(/(Shift-)+(?!Key)/, '\1Key-')
+          "<#{canonical}>"
+        end
       end
 
       def all_bound_sequences
