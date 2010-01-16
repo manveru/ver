@@ -11,7 +11,7 @@ vim.in_mode :basic do
   key :open_method_list,    %w[F10]
   key :open_terminal,       %w[F9]
   key :describe_key,        %w[Control-h k]
-  key :help_for_help,       %w[Control-h question], %w[F1], %w[Help]
+  # key :help_for_help,       %w[Control-h question], %w[F1], %w[Help]
   key :tags_at,             %w[Control-g t]
   key :source_buffer,       %w[Control-R]
 
