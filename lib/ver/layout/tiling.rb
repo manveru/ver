@@ -3,7 +3,6 @@ module VER
     autoload :CommonTiling, 'ver/layout/tiling/common'
     autoload :HorizontalTiling, 'ver/layout/tiling/horizontal'
     autoload :VerticalTiling, 'ver/layout/tiling/vertical'
-    # autoload :Notebook, 'ver/layout/notebook'
 
     attr_reader :strategy, :views, :stack, :options
 
