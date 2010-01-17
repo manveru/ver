@@ -7,7 +7,15 @@ module VER
     end
 
     def mode=(name)
+      Tk::Event.generate(self, "<<EndMode>>")
+      Tk::Event.generate(self, "<<EndMode#{mode_as_camel_case}>>")
       keymap.mode = name if keymap
+      Tk::Event.generate(self, "<<BeginMode#{mode_as_camel_case}>>")
+      Tk::Event.generate(self, "<<BeginMode>>")
+    end
+
+    def mode_as_camel_case
+      mode.to_s.split('_').map{|e| e.capitalize}.join
     end
   end
 

@@ -1,25 +1,23 @@
-module VER
-  module Methods
-    module Undo
-      def redo
-        undoer.redo
-        @pristine = false
+module VER::Methods
+  module Undo
+    class << self
+      def redo(text, count = 1)
+        count.times{ text.undoer.redo }
+        text.pristine = false
       end
 
-      def undo
-        undoer.undo
-        @pristine = false
+      def undo(text, count = 1)
+        count.times{ text.undoer.undo }
+        text.pristine = false
       end
 
-      private
-
-      def undo_record(&block)
-        undoer.record_multi(&block)
-        @pristine = false
+      def record(text, &block)
+        text.undoer.record_multi(&block)
+        text.pristine = false
       end
 
-      def undo_separator
-        undoer.separate!
+      def separator(text)
+        text.undoer.separate!
       end
     end
   end

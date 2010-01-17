@@ -1,12 +1,12 @@
-module VER
-  module Methods
-    module Preview
-      def preview
-        return unless syntax
+module VER::Methods
+  module Preview
+    class << self
+      def preview(text)
+        return unless syntax = text.syntax
 
         case syntax.name
         when 'Ruby'
-          View::Console.new(self, 'ruby', filename)
+          View::Console.new(text, 'ruby', text.filename)
         end
       end
     end

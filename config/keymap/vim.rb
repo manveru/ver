@@ -1,284 +1,369 @@
 vim = VER::Keymap.new(name: :vim, mode: :control)
 
+vim.in_mode :help do
+  no_arguments
+  handler VER::Methods::Help
+
+  map :describe_key, %w[Control-h k]
+  # map :help_for_help,       %w[Control-h question], %w[F1], %w[Help]
+end
+
+vim.in_mode :open do
+  no_arguments
+  handler VER::Methods::Open
+
+  map :file_open_popup,     %w[Control-o]
+  map :file_open_fuzzy,     %w[Alt-o], %w[Control-m o]
+end
+
+vim.in_mode :save do
+  no_arguments
+  handler VER::Methods::Save
+
+  map :file_save,           %w[Control-s]
+  map :file_save_popup,     %w[Control-Alt-s]
+end
+
+vim.in_mode :preview do
+  no_arguments
+  handler VER::Methods::Preview
+
+  map :preview, %w[F5]
+end
+
 vim.in_mode :basic do
-  key :file_open_popup,     %w[Control-o]
-  key :file_open_fuzzy,     %w[Alt-o], %w[Control-m o]
-  key :status_evaluate,     %w[Alt-x], %w[Control-m x]
-  key :file_save,           %w[Control-s]
-  key :file_save_popup,     %w[Control-Alt-s]
-  key :quit,                %w[Control-q]
-  key :start_control_mode,  %w[Escape], %w[Control-c]
-  key :open_method_list,    %w[F10]
-  key :open_terminal,       %w[F9]
-  key :describe_key,        %w[Control-h k]
-  # key :help_for_help,       %w[Control-h question], %w[F1], %w[Help]
-  key :tags_at,             %w[Control-g t]
-  key :source_buffer,       %w[Control-R]
+  inherits :help, :preview, :save, :open
+  handler VER::Methods::Basic
 
-  key :open_grep_list,      %w[Control-Alt-g], %w[Control-m Control-g]
-  key :grep_buffer,         %w[Alt-g], %w[Control-m g]
-  key :grep_buffers,        %w[Alt-G], %w[Control-m G]
+  mode :control,            %w[Escape], %w[Control-c]
 
-  key :buffer_switch,       %w[Alt-b], %w[Control-m b]
-  key :window_switch,       %w[Alt-B], %w[Control-m B]
-  key :open_console,        %w[Control-exclam] if defined?(::EM)
+  map :quit,                %w[Control-q]
+  map :source_buffer,       %w[Control-R]
+  map :status_evaluate,     %w[Alt-x], %w[Control-m x]
+  map :tags_at,             %w[Control-g t]
+
+  map :open_terminal,       %w[F9]
+  map :open_console,        %w[Control-exclam] if defined?(::EM)
+
+  # to be deprecated
+  map :open_buffer_switch,  %w[Alt-b], %w[Control-m b]
+  map :open_grep_buffer,    %w[Alt-g], %w[Control-m g]
+  map :open_grep_buffers,   %w[Alt-G], %w[Control-m G]
+  map :open_grep_list,      %w[Control-Alt-g], %w[Control-m Control-g]
+  map :open_method_list,    %w[F10]
+  map :open_window_switch,  %w[Alt-B], %w[Control-m B]
 end
 
 vim.in_mode :views do
   inherits :basic
   no_arguments
+  handler VER::Methods::Views
+  # handler VER::Methods::Views
 
-  key :view_one,           %w[KeyPress-1]
-  key :view_two,           %w[KeyPress-2]
+  map :one,           %w[KeyPress-1]
+  map :two,           %w[KeyPress-2]
 
-  key :view_slave_inc,     %w[plus]
-  key :view_slave_dec,     %w[minus]
+  map :slave_inc,     %w[plus]
+  map :slave_dec,     %w[minus]
 
-  key :view_master_inc,    %w[H]
-  key :view_master_dec,    %w[L]
+  map :master_inc,    %w[H]
+  map :master_dec,    %w[L]
 
-  key :view_create,        %w[c]
-  key :view_focus_next,    %w[j], %w[Right]
-  key :view_focus_prev,    %w[k], %w[Left]
-  key :view_push_down,     %w[J], %w[Down]
-  key :view_push_up,       %w[K], %w[Up]
-  key :view_close,         %w[w]
-  key :view_push_top,      %w[Return]
-  key :view_push_bottom,   %w[BackSpace]
+  map :create,        %w[c]
+  map :focus_next,    %w[j], %w[Right]
+  map :focus_prev,    %w[k], %w[Left]
+  map :push_down,     %w[J], %w[Down]
+  map :push_up,       %w[K], %w[Up]
+  map :close,         %w[w]
+  map :push_top,      %w[Return]
+  map :push_bottom,   %w[BackSpace]
 
-  key :view_master_shrink, %w[h]
-  key :view_master_grow,   %w[l]
+  map :master_shrink, %w[h]
+  map :master_grow,   %w[l]
 
-  key :view_peer,          %w[p]
+  map :peer,          %w[p]
 end
 
 vim.in_mode :views_control do
   no_arguments
-  key [:view_change], ['Control-w', :views]
-  key :view_focus_next, %w[Control-Tab]
-  key :view_focus_prev, %w[Control-Shift-Tab], %w[Control-ISO_Left_Tab]
-  key :view_cycle_next, %w[Alt-Tab]
-  key :view_cycle_prev, %w[Alt-Shift-Tab], %w[Alt-ISO_Left_Tab]
+  handler VER::Methods::Views
+  mode :views, %w[Control-w r]
 
-
-  key :start_views_mode, %w[Control-w r]
+  map :change,     ['Control-w', :views]
+  map :focus_next, %w[Control-Tab]
+  map :focus_prev, %w[Control-Shift-Tab], %w[Control-ISO_Left_Tab]
+  map :cycle_next, %w[Alt-Tab]
+  map :cycle_prev, %w[Alt-Shift-Tab], %w[Alt-ISO_Left_Tab]
 end
 
 vim.in_mode :move do
-  key :backward_char,       %w[h], %w[Left]
-  key :backward_chunk,      %w[B]
-  key :backward_word,       %w[b], %w[Shift-Left]
-  key :beginning_of_line,   %w[KeyPress-0], %w[Home]
-  key :end_of_file,         %w[G]
-  key :end_of_line,         %w[dollar], %w[End]
-  key :forward_char,        %w[l], %w[Right]
-  key :forward_chunk,       %w[W]
-  key :forward_word,        %w[w], %w[Shift-Right]
-  key :go_line,             %w[g g]
-  key :matching_brace,      %w[percent]
-  key :next_line,           %w[j], %w[Down], %w[Control-n]
-  key :next_newline_block,  %w[braceleft]
-  key :page_down,           %w[Control-f], %w[Next]
-  key :page_up,             %w[Control-b], %w[Prior]
-  key :prev_newline_block,  %w[braceright]
-  key :previous_line,       %w[k], %w[Up], %w[Control-p]
-  key :word_right_end,      %w[e]
+  handler VER::Methods::Move
+
+  map :prev_char,       %w[h], %w[Left]
+  map :prev_chunk,      %w[B]
+  map :prev_word,       %w[b], %w[Shift-Left]
+  map :start_of_line,   %w[KeyPress-0], %w[Home]
+  map :end_of_file,     %w[G]
+  map :end_of_line,     %w[dollar], %w[End]
+  map :next_char,       %w[l], %w[Right]
+  map :next_chunk,      %w[W]
+  map :next_word,       %w[w], %w[Shift-Right]
+  map :go_line,         %w[g g]
+  map :matching_brace,  %w[percent]
+  map :next_line,       %w[j], %w[Down], %w[Control-n]
+  map :next_page,       %w[Control-f], %w[Next]
+  map :prev_page,       %w[Control-b], %w[Prior]
+  map :prev_line,       %w[k], %w[Up], %w[Control-p]
+  map :next_word_end,   %w[e]
 end
 
 vim.in_mode :search do
-  key :search_char_left,               %w[F]
-  key :search_char_right,              %w[f]
-  key :search_next,                    %w[n]
-  key :search_next_word_under_cursor,  %w[asterisk]
-  key :search_prev,                    %w[N]
-  key :search_prev_word_under_cursor,  %w[numbersign]
-  key :search_remove,                  %w[g slash]
-  key :status_search_next,             %w[slash]
-  key :status_search_prev,             %w[question]
+  handler VER::Methods::Search
+
+  map :search_char_left,               %w[F]
+  map :search_char_right,              %w[f]
+  map :search_next,                    %w[n]
+  map :search_next_word_under_cursor,  %w[asterisk]
+  map :search_prev,                    %w[N]
+  map :search_prev_word_under_cursor,  %w[numbersign]
+  map :search_remove,                  %w[g slash]
+  map :status_search_next,             %w[slash]
+  map :status_search_prev,             %w[question]
 end
 
 vim.in_mode :ctags do
-  key :ctags_find_current,  %w[Control-bracketright] # C-]
-  key :ctags_prev,          %w[Control-bracketleft]  # C-[
+  handler VER::Methods::CTags
+
+  map :find_current,  %w[Control-bracketright] # C-]
+  map :prev,          %w[Control-bracketleft]  # C-[
 end
 
 vim.in_mode :bookmark do
   no_arguments
+  handler VER::Methods::Bookmark
 
-  key :char_bookmark_add,    %w[m]
-  key :char_bookmark_visit,  %w[quoteleft]
+  map :add_char,    %w[m]
+  map :visit_char,  %w[quoteleft]
   # vim also has quoteright to jump to the start of the line, but who
   # needs that *_*
 end
 
 vim.in_mode :complete do
   no_arguments
+  handler VER::Methods::Completion
 
-  key :complete_aspell,   %w[Control-x Control-a]
-  key :complete_file,     %w[Control-x Control-f]
-  key :complete_line,     %w[Control-x Control-l]
-  key :complete_snippet,  %w[Control-x Control-s]
-  key :complete_tm,       %w[Control-x Control-x]
-  key :complete_word,     %w[Control-x Control-w]
-  key :smart_tab,         %w[Tab]
+  map :aspell,     %w[Control-x Control-a]
+  map :contextual, %w[Control-x Control-x]
+  map :file,       %w[Control-x Control-f]
+  map :line,       %w[Control-x Control-l]
+  map :snippet,    %w[Control-x Control-s]
+  map :word,       %w[Control-x Control-w]
+  map :smart_tab,  %w[Tab]
+end
+
+vim.in_mode :delete do
+  handler VER::Methods::Delete
+
+  map :change_line,                    %w[c c]
+  map :kill_line,                      %w[d d]
+  map :kill_motion,                    ['d', :move]
+  map :change_motion,                  ['c', :move]
+  map [:change_motion, :end_of_line],  %w[C]
+  map [:change_word_right_end],        %w[c w]
+  map [:kill_motion, :backward_char],  %w[X]
+  map [:kill_motion, :end_of_line],    %w[D]
+  map [:kill_motion, :forward_char],   %w[x]
+end
+
+vim.in_mode :clipboard do
+  handler VER::Methods::Clipboard
+
+  map :copy_line,        %w[y y], %w[Y]
+  map :copy_motion,      ['y', :move]
+  map :paste,            %w[p]
+  map :paste_above,      %w[P]
+end
+
+vim.in_mode :undo do
+  handler VER::Methods::Undo
+
+  map :redo, %w[Control-r]
+  map :undo, %w[u]
 end
 
 vim.in_mode :control do
-  inherits :basic, :move, :views_control, :search, :ctags, :bookmark
+  inherits :basic, :move, :delete, :undo, :views_control, :search, :ctags,
+           :bookmark, :clipboard
+  handler VER::Methods::Control
 
-  key :change_line,                       %w[c c]
-  key :change_motion,                     ['c', :move]
+  mode :select_block,   %w[Control-v]
+  mode :select_char,    %w[v]
+  mode :select_line,    %w[V]
+  mode :insert,         %w[i]
+  mode :replace,        %w[R]
 
-  key :chdir,                             %w[g c]
+  map :chdir,                             %w[g c]
 
-  key :copy_left_word,                    %w[y b]
-  key :copy_line,                         %w[y y], %w[Y]
-  key :copy_right_word,                   %w[y w]
+  map :cursor_vertical_bottom,            %w[z b]
+  map :cursor_vertical_bottom_sol,        %w[z minus]
+  map :cursor_vertical_center,            %w[z z]
+  map :cursor_vertical_center_sol,        %w[z period]
+  map :cursor_vertical_top,               %w[z t]
+  map :cursor_vertical_top_sol,           %w[z Return]
 
-  key :cursor_vertical_bottom,            %w[z b]
-  key :cursor_vertical_bottom_sol,        %w[z minus]
-  key :cursor_vertical_center,            %w[z z]
-  key :cursor_vertical_center_sol,        %w[z period]
-  key :cursor_vertical_top,               %w[z t]
-  key :cursor_vertical_top_sol,           %w[z Return]
+  map [:insert_at, :end_of_line],         %w[A]
+  map [:insert_at, :next_char],           %w[a]
 
-  key :eol_then_insert_mode,              %w[A]
-  key :forward_char_then_insert_mode,     %w[a]
+  map :indent_line,                       %w[greater]
 
-  key :indent_line,                       %w[greater]
+  map :insert_indented_newline_above,     %w[O]
+  map :insert_indented_newline_below,     %w[o]
 
-  key :insert_indented_newline_above,     %w[O]
-  key :insert_indented_newline_below,     %w[o]
+  map :join_lines,                        %w[J]
 
-  key :join_lines,                        %w[J]
+  map :open_file_under_cursor,            %w[g f]
 
-  key :kill_line,                         %w[d d]
-  key :kill_motion,                       ['d', :move]
+  map :repeat_command,                    %w[period]
+  map :replace_char,                      %w[r]
+  map :smart_evaluate,                    %w[Alt-e], %w[Control-m e]
 
-  key :open_file_under_cursor,            %w[g f]
-  key :paste,                             %w[p]
-  key :paste_above,                       %w[P]
-  key :preview,                           %w[F5]
-  key :redo,                              %w[Control-r]
-  key :repeat_command,                    %w[period]
-  key :replace_char,                      %w[r]
-  key :smart_evaluate,                    %w[Alt-e], %w[Control-m e]
+  map [:insert_at, :start_of_line],       %w[I]
 
-  key :sol_then_insert_mode,              %w[I]
-  key :start_insert_mode,                 %w[i]
-  key :start_replace_mode,                %w[R]
+  map :executor,                          %w[colon]
+  map :syntax_switch,                     %w[Control-y]
+  map :theme_switch,                      %w[Control-t]
+  map :toggle_case,                       %w[asciitilde]
 
-  key :start_select_block_mode,           %w[Control-v]
-  key :start_select_char_mode,            %w[v]
-  key :start_select_line_mode,            %w[V]
-
-  key :executor,                          %w[colon]
-  key :syntax_indent_file,                %w[equal]
-  key :syntax_switch,                     %w[Control-y]
-  key :theme_switch,                      %w[Control-t]
-  key :toggle_case,                       %w[asciitilde]
-  key :undo,                              %w[u]
-  key :unindent_line,                     %w[less]
-  key :wrap_line,                         %w[g w]
-  key [:change_motion, :end_of_line],     %w[C]
-  key [:change_word_right_end],           %w[c w]
-  key [:kill_motion, :backward_char],     %w[X]
-  key [:kill_motion, :end_of_line],       %w[D]
-  key [:kill_motion, :forward_char],      %w[x]
+  map :unindent_line,                     %w[less]
+  map :wrap_line,                         %w[g w]
 end
 
 vim.in_mode :readline do
   no_arguments
 
-  key :accept_line,                    %w[Return]
-  key :backward_char,                  %w[Left], %w[Control-b]
-  key :backward_word,                  %w[Shift-Left], %w[Alt-b]
-  key :beginning_of_history,           %w[Control-less]
-  key :beginning_of_line,              %w[Home], %w[Control-a]
-  key :end_of_history,                 %w[Control-greater]
-  key :end_of_line,                    %w[End], %w[Control-e]
-  key :forward_char,                   %w[Right], %w[Control-f]
-  key :forward_word,                   %w[Shift-Right], %w[Alt-f]
-  key :insert_selection,               %w[Shift-Insert]
-  key :insert_tab,                     %w[Control-v Tab]
-  key :next_history,                   %w[Down], %w[Control-n]
-  key :previous_history,               %w[Up], %w[Control-p]
-  key :transpose_chars,                %w[Control-t]
-  key [:kill_motion, :backward_char],  %w[BackSpace]
-  key [:kill_motion, :backward_word],  %w[Control-w]
-  key [:kill_motion, :forward_char],   %w[Delete], %w[Control-d]
+  handler VER::Methods::Entry
+  map :accept_line,                %w[Return]
+
+  map :end_of_line,                %w[End], %w[Control-e]
+  map :insert_selection,           %w[Shift-Insert]
+  map :insert_tab,                 %w[Control-v Tab]
+  map :next_char,                  %w[Right], %w[Control-f]
+  map :next_word,                  %w[Shift-Right], %w[Alt-f]
+  map :prev_char,                  %w[Left], %w[Control-b]
+  map :prev_word,                  %w[Shift-Left], %w[Alt-b]
+  map :start_of_line,              %w[Home], %w[Control-a]
+  map :transpose_chars,            %w[Control-t]
+
+  map [:kill_motion, :next_char],  %w[Delete], %w[Control-d]
+  map [:kill_motion, :prev_char],  %w[BackSpace]
+  map [:kill_motion, :prev_word],  %w[Control-w]
+
+  # map :beginning_of_history,       %w[Control-less]
+  # map :end_of_history,             %w[Control-greater]
+  # map :next_history,               %w[Down], %w[Control-n]
+  # map :prev_history,               %w[Up], %w[Control-p]
 
   KEYSYMS.each do |sym, name|
-    key [:insert_string, sym], [name]
+    map [:insert_string, sym], [name]
   end
 end
 
 vim.in_mode :insert do
-  inherits :basic, :views_control, :complete, :readline
+  inherits :basic, :views_control, :complete
   no_arguments
 
-  key :insert_indented_newline,  %w[Return]
-  key :next_line,                %w[Down], %w[Control-n]
-  key :page_down,                %w[Control-f], %w[Next], %w[Shift-Down]
-  key :page_up,                  %w[Control-b], %w[Prior], %w[Shift-Up]
-  key :previous_line,            %w[Up], %w[Control-p]
-  key :smart_evaluate,           %w[Alt-e], %w[Control-e]
-  key :auto_fill_space,          %w[space]
-
+  handler VER::Methods::Insert
+  map :insert_indented_newline,  %w[Return]
+  map :insert_selection,           %w[Shift-Insert]
+  map :insert_tab,                 %w[Control-v Tab]
+  KEYSYMS.each{|sym, name| map [:insert_string, sym], [name] }
   missing :insert_string
+
+  handler VER::Methods::Delete
+  map [:kill_motion, :next_char],  %w[Delete], %w[Control-d]
+  map [:kill_motion, :prev_char],  %w[BackSpace]
+  map [:kill_motion, :prev_word],  %w[Control-w]
+
+  handler VER::Methods::Move
+  map :next_line,      %w[Down], %w[Control-n]
+  map :next_page,      %w[Control-f], %w[Next], %w[Shift-Down]
+  map :prev_page,      %w[Control-b], %w[Prior], %w[Shift-Up]
+  map :prev_line,      %w[Up], %w[Control-p]
+  map :end_of_line,    %w[End], %w[Control-e]
+  map :next_char,      %w[Right], %w[Control-f]
+  map :next_word,      %w[Shift-Right], %w[Alt-f]
+  map :prev_char,      %w[Left], %w[Control-b]
+  map :prev_word,      %w[Shift-Left], %w[Alt-b]
+  map :start_of_line,  %w[Home], %w[Control-a]
+
+  handler VER::Methods::Control
+  map :smart_evaluate,           %w[Alt-e], %w[Control-e]
+
+  handler VER::Methods::AutoFill
+  map :auto_fill_space,          %w[space]
 end
 
 vim.in_mode :replace do
   inherits :insert
   no_arguments
+  handler VER::Methods::Insert
 
   missing :replace_string
 end
 
 vim.in_mode :select do
   inherits :basic, :move, :search
+  handler VER::Methods::Selection
 
-  key :comment_selection,             %w[comma c]
-  key :copy_selection,                %w[y], %w[Y]
-  key :indent_selection,              %w[greater]
-  key :kill_selection,                %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
-  key :pipe_selection,                %w[exclam]
-  key :selection_lower_case,          %w[u]
-  key :selection_replace_char,        %w[r]
-  key :selection_replace_string,      %w[c]
-  key :selection_toggle_case,         %w[asciitilde]
-  key :selection_upper_case,          %w[U]
-  key :smart_evaluate,                %w[Alt-e], %w[Control-e]
-  key :switch_select_block_mode,      %w[Control-v]
-  key :switch_select_char_mode,       %w[v]
-  key :switch_select_line_mode,       %w[V]
-  key :uncomment_selection,           %w[comma u]
-  key :unindent_selection,            %w[less]
-  key :wrap_selection,                %w[g w]
-  key [:finish_selection, :control],  %w[Escape], %w[Control-c]
+  mode :select_block,  %w[Control-v]
+  mode :select_char,   %w[v]
+  mode :select_line,   %w[V]
+  mode :control,       %w[Escape], %w[Control-c]
+
+  map :comment,         %w[comma c]
+  map :copy,            %w[y], %w[Y]
+  map :indent,          %w[greater]
+  map :kill,            %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
+  map :pipe,            %w[exclam]
+  map :lower_case,      %w[u]
+  map :replace_char,    %w[r]
+  map :replace_string,  %w[c]
+  map :toggle_case,     %w[asciitilde]
+  map :upper_case,      %w[U]
+  map :uncomment,       %w[comma u]
+  map :unindent,        %w[less]
+  map :wrap,            %w[g w]
+
+  handler VER::Methods::Control
+  map :smart_evaluate,  %w[Alt-e], %w[Control-e]
 end
 
 vim.in_mode :select_char do
   inherits :select
+  handler VER::Methods::Selection
 end
 
 vim.in_mode :select_line do
   inherits :select
+  handler VER::Methods::Selection
 end
 
 vim.in_mode :select_block do
   inherits :select
+  handler VER::Methods::Selection
 end
 
 vim.in_mode :status_query do
   inherits :basic, :readline
   no_arguments
 
-  key :ask_abort,         %w[Escape], %w[Control-c]
-  key :ask_submit,        %w[Return]
-  key :history_complete,  %w[Tab]
-  key :history_next,      %w[Down], %w[Control-n]
-  key :history_prev,      %w[Up], %w[Control-p]
+  handler VER::Methods::Entry
+  map :ask_abort,         %w[Escape], %w[Control-c]
+  map :ask_submit,        %w[Return]
+
+  # map :history_complete,  %w[Tab]
+  # map :history_next,      %w[Down], %w[Control-n]
+  # map :history_prev,      %w[Up], %w[Control-p]
 
   missing :insert_string
 end
@@ -287,12 +372,12 @@ vim.in_mode :list_view_entry do
   inherits :basic, :readline
   no_arguments
 
-  # key :update, %w[Key]
-  key :cancel,          %w[Escape], %w[Control-c]
-  key :completion,      %w[Tab]
-  key :line_down,       %w[Down], %w[Control-j], %w[Control-n]
-  key :line_up,         %w[Up], %w[Control-k], %w[Control-p]
-  key :pick_selection,  %w[Return]
+  # map :update, %w[Key]
+  map :cancel,          %w[Escape], %w[Control-c]
+  map :completion,      %w[Tab]
+  map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
+  map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
+  map :pick_selection,  %w[Return]
 
   missing :insert_string
 end
@@ -301,11 +386,11 @@ vim.in_mode :executor_entry do
   inherits :basic, :readline
   no_arguments
 
-  key :cancel,          %w[Escape], %w[Control-c]
-  key :completion,      %w[Tab]
-  key :line_down,       %w[Down], %w[Control-j], %w[Control-n]
-  key :line_up,         %w[Up], %w[Control-k], %w[Control-p]
-  key :pick_selection,  %w[Return]
+  map :cancel,          %w[Escape], %w[Control-c]
+  map :completion,      %w[Tab]
+  map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
+  map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
+  map :pick_selection,  %w[Return]
 
   missing :insert_string
 end
@@ -314,7 +399,7 @@ vim.in_mode :executor_label do
   inherits :executor_entry
   no_arguments
 
-  key :speed_selection,  %w[space]
+  map :speed_selection,  %w[space]
 
   missing :insert_string
 end
@@ -322,29 +407,30 @@ end
 vim.in_mode :list_view_list do
   inherits :basic
 
-  key :cancel,          %w[Escape], %w[Control-c]
-  key :pick_selection,  %w[Return], %w[Double-Button-1]
-  key :line_up,         %w[Up], %w[Control-k], %w[Control-p]
-  key :line_down,       %w[Down], %w[Control-j], %w[Control-n]
+  map :cancel,          %w[Escape], %w[Control-c]
+  map :pick_selection,  %w[Return], %w[Double-Button-1]
+  map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
+  map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
 end
 
 vim.in_mode :hover_completion do
   inherits :basic
 
-  key :cancel,               %w[Escape], %w[BackSpace]
-  key :continue_completion,  %w[Right], %w[l]
-  key :go_down,              %w[Down], %w[j]
-  key :go_up,                %w[Up], %w[k]
-  key :submit,               %w[Return]
+  map :cancel,               %w[Escape], %w[BackSpace]
+  map :continue_completion,  %w[Right], %w[l]
+  map :go_down,              %w[Down], %w[j]
+  map :go_up,                %w[Up], %w[k]
+  map :submit,               %w[Return]
 end
 
 vim.in_mode :snippet do
   inherits :readline
 
-  key :snippet_cancel, %w[Escape], %w[Control-c]
-  key :snippet_jump,   %w[Tab]
+  handler VER::Methods::Snippet
+  map :cancel, %w[Escape], %w[Control-c]
+  map :jump,   %w[Tab]
 
-  missing :snippet_insert_string
+  missing :insert_string
 end
 
 vim.ignore_sends = [

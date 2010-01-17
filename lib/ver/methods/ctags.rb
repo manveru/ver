@@ -1,62 +1,68 @@
-module VER
-  module Methods
-    module Ctags
-      def ctags_find_current
-        word = get('insert wordstart', 'insert wordend')
-        ctags_find(word)
+module VER::Methods
+  # TODO: add project directory and Dir.pwd to lookup path, maybe share code
+  #       with the project directory lookup
+  module CTags
+    class << self
+      def find_current(text)
+        word = text.get('insert wordstart', 'insert wordend')
+        find(text, word)
       end
 
-      def ctags_go(name = nil)
-        if name
-          ctags_content do |tag_name, file_name, ex_cmd|
-            next unless tag_name == name
-            return ctags_execute(file_name, ex_cmd)
-          end
-        else
-          status_ask 'Tag name: ' do |tag_name|
-            ctags_go(tag_name)
-          end
-        end
-      end
+      def prev(text, count = 1)
+        bm = VER.ctag_stack.pop(count).first
 
-      def ctags_find(needle)
-        ctags_content do |tag_name, file_name, ex_cmd|
-          next unless tag_name == needle
-          return ctags_execute(file_name, ex_cmd)
-        end
-      end
-
-      def ctags_prev
-        if bm = VER.ctag_stack.pop
+        if bm
           bookmark_open(bm)
         else
           message("Tag stack empty.")
         end
       end
 
-      def ctags_execute(file_name, ex_cmd)
+      private
+
+      def go(text, name = nil)
+        if name
+          content text do |tag_name, file_name, ex_cmd|
+            next unless tag_name == name
+            return execute(text, file_name, ex_cmd)
+          end
+        else
+          text.status_ask 'Tag name: ' do |tag_name|
+            go text, tag_name
+          end
+        end
+      end
+
+      def find(text, needle)
+        content text do |tag_name, file_name, ex_cmd|
+          next unless tag_name == needle
+          return execute(text, file_name, ex_cmd)
+        end
+      end
+
+      def execute(text, file_name, ex_cmd)
         case ex_cmd
         when /^\d+$/
           VER.ctag_stack << Bookmarks::Bookmark.new(nil, *bookmark_value)
 
-          view.find_or_create(file_name, ex_cmd.to_i)
+          Views.find_or_create(text, file_name, ex_cmd.to_i)
         when /^\/(.*)\/$/
           VER.ctag_stack << Bookmarks::Bookmark.new(nil, *bookmark_value)
 
           source = $1.gsub(/(?!\\)([()])/, '\\\\\\1')
           regexp = Regexp.new(source)
 
-          self.view.find_or_create(file_name) do |view|
-            view.text.tag_all_matching(:search, regexp, Search::SEARCH_HIGHLIGHT)
-            view.text.search_next
+          Views.find_or_create(file_name) do |view|
+            view.text.tag_all_matching(Search::TAG, regexp, Search::HIGHLIGHT)
+            Search.next(view.text)
           end
         else
           raise ArgumentError, "Unknown Ex command: %p" % [ex_cmd]
         end
       end
 
-      def ctags_content
-        dir = filename.dirname
+      def content(text)
+        dir = text.filename.dirname
         file = nil
 
         loop do

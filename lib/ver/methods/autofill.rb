@@ -1,20 +1,19 @@
-module VER
-  module Methods
-    module AutoFill
-      attr_accessor :auto_fill
-
-      def auto_fill_space
-        return insert(:insert, ' ') unless auto_fill
+module VER::Methods
+  module AutoFill
+    class << self
+      def auto_fill_space(text)
+        enabled = text.store(self, :enable)
+        return text.insert(:insert, ' ') unless enabled
 
         from, to = 'insert linestart', 'insert lineend'
-        line = get(from, to)
+        line = text.get(from, to)
 
-        if line.size < (options.auto_fill_width || 78)
-          insert(:insert, ' ')
+        if line.size < (text.options.auto_fill_width || 78)
+          text.insert(:insert, ' ')
         else
           chunks = line.scan(/(.{1,78}[^\s])(?:\s|$)/)
           lines = chunks.join("\n") << ' '
-          replace(from, to, lines)
+          text.replace(from, to, lines)
         end
       end
     end

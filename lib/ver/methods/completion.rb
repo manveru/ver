@@ -1,53 +1,102 @@
-module VER
-  module Methods
-    module Completion
+module VER::Methods
+  module Completion
+    class << self
       # TODO: use the tag names at the location to customize completion choices
       # the textmate bundles have quite some stuff for that.
-      def smart_tab
-        context = get('insert - 1 chars', 'insert + 1 chars')
+      def smart_tab(text)
+        context = text.get('insert - 1 chars', 'insert + 1 chars')
 
         if context =~ /^\S\W/
-          if @complete_last_used
-            complete_again
+          if text.store(self, :last_used)
+            complete_again(text)
           else
-            complete_snippet
+            snippet(text)
           end
         else
-          snippet_jump || complete_fallback
+          Snippet.jump(text) || complete_fallback(text)
         end
       end
 
-      def complete_fallback
-        indent = ' ' * options.shiftwidth
-        insert :insert, indent
+      def complete(text, options = {}, &block)
+        Undo.separator(text)
+        VER::HoverCompletion.new(text, options, &block)
       end
 
-      def complete_again
-        send(@complete_last_used) if @complete_last_used
+      def complete_fallback(text)
+        indent = ' ' * text.options.shiftwidth
+        text.insert(:insert, indent)
       end
 
-      def complete_snippet
-        return unless load_snippets
-        @complete_last_used = :complete_snippet
-
-        snippet_dwim
+      def complete_again(text)
+        if last_used = text.store(self, :last_used)
+          send(last_used, text)
+        end
       end
 
-      def complete_tm
-        return unless load_preferences
+      def aspell(text)
+        text.store(self, :last_used, :aspell)
 
-        @complete_last_used = :complete_tm
+        pos = text.index('insert - 1 chars')
+        from, to = pos.wordstart, pos.wordend
+        word = text.get(from, to)
+
+        complete text do
+          [from, to, aspell_completions(word)]
+        end
+      end
+
+      def contextual
+        return unless text.load_preferences
+        text.store(self, :last_used, :contextual)
 
         from, to = 'insert - 1 chars wordstart', 'insert - 1 chars wordend'
 
-        complete{ [from, to, tm_completions(from, to)] }
+        complete(text) do
+          [from, to, contextual_completions(text, from, to)]
+        end
       end
 
-      def tm_completions(from, to)
-        tags  = Set.new(tag_names(to))
+      def file(text)
+        text.store(self, :last_used, :file)
+
+        complete text, continue: true do
+          file_completions(text, 'insert linestart', 'insert')
+        end
+      end
+
+      def line(text)
+        text.store(self, :last_used, :line)
+
+        from, to = 'insert linestart', 'insert lineend'
+        lines = line_completions(text, from, to)
+
+        complete(text){ [from, to, lines] }
+      end
+
+      def snippet(text)
+        return unless text.load_snippets
+        text.store(self, :last_used, :snippet)
+
+        Snippet.dwim(text)
+      end
+
+      def word(text)
+        text.store(self, :last_used, :word)
+
+        y, x = text.index('insert').split
+        x = (x - 1).abs
+        from, to = text.index("#{y}.#{x} wordstart"), text.index("#{y}.#{x} wordend")
+
+        words = word_completions(text, from, to)
+
+        complete{ [from, to, words] }
+      end
+
+      def contextual_completions(text, from, to)
+        tags  = Set.new(text.tag_names(to))
         completions = []
 
-        @preferences.each do |key, value|
+        text.preferences.each do |key, value|
           name, scope, settings, uuid =
             value.values_at('name', 'scope', 'settings', 'uuid')
           scopes = Set.new(scope.split(/\s*,\s*|\s+/))
@@ -55,7 +104,7 @@ module VER
           next unless completion_command = settings['completionCommand']
           next unless scope_compare(tags, scopes)
 
-          current_word = get(from, to).strip
+          current_word = text.get(from, to).strip
           ENV['TM_CURRENT_WORD'] = current_word
 
           tmp = Tempfile.new('ver/complete_tm')
@@ -79,34 +128,18 @@ module VER
         scopes.all?{|scope| tags.any?{|tag| scope.start_with?(tag) }}
       end
 
-      def complete_line
-        @complete_last_used = :complete_line
-
-        from, to = 'insert linestart', 'insert lineend'
-        lines = line_completions(from, to)
-
-        complete{ [from, to, lines] }
-      end
-
-      def line_completions(from, to)
-        line = get(from, to).to_s.strip
+      def line_completions(text, from, to)
+        line = text.get(from, to).to_s.strip
 
         return [] if line.empty?
         needle = Regexp.escape(line)
-        search_all(/^.*#{needle}.*$/).map{|match, *_| match }.uniq
+        text.search_all(/^.*#{needle}.*$/).map{|match, *_| match }.uniq
       end
 
-      def complete_file
-        @complete_last_used = :complete_file
-
-        complete continue: true do
-          file_completions('insert linestart', 'insert')
-        end
-      end
-
-      def file_completions(from, to)
-        y = index(from).y
-        line = get(from, to)
+      # TODO: use filename_under_cursor, that should be much more accurate.
+      def file_completions(text, from, to)
+        y = text.index(from).y
+        line = text.get(from, to)
 
         return [] unless match = line.match(/(?<pre>.*?)(?<path>\/[^\s"'{}()\[\]]*)(?<post>.*?)/)
         from, to = match.offset(:path)
@@ -124,43 +157,19 @@ module VER
         return "#{y}.#{to - 1}", "#{y}.#{to}", list
       end
 
-      def complete_word
-        @complete_last_used = :complete_word
-
-        y, x = index('insert').split
-        x = (x - 1).abs
-        from, to = index("#{y}.#{x} wordstart"), index("#{y}.#{x} wordend")
-
-        words = word_completions(from, to)
-
-        complete{ [from, to, words] }
-      end
-
-      def word_completions(from, to)
-        prefix = get(from, to).strip
+      def word_completions(text, from, to)
+        prefix = text.get(from, to).strip
         return [] if prefix.empty?
         prefix = Regexp.escape(prefix)
 
-        found = search_all(/(^|\W)(#{prefix}[\w-]*)/).
-          sort_by{|match, mf, mt| [Text::Index.new(self, mf).delta(from), match] }.
+        found = text.search_all(/(^|\W)(#{prefix}[\w-]*)/).
+          sort_by{|match, mf, mt| [Text::Index.new(text, mf).delta(from), match] }.
           map{|match, *_| match.strip[/[\w-]+/] }.uniq
         found.delete prefix
         found
       end
 
-      def complete_aspell
-        @complete_last_used = :complete_aspell
-
-        complete do
-          pos = index('insert - 1 chars')
-          from, to = pos.wordstart, pos.wordend
-          [from, to, aspell_completions(from, to)]
-        end
-      end
-
-      def aspell_completions(from, to)
-        word = get(from, to)
-
+      def aspell_completions(text, word)
         if result = aspell_execute(word)[word]
           result[:suggestions]
         else
@@ -189,11 +198,6 @@ module VER
         end
 
         return results
-      end
-
-      def complete(options = {}, &block)
-        undo_separator
-        HoverCompletion.new(self, options, &block)
       end
     end
   end

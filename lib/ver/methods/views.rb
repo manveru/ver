@@ -1,66 +1,70 @@
-module VER
-  module Methods
-    module Views
-      def start_views_mode
-        self.mode = :views
+module VER::Methods
+  module Views
+    class << self
+      def self.call(widget, command, args)
+        p call: args
       end
 
-      def view_change(method, *count)
+      def change(method, *count)
         __send__(method, *count)
       end
 
-      def view_focus(index = 0)
+      def peer(text)
+        text.create_peer
+      end
+
+      def focus(index = 0)
         return unless found = layout.views[index - 1]
         found.push_top
       end
 
-      def view_find_or_create(file)
-        view.find_or_create(file)
+      def find_or_create(text, file)
+        text.view.find_or_create(file)
       end
 
-      def view_create
+      def create
         view.create
       end
 
-      def view_close
+      def close
         view.close
       end
 
-      def view_focus_next
+      def focus_next
         view.focus_next
       end
 
-      def view_focus_prev
+      def focus_prev
         view.focus_prev
       end
 
-      def view_push_up
+      def push_up
         view.push_up
       end
 
-      def view_push_down
+      def push_down
         view.push_down
       end
 
-      def view_push_top
+      def push_top
         view.push_top
       end
 
-      def view_push_bottom
+      def push_bottom
         view.push_bottom
       end
 
-      def view_one
+      def one
         layout.options.merge! master: 1, stacking: 0
         layout.apply
       end
 
-      def view_two
+      def two
         layout.options.merge! master: 1, stacking: 1
         layout.apply
       end
 
-      def view_slave_inc
+      def slave_inc
         stacking = layout.options[:stacking]
         unless stacking >= layout.views.size
           layout.options[:stacking] += 1
@@ -68,40 +72,40 @@ module VER
         end
       end
 
-      def view_slave_dec
+      def slave_dec
         stacking = layout.options[:stacking]
         layout.options[:stacking] -= 1 if stacking > 0
         layout.apply
       end
 
-      def view_master_inc
+      def master_inc
         layout.options[:master] += 1
         layout.apply
       end
 
-      def view_master_dec
+      def master_dec
         master = layout.options[:master]
         layout.options[:master] -= 1 if master > 0
         layout.apply
       end
 
-      def view_master_shrink
+      def master_shrink
         center = layout.options[:center]
         layout.options[:center] -= 0.1 if center > 0.1
         layout.apply
       end
 
-      def view_master_grow
+      def master_grow
         center = layout.options[:center]
         layout.options[:center] += 0.1 if center < 0.9
         layout.apply
       end
 
-      def view_cycle_next
+      def cycle_next
         layout.cycle_next(view)
       end
 
-      def view_cycle_prev
+      def cycle_prev
         layout.cycle_prev(view)
       end
     end

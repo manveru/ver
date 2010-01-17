@@ -1,51 +1,78 @@
-module VER
-  module Methods
-    module Control
-      def source_buffer
-        VER.message "Source #{filename}"
-        load filename.to_s
+module VER::Methods
+  module Control
+    class << self
+      def start(text)
+        clean_line(text, :insert)
       end
 
-      def cursor_vertical_top
-        insert_line = count('1.0', 'insert', :displaylines)
-        last_line = count('1.0', 'end', :displaylines)
-        fraction = ((100.0 / last_line) * insert_line) / 100
-        yview_moveto(fraction)
+      def insert_at(text, motion, count = 1)
+        Move.send(motion, text, count)
+        text.mode = :insert
       end
 
-      def cursor_vertical_top_sol
-        cursor_vertical_top
-        start_of_line
+      def insert_indented_newline_above(text)
+        Insert.insert_indented_newline_above(text)
       end
 
-      def cursor_vertical_center
-        insert_line = count('1.0', 'insert', :displaylines)
-        last_line = count('1.0', 'end', :displaylines)
-        shown_lines = count('@0,0', "@0,#{winfo_height}", :displaylines)
-        fraction = ((100.0 / last_line) * (insert_line - (shown_lines / 2))) / 100
-        yview_moveto(fraction)
+      def insert_indented_newline_below(text)
+        Insert.insert_indented_newline_below(text)
       end
 
-      def cursor_vertical_center_sol
-        cursor_vertical_center
-        start_of_line
+      def open_file_under_cursor(text)
+        Open.open_file_under_cursor(text)
       end
 
-      def cursor_vertical_bottom
-        insert_line = count('1.0', 'insert', :displaylines) + 1
-        last_line = count('1.0', 'end', :displaylines)
-        shown_lines = count('@0,0', "@0,#{winfo_height}", :displaylines)
-        fraction = ((100.0 / last_line) * (insert_line - shown_lines)) / 100
-        yview_moveto(fraction)
+      def source_buffer(text)
+        VER.message("Source #{text.filename}")
+        load(text.filename.to_s)
       end
 
-      def cursor_vertical_bottom_sol
-        cursor_vertical_bottom
-        start_of_line
+      def cursor_vertical_top(text)
+        insert = text.count('1.0', 'insert', :displaylines)
+        last   = text.count('1.0', 'end', :displaylines)
+
+        fraction = ((100.0 / last) * insert) / 100
+
+        text.yview_moveto(fraction)
       end
 
-      def chdir
-        status_ask 'Change to: ' do |path|
+      def cursor_vertical_top_sol(text)
+        cursor_vertical_top(text)
+        Move.start_of_line(text)
+      end
+
+      def cursor_vertical_center(text)
+        insert = text.count('1.0', 'insert', :displaylines)
+        last   = text.count('1.0', 'end', :displaylines)
+        shown  = text.count('@0,0', "@0,#{winfo_height}", :displaylines)
+
+        fraction = ((100.0 / last) * (insert - (shown / 2))) / 100
+
+        text.yview_moveto(fraction)
+      end
+
+      def cursor_vertical_center_sol(text)
+        cursor_vertical_center(text)
+        start_of_line(text)
+      end
+
+      def cursor_vertical_bottom(text)
+        insert = text.count('1.0', 'insert', :displaylines) + 1
+        last   = text.count('1.0', 'end', :displaylines)
+        shown  = text.count('@0,0', "@0,#{winfo_height}", :displaylines)
+
+        fraction = ((100.0 / last) * (insert - shown)) / 100
+
+        text.yview_moveto(fraction)
+      end
+
+      def cursor_vertical_bottom_sol(text)
+        cursor_vertical_bottom(text)
+        start_of_line(text)
+      end
+
+      def chdir(text)
+        text.status_ask 'Change to: ' do |path|
           return unless File.directory?(path.to_s)
           Dir.chdir(path)
         end
@@ -54,11 +81,11 @@ module VER
       # Toggle case of the character under the cursor up to +count+ characters
       # forward (+count+ is inclusive the first character).
       # This only works for alphabetic ASCII characters, no other encodings.
-      def toggle_case(count = 1)
+      def toggle_case(text, count = 1)
         from, to = 'insert', "insert + #{count} chars"
-        chunk = get(from, to)
+        chunk = text.get(from, to)
         chunk.tr!('a-zA-Z', 'A-Za-z')
-        replace(from, to, chunk)
+        text.replace(from, to, chunk)
       end
 
       REPEAT_BREAK_CMD = [
@@ -303,8 +330,8 @@ module VER
         end
       end
 
-      def executor
-        Executor.new(self)
+      def executor(text)
+        VER::Executor.new(text)
       end
 
       # TODO: make this better?
@@ -431,25 +458,6 @@ module VER
         end
       end
 
-      def file_open_popup
-        filetypes = [
-          ['ALL Files',  '*'    ],
-          ['Text Files', '*.txt'],
-        ]
-
-        fpath = Tk.get_open_file(filetypes: filetypes)
-
-        return unless fpath
-
-        view.find_or_create(fpath)
-      end
-
-      def file_open_fuzzy
-        View::List::FuzzyFileFinder.new self do |path|
-          view.find_or_create(path)
-        end
-      end
-
       def join_lines
         start_of_next_line = search(/\S/, 'insert lineend').first
         replace('insert lineend', start_of_next_line, ' ')
@@ -494,21 +502,12 @@ module VER
         end
       end
 
-      def clean_line(index, record = self)
-        index = index(index)
+      def clean_line(text, index, record = self)
+        index = text.index(index)
         from, to = index.linestart, index.lineend
-        line = get(from, to)
+        line = text.get(from, to)
         bare = line.rstrip
         record.replace(from, to, bare) if bare.empty?
-      end
-
-      def start_insert_mode
-        self.mode = :insert
-      end
-
-      def start_control_mode
-        clean_line(:insert)
-        self.mode = :control
       end
 
       private
@@ -539,22 +538,6 @@ module VER
         end
 
         lines
-      end
-
-      def status_ask(prompt, options = {}, &callback)
-        @status.ask(prompt, options){|*args|
-          begin
-            callback.call(*args)
-          rescue => ex
-            VER.error(ex)
-          ensure
-            begin
-              focus
-            rescue RuntimeError
-              # might have been destroyed, stay silent
-            end
-          end
-        }
       end
     end
   end

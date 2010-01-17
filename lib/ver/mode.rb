@@ -1,7 +1,27 @@
 module VER
-  class Mode < Struct.new(
-    :keymap, :name, :arguments, :stack, :mapping, :ancestors, :missing, :tag
-  )
+  class Mode < Struct.new(:keymap, :name, :arguments, :stack, :mapping,
+                          :ancestors, :missing, :tag, :handler_object)
+
+    class Action < Struct.new(:handler, :method, :args)
+      def initialize(handler, invocation)
+        self.handler = handler
+        method, *args = *invocation
+        self.method, self.args = method, args
+        # p method: method, args: args
+      end
+
+      def call(widget, *arg)
+        # p "%p.send(%p, %p, %p)" % [handler, method, widget, [*args, *arg]]
+        if handler
+          handler.send(method, widget, *[*args, *arg])
+        else
+          widget.send(method, *[*args, *arg])
+        end
+      rescue => ex
+        VER.error(ex)
+      end
+    end
+
     MERGER = proc{|key, v1, v2|
       if v1.respond_to?(:merge) && v2.respond_to?(:merge)
         v1.merge(v2, &MERGER)
@@ -24,6 +44,10 @@ module VER
       self.arguments = keymap.arguments
     end
 
+    def handler(object)
+      self.handler_object = object
+    end
+
     def inherits(*others)
       others.flatten.each do |other|
         ancestor = find_ancestor(other.to_sym)
@@ -44,6 +68,25 @@ module VER
       self.arguments = false
     end
 
+    def mode(target, *keychains)
+      keychains.each do |keychain|
+        bind keychain.flatten do |widget, mode|
+          widget.mode = target
+        end
+      end
+    end
+
+    def missing(method)
+      self.missing = Action.new(handler_object, method)
+    end
+
+    def map(sym, *keychains)
+      keychains.each do |keychain|
+        bind(keychain.flatten, sym)
+      end
+    end
+    alias key map
+
     def find_ancestor(name)
       if found = keymap.modes[name.to_sym]
         return found
@@ -62,17 +105,6 @@ module VER
       end
     end
 
-    def missing(sym)
-      self.missing = sym
-    end
-
-    def map(sym, *keychains)
-      keychains.each do |keychain|
-        bind(keychain.flatten, sym)
-      end
-    end
-    alias key map
-
     def bind(keychain, action_name = nil, &block)
       keychain = keychain.dup
       total = hash = {}
@@ -85,7 +117,17 @@ module VER
         end
 
         if keychain.empty?
-          hash[canonical] = block || action_name
+          if block
+            hash[canonical] = block
+          else
+            if ho = handler_object
+              name = [*action_name].first
+              unless ho.singleton_methods.include?(name)
+                raise ArgumentError, "%p doesn't respond to %p" % [ho, name]
+              end
+            end
+            hash[canonical] = Action.new(ho, action_name)
+          end
         else
           hash = hash[canonical] = {}
         end
@@ -130,8 +172,8 @@ module VER
     end
 
     def enter_missing(widget, key)
-      missing = self[:missing]
-      execute(widget, missing, key) if missing
+      missing_action = self[:missing]
+      execute(widget, missing_action, key) if missing_action
     end
 
     def attempt_execute(widget, original_stack, lookup = false)
@@ -144,12 +186,12 @@ module VER
       if stack.empty?
         arg ? nil : false
       else
-        executable = mapping
+        action = mapping
         while key = stack.shift
-          previous = executable
-          executable = executable[key]
+          previous = action
+          action = action[key]
 
-          case executable
+          case action
           when nil
             return false unless previous.respond_to?(:find)
 
@@ -174,38 +216,36 @@ module VER
         end
 
         if lookup
-          return widget, executable, arg
+          return widget, action, arg
         else
-          execute(widget, executable, *arg)
+          execute(widget, action, *arg)
         end
       end
     end
 
-    def execute(widget, executable, *arg)
+    def execute(widget, action, *arg)
       arg = [*arg].compact # doesn't allow nil
 
-      status = execute_without_history(widget, executable, arg)
-      keymap.execute_history << [self, widget, executable, arg] if status
+      status = execute_without_history(widget, action, arg)
+      keymap.execute_history << [self, widget, action, arg] if status
       status
     end
 
-    def execute_without_history(widget, executable, arg)
-      case executable
+    def execute_without_history(widget, action, arg)
+      case action
       when Hash
         return nil
-      when Symbol
-        widget.send(executable, *arg)
-      when Array
-        widget.send(*executable, *arg)
+      when Action
+        action.call(widget, *arg)
       when Proc
-        executable.call(widget, arg)
+        action.call(widget, *arg)
       else
         return false
       end
 
       true
     rescue ArgumentError => ex
-      VER.message("#{executable} : #{ex}")
+      VER.error(ex)
       true
     end
 

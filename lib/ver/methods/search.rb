@@ -1,39 +1,40 @@
-module VER
-  module Methods
-    module Search
-      SEARCH_HIGHLIGHT = {
-        foreground: '#fff',
-        background: '#660',
-      }
+module VER::Methods
+  module Search
+    HIGHLIGHT = {
+      foreground: '#fff',
+      background: '#660',
+    }
+    TAG = :search
 
-      def search_remove
-        tag_remove('search', '1.0', 'end')
+    class << self
+      def search_remove(text)
+        text.tag_remove(TAG, 1.0, :end)
       end
 
-      def status_search_next
-        status_search_common('/'){ search_next }
+      def status_search_next(text)
+        status_search_common(text, '/'){ search_next(text) }
       end
 
-      def status_search_prev
-        status_search_common('?'){ search_prev }
+      def status_search_prev(text)
+        status_search_common(text, '?'){ search_prev(text) }
       end
 
-      def status_search_common(question)
-        status.bind('<<Modified>>') do
-          search_incremental(status.value)
+      def status_search_common(text, question)
+        text.status.bind('<<Modified>>') do
+          search_incremental(text, text.status.value)
         end
 
-        status_ask question do |term|
-          status.bind('<<Modified>>'){ }
-          search_incremental(term, force = true)
-          search_prev
+        text.status_ask question do |term|
+          text.status.bind('<<Modified>>'){ }
+          search_incremental(text, term, force = true)
+          search_prev(text)
           yield
         end
       end
 
-      def search_incremental(term, force = false)
+      def search_incremental(text, term, force = false)
         return if !term || term.empty?
-        return if !force && term.size <= options.search_incremental_min
+        return if !force && term.size <= text.options.search_incremental_min
 
         begin
           needle = Regexp.new(term)
@@ -41,79 +42,79 @@ module VER
           needle = Regexp.escape(term)
         end
 
-        tag_all_matching(:search, needle, SEARCH_HIGHLIGHT)
-        tag_lower(:search)
-        from, to = tag_nextrange('search', '1.0', 'end')
-        see(from) if from
+        text.tag_all_matching(TAG, needle, HIGHLIGHT)
+        text.tag_lower(TAG)
+        from, to = text.tag_nextrange(TAG, 1.0, :end)
+        text.see(from) if from
       end
 
-      def search_first
-        from, to = tag_nextrange(:search, '1.0', 'end')
-        mark_set(:insert, from) if from
+      def search_first(text)
+        from, to = text.tag_nextrange(TAG, 1.0, :end)
+        text.mark_set(:insert, from) if from
       end
 
-      def search_last
-        from, to = tag_prevrange(:search, 'end', '1.0')
-        mark_set(:insert, from) if from
+      def search_last(text)
+        from, to = tag_prevrange(TAG, :end, 1.0)
+        text.mark_set(:insert, from) if from
       end
 
-      def search_next(count = 1)
+      def search_next(text, count = 1)
         count.times do
-          from, to = tag_nextrange(:search, 'insert + 1 chars', 'end')
-          mark_set(:insert, from) if from
+          from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
+          text.mark_set(:insert, from) if from
         end
 
-        search_display_matches_count
+        search_display_matches_count(text)
       end
 
-      def search_display_matches_count
-        total = tag_ranges(:search).size
+      def search_display_matches_count(text)
+        total = text.tag_ranges(TAG).size
 
         if total == 1
-          status.message "1 match found"
+          VER.message "1 match found"
         elsif total > 1
-          status.message "#{total} matches found"
+          VER.message "#{total} matches found"
         else
-          status.message "No matches found"
+          VER.message "No matches found"
         end
       end
 
-      def search_prev(count = 1)
+      def search_prev(text, count = 1)
         count.times do
-          from, to = tag_prevrange(:search, 'insert - 1 chars', '1.0')
-          mark_set(:insert, from) if from
+          from, to = text.tag_prevrange(TAG, 'insert - 1 chars', '1.0')
+          text.mark_set(:insert, from) if from
         end
 
-        search_display_matches_count
+        search_display_matches_count(text)
       end
 
-      def search_next_word_under_cursor
-        word = get('insert wordstart', 'insert wordend')
+      def search_next_word_under_cursor(text)
+        word = text.get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
-        tag_all_matching(:search, word, SEARCH_HIGHLIGHT)
-        tag_lower(:search)
-        search_next
+        text.tag_all_matching(TAG, word, HIGHLIGHT)
+        text.tag_lower(TAG)
+        search_next(text)
       end
 
-      def search_prev_word_under_cursor
-        word = get('insert wordstart', 'insert wordend')
+      def search_prev_word_under_cursor(text)
+        word = text.get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
-        tag_all_matching(:search, word, SEARCH_HIGHLIGHT)
-        tag_lower(:search)
+        text.tag_all_matching(TAG, word, HIGHLIGHT)
+        text.tag_lower(TAG)
         search_prev
       end
 
-      def search_char_right(count = 1)
+      def search_char_right(text, count = 1)
         VER.message 'Press the character to find to the right'
 
-        keymap.gets 1 do |char|
+        text.keymap.gets 1 do |char|
           if char.size == 1
             from, to = 'insert + 1 chars', 'insert lineend'
             regexp = Regexp.new(Regexp.escape(char))
 
             counter = 0
-            search_all regexp, from, to do |match, pos, mark|
-              mark_set :insert, pos
+            text.search_all regexp, from, to do |match, pos, mark|
+              text.mark_set :insert, pos
               counter += 1
               break if counter == count
             end
@@ -125,17 +126,17 @@ module VER
         end
       end
 
-      def search_char_left(count = 1)
+      def search_char_left(tet, count = 1)
         VER.message 'Press the character to find to the left'
 
-        keymap.gets 1 do |char|
+        text.keymap.gets 1 do |char|
           if char.size == 1
             from, to = 'insert', 'insert linestart'
             regexp = Regexp.new(Regexp.escape(char))
 
             counter = 0
-            rsearch_all regexp, from, to do |match, pos, mark|
-              mark_set :insert, pos
+            text.rsearch_all regexp, from, to do |match, pos, mark|
+              text.mark_set(:insert, pos)
               counter += 1
               break if counter == count
             end
@@ -147,8 +148,8 @@ module VER
         end
       end
 
-      def search_clear
-        tag_remove(:search, '1.0', 'end')
+      def search_clear(text)
+        text.tag_remove(TAG, 1.0, :end)
       end
     end
   end

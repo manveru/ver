@@ -1,45 +1,56 @@
-module VER
-  module Methods
-    module Clipboard
-      def copy_line
-        copy get('insert linestart', 'insert lineend + 1 chars')
+module VER::Methods
+  module Clipboard
+    class << self
+      def copy_line(text)
+        content = text.get('insert linestart', 'insert lineend + 1 chars')
+        copy(text, content)
       end
 
-      def copy_right_word
-        copy get('insert', 'insert wordend')
+      def copy_motion(text, motion, count = 1)
+        movement = Move.virtual(text, motion, count)
+        p movement: movement
+        copy(text, text.get(*movement))
       end
 
-      def copy_left_word
-        copy get('insert', 'insert wordstart')
+      # FIXME: nasty hack or neccesary?
+      def paste(text)
+        content = clipboard_get(text, 'STRING'){
+                  clipboard_get(text, 'ARRAY') }
+        paste_continous(text, content.to_s) if content
       end
 
-      def copy(text)
-        if text.respond_to?(:to_str)
-          copy_string(text)
-        elsif text.respond_to?(:to_ary)
-          copy_array(text)
+      def paste_above(text)
+        text.mark_set(:insert, 'insert - 1 line lineend')
+        paste(text)
+      end
+
+      def copy(text, content)
+        if content.respond_to?(:to_str)
+          copy_string(content.to_str)
+        elsif content.respond_to?(:to_ary)
+          copy_array(content.to_ary)
         else
-          copy_fallback(text)
+          copy_fallback(content)
         end
       end
 
-      def copy_string(text)
-        clipboard_set(text = text.to_str, type: 'STRING')
+      def copy_string(content)
+        Tk::Clipboard.set(content, type: 'STRING')
 
-        copy_message(text.count("\n") + 1, text.size)
+        copy_message(content.count("\n") + 1, content.size)
       end
 
-      def copy_array(text)
-        array = [Marshal.dump(text.to_ary)].pack('m')
-        clipboard_set(array, type: 'ARRAY')
+      def copy_array(content)
+        marshal = [Marshal.dump(content)].pack('m')
+        Tk::Clipboard.set(marshal, type: 'ARRAY')
 
-        copy_message text.size, text.reduce(0){|s,v| s + v.size }
+        copy_message content.size, content.reduce(0){|s,v| s + v.size }
       end
 
-      def copy_fallback(text)
-        clipboard_set(text)
+      def copy_fallback(content)
+        Tk::Clipboard.set(content)
 
-        message "Copied unkown entity of class %p" % [text.class]
+        VER.message "Copied unkown entity of class %p" % [content.class]
       end
 
       def copy_message(lines, chars)
@@ -47,53 +58,41 @@ module VER
         chars_desc = chars == 1 ? 'character' : 'characters'
 
         msg = "copied %d %s of %d %s" % [lines, lines_desc, chars, chars_desc]
-        message msg
+        VER.message(msg)
       end
 
-      def paste_continous(text)
-        if text =~ /\A([^\n]*)\n\Z/
-          mark_set :insert, 'insert lineend'
-          insert :insert, "\n#{$1}"
-        elsif text =~ /\n/
-          mark_set :insert, 'insert lineend'
-          insert :insert, "\n"
-          text.each_line{|line| insert(:insert, line) }
+      def paste_continous(text, content)
+        if content =~ /\A([^\n]*)\n\Z/
+          text.mark_set :insert, 'insert lineend'
+          text.insert :insert, "\n#{$1}"
+        elsif content =~ /\n/
+          text.mark_set :insert, 'insert lineend'
+          text.insert :insert, "\n"
+          content.each_line{|line| text.insert(:insert, line) }
         else
-          insert :insert, text
+          text.insert :insert, content
         end
       end
 
-      def paste_array(marshal_array)
-        array = Marshal.load(marshal_array.unpack('m').first)
-        insert_y, insert_x = index(:insert).split
+      # def paste_array(text, marshal_array)
+      #   array = Marshal.load(marshal_array.unpack('m').first)
+      #   insert_y, insert_x = text.index(:insert).split
+      #
+      #   Undo.record text do |record|
+      #     array.each_with_index do |line, index|
+      #       record.insert("#{insert_y + index}.#{insert_x}", line)
+      #     end
+      #   end
+      # end
 
-        undo_record do |record|
-          array.each_with_index do |line, index|
-            record.insert("#{insert_y + index}.#{insert_x}", line)
-          end
-        end
-      end
-
-      # FIXME: nasty hack or neccesary?
-      def paste
-        text = clipboard_get('STRING'){
-               clipboard_get('ARRAY') }
-        paste_continous text.to_s if text
-      end
-
-      def clipboard_get(type = 'STRING')
-        super(type)
+      def clipboard_get(text, type = 'STRING')
+        Tk::Clipboard.get(text, type)
       rescue RuntimeError => ex
         if ex.message =~ /form "#{type}" not defined/
           yield if block_given?
         else
           VER.error(ex)
         end
-      end
-
-      def paste_above
-        mark_set(:insert, 'insert - 1 line lineend')
-        paste
       end
     end
   end

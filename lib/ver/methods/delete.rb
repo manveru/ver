@@ -1,9 +1,9 @@
-module VER
-  module Methods
-    module Delete
-      def change_motion(motion, count = 1)
-        delete_motion(motion, count)
-        start_insert_mode
+module VER::Methods
+  module Delete
+    class << self
+      def change_motion(text, motion, count = 1)
+        delete_motion(text, motion, count)
+        text.mode = :insert
       end
 
       # Given a +motion+, this method will execute a virtual movement with the
@@ -13,9 +13,10 @@ module VER
       # @param [#to_i] count
       #
       # @see delete
-      # @see VER::Move#virtual_movement
-      def delete_motion(motion, count = 1)
-        delete(*virtual_movement(motion, count))
+      # @see VER::Move::virtual_movement
+      def delete_motion(text, motion, count = 1)
+        movement = Move.virtual(text, motion, count)
+        delete(text, *movement)
       end
 
       # Given a +motion+, this method will execute a virtual movement with the
@@ -26,17 +27,18 @@ module VER
       #
       # @see kill
       # @see VER::Move#virtual_movement
-      def kill_motion(motion, count = 1)
-        kill(*virtual_movement(motion, count))
+      def kill_motion(text, motion, count = 1)
+        movement = Move.virtual(text, motion, count)
+        kill(text, *movement)
       end
 
       # [word_right_end] goes to the last character, that is, the insert mark is
       # between the second to last and last character.
       # This means that the range to delete is off by one, account for it here.
-      def change_word_right_end(count = 1)
-        index = index_at_word_right_end(count)
-        delete(:insert, index + 1)
-        start_insert_mode
+      def change_word_right_end(text, count = 1)
+        index = Move.index_at_word_right_end(text, count)
+        delete(text, :insert, index + 1)
+        text.mode = :insert
       end
 
       # Delete current line and upto +count+ subsequent lines.
@@ -45,11 +47,11 @@ module VER
       #
       # @see delete
       # @see kill_line
-      def delete_line(count = 1)
-        from = index('insert linestart')
+      def delete_line(text, count = 1)
         count = count.abs - 1
-        to = index("#{from.y + count}.#{from.x} lineend + 1 char")
-        delete(from, to)
+        from = text.index('insert linestart')
+        to = "#{from.y + count}.#{from.x} lineend + 1 char"
+        delete(text, from, text.index(to))
       end
 
       # Copy current line and upto +count+ subsequent lines and delete them.
@@ -58,37 +60,39 @@ module VER
       #
       # @see kill
       # @see delete_line
-      def kill_line(count = 1)
-        from = index('insert linestart')
+      def kill_line(text, count = 1)
         count = count.abs - 1
-        to = index("#{from.y + count.to_i}.#{from.x} lineend + 1 char")
-        kill(from, to)
+        from = text.index('insert linestart')
+        to = "#{from.y + count.to_i}.#{from.x} lineend + 1 char"
+        kill(text, from, text.index(to))
       end
 
       # Wrapper for [kill_line] that starts insert mode after killing +count+
-      # lines.
+      # lines. It also doesn't delete the newline.
       #
       # @param [#to_i] count Number of lines to kill
       #
       # @see kill_line
-      # @see start_insert_mode
-      def change_line(count = 1)
-        kill_line(count)
-        start_insert_mode
+      def change_line(text, count = 1)
+        count = count.abs - 1
+        from = text.index('insert linestart')
+        to = "#{from.y + count}.#{from.x} lineend"
+        kill(text, from, text.index(to))
+        text.mode = :insert
       end
 
       # Tag and delete all trailing whitespace in the current buffer.
-      def delete_trailing_whitespace
-        ranges = tag_ranges('invalid.trailing-whitespace').flatten
-        execute(:delete, *ranges) unless ranges.empty?
+      def delete_trailing_whitespace(text)
+        ranges = text.tag_ranges('invalid.trailing-whitespace').flatten
+        text.execute(:delete, *ranges) unless ranges.empty?
       end
 
       # Delete text between +indices+
-      def delete(*indices)
+      def delete(text, *indices)
         indices_size = indices.size
         return if indices_size == 0
 
-        undo_record do |record|
+        Undo.record text do |record|
           if indices_size == 1
             record.delete(indices.first)
           else
@@ -105,15 +109,16 @@ module VER
       # @param [Array<Text::Index, String, Symbol>] indices
       #   one or more indices within the buffer, must be an even number of
       #   indices if more than one.
-      def kill(*indices)
+      def kill(text, *indices)
         if indices.size > 2
-          deleted = indices.each_slice(2).map{|left, right| get(left, right) }
+          deleted = indices.each_slice(2).map{|left, right|
+            text.get(left, right) }
         else
-          deleted = get(*indices)
+          deleted = text.get(*indices)
         end
 
-        copy(deleted)
-        delete(*indices)
+        Clipboard.copy(text, deleted)
+        delete(text, *indices)
       end
     end
   end

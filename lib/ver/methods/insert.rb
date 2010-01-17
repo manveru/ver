@@ -1,6 +1,6 @@
-module VER
-  module Methods
-    module Insert
+module VER::Methods
+  module Insert
+    class << self
       def insert_file_contents(filename)
         content = read_file(filename)
         insert :insert, content
@@ -8,60 +8,107 @@ module VER
         VER.error(ex)
       end
 
-      def insert_selection
-        insert :insert, Tk::Selection.get
+      def insert_selection(text)
+        text.insert(:insert, Tk::Selection.get)
       end
 
-      def insert_tab
-        insert :insert, "\t"
+      def insert_tab(text)
+        text.insert(:insert, "\t")
       end
 
-      def insert_indented_newline_below
-        undo_record do |record|
-          if options.autoindent
-            line = get('insert linestart', 'insert lineend')
+      def insert_indented_newline_below(text)
+        Undo.record text do |record|
+          if text.options.autoindent
+            line = text.get('insert linestart', 'insert lineend')
 
             indent = line.empty? ? "" : (line[/^\s+/] || '')
-            mark_set :insert, 'insert lineend'
-            record.insert :insert, "\n#{indent}"
+            text.mark_set(:insert, 'insert lineend')
+            record.insert(:insert, "\n#{indent}")
           else
-            mark_set :insert, 'insert lineend'
-            record.insert :insert, "\n"
+            text.mark_set(:insert, 'insert lineend')
+            record.insert(:insert, "\n")
           end
 
-          clean_line('insert - 1 line', record)
-          start_insert_mode
+          Control.clean_line(text, 'insert - 1 line', record)
+          text.mode = :insert
         end
       end
 
-      def insert_indented_newline_above
-        undo_record do |record|
-          if index(:insert).y > 1
-            previous_line
-            insert_indented_newline_below
+      def insert_indented_newline_above(text)
+        Undo.record text do |record|
+          if text.index(:insert).y > 1
+            Move.prev_line(text)
+            insert_indented_newline_below(text)
           else
             record.insert('insert linestart', "\n")
-            mark_set(:insert, 'insert - 1 line')
-            clean_line('insert - 1 line', record)
-            start_insert_mode
+            text.mark_set(:insert, 'insert - 1 line')
+            Control.clean_line(text, 'insert - 1 line', record)
+            text.mode = :insert
           end
         end
       end
 
-      def insert_newline
-        insert :insert, "\n"
-      end
-
-      def insert_indented_newline
-        if options.autoindent
-          fallback_insert_indented_newline
+      def insert_indented_newline(text)
+        if text.options.autoindent
+          fallback_insert_indented_newline(text)
         else
-          insert_newline
+          text.insert(:insert, "\n")
         end
       end
 
-      def insert_auto_indented_newline
-        insert 'insert lineend', "\n"
+      def fallback_insert_indented_newline(text)
+        Undo.record text do |record|
+          line1 = text.get('insert linestart', 'insert lineend')
+          indentation1 = line1[/^\s+/] || ''
+          record.insert(:insert, "\n")
+
+          line2 = text.get('insert linestart', 'insert lineend')
+          indentation2 = line2[/^\s+/] || ''
+
+          record.replace(
+            'insert linestart',
+            "insert linestart + #{indentation2.size} chars",
+            indentation1
+          )
+
+          Control.clean_line(text, 'insert - 1 line', record)
+        end
+      end
+
+      # Most of the input will be in US-ASCII, but an encoding can be set per view for the input.
+      # For just about all purposes, UTF-8 should be what you want to input, and it's what Tk
+      # can handle best.
+      def insert_string(text, string, record = text)
+        return if string.empty?
+
+        if !string.frozen? && string.encoding == Encoding::ASCII_8BIT
+          begin
+            string.encode!(text.encoding)
+          rescue Encoding::UndefinedConversionError
+            string.force_encoding(string.encoding)
+          end
+        end
+
+        # puts "Insert %p in mode %p" % [string, keymap.mode]
+        record.insert(:insert, string)
+      end
+
+      def replace_string(text, string)
+        return if string.empty?
+
+        Undo.record text do |record|
+          record.delete(:insert, 'insert + 1 chars')
+          insert_string(string, record)
+        end
+      end
+    end
+  end
+end
+
+__END__
+
+      def insert_auto_indented_newline(text)
+        text.insert('insert lineend', "\n")
         indent_fix_at('insert', indent_fix('insert - 1 line', indent_after('insert - 2 line')))
       rescue Errno::ENOENT, TypeError
         fallback_insert_indented_newline
@@ -136,56 +183,6 @@ module VER
         end
 
         return indent
-      end
-
-      def fallback_insert_indented_newline
-        undo_record do |record|
-          line1 = get('insert linestart', 'insert lineend')
-          indentation1 = line1[/^\s+/] || ''
-          record.insert :insert, "\n"
-
-          line2 = get('insert linestart', 'insert lineend')
-          indentation2 = line2[/^\s+/] || ''
-
-          record.replace(
-            'insert linestart',
-            "insert linestart + #{indentation2.size} chars",
-            indentation1
-          )
-
-          clean_line('insert - 1 line', record)
-        end
-      end
-
-      # Most of the input will be in US-ASCII, but an encoding can be set per view for the input.
-      # For just about all purposes, UTF-8 should be what you want to input, and it's what Tk
-      # can handle best.
-      def insert_string(string, record = self)
-        return if string.empty?
-
-        if !string.frozen? && string.encoding == Encoding::ASCII_8BIT
-          begin
-            string.encode!(@encoding)
-          rescue Encoding::UndefinedConversionError
-            string.force_encoding(@encoding)
-          end
-        end
-
-        # puts "Insert %p in mode %p" % [string, keymap.mode]
-        record.insert(:insert, string)
-      end
-
-      def start_replace_mode
-        self.mode = :replace
-      end
-
-      def replace_string(string)
-        return if string.empty?
-
-        undo_record do |record|
-          record.delete(:insert, 'insert + 1 chars')
-          insert_string(string, record)
-        end
       end
 
       def auto_indent_line

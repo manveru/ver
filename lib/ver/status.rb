@@ -4,7 +4,7 @@ module VER
     autoload :Context, 'ver/status/context'
     include Keymapped
 
-    attr_accessor :view
+    attr_accessor :view, :backup_value, :callback
 
     HISTORY = Hash.new{|k,v| k[v] = [] }
 
@@ -55,29 +55,6 @@ module VER
           ask_submit
         end
       end
-    end
-
-    def ask_submit
-      answer = value
-      history = HISTORY[@question]
-      history.uniq!
-      history << answer
-      self.question = ''
-
-      case result = @callback.call(answer)
-      when String
-        message result
-      when Symbol
-        result
-      else
-        message result.inspect
-      end
-    end
-
-    def ask_abort
-      self.question = ''
-      self.value = @backup_value
-      text.focus
     end
 
     def delete(from, to = Tk::None)

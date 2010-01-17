@@ -3,108 +3,111 @@ require 'strscan'
 module VER
   module Methods
     module Snippet
-      def snippet_dwim
-        snippet_jump or snippet_complete && snippet_jump
-      end
-
-      def snippet_jump
-        snippet_jump_marks_and_tags || snippet_jump_home
-      end
-
-      def snippet_jump_home
-        if mark_names.include?(:ver_snippet_0)
-          mark_set(:insert, :ver_snippet_0)
-          mark_unset(:ver_snippet_0)
-          true
-        else
-          snippet_cancel
-          false
+      class << self
+        def dwim(text)
+          jump(text) or complete(text) && jump(text)
         end
-      end
 
-      def snippet_jump_marks_and_tags
-        (snippet_marks + snippet_tags).
-          sort_by{|_, name, _|
-            name =~ /_0$/ ? 'zero' : name
-          }.each do |idx, name, type|
-          case type
-          when :tag
-            return snippet_jump_tag(name)
-          when :mark
-            return snippet_jump_mark(name)
+        def jump(text)
+          jump_marks_and_tags(text) || jump_home(text)
+        end
+
+        def jump_home(text)
+          if text.mark_names.include?(:ver_snippet_0)
+            text.mark_set(:insert, :ver_snippet_0)
+            text.mark_unset(:ver_snippet_0)
+            true
+          else
+            cancel(text)
+            false
           end
         end
 
-        false
-      end
+        def jump_marks_and_tags(text)
+          (marks(text) + tags(text)).
+            sort_by{|_, name, _|
+              name =~ /_0$/ ? 'zero' : name
+            }.each do |idx, name, type|
+            case type
+            when :tag
+              return jump_tag(text, name)
+            when :mark
+              return jump_mark(text, name)
+            end
+          end
 
-      def snippet_marks
-        mark_names.map{|mark|
-          next unless mark =~ /^ver_snippet_(\d+)$/
-          [$1.to_i, mark, :mark]
-        }.compact
-      end
-
-      def snippet_tags
-        tag_names.map{|tag|
-          next unless tag =~ /^ver\.snippet\.(\d+)$/
-          [$1.to_i, tag, :tag]
-        }.compact
-      end
-
-      def snippet_jump_tag(name)
-        self.mode = :snippet
-        from, to = tag_ranges(name).first
-        return unless from
-
-        mark_set(:insert, from)
-        true
-      end
-
-      def snippet_jump_mark(name)
-        mark_set('insert', name)
-        if name =~ /_0$/
-          snippet_cancel(:insert)
-        else
-          mark_unset(name)
+          false
         end
 
-        true
-      end
-
-      def snippet_cancel(into_mode = :control)
-        snippet_marks.each{|_, mark, _| mark_unset(mark) }
-        snippet_tags.each{|_, tag, _| tag_delete(tag) }
-        self.mode = into_mode if mode == :snippet
-      end
-
-      def snippet_insert_string(string)
-        tag = tag_names(:insert).find{|tag| tag =~ /^ver\.snippet\.(\d+)$/ }
-        if tag
-          from, to = tag_ranges(tag).first
-          tag_delete(tag, from, to)
-          replace(from, to, string)
-        else
-          insert(:insert, string)
+        def marks(text)
+          text.mark_names.map{|mark|
+            next unless mark =~ /^ver_snippet_(\d+)$/
+            [$1.to_i, mark, :mark]
+          }.compact
         end
-      end
 
-      def snippet_complete
-        head = get('insert linestart', 'insert')
-        name = head[/\S+$/]
-        from = index("insert - #{name.size} chars")
-        to = index("insert")
+        def tags(text)
+          text.tag_names.map{|tag|
+            next unless tag =~ /^ver\.snippet\.(\d+)$/
+            [$1.to_i, tag, :tag]
+          }.compact
+        end
 
-        return unless snippet = @snippets[name]
-        snippet_insert(from, to, snippet)
-        true
-      end
+        def jump_tag(text, name)
+          text.mode = :snippet
+          from, to = text.tag_ranges(name).first
+          return unless from
 
-      def snippet_insert(from, to, snippet_source)
-        delete(from, to)
-        mark_set(:insert, from)
-        snippet = VER::Snippet.new(snippet_source[:content])
-        snippet.apply_on(self)
+          text.mark_set(:insert, from)
+          true
+        end
+
+        def jump_mark(text, name)
+          text.mark_set('insert', name)
+          if name =~ /_0$/
+            cancel(text, :insert)
+          else
+            text.mark_unset(name)
+          end
+
+          true
+        end
+
+        def cancel(text, into_mode = :control)
+          marks(text).each{|_, mark, _| text.mark_unset(mark) }
+          tags(text).each{|_, tag, _| text.tag_delete(tag) }
+          text.mode = into_mode if text.mode == :snippet
+        end
+
+        def insert_string(text, string)
+          tag = text.tag_names(:insert).find{|tag| tag =~ /^ver\.snippet\.(\d+)$/ }
+
+          if tag
+            from, to = text.tag_ranges(tag).first
+            text.tag_delete(tag, from, to)
+            text.replace(from, to, string)
+          else
+            text.insert(:insert, string)
+          end
+        end
+
+        def complete(text)
+          head = text.get('insert linestart', 'insert')
+          name = head[/\S+$/]
+          from = text.index("insert - #{name.size} chars")
+          to = text.index("insert")
+
+          return unless snippet = text.snippets[name]
+          insert(text, from, to, snippet)
+          true
+        end
+
+        def insert(text, from, to, snippet_source)
+          text.delete(from, to)
+          text.mark_set(:insert, from)
+          snippet = VER::Snippet.new(snippet_source[:content])
+          snippet.apply_on(text)
+        end
       end
     end
   end
@@ -216,22 +219,24 @@ module VER
       indent = ' ' * widget.options.shiftwidth
       initial_indent = widget.get('insert linestart', 'insert lineend')[/^\s+/]
 
-      out.each do |atom|
-        case atom
-        when String
-          atom = atom.
-            gsub(/\t/, indent).
-            gsub(/\n/, "\n#{initial_indent}")
-          widget.insert(:insert, atom)
-        when Numeric
-          mark = "ver_snippet_#{atom}"
-          widget.mark_set(mark, 'insert')
-          widget.mark_gravity(mark, 'left')
-        when Array
-          number, content = atom
-          tag = "ver.snippet.#{number}"
-          widget.tag_configure(tag, underline: true)
-          widget.insert(:insert, content, tag)
+      VER::Methods::Undo.record widget do |record|
+        out.each do |atom|
+          case atom
+          when String
+            atom = atom.
+              gsub(/\t/, indent).
+              gsub(/\n/, "\n#{initial_indent}")
+            record.insert(:insert, atom)
+          when Numeric
+            mark = "ver_snippet_#{atom}"
+            widget.mark_set(mark, 'insert')
+            widget.mark_gravity(mark, 'left')
+          when Array
+            number, content = atom
+            tag = "ver.snippet.#{number}"
+            widget.tag_configure(tag, underline: true)
+            record.insert(:insert, content, tag)
+          end
         end
       end
     end

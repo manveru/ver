@@ -1,28 +1,24 @@
-require 'ver/methods/bookmark'
-require 'ver/methods/clipboard'
-require 'ver/methods/completion'
-require 'ver/methods/control'
-require 'ver/methods/ctags'
-require 'ver/methods/delete'
-require 'ver/methods/help'
-require 'ver/methods/insert'
-require 'ver/methods/move'
-require 'ver/methods/open'
-require 'ver/methods/preview'
-require 'ver/methods/save'
-require 'ver/methods/search'
-require 'ver/methods/select'
-require 'ver/methods/undo'
-require 'ver/methods/views'
-require 'ver/methods/snippet'
-require 'ver/methods/autofill'
-require 'ver/methods/shortcuts'
-
 module VER
   module Methods
-    include(Completion, Control, Ctags, Delete, Help, Insert, Move, Open,
-            Preview, Save, Search, Select, Clipboard, Bookmarks::Methods,
-            Views, Undo, AutoFill, Snippet)
-    include Shortcuts
+    autoload :Basic,       'ver/methods/basic'
+    autoload :Bookmark,    'ver/methods/bookmark'
+    autoload :Clipboard,   'ver/methods/clipboard'
+    autoload :Completion,  'ver/methods/completion'
+    autoload :Control,     'ver/methods/control'
+    autoload :CTags,       'ver/methods/ctags'
+    autoload :Delete,      'ver/methods/delete'
+    autoload :Help,        'ver/methods/help'
+    autoload :Insert,      'ver/methods/insert'
+    autoload :Move,        'ver/methods/move'
+    autoload :Open,        'ver/methods/open'
+    autoload :Preview,     'ver/methods/preview'
+    autoload :Save,        'ver/methods/save'
+    autoload :Search,      'ver/methods/search'
+    autoload :Selection,   'ver/methods/selection'
+    autoload :Undo,        'ver/methods/undo'
+    autoload :Views,       'ver/methods/views'
+    autoload :Snippet,     'ver/methods/snippet'
+    autoload :Entry,       'ver/methods/entry'
+    autoload :AutoFill,    'ver/methods/autofill'
   end
 end

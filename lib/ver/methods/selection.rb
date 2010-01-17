@@ -1,61 +1,14 @@
-module VER
-  module Methods
-    module Select
-      # Convert all characters within the selection to upper-case using
-      # String#upcase.
-      # Usually only works for alphabetic ASCII characters.
-      def selection_upper_case
-        undo_record do |record|
-          each_selected_line do |y, fx, tx|
-            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
-            record.replace(from, to, get(from, to).upcase)
-          end
-        end
-
-        refresh_selection
+module VER::Methods
+  module Selection
+    class << self
+      def start(widget)
       end
 
-      # Convert all characters within the selection to lower-case using
-      # String#downcase.
-      # Usually only works for alphabetic ASCII characters.
-      def selection_lower_case
-        undo_record do |record|
-          each_selected_line do |y, fx, tx|
-            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
-            record.replace(from, to, get(from, to).downcase)
-          end
-        end
-
-        refresh_selection
-      end
-
-      # Toggle case within the selection.
-      # This only works for alphabetic ASCII characters, no other encodings.
-      def selection_toggle_case
-        undo_record do |record|
-          each_selected_line do |y, fx, tx|
-            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
-            record.replace(from, to, get(from, to).tr('a-zA-Z', 'A-Za-z'))
-          end
-        end
-
-        refresh_selection
-      end
-
-      def wrap_selection
-        queue = []
-        text = []
-
-        each_selected_line do |y, fx, tx|
-          queue << y
-          text << get("#{y}.0", "#{y}.0 lineend")
-        end
-
-        lines = wrap_lines_of(text.join(' '))
-        from, to = queue.first, queue.last
-        replace("#{from}.0", "#{to}.0 lineend", lines.join("\n"))
-
-        finish_selection
+      def finish(text)
+        Undo.separator(text)
+        clear
+        mode ? self.mode = mode : keymap.use_previous_mode
+        apply_mode_style(keymap.mode)
       end
 
       def start_selection_mode(name)
@@ -75,7 +28,7 @@ module VER
 
       def switch_selection(name)
         self.selection_mode = name.to_sym
-        refresh_selection
+        refresh
       end
 
       %w[char line block].each do |suffix|
@@ -89,25 +42,94 @@ module VER
         end
       end
 
+      def refresh(text)
+        return unless start = text.store(self, :start)
+
+        text.tag_remove(:sel, 1.0, :end)
+
+        case text.mode
+        when :select_char  ; refresh_char(start)
+        when :select_line  ; refresh_line(start)
+        when :select_block ; refresh_block(start)
+        end
+      end
+
+      # Convert all characters within the selection to upper-case using
+      # String#upcase.
+      # Usually only works for alphabetic ASCII characters.
+      def upper_case(text)
+        Undo.record text do |record|
+          each_selected_line text do |y, fx, tx|
+            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
+            record.replace(from, to, text.get(from, to).upcase)
+          end
+        end
+
+        refresh(text)
+      end
+
+      # Convert all characters within the selection to lower-case using
+      # String#downcase.
+      # Usually only works for alphabetic ASCII characters.
+      def lower_case(text)
+        Undo.record text do |record|
+          each_selected_line text do |y, fx, tx|
+            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
+            record.replace(from, to, text.get(from, to).downcase)
+          end
+        end
+
+        refresh(text)
+      end
+
+      # Toggle case within the selection.
+      # This only works for alphabetic ASCII characters, no other encodings.
+      def toggle_case(text)
+        Undo.record text do |record|
+          each_selected_line text do |y, fx, tx|
+            from, to = "#{y}.#{fx}", "#{y}.#{tx}"
+            record.replace(from, to, text.get(from, to).tr('a-zA-Z', 'A-Za-z'))
+          end
+        end
+
+        refresh(text)
+      end
+
+      def wrap(text)
+        queue = []
+        chunks = []
+
+        each_selected_line do |y, fx, tx|
+          queue << y
+          chunks << get("#{y}.0", "#{y}.0 lineend")
+        end
+
+        lines = wrap_lines_of(chunks.join(' ')).join("\n")
+        from, to = queue.first, queue.last
+        text.replace("#{from}.0", "#{to}.0 lineend", lines)
+
+        finish text
+      end
+
       # Delete selection without copying it.
-      def delete_selection
+      def delete
         queue = tag_ranges(:sel).flatten
         delete(*queue)
         mark_set(:insert, queue.first)
 
-        finish_selection
+        finish
       end
 
       # Copy selection and delete it.
-      def kill_selection
+      def kill
         queue = tag_ranges(:sel).flatten
         kill(*queue)
         mark_set(:insert, queue.first)
 
-        finish_selection
+        finish
       end
 
-      def indent_selection
+      def indent
         indent_size = options.shiftwidth
         indent = ' ' * indent_size
 
@@ -119,10 +141,10 @@ module VER
           end
         end
 
-        refresh_selection
+        refresh
       end
 
-      def unindent_selection
+      def unindent
         indent_size = options.shiftwidth
         indent = ' ' * indent_size
         queue = []
@@ -135,10 +157,10 @@ module VER
         end
 
         delete(*queue)
-        refresh_selection
+        refresh
       end
 
-      def selection_evaluate
+      def evaluate
         tag_ranges(:sel).each do |from, to|
           code = get(from, to)
 
@@ -147,23 +169,23 @@ module VER
           end
         end
 
-        finish_selection
+        finish
       end
 
-      def copy_selection
+      def copy
         chunks = tag_ranges(:sel).map{|sel| get(*sel) }
         copy(chunks.size == 1 ? chunks.first : chunks)
-        finish_selection
+        finish
       end
 
-      def pipe_selection
+      def pipe
         status_ask 'Pipe command: ' do |cmd|
-          pipe_selection_execute(cmd)
-          finish_selection
+          pipe_execute(cmd)
+          finish
         end
       end
 
-      def comment_selection
+      def comment
         comment = "#{options.comment_line} "
         indent = nil
         lines = []
@@ -189,10 +211,10 @@ module VER
           end
         end
 
-        refresh_selection
+        refresh
       end
 
-      def uncomment_selection
+      def uncomment
         comment = "#{options.comment_line} "
         regex = /#{Regexp.escape(comment)}/
 
@@ -207,16 +229,16 @@ module VER
           end
         end
 
-        refresh_selection
+        refresh
       end
 
       # Replace every character in the selection with the character entered.
-      def selection_replace_char
+      def replace_char
         VER.message 'Enter character to replace the selection with'
 
         keymap.gets 1 do |char|
           if char.size == 1
-            replace_selection_with(char, full = true)
+            replace_with(char, full = true)
             VER.message "replaced 1 char"
           else
             VER.message 'replace aborted'
@@ -224,10 +246,10 @@ module VER
         end
       end
 
-      def selection_replace_string
+      def replace_string
         status_ask 'Replace selection with: ', do |string|
           if string.size > 0
-            replace_selection_with(string, full = false)
+            replace_with(string, full = false)
             "replaced #{string.size} chars"
           else
             'replace aborted'
@@ -235,31 +257,19 @@ module VER
         end
       end
 
-      def replace_selection_with_clipboard
+      def replace_with_clipboard
         string = clipboard_get
         ranges = tag_ranges(:sel)
         from, to = ranges.first.first, ranges.last.last
         replace(from, to, string)
-        finish_selection
+        finish
         mark_set :insert, from
-      end
-
-      def refresh_selection
-        return unless start = selection_start
-
-        tag_remove :sel, 1.0, :end
-
-        case selection_mode
-        when :select_char  ; refresh_selection_char(start)
-        when :select_line  ; refresh_selection_line(start)
-        when :select_block ; refresh_selection_block(start)
-        end
       end
 
       private
 
       # TODO: find better name for +full+
-      def replace_selection_with(string, full)
+      def replace_with(string, full)
         origin = index(:insert)
 
         undo_record do |record|
@@ -279,16 +289,16 @@ module VER
         mark_set :insert, origin
       end
 
-      def finish_selection(mode = nil)
-        undo_separator
-        clear_selection
-        mode ? self.mode = mode : keymap.use_previous_mode
+      def finish(text, mode = nil)
+        Undo.separator(text)
+        clear(text)
+        # mode ? self.mode = mode : keymap.use_previous_mode
         apply_mode_style(keymap.mode)
       end
 
-      def clear_selection
-        self.selection_start = nil
-        tag_remove :sel, '1.0', 'end'
+      def clear(text)
+        text.store(self, :start, nil)
+        text.tag_remove(:sel, '1.0', 'end')
       end
 
       # For every chunk selected, this yields the corresponding coordinates as
@@ -297,7 +307,7 @@ module VER
       # In many cases from_y and to_y are identical, but don't rely on this.
       #
       # @see each_selected_line
-      def each_selection
+      def each
         tag_ranges(:sel).each do |sel|
           (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
 
@@ -340,7 +350,7 @@ module VER
       # Abstraction for [each_selection] that yields one y coordinate per #
       # line.
       # You usually want to use this if you work with selections.
-      def each_selected_line
+      def each_line
         each_selection do |fy, fx, ty, tx|
           fy.upto(ty) do |y|
             yield y, fx, tx
@@ -348,7 +358,7 @@ module VER
         end
       end
 
-      def pipe_selection_execute(*cmd)
+      def pipe_execute(*cmd)
         require 'open3'
 
         Open3.popen3(*cmd) do |si, sose, thread|
@@ -371,7 +381,7 @@ module VER
       # FIXME: yes, i know i'm calling `tag add` for every line, which makes
       #        things slower, but it seems like there is a bug in the text widget.
       #        So we aggregate the information into a single eval.
-      def refresh_selection_block(start)
+      def refresh_block(start)
         ly, lx, ry, rx =
           if compare('insert', '>', start)
             [*index('insert').split, *start.split]
@@ -391,7 +401,7 @@ module VER
         Tk.execute_only(Tk::TclString.new(code.join("\n")))
       end
 
-      def refresh_selection_char(start)
+      def refresh_char(start)
         if compare('insert', '>', start)
           tag_add :sel, start, "insert + 1 chars"
         else
@@ -399,7 +409,7 @@ module VER
         end
       end
 
-      def refresh_selection_line(start)
+      def refresh_line(start)
         if compare('insert', '>', start)
           tag_add :sel, "#{start} linestart", 'insert lineend'
         else

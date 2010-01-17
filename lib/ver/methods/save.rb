@@ -1,12 +1,16 @@
-module VER
-  module Methods
-    # TODO: we _must_ write backup files, VER can corrupt files on a system
-    #       crash for some reason.
-    module Save
-      def may_close
-        return yield if pristine?
-        return yield unless undo_pending?
-        return yield if persisted?
+module VER::Methods
+  # TODO: we _must_ write backup files, VER can corrupt files on a system
+  #       crash for some reason.
+  module Save
+    class << self
+      def call(widget, command, arg)
+        send(*command, widget, *arg)
+      end
+
+      def may_close(text)
+        return yield if text.pristine?
+        return yield unless text.undo_pending?
+        return yield if persisted?(text)
 
         question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
 
@@ -24,39 +28,42 @@ module VER
         end
       end
 
-      def persisted?
-        return false unless filename && filename.file?
+      def persisted?(text)
+        return false unless filename = text.filename
+        return false unless filename.file?
         require 'digest/md5'
 
         on_disk = Digest::MD5.hexdigest(filename.read)
-        in_memory = Digest::MD5.hexdigest(value)
+        in_memory = Digest::MD5.hexdigest(text.value)
+        p on_disk => in_memory
         on_disk == in_memory
       end
 
-      def quit
+      def quit(text)
         VER.exit
       end
 
-      def file_save(filename = self.filename)
-        save_to(filename)
+      def file_save(text, filename = text.filename)
+        save_to(text, filename)
       end
 
-      def file_save_popup(options = {})
+      def file_save_popup(text, options = {})
         options = options.dup
         options[:filetypes] ||= [
           ['ALL Files',  '*'    ],
           ['Text Files', '*.txt'],
         ]
 
-        options[:initialfile]      ||= ::File.basename(@filename)
-        options[:defaultextension] ||= ::File.extname(@filename)
-        options[:initialdir]       ||= ::File.dirname(@filename)
+        filename = text.filename
+        options[:initialfile]      ||= ::File.basename(filename)
+        options[:defaultextension] ||= ::File.extname(filename)
+        options[:initialdir]       ||= ::File.dirname(filename)
 
         fpath = Tk.get_save_file(options)
 
         return unless fpath
 
-        save_to(fpath)
+        save_to(text, fpath)
       end
 
       # Some strategies are discussed at:
@@ -72,14 +79,14 @@ module VER
       #
       # If there is some failure during the normal saving procedure, we will
       # simply overwrite the original file in place, make sure you have good insurance ;)
-      def save_to(to)
-        save_atomic(filename, to)
+      def save_to(text, to)
+        save_atomic(text, filename, to)
       rescue => exception
         VER.error(exception)
-        save_dumb(to)
+        save_dumb(text, to)
       end
 
-      def save_atomic(from, to)
+      def save_atomic(text, from, to)
         require 'tmpdir'
         sha1 = Digest::SHA1.hexdigest([from, to].join)
         temp_path = File.join(Dir.tmpdir, 'ver', sha1)
@@ -90,27 +97,27 @@ module VER
         save_dumb(temp_path) && FileUtils.mv(temp_path, to)
 
         VER.message "Saved to #{to}"
-        @pristine = true
+        text.pristine = true
         return true
       rescue Errno::EACCES => ex
         # sshfs-mounts raise error but save correctly.
         if ex.backtrace[0].match(/chown\'$/)
           VER.message "Saved to #{to} (chown issue)"
-          @pristine = true
+          text.pristine = true
           return true
         end
         raise ex
       rescue Errno::ENOENT
-        save_dumb(to)
+        save_dumb(text, to)
       end
 
-      def save_dumb(to)
+      def save_dumb(text, to)
         File.open(to, 'w+') do |io|
-          io.write(self.value)
+          io.write(text.value)
         end
 
         VER.message "Saved to #{to}"
-        @pristine = true
+        text.pristine = true
         return true
       rescue Exception => ex
         VER.error(ex)

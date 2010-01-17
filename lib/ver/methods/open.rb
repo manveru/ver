@@ -1,6 +1,6 @@
-module VER
-  module Methods
-    module Open
+module VER::Methods
+  module Open
+    class << self
       GUESS_ENCODING_ORDER = [
         Encoding::US_ASCII,
         Encoding::UTF_8,
@@ -37,10 +37,10 @@ module VER
       # for the current file type if nothing could be found otherwise.
       # if that fails, we try to use `locate`, which can yield good results.
       # if no file could be found it simply does nothing?
-      def file_under_cursor
+      def file_under_cursor(text)
         paths = %w[ . lib ext / ]
-        head = get('insert linestart', 'insert')
-        tail = get('insert', 'insert lineend')
+        head = text.get('insert linestart', 'insert')
+        tail = text.get('insert', 'insert lineend')
         tail_index = tail.index(/['"\]})>]/) || tail.index(/\s/)
         return unless delim = $&
 
@@ -49,7 +49,7 @@ module VER
 
         base = [head[(head_index + 1)..-1], tail[0...tail_index]].join
 
-        syntax_name = @syntax.name if @syntax
+        syntax_name = text.syntax.name if @syntax
         exts = Syntax::Detector::EXTS_LIST.fetch(syntax_name, [])
 
         found = catch(:found){
@@ -67,9 +67,9 @@ module VER
         }
       end
 
-      def open_file_under_cursor
-        return unless found = file_under_cursor
-        view.find_or_create(found)
+      def open_file_under_cursor(text)
+        return unless found = file_under_cursor(text)
+        Views.find_or_create(text, found)
       end
 
       # TODO:
@@ -104,29 +104,50 @@ module VER
       #
       # For now, VER will simply fail to open files that contain \0 bytes, and
       # display binary files in a weird way.
-      def open_path(path, line = 1)
-        self.filename = path
+      def open_path(text, path, line = 1)
+        text.filename = path
 
         begin
-          clear
-          insert 1.0, read_file(filename)
-          message "Opened #{short_filename}"
+          text.clear
+          content = read_file(text, text.filename)
+          text.encoding = content.encoding
+          text.insert(1.0, content)
+          text.message "Opened #{text.short_filename}"
         rescue Errno::ENOENT
-          delete '1.0', :end
-          message "Create #{short_filename}"
+          text.clear
+          text.message("Create #{text.short_filename}")
         end
 
-        after_open(line)
+        after_open(text, line)
+      end
+
+      def file_open_popup(text)
+        filetypes = [
+          ['ALL Files',  '*'    ],
+          ['Text Files', '*.txt'],
+        ]
+
+        fpath = Tk.get_open_file(filetypes: filetypes)
+
+        return unless fpath
+
+        Views.view_find_or_create(text, fpath)
+      end
+
+      def file_open_fuzzy(text)
+        View::List::FuzzyFileFinder.new text do |path|
+          Views.view_find_or_create(text, path)
+        end
       end
 
       # Read given file into memory and convert to @encoding
-      def read_file(path)
+      def read_file(text, path)
         path = Pathname(path.to_s).expand_path
-        encoding_name = encoding.name
-        content = path.open("r:#{encoding_name}"){|io| io.read }
+        encoding = text.encoding
+        content = path.open("r:#{encoding.name}"){|io| io.read }
 
         unless content.valid_encoding? # take a guess
-          @encoding = GUESS_ENCODING_ORDER.find{|enc|
+          GUESS_ENCODING_ORDER.find{|enc|
             content.force_encoding(enc)
             content.valid_encoding?
           }
@@ -136,44 +157,44 @@ module VER
           content.encode!(Encoding::UTF_8)
         end
 
-        content.chomp
+        return content.chomp
       end
 
-      def open_empty
-        delete '1.0', :end
-        message "[No File]"
-        after_open
+      def open_empty(text)
+        text.clear
+        text.message "[No File]"
+        after_open(text)
       end
 
-      def after_open(line = 1)
-        detect_project_paths
-        VER.opened_file(self)
+      def after_open(text, line = 1)
+        detect_project_paths(text)
+        VER.opened_file(text)
 
-        edit_reset
-        mark_set :insert, "#{line.to_i}.0"
-        @pristine = true
+        text.mark_set(:insert, "#{line.to_i}.0")
+        text.pristine = true
 
-        @undoer = VER::Undo::Tree.new(self)
+        text.undoer = VER::Undo::Tree.new(text)
 
-        bind('<Map>') do
-          defer do
-            setup_highlight
-            apply_modeline
-            focus
+        text.bind('<Map>') do
+          VER.defer do
+            text.setup_highlight
+            apply_modeline(text)
+            text.focus
           end
-          bind('<Map>'){ see(:insert) }
+          text.bind('<Map>'){ text.see(:insert) }
         end
       end
 
       PROJECT_DIRECTORY_GLOB = '{.git/,.hg/,_darcs/,_FOSSIL_}'
 
-      def detect_project_paths
+      def detect_project_paths(text)
+        return unless filename = text.filename
         parent = filename.expand_path.dirname
 
         begin
           (parent/PROJECT_DIRECTORY_GLOB).glob do |repo|
-            @project_repo = repo
-            @project_root = repo.dirname
+            text.project_repo = repo
+            text.project_root = repo.dirname
             return
           end
 
@@ -187,26 +208,26 @@ module VER
         /^(?:ver|vim?):[^:]+:/      => /^(?:ver|vim?):([^:]+):/,
       }
 
-      def apply_modeline
+      def apply_modeline(text)
         MODELINES.each do |search_pattern, extract_pattern|
-          found = search(search_pattern, 1.0, :end, :count)
+          found = text.search(search_pattern, 1.0, :end, :count)
 
           next if found.empty?
 
           pos, count = found
           # p found: found, pos: pos, count: count
 
-          line = get(pos, "#{pos} + #{count} chars")
+          line = text.get(pos, "#{pos} + #{count} chars")
           # p line: line
 
           line =~ extract_pattern
           $1.scan(/[^:\s]+/) do |option|
-            apply_modeline_option(option)
+            apply_modeline_option(text, option)
           end
         end
       end
 
-      def apply_modeline_option(option)
+      def apply_modeline_option(text, option)
         negative = option.gsub!(/^no/, '')
         boolean = !negative
 
@@ -230,26 +251,26 @@ module VER
 
       attr_reader :options
 
-      def set(option, value)
+      def set(text, option, value)
         method = "set_#{option}"
 
         if respond_to?(method)
           if block_given?
-            __send__(method, value, &Proc.new)
+            __send__(method, text, value, &Proc.new)
           else
-            __send__(method, value)
+            __send__(method, text, value)
           end
         else
-          options[option] = value
-          yield(value) if block_given?
+          text.options[option] = value
+          yield(text, value) if block_given?
         end
       end
 
       def set_filetype(type)
         syntax = Syntax.from_filename(Pathname("foo.#{type}"))
 
-        if load_syntax(syntax)
-          options.filetype = type
+        if text.load_syntax(syntax)
+          text.options.filetype = type
         end
       end
     end

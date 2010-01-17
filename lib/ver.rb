@@ -179,6 +179,16 @@ module VER
     block
   end
 
+  def defer
+    Tk::After.idle do
+      begin
+        yield
+      rescue Exception => ex
+        VER.error(ex)
+      end
+    end
+  end
+
   def cancel_block(block)
     @cancel_blocks[block] = true
   end
