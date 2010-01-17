@@ -51,12 +51,7 @@ module VER
         end
 
         widget.bind('<<Inserted>>') do
-          if update_on_change
-            @active.completion
-            @last_was_tab = false
-          else
-            @last_was_tab = false
-          end
+          @last_was_tab = false
         end
       end
     end
