@@ -101,24 +101,24 @@ module VER::Methods
 
       def repeat_command(text, count = 1)
         bundle = []
-        keymap.execute_history.reverse_each do |mode, widget, cmd, arg|
+        text.keymap.execute_history.reverse_each do |mode, widget, action, arg|
           if bundle.empty?
-            next if REPEAT_BREAK_CMD.include?(cmd)
+            next if REPEAT_BREAK_CMD.include?(action.method)
             next if REPEAT_BREAK_MODE.include?(mode.name)
           else
-            break if REPEAT_BREAK_CMD.include?(cmd)
+            break if REPEAT_BREAK_CMD.include?(action.method)
             break if REPEAT_BREAK_MODE.include?(mode.name)
           end
 
-          bundle << [mode, widget, cmd, arg]
+          bundle << [mode, widget, action, arg]
         end
 
         bundle.reverse!
 
         count.times do
-          bundle.each do |mode, widget, cmd, arg|
+          bundle.each do |mode, widget, action, arg|
             # p [cmd, arg]
-            mode.execute_without_history(widget, cmd, arg)
+            mode.execute_without_history(widget, action, arg)
           end
         end
       end
