@@ -170,9 +170,9 @@ vim.in_mode :delete do
   map :change_motion,                  ['c', :move]
   map [:change_motion, :end_of_line],  %w[C]
   map [:change_word_right_end],        %w[c w]
-  map [:kill_motion, :backward_char],  %w[X]
+  map [:kill_motion, :prev_char],  %w[X]
   map [:kill_motion, :end_of_line],    %w[D]
-  map [:kill_motion, :forward_char],   %w[x]
+  map [:kill_motion, :next_char],   %w[x]
 end
 
 vim.in_mode :clipboard do

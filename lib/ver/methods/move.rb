@@ -172,6 +172,39 @@ module VER::Methods
         text.mark_set(:insert, text.tk_next_page_pos(count))
       end
 
+      def index_at_word_right_end(text, count = 1)
+        offset = 1
+        last = text.index('end')
+
+        count.times do
+          pos  = text.index("insert + #{offset} chars")
+
+          return if pos == last
+
+          type = word_char_type(text.get(pos))
+
+          while type == :space
+            offset += 1
+            pos = text.index("insert + #{offset} chars")
+            break if pos == last
+            type = word_char_type(text.get(pos))
+          end
+
+          lock = type
+
+          while type == lock && type != :space
+            offset += 1
+            pos = text.index("insert + #{offset} chars")
+            break if pos == last
+            type = word_char_type(text.get(pos))
+          end
+        end
+
+        text.index("insert + #{offset - 1} chars")
+      rescue => ex
+        VER.error(ex)
+      end
+
       private
 
       def word_char_type(char)
@@ -241,39 +274,6 @@ module VER::Methods
         end
 
         Tk::Event.generate(text, '<<Movement>>')
-      rescue => ex
-        VER.error(ex)
-      end
-
-      def index_at_word_right_end(text, count = 1)
-        offset = 1
-        last = text.index('end')
-
-        count.times do
-          pos  = text.index("insert + #{offset} chars")
-
-          return if pos == last
-
-          type = word_char_type(text.get(pos))
-
-          while type == :space
-            offset += 1
-            pos = text.index("insert + #{offset} chars")
-            break if pos == last
-            type = word_char_type(text.get(pos))
-          end
-
-          lock = type
-
-          while type == lock && type != :space
-            offset += 1
-            pos = text.index("insert + #{offset} chars")
-            break if pos == last
-            type = word_char_type(text.get(pos))
-          end
-        end
-
-        text.index("insert + #{offset - 1} chars")
       rescue => ex
         VER.error(ex)
       end
