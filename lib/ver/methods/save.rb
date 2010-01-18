@@ -80,7 +80,7 @@ module VER::Methods
       # If there is some failure during the normal saving procedure, we will
       # simply overwrite the original file in place, make sure you have good insurance ;)
       def save_to(text, to)
-        save_atomic(text, filename, to)
+        save_atomic(text, text.filename, to)
       rescue => exception
         VER.error(exception)
         save_dumb(text, to)
@@ -94,7 +94,7 @@ module VER::Methods
 
         FileUtils.mkdir_p(temp_dir)
         FileUtils.copy_file(from, temp_path, preserve = true)
-        save_dumb(temp_path) && FileUtils.mv(temp_path, to)
+        save_dumb(text, temp_path) && FileUtils.mv(temp_path, to)
 
         VER.message "Saved to #{to}"
         text.pristine = true
