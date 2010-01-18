@@ -48,3 +48,18 @@ h2. Support mirror and mirror transformation for snippets
 
 The most powerful snipets are using mirror and mirror transformations.
 In order to provide full support, we need to implement that.
+
+h2. Improve integration of scope selectors and bundles
+
+Right now we are doing a very simple matching of scope selectors, just to get
+things started.
+I'd like to improve on that by applying correct precedence for matching scopes.
+
+h2. Improve integration of Bundles
+
+Allowing bundles to bind keychains to commands.
+Might be problematic, as the keychains are specific for the TM environment, so
+it's very OSX specific and will conflict with e.g. emacs or vim keymaps.
+
+Maybe we need a separate TM keymap and define a common prefix to the keychains
+in other keymaps.
