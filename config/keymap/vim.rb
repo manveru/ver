@@ -315,6 +315,13 @@ vim.in_mode :select do
   inherits :basic, :move, :search
   handler VER::Methods::Selection
 
+  Tk::Bind.bind('Text', '<<EnterModeSelectLine>>'){|event|
+    VER::Methods::Selection.start(event.widget)
+  }
+  Tk::Bind.bind('Text', '<<LeaveModeSelectLine>>'){|event|
+    VER::Methods::Selection.stop(event.widget)
+  }
+
   mode :select_block,  %w[Control-v]
   mode :select_char,   %w[v]
   mode :select_line,   %w[V]

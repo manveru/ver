@@ -1,45 +1,18 @@
 module VER::Methods
   module Selection
     class << self
-      def start(widget)
-      end
-
-      def finish(text)
+      def start(text)
+        p :start
+        text.store(self, :start, text.index(:insert))
         Undo.separator(text)
-        clear
-        mode ? self.mode = mode : keymap.use_previous_mode
-        apply_mode_style(keymap.mode)
+        refresh(text)
       end
 
-      def start_selection_mode(name)
-        self.mode = name
-        start_selection(name)
-      end
-
-      def switch_selection_mode(name)
-        self.mode = name
-        switch_selection(name)
-      end
-
-      def start_selection(name)
-        self.selection_start = index(:insert)
-        switch_selection(name)
-      end
-
-      def switch_selection(name)
-        self.selection_mode = name.to_sym
-        refresh
-      end
-
-      %w[char line block].each do |suffix|
-        name = "select_#{suffix}"
-        define_method "start_#{name}_mode" do
-          start_selection_mode name
-        end
-
-        define_method "switch_#{name}_mode" do
-          switch_selection_mode name
-        end
+      def stop(text)
+        p :stop
+        text.store(self, :start, nil)
+        Undo.separator(text)
+        clear(text)
       end
 
       def refresh(text)
@@ -48,9 +21,9 @@ module VER::Methods
         text.tag_remove(:sel, 1.0, :end)
 
         case text.mode
-        when :select_char  ; refresh_char(start)
-        when :select_line  ; refresh_line(start)
-        when :select_block ; refresh_block(start)
+        when :select_char  ; refresh_char(text, start)
+        when :select_line  ; refresh_line(text, start)
+        when :select_block ; refresh_block(text, start)
         end
       end
 
@@ -73,7 +46,7 @@ module VER::Methods
       # Usually only works for alphabetic ASCII characters.
       def lower_case(text)
         Undo.record text do |record|
-          each_selected_line text do |y, fx, tx|
+          each_line text do |y, fx, tx|
             from, to = "#{y}.#{fx}", "#{y}.#{tx}"
             record.replace(from, to, text.get(from, to).downcase)
           end
@@ -86,7 +59,7 @@ module VER::Methods
       # This only works for alphabetic ASCII characters, no other encodings.
       def toggle_case(text)
         Undo.record text do |record|
-          each_selected_line text do |y, fx, tx|
+          each_line text do |y, fx, tx|
             from, to = "#{y}.#{fx}", "#{y}.#{tx}"
             record.replace(from, to, text.get(from, to).tr('a-zA-Z', 'A-Za-z'))
           end
@@ -99,44 +72,44 @@ module VER::Methods
         queue = []
         chunks = []
 
-        each_selected_line do |y, fx, tx|
+        each_line do |y, fx, tx|
           queue << y
-          chunks << get("#{y}.0", "#{y}.0 lineend")
+          chunks << text.get("#{y}.0", "#{y}.0 lineend")
         end
 
-        lines = wrap_lines_of(chunks.join(' ')).join("\n")
+        lines = Control.wrap_lines_of(chunks.join(' ')).join("\n")
         from, to = queue.first, queue.last
         text.replace("#{from}.0", "#{to}.0 lineend", lines)
 
-        finish text
+        finish(text)
       end
 
       # Delete selection without copying it.
-      def delete
-        queue = tag_ranges(:sel).flatten
-        delete(*queue)
-        mark_set(:insert, queue.first)
+      def delete(text)
+        queue = text.tag_ranges(:sel).flatten
+        text.delete(*queue)
+        text.mark_set(:insert, queue.first)
 
-        finish
+        finish(text)
       end
 
       # Copy selection and delete it.
-      def kill
-        queue = tag_ranges(:sel).flatten
-        kill(*queue)
-        mark_set(:insert, queue.first)
+      def kill(text)
+        queue = text.tag_ranges(:sel).flatten
+        Delete.kill(text, *queue)
+        text.mark_set(:insert, queue.first)
 
-        finish
+        finish(text)
       end
 
-      def indent
-        indent_size = options.shiftwidth
+      def indent(text)
+        indent_size = text.options.shiftwidth
         indent = ' ' * indent_size
 
-        undo_record do |record|
-          each_selected_line do |y, fx, tx|
+        Undo.record text do |record|
+          each_line text do |y, fx, tx|
             tx = fx + indent_size
-            next if get("#{y}.#{fx}", "#{y}.#{tx}").empty?
+            next if text.get("#{y}.#{fx}", "#{y}.#{tx}").empty?
             record.insert("#{y}.#{fx}", indent)
           end
         end
@@ -144,44 +117,44 @@ module VER::Methods
         refresh
       end
 
-      def unindent
-        indent_size = options.shiftwidth
+      def unindent(text)
+        indent_size = text.options.shiftwidth
         indent = ' ' * indent_size
         queue = []
 
-        each_selected_line do |y, fx, tx|
+        each_line text do |y, fx, tx|
           tx = fx + indent_size
           left, right = "#{y}.#{fx}", "#{y}.#{tx}"
-          next unless get(left, right) == indent
+          next unless text.get(left, right) == indent
           queue << left << right
         end
 
-        delete(*queue)
+        text.delete(*queue)
         refresh
       end
 
-      def evaluate
-        tag_ranges(:sel).each do |from, to|
-          code = get(from, to)
+      def evaluate(text)
+        text.tag_ranges(:sel).each do |from, to|
+          code = text.get(from, to)
 
-          stdout_capture_evaluate(code) do |res,out|
-            insert("#{to} lineend", "\n%s%p" % [out, res] )
+          Control.stdout_capture_evaluate(code) do |res,out|
+            text.insert("#{to} lineend", "\n%s%p" % [out, res] )
           end
         end
 
-        finish
+        finish(text)
       end
 
-      def copy
-        chunks = tag_ranges(:sel).map{|sel| get(*sel) }
-        copy(chunks.size == 1 ? chunks.first : chunks)
-        finish
+      def copy(text)
+        chunks = text.tag_ranges(:sel).map{|sel| text.get(*sel) }
+        Clipboard.copy(text, chunks.size == 1 ? chunks.first : chunks)
+        finish(text)
       end
 
-      def pipe
-        status_ask 'Pipe command: ' do |cmd|
-          pipe_execute(cmd)
-          finish
+      def pipe(text)
+        text.status_ask 'Pipe command: ' do |cmd|
+          pipe_execute(text, cmd)
+          finish(text)
         end
       end
 
@@ -233,12 +206,12 @@ module VER::Methods
       end
 
       # Replace every character in the selection with the character entered.
-      def replace_char
+      def replace_char(text)
         VER.message 'Enter character to replace the selection with'
 
-        keymap.gets 1 do |char|
+        text.keymap.gets 1 do |char|
           if char.size == 1
-            replace_with(char, full = true)
+            replace_with(text, char, full = true)
             VER.message "replaced 1 char"
           else
             VER.message 'replace aborted'
@@ -246,10 +219,10 @@ module VER::Methods
         end
       end
 
-      def replace_string
-        status_ask 'Replace selection with: ', do |string|
+      def replace_string(text)
+        text.status_ask 'Replace selection with: ', do |string|
           if string.size > 0
-            replace_with(string, full = false)
+            replace_with(text, string, full = false)
             "replaced #{string.size} chars"
           else
             'replace aborted'
@@ -257,30 +230,30 @@ module VER::Methods
         end
       end
 
-      def replace_with_clipboard
-        string = clipboard_get
-        ranges = tag_ranges(:sel)
+      def replace_with_clipboard(text)
+        string = text.clipboard_get
+        ranges = text.tag_ranges(:sel)
         from, to = ranges.first.first, ranges.last.last
-        replace(from, to, string)
-        finish
-        mark_set :insert, from
+        text.replace(from, to, string)
+        finish(text)
+        text.mark_set :insert, from
       end
 
       private
 
       # TODO: find better name for +full+
-      def replace_with(string, full)
-        origin = index(:insert)
+      def replace_with(text, string, full)
+        origin = text.index(:insert)
 
-        undo_record do |record|
+        Undo.record text do |record|
           if full
-            each_selected_line do |y, fx, tx|
+            each_line text do |y, fx, tx|
               diff = tx - fx
               record.replace("#{y}.#{fx}", "#{y}.#{tx}", string * diff)
             end
           else
             string_size = string.size
-            each_selected_line do |y, fx, tx|
+            each_line text do |y, fx, tx|
               record.replace("#{y}.#{fx}", "#{y}.#{tx}", string)
             end
           end
@@ -290,10 +263,7 @@ module VER::Methods
       end
 
       def finish(text, mode = nil)
-        Undo.separator(text)
-        clear(text)
-        # mode ? self.mode = mode : keymap.use_previous_mode
-        apply_mode_style(keymap.mode)
+        text.mode = :control
       end
 
       def clear(text)
@@ -307,36 +277,36 @@ module VER::Methods
       # In many cases from_y and to_y are identical, but don't rely on this.
       #
       # @see each_selected_line
-      def each
-        tag_ranges(:sel).each do |sel|
+      def each(text)
+        text.tag_ranges(:sel).each do |sel|
           (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
 
-          case selection_mode
+          case text.mode
           when :select_char
             if fy == ty
               yield fy, fx, ty, tx
             elsif (ty - fy) == 1
-              efy, efx = index("#{fy}.#{fx} lineend").split
-              sty, stx = index("#{ty}.#{tx} linestart").split
+              efy, efx = text.index("#{fy}.#{fx} lineend").split
+              sty, stx = text.index("#{ty}.#{tx} linestart").split
               yield fy, fx, efy, efx
               yield sty, stx, ty, tx
             else
-              efy, efx = index("#{fy}.#{fx} lineend").split
+              efy, efx = text.index("#{fy}.#{fx} lineend").split
               yield fy, fx, efy, efx
 
               ((fy + 1)...ty).each do |y|
-                sy, sx = index("#{y}.0 linestart").split
-                ey, ex = index("#{y}.0 lineend").split
+                sy, sx = text.index("#{y}.0 linestart").split
+                ey, ex = text.index("#{y}.0 lineend").split
                 yield sy, sx, ey, ex
               end
 
-              sty, stx = index("#{ty}.#{tx} linestart").split
+              sty, stx = text.index("#{ty}.#{tx} linestart").split
               yield sty, stx, ty, tx
             end
           when :select_line
             fy.upto(ty) do |y|
-              sy, sx = index("#{y}.0 linestart").split
-              ey, ex = index("#{y}.0 lineend").split
+              sy, sx = text.index("#{y}.0 linestart").split
+              ey, ex = text.index("#{y}.0 lineend").split
               yield sy, sx, ey, ex
             end
           when :select_block
@@ -347,24 +317,24 @@ module VER::Methods
         end
       end
 
-      # Abstraction for [each_selection] that yields one y coordinate per #
+      # Abstraction for [each] that yields one y coordinate per #
       # line.
       # You usually want to use this if you work with selections.
-      def each_line
-        each_selection do |fy, fx, ty, tx|
+      def each_line(text)
+        each text do |fy, fx, ty, tx|
           fy.upto(ty) do |y|
             yield y, fx, tx
           end
         end
       end
 
-      def pipe_execute(*cmd)
+      def pipe_execute(text, *cmd)
         require 'open3'
 
         Open3.popen3(*cmd) do |si, sose, thread|
           queue = []
-          tag_ranges(:sel).each do |from, to|
-            si.write(get(from, to))
+          tet.tag_ranges(:sel).each do |from, to|
+            si.write(text.get(from, to))
             queue << from << to
           end
 
@@ -373,26 +343,26 @@ module VER::Methods
 
           return if queue.empty?
 
-          delete(*queue)
-          insert(queue.first, output)
+          text.delete(*queue)
+          text.insert(queue.first, output)
         end
       end
 
       # FIXME: yes, i know i'm calling `tag add` for every line, which makes
       #        things slower, but it seems like there is a bug in the text widget.
       #        So we aggregate the information into a single eval.
-      def refresh_block(start)
+      def refresh_block(text, start)
         ly, lx, ry, rx =
-          if compare('insert', '>', start)
-            [*index('insert').split, *start.split]
+          if text.compare('insert', '>', start)
+            [*text.index('insert').split, *start.split]
           else
-            [*start.split, *index('insert').split]
+            [*start.split, *text.index('insert').split]
           end
 
         from_y, to_y = [ly, ry].sort
         from_x, to_x = [lx, rx].sort
 
-        code = [%(set win "#{tk_pathname}")]
+        code = [%(set win "#{text.tk_pathname}")]
 
         from_y.upto to_y do |y|
           code << "$win tag add sel #{y}.#{from_x} #{y}.#{to_x + 1}"
@@ -401,19 +371,19 @@ module VER::Methods
         Tk.execute_only(Tk::TclString.new(code.join("\n")))
       end
 
-      def refresh_char(start)
-        if compare('insert', '>', start)
-          tag_add :sel, start, "insert + 1 chars"
+      def refresh_char(text, start)
+        if text.compare('insert', '>', start)
+          text.tag_add(:sel, start, "insert + 1 chars")
         else
-          tag_add :sel, "insert", "#{start} + 1 chars"
+          text.tag_add(:sel, "insert", "#{start} + 1 chars")
         end
       end
 
-      def refresh_line(start)
-        if compare('insert', '>', start)
-          tag_add :sel, "#{start} linestart", 'insert lineend'
+      def refresh_line(text, start)
+        if text.compare('insert', '>', start)
+          text.tag_add(:sel, "#{start} linestart", 'insert lineend')
         else
-          tag_add :sel, 'insert linestart', "#{start} lineend"
+          text.tag_add(:sel, 'insert linestart', "#{start} lineend")
         end
       end
     end

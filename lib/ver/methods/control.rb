@@ -276,12 +276,12 @@ module VER::Methods
       end
 
       # Substitute over all lines of the buffer
-      def gsub(regexp, with)
+      def gsub(text, regexp, with)
         total = 0
-        undo_record do |record|
-          index('1.0').upto(index('end')) do |index|
+        Undo.record text do |record|
+          text.index('1.0').upto(text.index('end')) do |index|
             lineend = index.lineend
-            line = get(index, lineend)
+            line = text.get(index, lineend)
 
             if line.gsub!(regexp, with)
               record.replace(index, lineend, line)
@@ -294,17 +294,17 @@ module VER::Methods
       end
 
       # Substitute on current line
-      def sub(regexp, with)
-        linestart = index('insert linestart')
+      def sub(text, regexp, with)
+        linestart = text.index('insert linestart')
         lineend = linestart.lineend
-        line = get(linestart, lineend)
+        line = text.get(linestart, lineend)
 
         if line.sub!(regexp, with)
-          replace(linestart, lineend, line)
+          text.replace(linestart, lineend, line)
         end
       end
 
-      def open_grep_list
+      def open_grep_list(text)
         View::List::Grep.new self do |file, line|
           view.find_or_create(file, line)
         end
@@ -458,22 +458,22 @@ module VER::Methods
         end
       end
 
-      def join_lines
-        start_of_next_line = search(/\S/, 'insert lineend').first
-        replace('insert lineend', start_of_next_line, ' ')
+      def join_lines(text)
+        start_of_next_line = text.search(/\S/, 'insert lineend').first
+        text.replace('insert lineend', start_of_next_line, ' ')
       rescue RuntimeError => exception
         return if exception.message =~ /Index "\d+\.\d+" before "insert lineend" in the text/
         Kernel.raise exception
       end
 
-      def replace_char
+      def replace_char(text)
         VER.message(
           'Enter character to replace the character under the cursor with')
 
-        keymap.gets 1 do |char|
+        text.keymap.gets 1 do |char|
           if char.size == 1
-            replace('insert', 'insert + 1 chars', char)
-            backward_char
+            text.replace('insert', 'insert + 1 chars', char)
+            Move.prev_char(text)
             VER.message "replaced #{char.size} chars"
           else
             VER.message 'replace aborted'
@@ -502,7 +502,7 @@ module VER::Methods
         end
       end
 
-      def clean_line(text, index, record = self)
+      def clean_line(text, index, record = text)
         index = text.index(index)
         from, to = index.linestart, index.lineend
         line = text.get(from, to)
@@ -510,17 +510,15 @@ module VER::Methods
         record.replace(from, to, bare) if bare.empty?
       end
 
-      private
-
-      def wrap_lines_of(text, wrap = 80)
+      def wrap_lines_of(content, wrap = 80)
         Kernel.raise ArgumentError, "+wrap+ must be > 1" unless wrap > 1
         wrap -= 1
 
-        indent = text[/^\s+/] || ''
+        indent = content[/^\s+/] || ''
         indent_size = indent.size
         lines = [indent.dup]
 
-        text.scan(/\S+/) do |chunk|
+        content.scan(/\S+/) do |chunk|
           last = lines.last
           last_size = last.size
           chunk_size = chunk.size
