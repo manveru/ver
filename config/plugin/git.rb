@@ -14,16 +14,16 @@
 module VER
   module Methods
     module Git
-      def git_blame(count = 1)
-        line = index(:insert).y
+      def self.git_blame(text, count = 1)
+        line = text.index(:insert).y
         from, to = line - count, line + count
-        open_rxvt("git blame #{filename} -L#{from},#{to}")
+        open_rxvt(text, "git blame #{text.filename} -L#{from},#{to}")
       end
 
-      def open_rxvt(command)
+      def self.open_rxvt(text, command)
         frame = Tk::Frame.new(container: true)
         frame.pack(fill: :both, expand: true)
-        frame.bind('<Destroy>'){ focus }
+        frame.bind('<Destroy>'){ text.focus }
 
         cmd = "urxvt -embed #{frame.winfo_id} -e $SHELL -c %p &" % [command]
         p cmd
@@ -31,16 +31,13 @@ module VER
         frame.focus
       end
     end
-
-    include Git
-  end
-
-  class Text
-    include Methods::Git
   end
 
   if vim = Keymap[:vim]
     vim.in_mode :git do
+      no_arguments
+      handler Methods::Git
+
       key :git_blame,                        %w[g i t b]
       key [:open_rxvt, 'git add -p'],        %w[g i t a]
       key [:open_rxvt, 'git commit'],        %w[g i t c]
