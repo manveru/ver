@@ -435,12 +435,6 @@ end
 
 vim.ignore_sends = [
   :repeat_command,
-  :start_control_mode,
-  :start_insert_mode,
-  :start_replace_mode,
-  :start_select_block_mode,
-  :start_select_char_mode,
-  :start_select_line_mode,
 ]
 
 vim.accumulate_sends = [
