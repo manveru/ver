@@ -99,7 +99,7 @@ module VER::Methods
         :search,
       ]
 
-      def repeat_command(count = 1)
+      def repeat_command(text, count = 1)
         bundle = []
         keymap.execute_history.reverse_each do |mode, widget, cmd, arg|
           if bundle.empty?
@@ -481,19 +481,19 @@ module VER::Methods
         end
       end
 
-      def indent_line(count = 1)
-        indent = (' ' * options[:shiftwidth] * count)
-        insert('insert linestart', indent)
+      def indent_line(text, count = 1)
+        indent = (' ' * text.options[:shiftwidth] * count)
+        text.insert('insert linestart', indent)
       end
 
-      def unindent_line(count = 1)
-        indent = ' ' * options[:shiftwidth]
+      def unindent_line(text, count = 1)
+        indent = ' ' * text.options[:shiftwidth]
         replace_from = 'insert linestart'
         replace_to = "insert linestart + #{indent.size} chars"
 
-        undo_record do |record|
+        Undo.record text do |record|
           count.times do
-            line = get('insert linestart', 'insert lineend')
+            line = text.get('insert linestart', 'insert lineend')
 
             return unless line.start_with?(indent)
 
