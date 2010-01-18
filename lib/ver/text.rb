@@ -29,6 +29,17 @@ module VER
       widget_setup(view)
     end
 
+    def persisted?
+      return false unless filename
+      return false unless filename.file?
+      require 'digest/md5'
+
+      on_disk = Digest::MD5.hexdigest(filename.read)
+      in_memory = Digest::MD5.hexdigest(value)
+      p on_disk => in_memory
+      on_disk == in_memory
+    end
+
     None = Object.new
     def store(namespace, key, value = None)
       if None == value

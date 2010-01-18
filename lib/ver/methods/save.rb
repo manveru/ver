@@ -10,7 +10,7 @@ module VER::Methods
       def may_close(text)
         return yield if text.pristine?
         return yield unless text.undo_pending?
-        return yield if persisted?(text)
+        return yield if text.persisted?
 
         question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
 
@@ -26,17 +26,6 @@ module VER::Methods
             "Cancel closing"
           end
         end
-      end
-
-      def persisted?(text)
-        return false unless filename = text.filename
-        return false unless filename.file?
-        require 'digest/md5'
-
-        on_disk = Digest::MD5.hexdigest(filename.read)
-        in_memory = Digest::MD5.hexdigest(text.value)
-        p on_disk => in_memory
-        on_disk == in_memory
       end
 
       def quit(text)
