@@ -26,26 +26,23 @@ require 'tmpdir'
 module VER
   module Methods
     module Soma
-      def soma_buffer
-        soma_tempfile.open('w+'){|io| io.write(value) }
+      def self.soma_buffer(text)
+        soma_tempfile.open('w+'){|io| io.write(text.value) }
       end
 
       private
 
-      def soma_tempfile
+      def self.soma_tempfile
         Pathname(Dir.tmpdir)/"#{`whoami`.strip}_somarepl_buffer"
       end
     end # Soma
-
-    include Soma
   end # Methods
-
-  class Text
-    include Methods::Soma
-  end # Text
 
   if vim = Keymap[:vim]
     vim.in_mode :soma do
+      no_arguments
+      handler Methods::Soma
+
       key :soma_buffer, %w[Control-c Control-c]
     end
 
