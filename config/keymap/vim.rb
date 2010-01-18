@@ -1,4 +1,4 @@
-vim = VER::Keymap.new(name: :vim, mode: :control)
+vim = VER::Keymap.define(name: :vim, mode: :control)
 
 vim.in_mode :help do
   no_arguments

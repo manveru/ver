@@ -19,14 +19,19 @@ module VER
     end
   end
 
-  class Keymap < Struct.new(:modes, :tag, :previous_mode, :last_send,
-                            :ignore_sends, :accumulate_sends,
-                            :key_history, :execute_history,
-                            :arguments, :name, :mode)
+  Keymap = Struct.new(:modes, :tag, :previous_mode, :last_send,
+                      :ignore_sends, :accumulate_sends,
+                      :key_history, :execute_history,
+                      :arguments, :name, :mode)
 
+  class Keymap
     autoload :ArbiterTag, 'ver/keymap/arbiter_tag'
 
     LOADED = {}
+
+    def self.define(options)
+      self[options[:name]] || new(options)
+    end
 
     def self.[](name)
       LOADED[name]
