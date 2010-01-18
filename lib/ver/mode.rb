@@ -18,6 +18,7 @@ module VER
           widget.send(method, *[*args, *arg])
         end
       rescue => ex
+        p "%p.send(%p, %p, %p)" % [handler, method, widget, [*args, *arg]]
         VER.error(ex)
       end
     end
