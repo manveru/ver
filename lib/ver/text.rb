@@ -87,7 +87,7 @@ module VER
     end
 
     def event_setup
-      bind '<<BeginMode>>' do |event|
+      bind '<<EnterMode>>' do |event|
         status_projection(status)
         apply_mode_style(mode)
       end
