@@ -264,7 +264,7 @@ module VER
       index2 = index(index2) unless index2.respond_to?(:to_index)
       return if index1 == index2
 
-      undo_record do |record|
+      Methods::Undo.record self do |record|
         record.replace(index1, index2, string)
       end
     end
