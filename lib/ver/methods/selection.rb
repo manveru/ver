@@ -2,14 +2,12 @@ module VER::Methods
   module Selection
     class << self
       def start(text)
-        p :start
         text.store(self, :start, text.index(:insert))
         Undo.separator(text)
         refresh(text)
       end
 
       def stop(text)
-        p :stop
         text.store(self, :start, nil)
         Undo.separator(text)
         clear(text)
