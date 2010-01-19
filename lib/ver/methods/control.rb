@@ -391,38 +391,28 @@ module VER::Methods
         View::List::Syntax.new(self){|name| load_syntax(name) }
       end
 
-      def status_evaluate
-        status_ask 'Eval expression: ' do |term|
-          begin
-            eval(term)
-          rescue Exception => ex
-            ex
-          end
-        end
-      end
-
-      def smart_evaluate
-        if sel = tag_ranges(:sel)
+      def smart_evaluate(text)
+        if sel = text.tag_ranges(:sel)
           from, to = sel.first
-          return selection_evaluate if from && to
+          return Selection.evaluate(text) if from && to
         end
 
-        line_evaluate
+        line_evaluate(text)
       end
 
-      def line_evaluate
-        text = get('insert linestart', 'insert lineend')
-        stdout_capture_evaluate(text) do |res,out|
-          insert("insert lineend", "\n%s%p" % [out, res] )
+      def line_evaluate(text)
+        content = text.get('insert linestart', 'insert lineend')
+        stdout_capture_evaluate(content, text.filename) do |res,out|
+          text.insert("insert lineend", "\n%s%p" % [out, res] )
         end
       end
 
-      def stdout_capture_evaluate(code)
+      def stdout_capture_evaluate(code, file)
         begin
           old_stdout = $stdout.dup
           rd, wr = IO.pipe
           $stdout.reopen(wr)
-          result = eval(code, nil, filename.to_s)
+          result = eval(code, nil, file.to_s)
           $stdout.reopen old_stdout; wr.close
           stdout = rd.read
 
