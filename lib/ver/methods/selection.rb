@@ -270,7 +270,7 @@ module VER::Methods
           end
         end
 
-        mark_set :insert, origin
+        text.mark_set(:insert, origin)
       end
 
       def finish(text, mode = nil)
