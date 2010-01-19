@@ -1,7 +1,7 @@
 module VER
   class Text < Tk::Text
     autoload :Index, 'ver/text/index'
-    include Methods, Keymapped
+    include Keymapped
 
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
@@ -99,7 +99,7 @@ module VER
 
       bind '<<Movement>>' do |event|
         see :insert
-        Selection.refresh(self)
+        Methods::Selection.refresh(self)
         status_projection(status)
       end
 
