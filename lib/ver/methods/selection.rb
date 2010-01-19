@@ -114,7 +114,7 @@ module VER::Methods
           end
         end
 
-        refresh
+        refresh(text)
       end
 
       def unindent(text)
@@ -130,7 +130,7 @@ module VER::Methods
         end
 
         text.delete(*queue)
-        refresh
+        refresh(text)
       end
 
       def evaluate(text)
@@ -158,17 +158,17 @@ module VER::Methods
         end
       end
 
-      def comment
-        comment = "#{options.comment_line} "
+      def comment(text)
+        comment = "#{text.options.comment_line} "
         indent = nil
         lines = []
 
-        each_selected_line do |y, fx, tx|
+        each_line text do |y, fx, tx|
           lines << y
 
           next if indent == 0 # can't get lower
 
-          line = get("#{y}.#{fx}", "#{y}.#{tx}")
+          line = text.get("#{y}.#{fx}", "#{y}.#{tx}")
 
           next unless start = line =~ /\S/
 
@@ -178,23 +178,23 @@ module VER::Methods
 
         indent ||= 0
 
-        undo_record do |record|
+        Undo.record text do |record|
           lines.each do |y|
             record.insert("#{y}.#{indent}", comment)
           end
         end
 
-        refresh
+        refresh(text)
       end
 
-      def uncomment
-        comment = "#{options.comment_line} "
+      def uncomment(text)
+        comment = "#{text.options.comment_line} "
         regex = /#{Regexp.escape(comment)}/
 
-        undo_record do |record|
-          each_selected_line do |y, fx, tx|
+        Undo.record text do |record|
+          each_ine text do |y, fx, tx|
             from, to = "#{y}.#{fx}", "#{y}.#{tx}"
-            line = get(from, to)
+            line = text.get(from, to)
 
             if line.sub!(regex, '')
               record.replace(from, to, line)
@@ -202,7 +202,7 @@ module VER::Methods
           end
         end
 
-        refresh
+        refresh(text)
       end
 
       # Replace every character in the selection with the character entered.
