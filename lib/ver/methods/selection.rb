@@ -70,7 +70,7 @@ module VER::Methods
         queue = []
         chunks = []
 
-        each_line do |y, fx, tx|
+        each_line text do |y, fx, tx|
           queue << y
           chunks << text.get("#{y}.0", "#{y}.0 lineend")
         end
