@@ -13,6 +13,10 @@ module VER
       end
     }
 
+    def self.camel_case(name)
+      name.to_s.split('_').map{|e| e.capitalize}.join
+    end
+
     def inspect
       "#<VER::Mode name=#{name} keymap=#{keymap}>"
     end
@@ -57,6 +61,16 @@ module VER
           widget.mode = target
         end
       end
+    end
+
+    def enter_mode(&callback)
+      camel_case = self.class.camel_case(name)
+      tag.bind("<<EnterMode#{camel_case}>>", &callback)
+    end
+
+    def leave_mode(&callback)
+      camel_case = self.class.camel_case(name)
+      tag.bind("<<LeaveMode#{camel_case}>>", &callback)
     end
 
     def missing(method)

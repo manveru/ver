@@ -314,13 +314,6 @@ vim.in_mode :select do
   inherits :basic, :move, :search
   handler VER::Methods::Selection
 
-  Tk::Bind.bind('Text', '<<EnterModeSelectLine>>'){|event|
-    VER::Methods::Selection.start(event.widget)
-  }
-  Tk::Bind.bind('Text', '<<LeaveModeSelectLine>>'){|event|
-    VER::Methods::Selection.stop(event.widget)
-  }
-
   mode :select_block,  %w[Control-v]
   mode :select_char,   %w[v]
   mode :select_line,   %w[V]
@@ -346,17 +339,20 @@ end
 
 vim.in_mode :select_char do
   inherits :select
-  handler VER::Methods::Selection
+  enter_mode{|event| VER::Methods::Selection.start(event.widget) }
+  leave_mode{|event| VER::Methods::Selection.stop(event.widget) }
 end
 
 vim.in_mode :select_line do
   inherits :select
-  handler VER::Methods::Selection
+  enter_mode{|event| VER::Methods::Selection.start(event.widget) }
+  leave_mode{|event| VER::Methods::Selection.stop(event.widget) }
 end
 
 vim.in_mode :select_block do
   inherits :select
-  handler VER::Methods::Selection
+  enter_mode{|event| VER::Methods::Selection.start(event.widget) }
+  leave_mode{|event| VER::Methods::Selection.stop(event.widget) }
 end
 
 vim.in_mode :status_query do
