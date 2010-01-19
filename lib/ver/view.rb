@@ -124,7 +124,7 @@ module VER
       if found = layout.views.find{|view| view.filename == needle }
         found.push_top
         found.focus
-        found.text.go_line(line) if line
+        Methods::Move.go_line(found.text, line) if line
         yield(found) if block_given?
       else
         create(needle, line, &block)
