@@ -233,17 +233,17 @@ module VER::Methods
 
         case option
         when 'ai', 'autoindent'
-          set :autoindent, boolean
+          set text, :autoindent, boolean
         when 'et', 'expandtab'
-          set :expandtab, boolean
+          set text, :expandtab, boolean
         when /(?:tw|textwidth)=(\d+)/
-          set :textwidth, $1.to_i
+          set text, :textwidth, $1.to_i
         when /(?:ts|tabstop)=(\d+)/
-          set :tabstop, $1.to_i
+          set text, :tabstop, $1.to_i
         when /(?:sw|shiftwidth)=(\d+)/
-          set :shiftwidth, $1.to_i
+          set text, :shiftwidth, $1.to_i
         when /(?:ft|filetype)=(\w+)/
-          set :filetype, $1
+          set text, :filetype, $1
         else
           p unknown_modeline_option: option
         end
