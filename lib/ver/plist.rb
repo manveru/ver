@@ -312,17 +312,21 @@ Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:281
       #   everybody else is eager to use it in their files as well.
       #   </rant>
       def sanitize_regexp(value)
-        # puts value
-        # value.force_encoding(Encoding::BINARY)
+        original = value.dup
 
         SANITIZE_REGEXP.each do |pattern, replacement|
           value.gsub!(pattern, replacement)
         end
 
-        # puts value
         Regexp.new(value)
-      rescue RegexpError
-        puts '-' * 80
+      rescue RegexpError => ex
+        puts ' [ exception ] '.center(80, '-')
+        puts ex, *ex.backtrace
+        puts ' [ original regexp ] '.center(80, '-')
+        p original
+        puts original
+        puts ' [ modified regexp ] '.center(80, '-')
+        p value
         puts value
         puts '-' * 80
         /#{value.force_encoding(Encoding::BINARY)}/n
