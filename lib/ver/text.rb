@@ -269,6 +269,10 @@ module VER
       end
     end
 
+    def delete(*indices)
+      Methods::Delete.delete(self, *indices)
+    end
+
     def fast_tag_add(tag, *indices)
       execute('tag', 'add', tag, *indices)
       self
