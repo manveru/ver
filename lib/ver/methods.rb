@@ -18,7 +18,6 @@ module VER
     autoload :Undo,        'ver/methods/undo'
     autoload :Views,       'ver/methods/views'
     autoload :Snippet,     'ver/methods/snippet'
-    autoload :Entry,       'ver/methods/entry'
     autoload :AutoFill,    'ver/methods/autofill'
   end
 end

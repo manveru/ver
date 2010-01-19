@@ -241,7 +241,6 @@ end
 vim.in_mode :readline do
   no_arguments
 
-  handler VER::Methods::Entry
   map :accept_line,                %w[Return]
 
   map :end_of_line,                %w[End], %w[Control-e]
@@ -364,7 +363,6 @@ vim.in_mode :status_query do
   inherits :basic, :readline
   no_arguments
 
-  handler VER::Methods::Entry
   map :ask_abort,         %w[Escape], %w[Control-c]
   map :ask_submit,        %w[Return]
 

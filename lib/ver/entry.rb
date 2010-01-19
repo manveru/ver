@@ -184,6 +184,104 @@ module VER
       kill(*virtual_movement(motion, count))
     end
 
+    # Accept the line regardless of where the cursor is.
+    # If this line is non-empty, it will be added to the history list.
+    # If the line is a modified history line, the history line is restored to
+    # its original state.
+    def accept_line
+      line = get
+      Event.generate(self, '<<AcceptLine>>')
+      delete(0, :end)
+    end
+
+    # Move to end of the entry line
+    def end_of_line
+      self.cursor = :end
+    end
+
+    # Insert X selection at cursor position
+    def insert_selection
+      insert(cursor, Tk::Selection.get)
+    end
+
+    # Insert a literal tab character at cursor position
+    def insert_tab
+      insert(cursor, "\t")
+    end
+
+    # Move forward a character.
+    def next_char(count = 1)
+      self.cursor += count
+    end
+
+    # Move forward to the end of the next word.
+    # Words are composed of alphanumeric characters (letters and digits).
+    def next_word(count = 1)
+      count.times do
+        return unless md = get.match(FORWARD_WORD, cursor)
+        self.cursor = md.offset(0).last
+      end
+    end
+
+    # Move backward to the previous character.
+    def prev_char(count = 1)
+      self.cursor -= count
+    end
+
+    # Move back to the start of the current or previous word.
+    # Words are composed of alphanumeric characters (letters and digits).
+    def prev_word(count = 1)
+      line = get.reverse
+      count.times do
+        pos = get.size - cursor
+
+        return unless md = line.match(BACKWARD_WORD, pos)
+        self.cursor = (line.size - md.offset(0).last)
+      end
+    end
+
+    # Move to the start of the current line.
+    def start_of_line
+      self.cursor = 0
+    end
+
+    def transpose_chars
+      char = get[entry.cursor]
+      delete(cursor)
+      insert(cursor - 1, char)
+    end
+
+    def kill_motion(motion, count = 1)
+      kill(*virtual_movement(motion, count))
+    end
+
+    def insert_string(string)
+      insert(cursor, string)
+    end
+
+    def ask_abort
+      self.question = ''
+      self.value = self.backup_value
+      text.focus
+    end
+
+    def ask_submit
+      answer = self.value
+      # history = HISTORY[@question]
+      # history.uniq!
+      # history << answer
+      self.question = ''
+
+      case result = callback.call(answer)
+      when String
+        message(result)
+      when Symbol
+        result
+      else
+        message(result.inspect)
+      end
+    end
+
     private
 
     def virtual_movement(name, count = 1)
