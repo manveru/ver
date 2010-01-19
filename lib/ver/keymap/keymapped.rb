@@ -6,14 +6,17 @@ module VER
       keymap.mode if keymap
     end
 
-    def mode=(name)
+    def mode=(new_mode)
       return unless keymap
-      return if keymap.mode == name
-      Tk::Event.generate(self, "<<LeaveMode>>")
-      Tk::Event.generate(self, "<<LeaveMode#{mode_as_camel_case}>>")
-      keymap.mode = name if keymap
-      Tk::Event.generate(self, "<<EnterMode#{mode_as_camel_case}>>")
-      Tk::Event.generate(self, "<<EnterMode>>")
+      old_mode = keymap.mode
+
+      return if old_mode == new_mode
+
+      Tk::Event.generate(self, "<<LeaveMode>>", data: new_mode)
+      Tk::Event.generate(self, "<<LeaveMode#{mode_as_camel_case}>>", data: new_mode)
+      keymap.mode = new_mode
+      Tk::Event.generate(self, "<<EnterMode#{mode_as_camel_case}>>", data: old_mode)
+      Tk::Event.generate(self, "<<EnterMode>>", data: old_mode)
     end
 
     def mode_as_camel_case

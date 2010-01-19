@@ -1,19 +1,32 @@
 module VER::Methods
   module Selection
     class << self
-      def start(text)
-        text.store(self, :start, text.index(:insert))
+      def enter(event)
+        text = event.widget
+        old_mode = event.detail
+
+        unless old_mode =~ /^select/
+          text.store(self, :start, text.index(:insert))
+        end
+
+        text.store(self, :refresh, true)
         Undo.separator(text)
         refresh(text)
       end
 
-      def stop(text)
-        text.store(self, :start, nil)
+      def leave(event)
+        text = event.widget
+        new_mode = event.detail
+
+        return if new_mode =~ /^select/
+
+        text.store(self, :refresh, false)
         Undo.separator(text)
         clear(text)
       end
 
       def refresh(text)
+        return unless text.store(self, :refresh)
         return unless start = text.store(self, :start)
 
         text.tag_remove(:sel, 1.0, :end)

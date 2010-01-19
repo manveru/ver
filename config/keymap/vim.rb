@@ -339,20 +339,20 @@ end
 
 vim.in_mode :select_char do
   inherits :select
-  enter_mode{|event| VER::Methods::Selection.start(event.widget) }
-  leave_mode{|event| VER::Methods::Selection.stop(event.widget) }
+  enter_mode{|event| VER::Methods::Selection.enter(event) }
+  leave_mode{|event| VER::Methods::Selection.leave(event) }
 end
 
 vim.in_mode :select_line do
   inherits :select
-  enter_mode{|event| VER::Methods::Selection.start(event.widget) }
-  leave_mode{|event| VER::Methods::Selection.stop(event.widget) }
+  enter_mode{|event| VER::Methods::Selection.enter(event) }
+  leave_mode{|event| VER::Methods::Selection.leave(event) }
 end
 
 vim.in_mode :select_block do
   inherits :select
-  enter_mode{|event| VER::Methods::Selection.start(event.widget) }
-  leave_mode{|event| VER::Methods::Selection.stop(event.widget) }
+  enter_mode{|event| VER::Methods::Selection.enter(event) }
+  leave_mode{|event| VER::Methods::Selection.leave(event) }
 end
 
 vim.in_mode :status_query do

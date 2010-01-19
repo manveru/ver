@@ -10,9 +10,6 @@ module VER
                   :undoer, :pristine, :syntax)
     attr_reader :filename, :options, :snippets, :preferences
 
-    # attributes for diverse functionality
-    attr_accessor :selection_mode, :selection_start
-
     def initialize(view, options = {})
       if peer = options.delete(:peer)
         @tag_commands = {}
@@ -78,7 +75,6 @@ module VER
       apply_mode_style
       setup_tags
 
-      self.selection_start = nil
       @pristine = true
       @syntax = nil
       @encoding = Encoding.default_internal
