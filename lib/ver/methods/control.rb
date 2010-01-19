@@ -304,32 +304,6 @@ module VER::Methods
         end
       end
 
-      def open_grep_list(text)
-        View::List::Grep.new self do |file, line|
-          view.find_or_create(file, line)
-        end
-      end
-
-      def grep_buffer
-        View::List::Grep.new self, filename do |file, line|
-          view.find_or_create(file, line)
-        end
-      end
-
-      def grep_buffers
-        glob = '{' << layout.views.map{|v| v.text.filename }.join(',') << '}'
-
-        View::List::Grep.new self, glob do |file, line|
-          view.find_or_create(file, line)
-        end
-      end
-
-      def open_method_list
-        View::List::Methods.new self do |file, line|
-          view.find_or_create(file, line)
-        end
-      end
-
       def executor(text)
         VER::Executor.new(text)
       end
@@ -359,15 +333,6 @@ module VER::Methods
         end
 
         self.methods.grep(regexp).sort_by{|sym| sym =~ regexp }
-      end
-
-      def open_console
-        View::Console.new(self)
-      end
-
-      def open_terminal
-        require 'ver/view/term'
-        View::Terminal.new(self)
       end
 
       def wrap_line(text)
@@ -429,23 +394,6 @@ module VER::Methods
         result = eval(value, TOPLEVEL_BINDING)
       rescue Exception => exception
         VER.error(exception)
-      end
-
-      def buffer_switch
-        View::List::Buffer.new self do |file|
-          view.find_or_create(file) if File.exists?(file)
-        end
-      end
-
-      def window_switch(count = nil)
-        if count
-          # p count: count
-        else
-          View::List::Window.new self do |view|
-            view.push_top
-            view.focus
-          end
-        end
       end
 
       def join_lines(text)
