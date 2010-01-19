@@ -132,7 +132,7 @@ module VER
     end
 
     def close
-      text.may_close do
+      Methods::Save.may_close text do
         layout.close_view(self)
       end
     end
