@@ -6,7 +6,7 @@ module VER::Methods
       end
 
       def peer(text)
-        text.create_peer
+        text.view.create_peer
       end
 
       def focus(text, index = 0)

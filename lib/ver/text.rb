@@ -8,18 +8,18 @@ module VER
 
     attr_accessor(:view, :status, :project_root, :project_repo, :encoding,
                   :undoer, :pristine, :syntax)
-    attr_reader :filename, :options, :snippets, :preferences
+    attr_reader :filename, :options, :snippets, :preferences, :store_hash
 
     def initialize(view, options = {})
       if peer = options.delete(:peer)
         @tag_commands = {}
         @tk_parent = view
-        @store = peer.store_hash
+        @store_hash = peer.store_hash
         Tk.execute(peer.tk_pathname, 'peer', 'create', assign_pathname, options)
         self.filename = peer.filename
         configure(peer.configure)
       else
-        @store = Hash.new{|h,k| h[k] = {} }
+        @store_hash = Hash.new{|h,k| h[k] = {} }
         super
       end
 
@@ -40,9 +40,9 @@ module VER
     None = Object.new
     def store(namespace, key, value = None)
       if None == value
-        @store[namespace][key]
+        @store_hash[namespace][key]
       else
-        @store[namespace][key] = value
+        @store_hash[namespace][key] = value
       end
     end
 
