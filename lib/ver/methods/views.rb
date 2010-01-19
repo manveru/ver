@@ -86,15 +86,15 @@ module VER::Methods
       end
 
       def master_shrink(text)
-        center = layout.options[:center]
-        layout.options[:center] -= 0.1 if center > 0.1
-        layout.apply
+        center = text.layout.options[:center]
+        text.layout.options[:center] -= 0.1 if center > 0.1
+        text.layout.apply
       end
 
       def master_grow(text)
-        center = layout.options[:center]
-        layout.options[:center] += 0.1 if center < 0.9
-        layout.apply
+        center = text.layout.options[:center]
+        text.layout.options[:center] += 0.1 if center < 0.9
+        text.layout.apply
       end
 
       def cycle_next(text)
