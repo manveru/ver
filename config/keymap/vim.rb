@@ -227,7 +227,7 @@ vim.in_mode :control do
   map :replace_char,                      %w[r]
   map :smart_evaluate,                    %w[Alt-e], %w[Control-m e]
 
-  map [:insert_at, :start_of_line],       %w[I]
+  map [:insert_at, :home_of_line],        %w[I]
 
   map :executor,                          %w[colon]
   map :syntax_switch,                     %w[Control-y]

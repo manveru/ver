@@ -5,8 +5,8 @@ module VER::Methods
         clean_line(text, :insert)
       end
 
-      def insert_at(text, motion, count = 1)
-        Move.send(motion, text, count)
+      def insert_at(text, motion, *count)
+        Move.send(motion, text, *count)
         text.mode = :insert
       end
 
@@ -370,13 +370,13 @@ module VER::Methods
         View::Terminal.new(self)
       end
 
-      def wrap_line
-        text = get('insert linestart', 'insert lineend')
-        textwidth = options[:textwidth]
-        lines = wrap_lines_of(text, textwidth).join("\n")
+      def wrap_line(text)
+        content = text.get('insert linestart', 'insert lineend')
+        textwidth = text.options.textwidth
+        lines = wrap_lines_of(content, textwidth).join("\n")
         lines.rstrip!
 
-        replace('insert linestart', 'insert lineend', lines)
+        text.replace('insert linestart', 'insert lineend', lines)
       end
 
       def theme_switch

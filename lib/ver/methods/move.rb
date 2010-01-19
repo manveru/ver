@@ -54,7 +54,7 @@ module VER::Methods
         text.mark_set(:insert, "insert + #{count} displaychars")
       end
 
-      # Move to the beginning of the line where insert mark is located.
+      # Move to the beginning of the line in which insert mark is located.
       #
       # With +count+ it will move to the beginning of the display line, which
       # takes line wraps into account.
@@ -63,6 +63,20 @@ module VER::Methods
           text.mark_set(:insert, 'insert display linestart')
         else
           text.mark_set(:insert, 'insert linestart')
+        end
+      end
+
+      # Move to the first character of the line in which insert mark is located.
+      #
+      # With +count+ it will move to the linestart of the displayed, taking
+      # linewraps into account.
+      def home_of_line(text, count = nil)
+        if count
+          start_of_line(text, true)
+        else
+          x = text.get('insert linestart', 'insert lineend').index(/\S/) || 0
+          y = text.index('insert').y
+          text.mark_set(:insert, "#{y}.#{x}")
         end
       end
 
@@ -80,16 +94,6 @@ module VER::Methods
           text.mark_set(:insert, 'insert lineend')
         else
           text.mark_set(:insert, 'insert display lineend')
-        end
-      end
-
-      def start_of_line(text, count = nil)
-        if count
-          text.mark_set(:insert, 'insert display linestart')
-        else
-          x = text.get('insert linestart', 'insert lineend').index(/\S/) || 0
-          y = text.index('insert').y
-          text.mark_set(:insert, "#{y}.#{x}")
         end
       end
 
