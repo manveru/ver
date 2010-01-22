@@ -36,7 +36,7 @@ module VER
         caller.view.find_or_create(path) do |view|
           text = view.text
           text.value = caller.value.chomp
-          Methods::Save.file_save(text)
+          Methods::Save.save(text)
         end
       end
     end

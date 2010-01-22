@@ -69,8 +69,7 @@ module VER
 
       @undoer = VER::Undo::Tree.new(self)
 
-      self.keymap = VER.keymap.use(widget: self)
-      @default_mode = keymap.mode
+      MajorMode[:fundamental].use!(self)
 
       apply_mode_style
       setup_tags

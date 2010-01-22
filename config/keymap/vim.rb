@@ -1,90 +1,143 @@
-vim = VER::Keymap.define(name: :vim, mode: :control)
+module VER
+  major_mode :fundamental do
+    minor_modes :control
 
-vim.in_mode :help do
-  no_arguments
-  handler VER::Methods::Help
+    handler Methods::Help
+    add :describe_key, '<Control-h>k'
+    # map :help_for_help,       %w[Control-h question], %w[F1], %w[Help]
 
-  map :describe_key, %w[Control-h k]
-  # map :help_for_help,       %w[Control-h question], %w[F1], %w[Help]
+    handler Methods::Open
+    add :file_open_popup, '<Control-o>'
+    add :file_open_fuzzy, '<Alt-o>', '<Control-m>o'
+
+    handler Methods::Save
+    add :file_save,       '<Control-s>'
+    add :file_save_popup, '<Control-Alt-s>'
+
+    handler Methods::Preview
+    add :preview, '<F5>'
+
+    handler Methods::Basic
+    add :quit,                '<Control-q>'
+    add :source_buffer,       '<Control-R>'
+    add :status_evaluate,     '<Alt-x>', '<Control-m>x'
+    add :tags_at,             '<Control-g>t'
+    add :open_terminal,       '<F9>'
+    add :open_console,        '<Control-exclam>' if defined?(::EM)
+
+    # to be deprecated
+    add :open_buffer_switch,  '<Alt-b>', '<Control-m>b'
+    add :open_grep_buffer,    '<Alt-g>', '<Control-m>g'
+    add :open_grep_buffers,   '<Alt-G>', '<Control-m>G'
+    add :open_grep_list,      '<Control-Alt-g>', '<Control-m><Control-g>'
+    add :open_method_list,    '<F10>'
+    add :open_window_switch,  '<Alt-B>', '<Control-m>B'
+
+    ignore '<Key>'
+  end
+
+  minor_mode :views do
+    handler Methods::Views
+
+    add :one,           '<Key-1>'
+    add :two,           '<Key-2>'
+
+    add :slave_inc,     '<plus>'
+    add :slave_dec,     '<minus>'
+
+    add :master_inc,    'H'
+    add :master_dec,    'L'
+
+    add :create,        'c'
+    add :focus_next,    'j', '<Right>'
+    add :focus_prev,    'k', '<Left>'
+    add :push_down,     'J', '<Down>'
+    add :push_up,       'K', '<Up>'
+    add :close,         'w'
+    add :push_top,      '<Return>'
+    add :push_bottom,   '<BackSpace>'
+
+    add :master_shrink, 'h'
+    add :master_grow,   'l'
+
+    add :peer,          'p'
+  end
+
+  minor_mode :control do
+    below :delete, :move
+    become :insert, 'i'
+
+    handler VER::Methods::Undo
+    add :undo, 'u'
+    add :redo, '<Control-r>'
+  end
+
+  minor_mode :insert do
+    become :control, '<Escape>'
+
+    handler Methods::Insert
+    add :string,    '<Key>'
+    add :space,     '<space>'
+    add :newline,   '<Return>'
+    add :selection, '<Shift-Insert>'
+    add :tab,       '<Control-v><Tab>'
+    add :literal,   '<Control-v><Key>'
+
+    handler Methods::Move
+    add :end_of_line,     '<End>', '<Control-e>'
+    add :next_char,       '<Right>', '<Control-f>'
+    add :next_word,       '<Shift-Right>', '<Alt-f>'
+    add :prev_char,       '<Left>', '<Control-b>'
+    add :prev_word,       '<Shift-Left>', '<Alt-b>'
+    add :start_of_line,   '<Home>', '<Control-a>'
+    add :transpose_chars, '<Control-t>'
+
+    handler Methods::Delete
+    add :delete_next_char, '<Delete>', '<Control-d>'
+    add :delete_prev_char, '<BackSpace>'
+    add :delete_prev_word, '<Control-w>'
+    add :kill_line, '<Control-k>'
+
+    handler VER::Methods::Undo
+    add :undo, '<Control-z>'
+    add :redo, '<Control-Z>'
+  end
+
+  minor_mode :delete do
+    handler Methods::Delete
+    add :change_motion, 'c<Key>'
+    add :change_line,   'cc'
+    add :kill_motion,   'd<Key>'
+    add :kill_line,     'dd'
+  end
+
+  minor_mode :move do
+    handler Methods::Move
+    add :prev_char,       'h', '<Left>'
+    add :prev_chunk,      'B'
+    add :prev_word,       'b', '<Shift-Left>'
+    add :start_of_line,   '<Key-0>', '<Home>'
+    add :end_of_file,     'G'
+    add :end_of_line,     '<dollar>', '<End>'
+    add :next_char,       'l', '<Right>'
+    add :next_chunk,      'W'
+    add :next_word,       'w', '<Shift-Right>'
+    add :go_line,         'gg'
+    add :matching_brace,  '<percent>'
+    add :next_line,       'j', '<Down>', '<Control-n>'
+    add :next_page,       '<Control-f>', '<Next>'
+    add :prev_page,       '<Control-b>', '<Prior>'
+    add :prev_line,       'k', '<Up>', '<Control-p>'
+    add :next_word_end,   'e'
+  end
+
+  major_mode :entry do
+  end
 end
 
-vim.in_mode :open do
-  no_arguments
-  handler VER::Methods::Open
+__END__
 
-  map :file_open_popup,     %w[Control-o]
-  map :file_open_fuzzy,     %w[Alt-o], %w[Control-m o]
-end
-
-vim.in_mode :save do
-  no_arguments
-  handler VER::Methods::Save
-
-  map :file_save,           %w[Control-s]
-  map :file_save_popup,     %w[Control-Alt-s]
-end
-
-vim.in_mode :preview do
-  no_arguments
-  handler VER::Methods::Preview
-
-  map :preview, %w[F5]
-end
-
-vim.in_mode :basic do
-  inherits :help, :preview, :save, :open
-  handler VER::Methods::Basic
-
-  mode :control,            %w[Escape], %w[Control-c]
-
-  map :quit,                %w[Control-q]
-  map :source_buffer,       %w[Control-R]
-  map :status_evaluate,     %w[Alt-x], %w[Control-m x]
-  map :tags_at,             %w[Control-g t]
-
-  map :open_terminal,       %w[F9]
-  map :open_console,        %w[Control-exclam] if defined?(::EM)
-
-  # to be deprecated
-  map :open_buffer_switch,  %w[Alt-b], %w[Control-m b]
-  map :open_grep_buffer,    %w[Alt-g], %w[Control-m g]
-  map :open_grep_buffers,   %w[Alt-G], %w[Control-m G]
-  map :open_grep_list,      %w[Control-Alt-g], %w[Control-m Control-g]
-  map :open_method_list,    %w[F10]
-  map :open_window_switch,  %w[Alt-B], %w[Control-m B]
-end
-
-vim.in_mode :views do
-  inherits :basic
-  no_arguments
-  handler VER::Methods::Views
-  # handler VER::Methods::Views
-
-  map :one,           %w[KeyPress-1]
-  map :two,           %w[KeyPress-2]
-
-  map :slave_inc,     %w[plus]
-  map :slave_dec,     %w[minus]
-
-  map :master_inc,    %w[H]
-  map :master_dec,    %w[L]
-
-  map :create,        %w[c]
-  map :focus_next,    %w[j], %w[Right]
-  map :focus_prev,    %w[k], %w[Left]
-  map :push_down,     %w[J], %w[Down]
-  map :push_up,       %w[K], %w[Up]
-  map :close,         %w[w]
-  map :push_top,      %w[Return]
-  map :push_bottom,   %w[BackSpace]
-
-  map :master_shrink, %w[h]
-  map :master_grow,   %w[l]
-
-  map :peer,          %w[p]
-end
-
-vim.in_mode :views_control do
+minor_mode :views_control do
   no_arguments
   handler VER::Methods::Views
   mode :views, %w[Control-w r]
@@ -96,7 +149,7 @@ vim.in_mode :views_control do
   map :cycle_prev, %w[Alt-Shift-Tab], %w[Alt-ISO_Left_Tab]
 end
 
-vim.in_mode :move do
+minor_mode :move do
   handler VER::Methods::Move
 
   map :prev_char,       %w[h], %w[Left]

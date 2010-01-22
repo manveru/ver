@@ -13,10 +13,10 @@ module VER::Methods
       # @param [#to_i] count
       #
       # @see delete
-      # @see VER::Move::virtual_movement
-      def delete_motion(text, motion, count = 1)
-        movement = Move.virtual(text, motion, count)
-        delete(text, *movement)
+      # @see VER::Move::virtual
+      def delete_motion(text, motion = nil)
+        range = Move.virtual(text, motion)
+        delete(text, *range)
       end
 
       # Given a +motion+, this method will execute a virtual movement with the
@@ -26,10 +26,26 @@ module VER::Methods
       # @param [#to_i] count
       #
       # @see kill
-      # @see VER::Move#virtual_movement
-      def kill_motion(text, motion, count = 1)
-        movement = Move.virtual(text, motion, count)
-        kill(text, *movement)
+      # @see VER::Move#virtual
+      def kill_motion(text, motion = nil) #, motion, count = 1)
+        range = Move.virtual(text, motion)
+        kill(text, *range)
+      end
+
+      def kill_prev_char(text, count = 1)
+        kill_motion(text, :prev_char)
+      end
+
+      def kill_next_char(text, count = 1)
+        kill_motion(text, :next_char)
+      end
+
+      def delete_prev_char(text, count = 1)
+        delete_motion(text, :prev_char)
+      end
+
+      def delete_next_char(text, count = 1)
+        delete_motion(text, :next_char)
       end
 
       # [word_right_end] goes to the last character, that is, the insert mark is

@@ -9,10 +9,6 @@ module VER::Methods
     GO_MATCHING_LEFT = GO_MATCHING_RIGHT.invert
 
     class << self
-      def call(widget, command, *arg)
-        send(*command, widget, *arg)
-      end
-
       def matching_brace(text, count = nil)
         opening = text.get(:insert)
 
@@ -109,13 +105,17 @@ module VER::Methods
         end
       end
 
-      def virtual(text, action, count = 1)
+      def virtual(text, motion = nil) #, action, count = 1)
         pos = text.index(:insert)
 
-        if action.respond_to?(:call)
-          action.call(text, count)
+        if motion
+          send(motion, text)
         else
-          send(action, text, count)
+          keysym = text.event.keysym
+          VER::MinorMode[:move].to_hash.each do |bind, sequences|
+            next unless sequences.include?(keysym)
+            break Tk::Event.generate(text, bind)
+          end
         end
 
         mark = text.index(:insert)
@@ -136,13 +136,11 @@ module VER::Methods
       def forward_scroll(text, count = 1)
         count_abs = count.abs
         text.yview_scroll(count_abs, :units)
-        next_line(text, count_abs)
       end
 
       def backward_scroll(text, count = 1)
         count_abs = count.abs
         text.yview_scroll(-count_abs, :units)
-        prev_line(text, count_abs)
       end
 
       def next_word(text, count = 1)

@@ -1,6 +1,8 @@
 module VER::Methods
   module Insert
     class << self
+      VALID = /[[:word:][:punct:]]+/
+
       def insert_file_contents(filename)
         content = read_file(filename)
         insert :insert, content
@@ -8,12 +10,33 @@ module VER::Methods
         VER.error(ex)
       end
 
-      def insert_selection(text)
+      def selection(text)
         text.insert(:insert, Tk::Selection.get)
       end
 
-      def insert_tab(text)
+      def tab(text)
         text.insert(:insert, "\t")
+      end
+
+      def newline(text)
+        text.insert(:insert, "\n")
+      end
+
+      def space(text)
+        text.insert(:insert, ' ')
+      end
+
+      # Most of the input will be in US-ASCII, but an encoding can be set per view for the input.
+      # For just about all purposes, UTF-8 should be what you want to input, and it's what Tk
+      # can handle best.
+      def string(text, record = text)
+        string = text.event.unicode.scan(VALID).join
+
+        if string.encoding == Encoding::ASCII_8BIT
+          string.force_encoding(text.encoding)
+        end
+
+        record.insert(:insert, string)
       end
 
       def insert_indented_newline_below(text)

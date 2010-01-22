@@ -70,7 +70,13 @@ module VER
       alias s syntax
 
       def mode(width = 0)
-        "%#{width}s" % text.keymap.mode
+        "%#{width}s" % text.modes.map{|mode|
+          if mode.major?
+            "{#{mode.name}}"
+          else
+            "(#{mode.name})"
+          end
+        }.join(', ')
       end
       alias m mode
 

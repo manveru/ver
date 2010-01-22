@@ -9,15 +9,15 @@ module VER::Methods
 
       def may_close(text)
         return yield if text.pristine?
-        return yield unless text.undo_pending?
+        # return yield unless text.undo_pending?
         return yield if text.persisted?
 
         question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
 
-        status_ask question, take: 1 do |answer|
+        text.status_ask question, take: 1 do |answer|
           case answer[0]
           when 'Y', 'y'
-            yield if file_save
+            yield if save(text)
             :saved
           when 'N', 'n'
             yield
@@ -32,11 +32,11 @@ module VER::Methods
         VER.exit
       end
 
-      def file_save(text, filename = text.filename)
+      def save(text, filename = text.filename)
         save_to(text, filename)
       end
 
-      def file_save_popup(text, options = {})
+      def save_popup(text, options = {})
         options = options.dup
         options[:filetypes] ||= [
           ['ALL Files',  '*'    ],

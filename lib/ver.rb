@@ -22,11 +22,9 @@ module VER
   autoload :Help,                'ver/help'
   autoload :Font,                'ver/font'
   autoload :HoverCompletion,     'ver/hover_completion'
-  autoload :Keymap,              'ver/keymap'
   autoload :TilingLayout,        'ver/layout/tiling'
   autoload :NotebookLayout,      'ver/layout/notebook'
   autoload :Methods,             'ver/methods'
-  autoload :Mode,                'ver/mode'
   autoload :Status,              'ver/status'
   autoload :Syntax,              'ver/syntax'
   autoload :Text,                'ver/text'
@@ -37,8 +35,10 @@ module VER
   autoload :ExceptionView,       'ver/exception_view'
   autoload :Bookmarks,           'ver/methods/bookmark'
   autoload :Undo,                'ver/undo'
-  autoload :Keymapped,           'ver/keymap/keymapped'
+  autoload :Keymapped,           'ver/keymapped'
 
+  require 'ver/minor_mode'
+  require 'ver/major_mode'
   require 'ver/options'
   @options = Options.new(:ver)
 
@@ -247,7 +247,8 @@ module VER
 
     setup_layout
 
-    @keymap = Keymap.load(options.keymap)
+    p "#{options.keymap}.rb"
+    load("keymap/#{options.keymap}.rb")
   end
 
   def setup_layout

@@ -226,6 +226,10 @@ Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:281
         SANITIZE_REGEXP[pattern] = replacement
       }
 
+      # found in Markdown.tmbundle
+      r['([ ]{4}|\t)(?!$)', '(?:[ ]{4}|\t)(?!$)']
+      r['([ ]{4}|\t)', '(?:[ ]{4}|\t)']
+
       # found in newLisp.tmbundle
       r['(?<!(?:\{|\"|]))(?:[\s\n]*)?(;+.*?)$', '(?<!(?:\{|"|\]))(?:\s*)(;+.*)$']
 
