@@ -89,7 +89,7 @@ module VER::Methods
 
         words = word_completions(text, from, to)
 
-        complete{ [from, to, words] }
+        complete(text){ [from, to, words] }
       end
 
       def contextual_completions(text, from, to)
@@ -163,8 +163,9 @@ module VER::Methods
         prefix = Regexp.escape(prefix)
 
         found = text.search_all(/(^|\W)(#{prefix}[\w-]*)/).
-          sort_by{|match, mf, mt| [Text::Index.new(text, mf).delta(from), match] }.
-          map{|match, *_| match.strip[/[\w-]+/] }.uniq
+          sort_by{|match, mf, mt|
+            [VER::Text::Index.new(text, mf).delta(from), match]
+          }.map{|match, *_| match.strip[/[\w-]+/] }.uniq
         found.delete prefix
         found
       end
