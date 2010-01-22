@@ -9,7 +9,6 @@ module VER::Methods
 
       def may_close(text)
         return yield if text.pristine?
-        return yield unless text.undo_pending?
         return yield if text.persisted?
 
         question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
