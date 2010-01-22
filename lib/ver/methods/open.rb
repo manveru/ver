@@ -50,7 +50,7 @@ module VER::Methods
         base = [head[(head_index + 1)..-1], tail[0...tail_index]].join
 
         syntax_name = text.syntax.name if @syntax
-        exts = Syntax::Detector::EXTS_LIST.fetch(syntax_name, [])
+        exts = VER::Syntax::Detector::EXTS_LIST.fetch(syntax_name, [])
 
         found = catch(:found){
           paths.map{|path|
@@ -267,7 +267,7 @@ module VER::Methods
       end
 
       def set_filetype(type)
-        syntax = Syntax.from_filename(Pathname("foo.#{type}"))
+        syntax = VER::Syntax.from_filename(Pathname("foo.#{type}"))
 
         if text.load_syntax(syntax)
           text.options.filetype = type
