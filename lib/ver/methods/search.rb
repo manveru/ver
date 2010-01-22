@@ -101,7 +101,7 @@ module VER::Methods
         return if word.squeeze == ' ' # we don't want to match space
         text.tag_all_matching(TAG, word, HIGHLIGHT)
         text.tag_lower(TAG)
-        search_prev
+        search_prev(text)
       end
 
       def search_char_right(text, count = 1)
