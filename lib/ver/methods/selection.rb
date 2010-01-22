@@ -344,7 +344,7 @@ module VER::Methods
 
         Open3.popen3(*cmd) do |si, sose, thread|
           queue = []
-          tet.tag_ranges(:sel).each do |from, to|
+          text.tag_ranges(:sel).each do |from, to|
             si.write(text.get(from, to))
             queue << from << to
           end
