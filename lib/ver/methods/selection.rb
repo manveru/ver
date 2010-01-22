@@ -203,7 +203,7 @@ module VER::Methods
         regex = /#{Regexp.escape(comment)}/
 
         Undo.record text do |record|
-          each_ine text do |y, fx, tx|
+          each_line text do |y, fx, tx|
             from, to = "#{y}.#{fx}", "#{y}.#{tx}"
             line = text.get(from, to)
 
