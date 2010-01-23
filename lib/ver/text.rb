@@ -48,7 +48,6 @@ module VER
 
     def inspect
       details = {
-        keymap: keymap,
         mode: mode
       }.map{|key, value| "%s=%p" % [key, value ] }.join(' ')
       "#<VER::Text #{details}>"
@@ -69,8 +68,7 @@ module VER
 
       @undoer = VER::Undo::Tree.new(self)
 
-      self.keymap = VER.keymap.use(widget: self)
-      @default_mode = keymap.mode
+      self.major_mode = :Fundamental
 
       apply_mode_style
       setup_tags

@@ -1,26 +1,19 @@
 module VER
   module Keymapped
-    attr_accessor :keymap
+    attr_reader :major_mode
 
-    def mode
-      keymap.mode if keymap
-    end
-
-    def mode=(new_mode)
-      return unless keymap
-      old_mode = keymap.mode
+    def major_mode=(new_mode)
+      old_mode = self.major_mode
+      new_mode = WidgetMajorMode.new(self, new_mode)
 
       return if old_mode == new_mode
 
-      Tk::Event.generate(self, "<<LeaveMode>>", data: new_mode)
-      Tk::Event.generate(self, "<<LeaveMode#{mode_as_camel_case}>>", data: new_mode)
-      keymap.mode = new_mode
-      Tk::Event.generate(self, "<<EnterMode#{mode_as_camel_case}>>", data: old_mode)
-      Tk::Event.generate(self, "<<EnterMode>>", data: old_mode)
+      new_mode.replaces old_mode do
+        @major_mode = new_mode
+      end
     end
 
     def mode_as_camel_case
-      Mode.camel_case(mode)
     end
   end
 end

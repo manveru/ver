@@ -32,6 +32,9 @@ module VER
       end
     end
   end
+end
+
+__END__
 
   if vim = Keymap[:vim]
     vim.in_mode :git do

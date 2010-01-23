@@ -1,3 +1,27 @@
+emacs = VER::Keymap.define(name: :emacs, major: :fundamental)
+
+emacs.major :fundamental do
+  handler VER::Methods::Basic
+  map :quit, %w[Control-x Control-c]
+
+  handler VER::Methods::Help
+  map :describe_key, %w[Control-h k]
+
+  handler VER::Methods::Move
+  map :next_char, %w[Control-f], %w[Right]
+  map :next_line, %w[Control-n], %w[Down]
+  map :next_page, %w[Control-v], %w[Next]
+  map :next_word, %w[Alt-f]
+  map :prev_char, %w[Control-b], %w[Left]
+  map :prev_line, %w[Control-p], %w[Up]
+  map :prev_page, %w[Alt-v],     %w[Prior]
+  map :prev_word, %w[Alt-b]
+
+  handler VER::Methods::Insert
+  missing :string
+end
+
+__END__
 emacs = VER::Keymap.new(name: :emacs, mode: :basic)
 
 emacs.add_mode :quirks do |mode|

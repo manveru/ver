@@ -79,7 +79,7 @@ module VER
 
     def map(sym, *keychains)
       keychains.each do |keychain|
-        bind(keychain.flatten, sym)
+        bind([*keychain].flatten, sym)
       end
     end
     alias key map
@@ -103,7 +103,6 @@ module VER
     end
 
     def bind(keychain, action_name = nil, &block)
-      keychain = keychain.dup
       total = hash = {}
 
       while key = keychain.shift

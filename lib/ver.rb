@@ -17,27 +17,32 @@ require 'pathname'
 autoload :SizedArray, 'ver/vendor/sized_array'
 
 module VER
+  autoload :Bookmarks,           'ver/methods/bookmark'
   autoload :Entry,               'ver/entry'
+  autoload :ExceptionView,       'ver/exception_view'
   autoload :Executor,            'ver/executor'
-  autoload :Help,                'ver/help'
   autoload :Font,                'ver/font'
+  autoload :Help,                'ver/help'
   autoload :HoverCompletion,     'ver/hover_completion'
-  autoload :Keymap,              'ver/keymap'
-  autoload :TilingLayout,        'ver/layout/tiling'
-  autoload :NotebookLayout,      'ver/layout/notebook'
+  autoload :Levenshtein,         'ver/vendor/levenshtein'
   autoload :Methods,             'ver/methods'
-  autoload :Mode,                'ver/mode'
+  autoload :NotebookLayout,      'ver/layout/notebook'
   autoload :Status,              'ver/status'
   autoload :Syntax,              'ver/syntax'
   autoload :Text,                'ver/text'
   autoload :Textpow,             'ver/vendor/textpow'
-  autoload :Levenshtein,         'ver/vendor/levenshtein'
   autoload :Theme,               'ver/theme'
-  autoload :View,                'ver/view'
-  autoload :ExceptionView,       'ver/exception_view'
-  autoload :Bookmarks,           'ver/methods/bookmark'
+  autoload :TilingLayout,        'ver/layout/tiling'
   autoload :Undo,                'ver/undo'
-  autoload :Keymapped,           'ver/keymap/keymapped'
+  autoload :View,                'ver/view'
+
+  autoload :Keymap,     'ver/keymap'
+  autoload :Keymapped,  'ver/keymap/keymapped'
+  autoload :CommonMode, 'ver/common_mode'
+  autoload :Action,     'ver/action'
+
+  require 'ver/major_mode'
+  require 'ver/minor_mode'
 
   require 'ver/options'
   @options = Options.new(:ver)
@@ -247,7 +252,7 @@ module VER
 
     setup_layout
 
-    @keymap = Keymap.load(options.keymap)
+    load("keymap/#{options.keymap}.rb")
   end
 
   def setup_layout

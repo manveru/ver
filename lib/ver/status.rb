@@ -14,7 +14,7 @@ module VER
       self.view = view
       @question = ''
 
-      self.keymap = VER.keymap.use(widget: self, mode: :status_query)
+      self.major_mode = :Status
     end
 
     def inspect
