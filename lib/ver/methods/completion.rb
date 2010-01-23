@@ -41,7 +41,7 @@ module VER::Methods
         word = text.get(from, to)
 
         complete text do
-          [from, to, aspell_completions(word)]
+          [from, to, aspell_completions(text, word)]
         end
       end
 
