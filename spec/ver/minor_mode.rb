@@ -2,7 +2,6 @@ require 'bacon'
 Bacon.summary_on_exit
 
 require_relative '../../lib/ver/keymap'
-require_relative '../../lib/ver/common_mode'
 require_relative '../../lib/ver/minor_mode'
 require_relative '../../lib/ver/action'
 
@@ -16,10 +15,9 @@ describe MinorMode = VER::MinorMode do
     mode.name.should == :spec
   end
 
-  it 'has no parents or children at first' do
+  it 'has no parents at first' do
     mode = MinorMode[:spec]
     mode.parents.should.be.empty
-    mode.children.should.be.empty
   end
 
   it 'can depend on another minor mode' do
@@ -28,7 +26,6 @@ describe MinorMode = VER::MinorMode do
     control.inherits(:movement)
 
     control.parents.should == [movement]
-    movement.children.should == [control]
   end
 
   it 'looks up key-sequences in the inheritance chain' do
@@ -54,7 +51,7 @@ describe MinorMode = VER::MinorMode do
   it 'may have a fallback that is returned on IMPOSSIBLE results' do
     mode = MinorMode[:spec]
     mode.map(:kill_word, ['d', 'w'])
-    mode.fallback(:insert)
+    mode.missing(:insert)
     mode.resolve(['d', 'w']).should == VER::Action.new(nil, :kill_word)
     mode.resolve(['y']).should == VER::Action.new(nil, :insert)
   end

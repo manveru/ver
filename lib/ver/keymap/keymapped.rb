@@ -13,7 +13,9 @@ module VER
       end
     end
 
-    def mode_as_camel_case
+    def minor_mode(widget, old, new)
+      major_mode.forget(old)
+      major_mode.use(new)
     end
   end
 end

@@ -27,10 +27,8 @@ module VER
 
   minor_mode :basic do
     inherits :help, :preview, :save, :open
+
     handler VER::Methods::Basic
-
-    become :control,          %w[Escape], %w[Control-c]
-
     map :quit,                %w[Control-q]
     map :source_buffer,       %w[Control-R]
     map :status_evaluate,     %w[Alt-x], %w[Control-m x]
@@ -78,9 +76,9 @@ module VER
   end
 
   minor_mode :views_control do
-    handler VER::Methods::Views
     become :views, %w[Control-w r]
 
+    handler VER::Methods::Views
     map :change,     ['Control-w', :views]
     map :focus_next, %w[Control-Tab]
     map :focus_prev, %w[Control-Shift-Tab], %w[Control-ISO_Left_Tab]
@@ -184,7 +182,6 @@ module VER
   minor_mode :control do
     inherits :basic, :move, :delete, :undo, :views_control, :search, :ctags,
              :bookmark, :clipboard
-    handler VER::Methods::Control
 
     become :select_block,   %w[Control-v]
     become :select_char,    %w[v]
@@ -192,6 +189,7 @@ module VER
     become :insert,         %w[i]
     become :replace,        %w[R]
 
+    handler VER::Methods::Control
     map :chdir,                             %w[g c]
 
     map :cursor_vertical_bottom,            %w[z b]
@@ -205,9 +203,6 @@ module VER
     map [:insert_at, :next_char],           %w[a]
 
     map :indent_line,                       %w[greater]
-
-    map :insert_indented_newline_above,     %w[O]
-    map :insert_indented_newline_below,     %w[o]
 
     map :join_lines,                        %w[J]
 
@@ -226,6 +221,10 @@ module VER
 
     map :unindent_line,                     %w[less]
     map :wrap_line,                         %w[g w]
+
+    handler VER::Methods::Insert
+    map :indented_newline_above,     %w[O]
+    map :indented_newline_below,     %w[o]
   end
 
   minor_mode :readline do
@@ -255,12 +254,10 @@ module VER
 
   minor_mode :insert do
     inherits :basic, :views_control, :complete
+    become :control, %w[Escape], %w[Control-c]
 
-    handler VER::Methods::Insert
-    map :insert_indented_newline,  %w[Return]
-    map :insert_selection,           %w[Shift-Insert]
-    map :insert_tab,                 %w[Control-v Tab]
-    missing :insert_string
+    handler VER::Methods::AutoFill
+    map :auto_fill_space,          %w[space]
 
     handler VER::Methods::Delete
     map [:kill_motion, :next_char],  %w[Delete], %w[Control-d]
@@ -282,8 +279,12 @@ module VER
     handler VER::Methods::Control
     map :smart_evaluate,           %w[Alt-e], %w[Control-e]
 
-    handler VER::Methods::AutoFill
-    map :auto_fill_space,          %w[space]
+
+    handler VER::Methods::Insert
+    map :indented_newline,  %w[Return]
+    map :selection,         %w[Shift-Insert]
+    map :tab,               %w[Control-v Tab], %w[Control-i]
+    missing :string
   end
 
   minor_mode :replace do
@@ -295,13 +296,13 @@ module VER
 
   minor_mode :select do
     inherits :basic, :move, :search
-    handler VER::Methods::Selection
 
     become :select_block,  %w[Control-v]
     become :select_char,   %w[v]
     become :select_line,   %w[V]
     become :control,       %w[Escape], %w[Control-c]
 
+    handler VER::Methods::Selection
     map :comment,         %w[comma c]
     map :copy,            %w[y], %w[Y]
     map :indent,          %w[greater]
@@ -414,6 +415,6 @@ module VER
   end
 
   major_mode :Fundamental do
-    use :control, :move
+    use :control
   end
 end

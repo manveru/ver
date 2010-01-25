@@ -1,6 +1,3 @@
-require_relative 'common_mode'
-require_relative 'action'
-
 module VER
   def self.major_mode(name, &block)
     major = MajorMode[name]
@@ -20,7 +17,6 @@ module VER
   # other widgets using the same major mode.
   class MajorMode < Struct.new(:name, :minors, :keymap, :receiver,
                                :fallback_action, :tag, :bound_keys)
-    include CommonMode
 
     MODES = {}
     INCOMPLETE = Keymap::INCOMPLETE
@@ -69,6 +65,12 @@ module VER
       synchronize
     end
 
+    def missing(invocation, &block)
+      action = Action.new(receiver, *invocation, &block)
+      self.fallback_action = action
+      keymap['<Key>'] = action
+    end
+
     def inherits(name)
       mode = self.class[name]
       keymap.merge!(mode.keymap)
@@ -80,14 +82,12 @@ module VER
         minor.synchronize(self)
         self.minors << minor
       end
+
       self.minors.uniq!
     end
 
     def forget(*minors)
-      minors.each do |name|
-        minor = MinorMode[name]
-        self.minors.delete(minor)
-      end
+      self.minors -= minors.map{|name| MinorMode[name] }
     end
 
     # recursively try to find the sequence in the major mode and its minor
@@ -96,7 +96,10 @@ module VER
       case found = keymap[sequence]
       when INCOMPLETE
       when IMPOSSIBLE
-        minors.find{|minor| found = minor.resolve(sequence) }
+        minors.find{|minor|
+          found = minor.resolve(sequence)
+          found != INCOMPLETE && found != IMPOSSIBLE
+        }
       end
 
       if found == IMPOSSIBLE && fa = self.fallback_action
@@ -109,8 +112,8 @@ module VER
     def synchronize
       (keymap.keys - bound_keys).each do |key|
         bind_key(key)
-        bound_keys << key
       end
+
       minors.each do |minor|
         minor.synchronize(self)
       end
@@ -121,6 +124,7 @@ module VER
         event.widget.major_mode.on_event(event)
         Tk.callback_break
       end
+      bound_keys << key
     end
 
     def to_sym
@@ -136,16 +140,17 @@ module VER
     attr_reader :widget, :event
 
     def initialize(widget, event)
-      @widget, @event = widget, @event
+      @widget, @event = widget, event
     end
 
     def method_missing(method, *args)
+      ::Kernel.p([method, args])
       result = @widget.send(method, *args)
 
       if method =~ /=/
         ::VER::WidgetEvent.class_eval(<<-RUBY, __FILE__, __LINE__)
           def #{method}(arg)
-            @widget.#{method} = arg
+            @widget.#{method} arg
           end
         RUBY
       else
@@ -158,6 +163,7 @@ module VER
 
       result
     end
+    alias send method_missing
   end
 
   class WidgetMajorMode < Struct.new(:widget, :major, :minors, :history, :stack)
@@ -171,7 +177,8 @@ module VER
       self.history = SizedArray.new(100)
       self.stack = []
 
-      establish
+      establish_tag
+      minors.each{|minor| minor.synchronize(self.major) }
     end
 
     def use(*minors)
@@ -180,14 +187,12 @@ module VER
         minor.synchronize(major)
         self.minors << minor
       end
+
       self.minors.uniq!
     end
 
     def forget(*minors)
-      minors.each do |name|
-        minor = MinorMode[name]
-        self.minors.delete(minor)
-      end
+      self.minors -= minors.map{|name| MinorMode[name] }
     end
 
     def on_event(event)
@@ -232,9 +237,17 @@ module VER
       major.name.to_s.split('_').map{|e| e.capitalize}.join
     end
 
-    private
+    def inspect
+      out = ['#<Ver::WidgetMajorMode']
+      { major: major.name,
+        minors: minors.map{|m| m.name },
+        history: history.map{|h| h.keysym },
+        stack: stack.map{|s| s.keysym },
+      }.each{|k,v| out << "#{k}=#{v.inspect}" }
+      out.join(' ') << '>'
+    end
 
-    def establish
+    def establish_tag
       tags = widget.bindtags
       specific = tags[0, 1]
       general = tags[-3..-1]

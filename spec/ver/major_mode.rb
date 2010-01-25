@@ -4,7 +4,6 @@ Bacon.summary_on_exit
 require 'ffi-tk'
 
 require_relative '../../lib/ver/keymap'
-require_relative '../../lib/ver/common_mode'
 require_relative '../../lib/ver/major_mode'
 require_relative '../../lib/ver/minor_mode'
 require_relative '../../lib/ver/action'
@@ -73,7 +72,7 @@ describe MajorMode do
   it 'may have a fallback that is invoked on IMPOSSIBLE results' do
     mode = MajorMode[:spec]
     mode.map(:kill_word, ['d', 'w'])
-    mode.fallback(:insert)
+    mode.missing(:insert)
     mode.resolve(['d', 'w']).should == Action.new(nil, :kill_word)
     mode.resolve(['f', 'o', 'o']).should == Action.new(nil, :insert)
   end

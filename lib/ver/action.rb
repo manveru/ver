@@ -7,15 +7,13 @@ module VER
       self.block = block
     end
 
-    def call(*args)
-      if receiver
-        receiver.__send__(method, *args)
-      else
-        block.__send__(method, *args)
-      end
+    def call(widget, *given_args)
+      receiver = self.receiver || widget
+      # puts "%p.send(%p, %p, *%p, *%p)" % [receiver, method, widget, args, given_args]
+      receiver.send(method, widget, *args, *given_args)
     end
 
-    def merge(action)
+    def combine(action)
       new_args = [*args, action].compact
       self.class.new(receiver, method, new_args, &block)
     end

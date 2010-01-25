@@ -1,22 +1,22 @@
 module VER::Methods
   module Insert
     class << self
-      def insert_file_contents(filename)
+      def file_contents(filename)
         content = read_file(filename)
         insert :insert, content
       rescue Errno::ENOENT => ex
         VER.error(ex)
       end
 
-      def insert_selection(text)
+      def selection(text)
         text.insert(:insert, Tk::Selection.get)
       end
 
-      def insert_tab(text)
+      def tab(text)
         text.insert(:insert, "\t")
       end
 
-      def insert_indented_newline_below(text)
+      def indented_newline_below(text)
         Undo.record text do |record|
           if text.options.autoindent
             line = text.get('insert linestart', 'insert lineend')
@@ -34,11 +34,11 @@ module VER::Methods
         end
       end
 
-      def insert_indented_newline_above(text)
+      def indented_newline_above(text)
         Undo.record text do |record|
           if text.index(:insert).y > 1
             Move.prev_line(text)
-            insert_indented_newline_below(text)
+            indented_newline_below(text)
           else
             record.insert('insert linestart', "\n")
             text.mark_set(:insert, 'insert - 1 line')
@@ -48,15 +48,15 @@ module VER::Methods
         end
       end
 
-      def insert_indented_newline(text)
+      def indented_newline(text)
         if text.options.autoindent
-          fallback_insert_indented_newline(text)
+          fallback_indented_newline(text)
         else
           text.insert(:insert, "\n")
         end
       end
 
-      def fallback_insert_indented_newline(text)
+      def fallback_indented_newline(text)
         Undo.record text do |record|
           line1 = text.get('insert linestart', 'insert lineend')
           indentation1 = line1[/^\s+/] || ''
@@ -78,7 +78,23 @@ module VER::Methods
       # Most of the input will be in US-ASCII, but an encoding can be set per view for the input.
       # For just about all purposes, UTF-8 should be what you want to input, and it's what Tk
       # can handle best.
-      def insert_string(text, string, record = text)
+      def string(text)
+        p string: text
+        common_string(text, text.event.unicode)
+      end
+
+      def replace_string(text, string)
+        return if string.empty?
+
+        Undo.record text do |record|
+          record.delete(:insert, 'insert + 1 chars')
+          common_string(string, record)
+        end
+      end
+
+      private
+
+      def common_string(text, string, record = text)
         return if string.empty?
 
         if !string.frozen? && string.encoding == Encoding::ASCII_8BIT
@@ -91,15 +107,6 @@ module VER::Methods
 
         # puts "Insert %p in mode %p" % [string, keymap.mode]
         record.insert(:insert, string)
-      end
-
-      def replace_string(text, string)
-        return if string.empty?
-
-        Undo.record text do |record|
-          record.delete(:insert, 'insert + 1 chars')
-          insert_string(string, record)
-        end
       end
     end
   end

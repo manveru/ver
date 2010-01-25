@@ -4,10 +4,10 @@ Bacon.summary_on_exit
 require 'ffi-tk'
 
 require_relative '../../lib/ver/keymap'
-require_relative '../../lib/ver/common_mode'
 require_relative '../../lib/ver/major_mode'
 require_relative '../../lib/ver/minor_mode'
 require_relative '../../lib/ver/action'
+require_relative '../../lib/ver/vendor/sized_array'
 
 MajorMode = VER::MajorMode
 MinorMode = VER::MinorMode

@@ -53,7 +53,9 @@ module VER
       while key = sequence.shift
         previous = current
 
-        if current.key?(key)
+        if current.respond_to?(:call)
+          return current
+        elsif current.key?(key)
           current = current[key]
         else
           found = nil
@@ -62,7 +64,7 @@ module VER
 
             resolved = MinorMode[ckey].resolve([key, *sequence])
             unless resolved == INCOMPLETE || resolved == IMPOSSIBLE
-              found = cvalue.merge(resolved)
+              found = cvalue.combine(resolved)
             end
           end
 
@@ -100,4 +102,105 @@ module VER
       end
     end
   end
+
+  # Tk keysyms
+  KEYSYMS = {
+    " "  => "<space>",
+    "!"  => "<exclam>",
+    "#"  => "<numbersign>",
+    "$"  => "<dollar>",
+    "%"  => "<percent>",
+    "&"  => "<ampersand>",
+    "'"  => "<quoteright>",
+    "("  => "<parenleft>",
+    ")"  => "<parenright>",
+    "*"  => "<asterisk>",
+    "+"  => "<plus>",
+    ","  => "<comma>",
+    "-"  => "<minus>",
+    "."  => "<period>",
+    "/"  => "<slash>",
+    ":"  => "<colon>",
+    ";"  => "<semicolon>",
+    "<"  => "<less>",
+    "="  => "<equal>",
+    ">"  => "<greater>",
+    "?"  => "<question>",
+    "@"  => "<at>",
+    "["  => "<bracketleft>",
+    "\\" => "<backslash>",
+    "]"  => "<bracketright>",
+    "^"  => "<asciicircum>",
+    "_"  => "<underscore>",
+    "`"  => "<quoteleft>",
+    "{"  => "<braceleft>",
+    "|"  => "<bar>",
+    "}"  => "<braceright>",
+    "~"  => "<asciitilde>",
+    '"'  => "<quotedbl>",
+    '0' => '0',
+    '1' => '1',
+    '2' => '2',
+    '3' => '3',
+    '4' => '4',
+    '5' => '5',
+    '6' => '6',
+    '7' => '7',
+    '8' => '8',
+    '9' => '9',
+    'A' => 'A',
+    'B' => 'B',
+    'C' => 'C',
+    'D' => 'D',
+    'E' => 'E',
+    'F' => 'F',
+    'G' => 'G',
+    'H' => 'H',
+    'I' => 'I',
+    'J' => 'J',
+    'K' => 'K',
+    'L' => 'L',
+    'M' => 'M',
+    'N' => 'N',
+    'O' => 'O',
+    'P' => 'P',
+    'Q' => 'Q',
+    'R' => 'R',
+    'S' => 'S',
+    'T' => 'T',
+    'U' => 'U',
+    'V' => 'V',
+    'W' => 'W',
+    'X' => 'X',
+    'Y' => 'Y',
+    'Z' => 'Z',
+    'a' => 'a',
+    'b' => 'b',
+    'c' => 'c',
+    'd' => 'd',
+    'e' => 'e',
+    'f' => 'f',
+    'g' => 'g',
+    'h' => 'h',
+    'i' => 'i',
+    'j' => 'j',
+    'k' => 'k',
+    'l' => 'l',
+    'm' => 'm',
+    'n' => 'n',
+    'o' => 'o',
+    'p' => 'p',
+    'q' => 'q',
+    'r' => 'r',
+    's' => 's',
+    't' => 't',
+    'u' => 'u',
+    'v' => 'v',
+    'w' => 'w',
+    'x' => 'x',
+    'y' => 'y',
+    'z' => 'z',
+  }
+
+  SYMKEYS = KEYSYMS.invert
 end

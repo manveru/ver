@@ -6,8 +6,8 @@ class Dummy < BasicObject
     @store = []
   end
 
-  def method_missing(method, *args, &block)
-    @store << [method, args, block]
+  def method_missing(method, *args)
+    @store << [method, args]
   end
 
   def __store__
@@ -28,8 +28,12 @@ describe 'Action' do
     dummy = Dummy.new
     action = Action.new(dummy)
     action.receiver.should == dummy
-    action.call
-    dummy.__store__[2].should == [:call, [], nil]
+    action.call(:widget, 1)
+    dummy.__store__.should == [
+      [:should, []],
+      [:respond_to?, [:to_ary]],
+      [:send, [:call, :widget, 1]]
+    ]
   end
 
   it 'can have a callback block' do
