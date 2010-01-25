@@ -78,7 +78,7 @@ module VER::Methods
         from = text.index('insert linestart')
         to = "#{from.y + count}.#{from.x} lineend"
         kill(text, from, text.index(to))
-        text.mode = :insert
+        text.minor_mode(:control, :insert)
       end
 
       # Tag and delete all trailing whitespace in the current buffer.

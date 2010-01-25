@@ -7,7 +7,7 @@ module VER
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
 
     attr_accessor(:view, :status, :project_root, :project_repo, :encoding,
-                  :undoer, :pristine, :syntax)
+                  :undoer, :pristine, :syntax, :prefix_arg)
     attr_reader :filename, :options, :snippets, :preferences, :store_hash
 
     def initialize(view, options = {})
@@ -24,6 +24,35 @@ module VER
       end
 
       widget_setup(view)
+    end
+
+    # This is a noop, it simply provides a target with a sane name.
+    def update_prefix_arg(widget)
+      numbers = []
+
+      major_mode.history.reverse_each do |event|
+        break unless event.sequence =~ /^(\d+)$/
+        numbers << $1
+      end
+
+      if numbers.any? && numbers != ['0']
+        self.prefix_arg = numbers.reverse.join.to_i
+      else
+        self.prefix_arg = nil
+      end
+    end
+
+    # Same as [prefix_arg], but returns 1 if there is no argument.
+    # Useful for [Move] methods and the like.
+    # Please note that calling this method is destructive.
+    # It will reset the state of the prefix_arg in order to avoid persistent
+    # arguments.
+    # So use it only once while your action is running, and store the result in a
+    # variable if you need it more than once.
+    def prefix_count
+      count = prefix_arg || 1
+      update_prefix_arg(self)
+      count
     end
 
     def persisted?
@@ -83,7 +112,7 @@ module VER
     def event_setup
       bind '<<EnterMode>>' do |event|
         status_projection(status)
-        apply_mode_style(mode)
+        # apply_mode_style(mode)
       end
 
       bind '<<Modified>>' do |event|
@@ -132,7 +161,7 @@ module VER
     end
 
     def noop(*args)
-      message "Noop %p in mode %p" % [args, keymap.mode]
+      # message "Noop %p in mode %p" % [args, keymap.mode]
     end
 
     def short_filename

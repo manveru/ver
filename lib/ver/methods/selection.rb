@@ -2,6 +2,7 @@ module VER::Methods
   module Selection
     class << self
       def enter(event)
+        p enter: event
         text = event.widget
         old_mode = event.detail
 
@@ -15,6 +16,7 @@ module VER::Methods
       end
 
       def leave(event)
+        p leave: event
         text = event.widget
         new_mode = event.detail
 

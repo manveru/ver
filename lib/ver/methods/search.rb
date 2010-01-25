@@ -105,6 +105,7 @@ module VER::Methods
       end
 
       def search_char_right(text, count = 1)
+        return
         VER.message 'Press the character to find to the right'
 
         text.keymap.gets 1 do |char|
@@ -126,7 +127,8 @@ module VER::Methods
         end
       end
 
-      def search_char_left(tet, count = 1)
+      def search_char_left(text, count = 1)
+        return
         VER.message 'Press the character to find to the left'
 
         text.keymap.gets 1 do |char|

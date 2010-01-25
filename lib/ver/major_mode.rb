@@ -61,14 +61,26 @@ module VER
       sequences.each do |sequence|
         keymap[sequence] = action
       end
-
-      synchronize
     end
 
     def missing(invocation, &block)
       action = Action.new(receiver, *invocation, &block)
       self.fallback_action = action
       keymap['<Key>'] = action
+    end
+
+    def enter(invocation, &block)
+      action = Action.new(receiver, *invocation, &block)
+      tag.bind "<<EnterMajorMode#{to_camel_case}>>" do |event|
+        action.call(WidgetEvent.new(event.widget, event))
+      end
+    end
+
+    def leave(invocation, &block)
+      action = Action.new(receiver, *invocation, &block)
+      tag.bind "<<LeaveMajorMode#{to_camel_case}>>" do |event|
+        action.call(WidgetEvent.new(event.widget, event))
+      end
     end
 
     def inherits(name)
@@ -79,7 +91,6 @@ module VER
     def use(*minors)
       minors.each do |name|
         minor = MinorMode[name]
-        minor.synchronize(self)
         self.minors << minor
       end
 
@@ -111,17 +122,7 @@ module VER
 
     def replace_minor(old, new)
       minors.each do |minor|
-        minor.replace_parent(MinorMode[old], MinorMode[new])
-      end
-    end
-
-    def synchronize
-      (keymap.keys - bound_keys).each do |key|
-        bind_key(key)
-      end
-
-      minors.each do |minor|
-        minor.synchronize(self)
+        minor.replace_parent(self, MinorMode[old], MinorMode[new])
       end
     end
 
@@ -179,18 +180,30 @@ module VER
     def initialize(widget, major)
       self.widget = widget
       self.major = MajorMode[major]
-      self.minors = self.major.minors.dup
       self.history = SizedArray.new(100)
       self.stack = []
+      self.minors = []
 
       establish_tag
-      minors.each{|minor| minor.synchronize(self.major) }
+      use(*self.major.minors)
+    end
+
+    def bound_keys
+      major.bound_keys
+    end
+
+    def bind(sequence, &block)
+      widget.bind(sequence, &block)
+    end
+
+    def bind_key(key)
+      major.bind_key(key)
     end
 
     def use(*minors)
       minors.each do |name|
         minor = MinorMode[name]
-        minor.synchronize(major)
+        minor.synchronize(self)
         self.minors << minor
       end
 
@@ -202,6 +215,7 @@ module VER
     end
 
     def on_event(event)
+      p event
       stack << event.sequence
       history << event
 
@@ -233,22 +247,48 @@ module VER
 
     def replaced_by(other)
       Tk::Event.generate(widget, "<<LeaveMode>>", data: name)
-      Tk::Event.generate(widget, "<<LeaveMode#{to_camel_case}>>", data: name)
+      Tk::Event.generate(widget, "<<LeaveMajorMode>>", data: name)
+      Tk::Event.generate(widget, "<<LeaveMajorMode#{to_camel_case}>>", data: name)
     end
 
     def replacing(other)
-      Tk::Event.generate(widget, "<<EnterMode#{to_camel_case}>>", data: name)
+      Tk::Event.generate(widget, "<<EnterMajorMode#{to_camel_case}>>", data: name)
+      Tk::Event.generate(widget, "<<EnterMajorMode>>", data: name)
       Tk::Event.generate(widget, "<<EnterMode>>", data: name)
     end
 
     def replace_minor(old, new)
+      old, new = MinorMode[old], MinorMode[new]
+
+      minors.dup.each do |minor|
+        if minor == old
+          new.replaces self, old do
+            minors[minors.index(old)] = new
+          end
+        else
+          minor.replace_parent(self, old, new)
+        end
+      end
+
+      synchronize
+    end
+
+    def synchronize
+      (major.keymap.keys - major.bound_keys).each do |key|
+        major.bind_key(key)
+      end
+
       minors.each do |minor|
-        minor.replace_parent(MinorMode[old], MinorMode[new])
+        minor.synchronize(self)
       end
     end
 
     def name
       major.name
+    end
+
+    def to_tcl
+      widget.tk_pathname
     end
 
     def to_camel_case

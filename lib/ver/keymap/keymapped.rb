@@ -13,7 +13,7 @@ module VER
       end
     end
 
-    def minor_mode(widget, old, new)
+    def minor_mode(*args, old, new)
       major_mode.replace_minor(old, new)
     end
   end

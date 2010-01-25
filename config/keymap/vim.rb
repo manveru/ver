@@ -87,12 +87,14 @@ module VER
   end
 
   minor_mode :move do
-    handler VER::Methods::Move
+    inherits :prefix
 
+    handler VER::Methods::Move
     map :prev_char,       %w[h], %w[Left]
     map :prev_chunk,      %w[B]
     map :prev_word,       %w[b], %w[Shift-Left]
-    map :start_of_line,   %w[0], %w[Home]
+    map :start_of_line,   %w[Home]
+    map :prefix_arg_sol,  %w[0]
     map :end_of_file,     %w[G]
     map :end_of_line,     %w[dollar], %w[End]
     map :next_char,       %w[l], %w[Right]
@@ -105,6 +107,10 @@ module VER
     map :prev_page,       %w[Control-b], %w[Prior]
     map :prev_line,       %w[k], %w[Up], %w[Control-p]
     map :next_word_end,   %w[e]
+  end
+
+  minor_mode :prefix do
+    map(:update_prefix_arg, *('0'..'9'))
   end
 
   minor_mode :search do
@@ -323,20 +329,23 @@ module VER
 
   minor_mode :select_char do
     inherits :select
-    enter{|event| VER::Methods::Selection.enter(event) }
-    leave{|event| VER::Methods::Selection.leave(event) }
+    handler VER::Methods::Selection
+    enter :enter
+    leave :leave
   end
 
   minor_mode :select_line do
     inherits :select
-    enter{|event| VER::Methods::Selection.enter(event) }
-    leave{|event| VER::Methods::Selection.leave(event) }
+    handler VER::Methods::Selection
+    enter :enter
+    leave :leave
   end
 
   minor_mode :select_block do
     inherits :select
-    enter{|event| VER::Methods::Selection.enter(event) }
-    leave{|event| VER::Methods::Selection.leave(event) }
+    handler VER::Methods::Selection
+    enter :enter
+    leave :leave
   end
 
   minor_mode :status_query do

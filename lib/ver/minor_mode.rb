@@ -10,7 +10,8 @@ module VER
   # Every minor mode maintains its own keymap and performs lookup within that.
   # When no match can be found, the parents will be asked until a definite
   # result is returned.
-  class MinorMode < Struct.new(:name, :parents, :keymap, :receiver, :fallback_action)
+  class MinorMode < Struct.new(:name, :parents, :keymap, :receiver,
+                               :fallback_action, :enter_action, :leave_action)
     INCOMPLETE = Keymap::INCOMPLETE
     IMPOSSIBLE = Keymap::IMPOSSIBLE
 
@@ -94,30 +95,67 @@ module VER
       end
     end
 
-    def enter(&block)
+    def enter(invocation, &block)
+      action = Action.new(receiver, *invocation, &block)
+      self.enter_action = action
     end
 
-    def leave(&block)
+    def leave(invocation, &block)
+      action = Action.new(receiver, *invocation, &block)
+      self.leave_action = action
+
     end
 
     def handler(object)
       self.receiver = object
     end
 
-    def replace_parent(old, new)
+    def replace_parent(major, old, new)
       parents.dup.each do |parent|
         if parent == old
-          parents[parents.index(old)] = new
+          new.replaces major.widget, old do
+            parents[parents.index(old)] = new
+          end
         else
-          parent.replace_parent(old, new)
+          parent.replace_parent(major, old, new)
         end
       end
+    end
+
+    def replaces(widget, other)
+      other.replaced_by(widget, self) if other
+      yield if block_given?
+      self.replacing(widget, other)
+    end
+
+    def replaced_by(widget, other)
+      Tk::Event.generate(widget, "<<LeaveMode>>", data: name)
+      Tk::Event.generate(widget, "<<LeaveMinorMode>>", data: name)
+      Tk::Event.generate(widget, "<<LeaveMinorMode#{to_camel_case}>>", data: name)
+    end
+
+    def replacing(widget, other)
+      Tk::Event.generate(widget, "<<EnterMinorMode#{to_camel_case}>>", data: name)
+      Tk::Event.generate(widget, "<<EnterMinorMode>>", data: name)
+      Tk::Event.generate(widget, "<<EnterMode>>", data: name)
     end
 
     def synchronize(major)
       unfold.each do |minor|
         (minor.keymap.keys - major.bound_keys).each do |key|
           major.bind_key(key)
+        end
+
+        major.bind "<<LeaveMinorMode#{minor.to_camel_case}>>" do |event|
+          if action = minor.leave_action
+            action.call(WidgetEvent.new(event.widget, event))
+          end
+        end
+
+        major.bind "<<EnterMinorMode#{minor.to_camel_case}>>" do |event|
+          if action = minor.enter_action
+            action.call(WidgetEvent.new(event.widget, event))
+          end
         end
       end
     end
@@ -133,6 +171,10 @@ module VER
       end
 
       all
+    end
+
+    def to_camel_case
+      name.to_s.split('_').map{|e| e.capitalize}.join
     end
 
     def to_sym
