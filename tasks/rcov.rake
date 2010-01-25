@@ -1,9 +1,8 @@
 desc 'code coverage'
 task :rcov => :clean do
-  specs = Dir['spec/ffi-tk/**/*.rb']
+  specs = PROJECT_SPECS
 
-  # we ignore adapter as this has extensive specs in rack already.
-  ignore = %w[ gem bacon ]
+  ignore = %w[ gem ffi-tk ]
 
   ignored = ignore.join(',')
 

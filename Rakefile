@@ -4,13 +4,16 @@ require 'rake/gempackagetask'
 require 'time'
 require 'date'
 
-PROJECT_SPECS = Dir['spec/**/*.rb']
+PROJECT_SPECS = Dir['spec/ver/**/*.rb']
 PROJECT_MODULE = 'VER'
 PROJECT_README = 'README.textile'
 PROJECT_VERSION = ENV['VERSION'] || Date.today.strftime('%Y.%m.%d')
 
 DEPENDENCIES = {
   'ffi-tk'       => {:version => '2009.12.14'},
+}
+DEVELOPMENT_DEPENDENCIES = {
+  'bacon'        => {:version => '1.1.0'}
 }
 
 GEMSPEC = Gem::Specification.new{|s|
