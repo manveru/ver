@@ -104,6 +104,16 @@ module VER
       self.receiver = object
     end
 
+    def replace_parent(old, new)
+      parents.dup.each do |parent|
+        if parent == old
+          parents[parents.index(old)] = new
+        else
+          parent.replace_parent(old, new)
+        end
+      end
+    end
+
     def synchronize(major)
       unfold.each do |minor|
         (minor.keymap.keys - major.bound_keys).each do |key|

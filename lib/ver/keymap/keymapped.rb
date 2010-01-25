@@ -14,8 +14,7 @@ module VER
     end
 
     def minor_mode(widget, old, new)
-      major_mode.forget(old)
-      major_mode.use(new)
+      major_mode.replace_minor(old, new)
     end
   end
 end

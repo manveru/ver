@@ -109,6 +109,12 @@ module VER
       end
     end
 
+    def replace_minor(old, new)
+      minors.each do |minor|
+        minor.replace_parent(MinorMode[old], MinorMode[new])
+      end
+    end
+
     def synchronize
       (keymap.keys - bound_keys).each do |key|
         bind_key(key)
@@ -233,6 +239,12 @@ module VER
     def replacing(other)
       Tk::Event.generate(widget, "<<EnterMode#{to_camel_case}>>", data: name)
       Tk::Event.generate(widget, "<<EnterMode>>", data: name)
+    end
+
+    def replace_minor(old, new)
+      minors.each do |minor|
+        minor.replace_parent(MinorMode[old], MinorMode[new])
+      end
     end
 
     def name

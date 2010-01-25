@@ -146,4 +146,22 @@ describe MajorMode do
     major.bound_keys.should == Set.new(%w[m a b 1 2 3])
     major.tag.bind.sort.should == %w[1 2 3 a b m]
   end
+
+  it 'can modify the parents chain of its minor modes' do
+    major = MajorMode[:Fundamental]
+    control = MinorMode[:control]
+    count = MinorMode[:count]
+    move = MinorMode[:move]
+    move_count = MinorMode[:move_count]
+
+    major.use :control
+    control.inherits :move
+    move_count.inherits :move, :count
+
+    control.parents.should == [move]
+    major.replace_minor(:move, :move_count)
+    control.parents.should == [move_count]
+    major.replace_minor(:move_count, :move)
+    control.parents.should == [move]
+  end
 end
