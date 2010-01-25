@@ -53,22 +53,25 @@ module VER
       while key = sequence.shift
         previous = current
 
-        if current.respond_to?(:call)
-          return current
-        elsif current.key?(key)
+        if current.key?(key)
           current = current[key]
+          break unless current.respond_to?(:key?)
         else
           found = nil
           current.find do |ckey, cvalue|
             next unless ckey.is_a?(Symbol)
 
-            resolved = MinorMode[ckey].resolve([key, *sequence])
-            unless resolved == INCOMPLETE || resolved == IMPOSSIBLE
-              found = cvalue.combine(resolved)
+            case resolved = MinorMode[ckey].resolve([key, *sequence])
+            when INCOMPLETE
+              return found
+            when IMPOSSIBLE
+              false
+            else
+              return cvalue.combine(resolved)
             end
           end
 
-          return found || IMPOSSIBLE
+          return IMPOSSIBLE
         end
       end
 

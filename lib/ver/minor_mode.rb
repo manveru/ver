@@ -52,7 +52,7 @@ module VER
       when IMPOSSIBLE
         parents.find{|parent|
           found = parent.resolve(sequence)
-          found != INCOMPLETE && found != IMPOSSIBLE
+          found != IMPOSSIBLE
         }
       end
 

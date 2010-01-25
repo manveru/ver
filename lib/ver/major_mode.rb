@@ -98,7 +98,7 @@ module VER
       when IMPOSSIBLE
         minors.find{|minor|
           found = minor.resolve(sequence)
-          found != INCOMPLETE && found != IMPOSSIBLE
+          found != IMPOSSIBLE
         }
       end
 
@@ -199,13 +199,19 @@ module VER
       stack << event.sequence
       history << event
 
+      stack_string = stack.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
+
       case result = resolve(stack)
-      when IMPOSSIBLE
-        stack.clear
       when INCOMPLETE
+        VER.message "#{stack_string} -"
+        # don't do anything yet...
+      when IMPOSSIBLE
+        VER.message "#{stack_string} is undefined"
+        stack.clear
       else
         stack.clear
         result.call(WidgetEvent.new(widget, event))
+        VER.message "#{stack_string} => #{result}"
       end
     end
 
