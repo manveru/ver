@@ -7,7 +7,7 @@ module VER::Methods
 
       def insert_at(text, motion, *count)
         Move.send(motion, text, *count)
-        text.mode = :insert
+        text.minor_mode(:control, :insert)
       end
 
       def insert_indented_newline_above(text)
