@@ -44,7 +44,7 @@ module VER::Methods
       def cursor_vertical_center(text)
         insert = text.count('1.0', 'insert', :displaylines)
         last   = text.count('1.0', 'end', :displaylines)
-        shown  = text.count('@0,0', "@0,#{winfo_height}", :displaylines)
+        shown  = text.count('@0,0', "@0,#{text.winfo_height}", :displaylines)
 
         fraction = ((100.0 / last) * (insert - (shown / 2))) / 100
 
@@ -53,13 +53,13 @@ module VER::Methods
 
       def cursor_vertical_center_sol(text)
         cursor_vertical_center(text)
-        start_of_line(text)
+        Move.start_of_line(text)
       end
 
       def cursor_vertical_bottom(text)
         insert = text.count('1.0', 'insert', :displaylines) + 1
         last   = text.count('1.0', 'end', :displaylines)
-        shown  = text.count('@0,0', "@0,#{winfo_height}", :displaylines)
+        shown  = text.count('@0,0', "@0,#{text.winfo_height}", :displaylines)
 
         fraction = ((100.0 / last) * (insert - shown)) / 100
 
