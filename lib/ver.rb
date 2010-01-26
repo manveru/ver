@@ -213,6 +213,7 @@ module VER
   def load_plugins
     @load_plugins.each do |plugin|
       load_plugin(plugin)
+      Tk::Event.generate(root, '<<PluginLoaded>>', data: plugin.to_s)
     end
   end
 

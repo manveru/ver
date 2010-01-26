@@ -22,6 +22,11 @@ module VER
 
       establish_tag
       use(*self.major.minors)
+      listen
+    end
+
+    def listen
+      VER.root.bind('<<PluginLoaded>>'){|event| synchronize }
     end
 
     def bound_keys
