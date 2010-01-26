@@ -374,26 +374,6 @@ module VER
     missing :insert_string
   end
 
-  minor_mode :executor_entry do
-    inherits :basic, :readline
-
-    map :cancel,          %w[Escape], %w[Control-c]
-    map :completion,      %w[Tab]
-    map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
-    map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
-    map :pick_selection,  %w[Return]
-
-    missing :insert_string
-  end
-
-  minor_mode :executor_label do
-    inherits :executor_entry
-
-    map :speed_selection,  %w[space]
-
-    missing :insert_string
-  end
-
   minor_mode :list_view_list do
     inherits :basic
 
@@ -458,5 +438,27 @@ module VER
     # map :history_complete,  %w[Tab]
     # map :history_next,      %w[Down], %w[Control-n]
     # map :history_prev,      %w[Up], %w[Control-p]
+  end
+
+  major_mode :Executor do
+    use :executor_label
+  end
+
+  minor_mode :executor_entry do
+    map :cancel,          %w[Escape], %w[Control-c]
+    map :completion,      %w[Tab]
+    map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
+    map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
+    map :pick_selection,  %w[Return]
+
+    missing :insert_string
+  end
+
+  minor_mode :executor_label do
+    inherits :executor_entry
+
+    map :speed_selection,  %w[space]
+
+    missing :insert_string
   end
 end

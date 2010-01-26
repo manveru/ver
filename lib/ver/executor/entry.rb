@@ -11,11 +11,14 @@ module VER
         @caller   = @callback.caller
         @tree     = @callback.tree
 
-        mode = options.delete(:mode) || :executor_label
+        mode = options.delete(:mode)
         options[:style] ||= VER.obtain_style_name('ExEntry', 'TEntry')
+
         super
+
         self.parent = parent
-        self.keymap = VER.keymap.use(widget: self, mode: mode)
+        self.major_mode = :Executor
+        self.minor_mode(:executor_label, mode) if mode
       end
 
       def setup
@@ -69,7 +72,7 @@ module VER
 
       # keymap callbacks
 
-      def completion
+      def completion(event = nil)
         callback.completion do |entry_value|
           values = choices(entry_value)
           tree.clear
@@ -87,7 +90,7 @@ module VER
         VER.error(ex)
       end
 
-      def pick_selection
+      def pick_selection(event = nil)
         callback.complete_or_pick do |value|
           if block_given?
             callback.destroy if yield(value)
@@ -106,7 +109,7 @@ module VER
         true
       end
 
-      def speed_selection
+      def speed_selection(event = nil)
         completion
         pick_selection
         pick_selection
@@ -116,7 +119,7 @@ module VER
         VER.error(ex)
       end
 
-      def cancel
+      def cancel(event = nil)
         callback.destroy
       end
 
@@ -141,7 +144,7 @@ if { $children_length > 1 } {
       # Some lists may be huge, so we handle this in tcl to avoid lots of
       # useless traffic between tcl and ruby.
       # My apologies.
-      def line_up
+      def line_up(event = nil)
         Tk.eval(LINE_UP.gsub(/%path%/, tree.tk_pathname))
       end
 
@@ -166,7 +169,7 @@ if { $children_length > 1 } {
       # Some lists may be huge, so we handle this in tcl to avoid lots of
       # useless traffic between tcl and ruby.
       # My apologies.
-      def line_down
+      def line_down(event = nil)
         Tk.eval(LINE_DOWN.gsub(/%path%/, tree.tk_pathname))
       end
     end
