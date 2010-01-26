@@ -3,13 +3,15 @@ require 'set'
 module VER
   class Keymap < Struct.new(:keymap, :keys)
     # A subclass to make lookup unambigous
-    class MapHash < Hash
-    end
+    class MapHash < Hash; end
 
-    IMPOSSIBLE = Object.new
-    def IMPOSSIBLE.inspect; '#<Keymap::IMPOSSIBLE>'; end
-    INCOMPLETE = Object.new
-    def INCOMPLETE.inspect; '#<Keymap::INCOMPLETE>'; end
+    # Indicate that no result can and will be found in the keymap
+    class Impossible; end
+    IMPOSSIBLE = Impossible.new
+
+    # Indicate that no result could be found yet.
+    class Incomplete; end
+    INCOMPLETE = Incomplete.new
 
     MERGER = proc{|key, v1, v2|
       if v1.respond_to?(:merge) && v2.respond_to?(:merge)

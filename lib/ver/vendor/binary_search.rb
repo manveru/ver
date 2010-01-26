@@ -3,7 +3,7 @@ module VER
   # This allows you to find the last number that is valid for some condition
   # passed in a block in a fast manner rather than doing simple brute-force.
   #
-  # @usage for finding the highest value for pack('n')
+  # @example for finding the highest value for pack('n')
   #
   #   works = 0
   #   fails = 100_000
@@ -16,7 +16,7 @@ module VER
   # The reason this exists was to find the highest value for the time-to-live
   # arugment to MemCache#store.
   #
-  # @usage for finding the highest ttl of memcache
+  # @example for finding the highest ttl of memcache
   #
   #   require 'memcache'
   #   m = MemCache.new(['localhost:11211:1'], :namespace => 'manveru-session')

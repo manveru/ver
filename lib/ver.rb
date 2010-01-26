@@ -8,7 +8,6 @@ autoload :Tempfile,  'tempfile'
 
 # eager stdlib
 require 'digest/sha1'
-# require 'json'
 require 'pp'
 require 'securerandom'
 require 'set'
@@ -16,6 +15,7 @@ require 'pathname'
 
 autoload :SizedArray, 'ver/vendor/sized_array'
 
+# This is the doc for VER
 module VER
   autoload :Action,              'ver/action'
   autoload :Bookmarks,           'ver/methods/bookmark'
@@ -43,8 +43,8 @@ module VER
 
   require 'ver/major_mode'
   require 'ver/minor_mode'
-
   require 'ver/options'
+
   @options = Options.new(:ver)
 
   class << self
