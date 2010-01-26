@@ -5,6 +5,10 @@ module VER
 
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
+    MODE_STYLES = {
+      :insert  => {insertbackground: 'red', blockcursor: false},
+      /select/ => {insertbackground: 'yellow', blockcursor: true},
+    }
 
     attr_accessor(:view, :status, :project_root, :project_repo, :encoding,
                   :undoer, :pristine, :syntax, :prefix_arg)
@@ -110,9 +114,9 @@ module VER
     end
 
     def event_setup
-      bind '<<EnterMode>>' do |event|
+      bind '<<EnterMinorMode>>' do |event|
         status_projection(status)
-        # apply_mode_style(mode)
+        apply_mode_style(event.detail)
       end
 
       bind '<<Modified>>' do |event|
@@ -442,23 +446,19 @@ module VER
 
     private
 
-    def apply_mode_style(mode = @default_mode)
-      default_config = (@default_theme_config || {}).merge(blockcursor: true)
+    def apply_mode_style(given_mode = nil)
+      config = (@default_theme_config || {}).merge(blockcursor: false)
 
-      sub_config =
-        case mode
-        when @default_mode
-          default_config
-        when :insert, :snippet
-          {insertbackground: 'red', blockcursor: false}
-        when /select/
-          {insertbackground: 'yellow', blockcursor: true}
-        else
-          default_config
-          # Kernel.raise "No such mode style: %p" % [mode]
+      modes = given_mode ? [given_mode] : major_mode.minors
+
+      modes.each do |mode|
+        mode = MinorMode[mode]
+
+        MODE_STYLES.each do |pattern, style|
+          config.merge!(style) if pattern === mode.name
         end
+      end
 
-      config = default_config.merge(sub_config)
       configure(config)
       return unless status && color = config[:insertbackground]
 
