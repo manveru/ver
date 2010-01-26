@@ -32,26 +32,22 @@ module VER
       end
     end
   end
-end
 
-__END__
-
-  if vim = Keymap[:vim]
-    vim.in_mode :git do
-      no_arguments
-      handler Methods::Git
-
-      key :git_blame,                        %w[g i t b]
-      key [:open_rxvt, 'git add -p'],        %w[g i t a]
-      key [:open_rxvt, 'git commit'],        %w[g i t c]
-      key [:open_rxvt, 'git diff'  ],        %w[g i t d]
-      key [:open_rxvt, 'git pull'  ],        %w[g i t p u l]
-      key [:open_rxvt, 'git push'  ],        %w[g i t p u s]
-      key [:open_rxvt, 'git status | less'], %w[g i t s]
+  if options.keymap == 'vim'
+    minor_mode :control do
+      inherits :git
     end
 
-    vim.in_mode :control do
-      inherits :git
+    minor_mode :git do
+      handler Methods::Git
+
+      map :git_blame,                        %w[g i t b]
+      map [:open_rxvt, 'git add -p'],        %w[g i t a]
+      map [:open_rxvt, 'git commit'],        %w[g i t c]
+      map [:open_rxvt, 'git diff'  ],        %w[g i t d]
+      map [:open_rxvt, 'git pull'  ],        %w[g i t p u l]
+      map [:open_rxvt, 'git push'  ],        %w[g i t p u s]
+      map [:open_rxvt, 'git status | less'], %w[g i t s]
     end
   end
 end
