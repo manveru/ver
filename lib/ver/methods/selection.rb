@@ -1,30 +1,30 @@
 module VER::Methods
   module Selection
     class << self
-      def enter(event)
-        p enter: event
-        text = event.widget
-        old_mode = event.detail
-
-        unless old_mode =~ /^select/
+      def enter(text, old_mode, new_mode)
+        unless old_mode.name =~ /^select/
           text.store(self, :start, text.index(:insert))
         end
 
+        text.store(self, :mode, new_mode)
         text.store(self, :refresh, true)
         Undo.separator(text)
         refresh(text)
       end
 
-      def leave(event)
-        p leave: event
-        text = event.widget
-        new_mode = event.detail
+      def leave(text, old_mode, new_mode)
+        return if new_mode.name =~ /^select/
 
-        return if new_mode =~ /^select/
-
+        text.store(self, :mode, new_mode)
         text.store(self, :refresh, false)
         Undo.separator(text)
         clear(text)
+      end
+
+      def select_mode(text)
+        if mode = text.store(self, :mode)
+          mode.to_sym
+        end
       end
 
       def refresh(text)
@@ -33,7 +33,7 @@ module VER::Methods
 
         text.tag_remove(:sel, 1.0, :end)
 
-        case text.mode
+        case select_mode(text)
         when :select_char  ; refresh_char(text, start)
         when :select_line  ; refresh_line(text, start)
         when :select_block ; refresh_block(text, start)
@@ -276,7 +276,7 @@ module VER::Methods
       end
 
       def finish(text, mode = nil)
-        text.mode = :control
+        text.minor_mode(select_mode(text), :control)
       end
 
       def clear(text)
@@ -294,7 +294,7 @@ module VER::Methods
         text.tag_ranges(:sel).each do |sel|
           (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
 
-          case text.mode
+          case select_mode(text)
           when :select_char
             if fy == ty
               yield fy, fx, ty, tx

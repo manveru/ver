@@ -303,11 +303,6 @@ module VER
   minor_mode :select do
     inherits :basic, :move, :search
 
-    become :select_block,  %w[Control-v]
-    become :select_char,   %w[v]
-    become :select_line,   %w[V]
-    become :control,       %w[Escape], %w[Control-c]
-
     handler VER::Methods::Selection
     map :comment,         %w[comma c]
     map :copy,            %w[y], %w[Y]
@@ -329,6 +324,11 @@ module VER
 
   minor_mode :select_char do
     inherits :select
+
+    become :control,      %w[Escape], %w[Control-c]
+    become :select_line,  %w[V]
+    become :select_block, %w[Control-v]
+
     handler VER::Methods::Selection
     enter :enter
     leave :leave
@@ -336,6 +336,11 @@ module VER
 
   minor_mode :select_line do
     inherits :select
+
+    become :control,      %w[Escape], %w[Control-c]
+    become :select_char,  %w[v]
+    become :select_block, %w[Control-v]
+
     handler VER::Methods::Selection
     enter :enter
     leave :leave
@@ -343,6 +348,11 @@ module VER
 
   minor_mode :select_block do
     inherits :select
+
+    become :control,     %w[Escape], %w[Control-c]
+    become :select_char, %w[v]
+    become :select_line, %w[V]
+
     handler VER::Methods::Selection
     enter :enter
     leave :leave

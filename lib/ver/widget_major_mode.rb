@@ -52,9 +52,12 @@ module VER
     end
 
     def on_event(event)
-      p event
       stack << event.sequence
-      history << event
+      history << {
+        sequence: event.sequence,
+        keysym: event.keysym,
+        unicode: event.unicode
+      }
 
       stack_string = stack.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
 
@@ -139,9 +142,9 @@ module VER
     def inspect
       out = ['#<Ver::WidgetMajorMode']
       { major: major.name,
-        minors: minors.map{|m| m.name },
-        history: history.map{|h| h.keysym },
-        stack: stack.map{|s| s.keysym },
+        minors: minors.map{|m| m.to_sym },
+        history: history.map{|h| h[:keysym] },
+        stack: stack,
       }.each{|k,v| out << "#{k}=#{v.inspect}" }
       out.join(' ') << '>'
     end

@@ -35,7 +35,7 @@ module VER
       numbers = []
 
       major_mode.history.reverse_each do |event|
-        break unless event.sequence =~ /^(\d+)$/
+        break unless event[:sequence] =~ /^(\d+)$/
         numbers << $1
       end
 

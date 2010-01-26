@@ -55,6 +55,7 @@ module VER
       when INCOMPLETE
       when IMPOSSIBLE
         parents.find{|parent|
+          next if parent == self
           found = parent.resolve(sequence)
           found != IMPOSSIBLE
         }
@@ -70,7 +71,8 @@ module VER
     # Add a parent for this minor mode.
     def inherits(*names)
       names.each do |name|
-        self.parents << self.class[name]
+        minor = self.class[name]
+        self.parents << minor unless minor == self
       end
       self.parents.uniq!
     end
@@ -134,6 +136,7 @@ module VER
     def replaced_by(widget_major, other)
       return unless widget_major.respond_to?(:widget)
       widget = widget_major.widget
+      leave_action.call(widget, self, other) if leave_action
       Tk::Event.generate(widget, "<<LeaveMode>>", data: name)
       Tk::Event.generate(widget, "<<LeaveMinorMode>>", data: name)
       Tk::Event.generate(widget, "<<LeaveMinorMode#{to_camel_case}>>", data: name)
@@ -142,6 +145,7 @@ module VER
     def replacing(widget_major, other)
       return unless widget_major.respond_to?(:widget)
       widget = widget_major.widget
+      enter_action.call(widget, other, self) if enter_action
       Tk::Event.generate(widget, "<<EnterMinorMode#{to_camel_case}>>", data: name)
       Tk::Event.generate(widget, "<<EnterMinorMode>>", data: name)
       Tk::Event.generate(widget, "<<EnterMode>>", data: name)
@@ -156,18 +160,6 @@ module VER
     def synchronize(widget_major)
       keymap.keys.each do |key|
         widget_major.bind_key(key)
-      end
-
-      widget_major.bind "<<LeaveMinorMode#{to_camel_case}>>" do |event|
-        if action = leave_action
-          action.call(WidgetEvent.new(event.widget, event))
-        end
-      end
-
-      widget_major.bind "<<EnterMinorMode#{to_camel_case}>>" do |event|
-        if action = enter_action
-          action.call(WidgetEvent.new(event.widget, event))
-        end
       end
     end
 

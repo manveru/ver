@@ -144,5 +144,4 @@ module VER
       "#<VER::MajorMode name=%p>" % [name]
     end
   end
-
 end
