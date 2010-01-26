@@ -12,9 +12,8 @@ module VER
   # not be modified, the duplicate is merged in a manner that will not replace
   # existing sequences.
   #
-  # Every widget in VER has one major mode.
-  # For any widget, a major mode may change minor modes, which will not affect
-  # other widgets using the same major mode.
+  # The bound_keys property acts as a cache of the keys bound to the tag, so we
+  # don't have to query the tag, as the bound proc is the same for all keys.
   class MajorMode < Struct.new(:name, :minors, :keymap, :receiver,
                                :fallback_action, :tag, :bound_keys)
 
@@ -127,10 +126,13 @@ module VER
     end
 
     def bind_key(key)
+      return if bound_keys.include?(key)
+
       tag.bind(key) do |event|
         event.widget.major_mode.on_event(event)
         Tk.callback_break
       end
+
       bound_keys << key
     end
 
@@ -143,173 +145,4 @@ module VER
     end
   end
 
-  class WidgetEvent < BasicObject
-    attr_reader :widget, :event
-
-    def initialize(widget, event)
-      @widget, @event = widget, event
-    end
-
-    def method_missing(method, *args)
-      ::Kernel.p([method, args])
-      result = @widget.send(method, *args)
-
-      if method =~ /=/
-        ::VER::WidgetEvent.class_eval(<<-RUBY, __FILE__, __LINE__)
-          def #{method}(arg)
-            @widget.#{method} arg
-          end
-        RUBY
-      else
-        ::VER::WidgetEvent.class_eval(<<-RUBY, __FILE__, __LINE__)
-          def #{method}(*args)
-            @widget.#{method}(*args)
-          end
-        RUBY
-      end
-
-      result
-    end
-    alias send method_missing
-  end
-
-  class WidgetMajorMode < Struct.new(:widget, :major, :minors, :history, :stack)
-    INCOMPLETE = Keymap::INCOMPLETE
-    IMPOSSIBLE = Keymap::IMPOSSIBLE
-
-    def initialize(widget, major)
-      self.widget = widget
-      self.major = MajorMode[major]
-      self.history = SizedArray.new(100)
-      self.stack = []
-      self.minors = []
-
-      establish_tag
-      use(*self.major.minors)
-    end
-
-    def bound_keys
-      major.bound_keys
-    end
-
-    def bind(sequence, &block)
-      widget.bind(sequence, &block)
-    end
-
-    def bind_key(key)
-      major.bind_key(key)
-    end
-
-    def use(*minors)
-      minors.each do |name|
-        minor = MinorMode[name]
-        minor.synchronize(self)
-        self.minors << minor
-      end
-
-      self.minors.uniq!
-    end
-
-    def forget(*minors)
-      self.minors -= minors.map{|name| MinorMode[name] }
-    end
-
-    def on_event(event)
-      p event
-      stack << event.sequence
-      history << event
-
-      stack_string = stack.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
-
-      case result = resolve(stack)
-      when INCOMPLETE
-        VER.message "#{stack_string} -"
-        # don't do anything yet...
-      when IMPOSSIBLE
-        VER.message "#{stack_string} is undefined"
-        stack.clear
-      else
-        stack.clear
-        result.call(WidgetEvent.new(widget, event))
-        VER.message "#{stack_string} => #{result}"
-      end
-    end
-
-    def resolve(sequence)
-      major.resolve(sequence, minors)
-    end
-
-    def replaces(other)
-      other.replaced_by(self) if other
-      yield if block_given?
-      self.replacing(other)
-    end
-
-    def replaced_by(other)
-      Tk::Event.generate(widget, "<<LeaveMode>>", data: name)
-      Tk::Event.generate(widget, "<<LeaveMajorMode>>", data: name)
-      Tk::Event.generate(widget, "<<LeaveMajorMode#{to_camel_case}>>", data: name)
-    end
-
-    def replacing(other)
-      Tk::Event.generate(widget, "<<EnterMajorMode#{to_camel_case}>>", data: name)
-      Tk::Event.generate(widget, "<<EnterMajorMode>>", data: name)
-      Tk::Event.generate(widget, "<<EnterMode>>", data: name)
-    end
-
-    def replace_minor(old, new)
-      old, new = MinorMode[old], MinorMode[new]
-
-      minors.dup.each do |minor|
-        if minor == old
-          new.replaces self, old do
-            minors[minors.index(old)] = new
-          end
-        else
-          minor.replace_parent(self, old, new)
-        end
-      end
-
-      synchronize
-    end
-
-    def synchronize
-      (major.keymap.keys - major.bound_keys).each do |key|
-        major.bind_key(key)
-      end
-
-      minors.each do |minor|
-        minor.synchronize(self)
-      end
-    end
-
-    def name
-      major.name
-    end
-
-    def to_tcl
-      widget.tk_pathname
-    end
-
-    def to_camel_case
-      major.name.to_s.split('_').map{|e| e.capitalize}.join
-    end
-
-    def inspect
-      out = ['#<Ver::WidgetMajorMode']
-      { major: major.name,
-        minors: minors.map{|m| m.name },
-        history: history.map{|h| h.keysym },
-        stack: stack.map{|s| s.keysym },
-      }.each{|k,v| out << "#{k}=#{v.inspect}" }
-      out.join(' ') << '>'
-    end
-
-    def establish_tag
-      tags = widget.bindtags
-      specific = tags[0, 1]
-      general = tags[-3..-1]
-      widget.bindtags(*specific, major.tag, *general)
-    end
-  end
 end

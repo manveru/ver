@@ -2,12 +2,22 @@ require 'bacon'
 Bacon.summary_on_exit
 
 class Dummy < BasicObject
-  def initialize
+  def initialize(name)
+    @name = name
     @store = []
   end
 
   def method_missing(method, *args)
-    @store << [method, args]
+    @store << [method, *args]
+    self
+  end
+
+  def ==(other)
+    self.__name__ == other.__name__
+  end
+
+  def __name__
+    @name
   end
 
   def __store__
@@ -24,16 +34,19 @@ describe 'Action' do
     action.receiver.should == Bacon
   end
 
-  should 'call #call on the receiver by default' do
-    dummy = Dummy.new
-    action = Action.new(dummy)
-    action.receiver.should == dummy
-    action.call(:widget, 1)
-    dummy.__store__.should == [
-      [:should, []],
-      [:respond_to?, [:to_ary]],
-      [:send, [:call, :widget, 1]]
-    ]
+  should 'call #send to the widget by default' do
+    widget = Dummy.new('widget')
+    action = Action.new(nil)
+    action.call(widget, 1)
+    action.last.should == [widget, :call, widget, [1]]
+  end
+
+  should 'call #call on the receiver if one exists' do
+    receiver = Dummy.new('receiver')
+    widget = Dummy.new('widget')
+    action = Action.new(receiver)
+    action.call(widget, 1)
+    action.last.should == [receiver, :call, widget, [1]]
   end
 
   it 'can have a callback block' do
@@ -50,4 +63,3 @@ describe 'Action' do
     action.args.should == [1,2,3]
   end
 end
-

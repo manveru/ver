@@ -42,7 +42,7 @@ describe Keymap = VER::Keymap do
     km['x', 'y'].should == Keymap::IMPOSSIBLE
   end
 
-  it 'can perform merges with other keymaps' do
+  it 'performs a merge with another keymap' do
     kma = Keymap.new
     kma['a'] = 'kma a'
 
@@ -65,5 +65,13 @@ describe Keymap = VER::Keymap do
     kmab = kma.merge(kmb)
     kmab['a'].should == 'kma a'
     kmab['b'].should == 'kmb b'
+  end
+
+  it 'overrides existing sequences on assignment' do
+    km = Keymap.new
+    km['a'] = 'km a1'
+    km['a'].should == 'km a1'
+    km['a'] = 'km a2'
+    km['a'].should == 'km a2'
   end
 end

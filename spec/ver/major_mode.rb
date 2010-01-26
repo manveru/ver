@@ -106,47 +106,6 @@ describe MajorMode do
     major.tag.name.should == 'spec-mode'
   end
 
-  it 'binds all keys found in its keymap to the tag' do
-    major = MajorMode[:spec]
-    major.tag.bind.should == []
-    major.map(:delete, ['d'])
-    major.tag.bind.should == ['d']
-  end
-
-  it 'binds all keys found in its minor modes to the tag' do
-    major = MajorMode[:major]
-    major.map(:major1, ['m', '1'])
-    minoa = MinorMode[:minoa]
-    minoa.map(:minoa2, ['a', '2'])
-    minob = MinorMode[:minob]
-    minob.map(:minob3, ['b', '3'])
-
-    major.use(:minoa, :minob)
-    major.bound_keys.should == Set.new(%w[m a b 1 2 3])
-    major.tag.bind.sort.should == %w[1 2 3 a b m]
-  end
-
-  it "won't synchronize with minor modes if they don't" do
-    major = MajorMode[:major]
-    minoa = MinorMode[:minoa]
-    minob = MinorMode[:minob]
-    major.use(:minoa, :minob)
-    major.map(:major1, ['m', '1'])
-    minoa.map(:minoa2, ['a', '2'])
-    minob.map(:minob3, ['b', '3'])
-
-    major.bound_keys.should == Set.new(%w[m 1])
-    major.tag.bind.sort.should == %w[1 m]
-
-    minoa.synchronize(major)
-    major.bound_keys.should == Set.new(%w[m a 1 2])
-    major.tag.bind.sort.should == %w[1 2 a m]
-
-    minob.synchronize(major)
-    major.bound_keys.should == Set.new(%w[m a b 1 2 3])
-    major.tag.bind.sort.should == %w[1 2 3 a b m]
-  end
-
   it 'can modify the parents chain of its minor modes' do
     major = MajorMode[:Fundamental]
     control = MinorMode[:control]

@@ -17,6 +17,7 @@ require 'pathname'
 autoload :SizedArray, 'ver/vendor/sized_array'
 
 module VER
+  autoload :Action,              'ver/action'
   autoload :Bookmarks,           'ver/methods/bookmark'
   autoload :Entry,               'ver/entry'
   autoload :ExceptionView,       'ver/exception_view'
@@ -24,6 +25,8 @@ module VER
   autoload :Font,                'ver/font'
   autoload :Help,                'ver/help'
   autoload :HoverCompletion,     'ver/hover_completion'
+  autoload :Keymap,              'ver/keymap'
+  autoload :Keymapped,           'ver/keymap/keymapped'
   autoload :Levenshtein,         'ver/vendor/levenshtein'
   autoload :Methods,             'ver/methods'
   autoload :NotebookLayout,      'ver/layout/notebook'
@@ -35,11 +38,8 @@ module VER
   autoload :TilingLayout,        'ver/layout/tiling'
   autoload :Undo,                'ver/undo'
   autoload :View,                'ver/view'
-
-  autoload :Keymap,     'ver/keymap'
-  autoload :Keymapped,  'ver/keymap/keymapped'
-  autoload :CommonMode, 'ver/common_mode'
-  autoload :Action,     'ver/action'
+  autoload :WidgetEvent,         'ver/widget_event'
+  autoload :WidgetMajorMode,     'ver/widget_major_mode'
 
   require 'ver/major_mode'
   require 'ver/minor_mode'

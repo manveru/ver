@@ -19,8 +19,7 @@ module VER
 
     def inspect
       details = {
-        keymap: keymap,
-        mode: mode
+        mode: major_mode
       }.map{|key, value| "%s=%p" % [key, value ] }.join(' ')
       "#<VER::Status #{details}>"
     end

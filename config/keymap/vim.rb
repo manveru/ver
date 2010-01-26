@@ -426,4 +426,37 @@ module VER
   major_mode :Fundamental do
     use :control
   end
+
+  major_mode :Status do
+    # inherits :basic, :readline
+    # no handler here, methods are defined on the widget.
+
+    map :ask_abort,         %w[Escape], %w[Control-c]
+    map :ask_submit,        %w[Return]
+
+    map :end_of_line,       %w[End], %w[Control-e]
+    map :insert_selection,  %w[Shift-Insert]
+    map :insert_tab,        %w[Control-v Tab]
+    map :next_char,         %w[Right], %w[Control-f]
+    map :next_word,         %w[Shift-Right], %w[Alt-f]
+    map :prev_char,         %w[Left], %w[Control-b]
+    map :prev_word,         %w[Shift-Left], %w[Alt-b]
+    map :start_of_line,     %w[Home], %w[Control-a]
+    map :transpose_chars,   %w[Control-t]
+
+    map :kill_next_char,    %w[Delete], %w[Control-d]
+    map :kill_prev_char,    %w[BackSpace]
+    map :kill_prev_word,    %w[Control-w]
+
+    # map :beginning_of_history,       %w[Control-less]
+    # map :end_of_history,             %w[Control-greater]
+    # map :next_history,               %w[Down], %w[Control-n]
+    # map :prev_history,               %w[Up], %w[Control-p]
+
+    missing :insert_string
+
+    # map :history_complete,  %w[Tab]
+    # map :history_next,      %w[Down], %w[Control-n]
+    # map :history_prev,      %w[Up], %w[Control-p]
+  end
 end
