@@ -3,7 +3,7 @@ module VER::Methods
     class << self
       def change_motion(text, motion, count = 1)
         delete_motion(text, motion, count)
-        text.mode = :insert
+        text.minor_mode(:control, :insert)
       end
 
       # Given a +motion+, this method will execute a virtual movement with the
@@ -38,7 +38,7 @@ module VER::Methods
       def change_word_right_end(text, count = 1)
         index = Move.index_at_word_right_end(text, count)
         delete(text, :insert, index + 1)
-        text.mode = :insert
+        text.minor_mode(:control, :insert)
       end
 
       # Delete current line and upto +count+ subsequent lines.

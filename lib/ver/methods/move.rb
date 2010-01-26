@@ -90,7 +90,7 @@ module VER::Methods
         case count_or_mode
         when Symbol
           text.mark_set(:insert, 'insert display lineend')
-          text.mode = count_or_mode
+          text.minor_mode(:control, count_or_mode)
         when nil
           text.mark_set(:insert, 'insert lineend')
         else

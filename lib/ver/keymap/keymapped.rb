@@ -16,5 +16,10 @@ module VER
     def minor_mode(*args, old, new)
       major_mode.replace_minor(old, new)
     end
+
+    def minor_mode?(name)
+      name = name.to_sym
+      major_mode.minors.find{|minor| minor.to_sym == name }
+    end
   end
 end

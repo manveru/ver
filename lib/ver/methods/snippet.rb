@@ -54,7 +54,7 @@ module VER
         end
 
         def jump_tag(text, name)
-          text.mode = :snippet
+          text.minor_mode(:control, :snippet)
           from, to = text.tag_ranges(name).first
           return unless from
 
@@ -76,7 +76,7 @@ module VER
         def cancel(text, into_mode = :control)
           marks(text).each{|_, mark, _| text.mark_unset(mark) }
           tags(text).each{|_, tag, _| text.tag_delete(tag) }
-          text.mode = into_mode if text.mode == :snippet
+          text.minor_mode(:snippet, into_mode) if text.minor_mode?(:snippet)
         end
 
         def insert_string(text, string)
