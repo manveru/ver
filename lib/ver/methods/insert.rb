@@ -30,7 +30,7 @@ module VER::Methods
           end
 
           Control.clean_line(text, 'insert - 1 line', record)
-          text.mode = :insert
+          text.minor_mode(:control, :insert)
         end
       end
 
@@ -43,7 +43,7 @@ module VER::Methods
             record.insert('insert linestart', "\n")
             text.mark_set(:insert, 'insert - 1 line')
             Control.clean_line(text, 'insert - 1 line', record)
-            text.mode = :insert
+            text.minor_mode(:control, :insert)
           end
         end
       end
