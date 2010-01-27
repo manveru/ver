@@ -11,7 +11,7 @@ insert mark position, and anything else we might come up with later.
 h2. VCS integration
 
 Mostly shortcuts for various source control systems.
-These should simply open a terminal and execute a command.
+These could simply open a terminal and execute a command.
 Example can be the git plugin.
 
 h2. org-mode / remember
