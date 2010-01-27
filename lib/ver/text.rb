@@ -8,6 +8,7 @@ module VER
     MODE_STYLES = {
       :insert  => {insertbackground: 'red', blockcursor: false},
       /select/ => {insertbackground: 'yellow', blockcursor: true},
+      /replace/ => {insertbackground: 'orange', blockcursor: true},
     }
 
     attr_accessor(:view, :status, :project_root, :project_repo, :encoding,

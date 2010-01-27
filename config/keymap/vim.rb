@@ -289,14 +289,16 @@ module VER
   end
 
   minor_mode :replace do
-    inherits :insert
+    become :control, %w[Escape], %w[Control-c]
 
     handler Methods::Insert
+    map [:replace_string, "\n"], %w[Return]
     missing :replace_string
   end
 
   minor_mode :replace_char do
     handler Methods::Insert
+    map [:replace_char, "\n"], %w[Return]
     missing :replace_char
   end
 
