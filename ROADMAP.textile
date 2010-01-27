@@ -39,11 +39,6 @@ h2. Dictionary
 Looking up dictionaries... translation.
 Maybe using something like google translate API when online?
 
-h2. Some kind of indication which view is the current one.
-
-maybe using relief?
-view.configure relief: :sunken, borderwidth: 3
-
 h2. Support mirror and mirror transformation for snippets
 
 The most powerful snipets are using mirror and mirror transformations.
@@ -63,3 +58,36 @@ it's very OSX specific and will conflict with e.g. emacs or vim keymaps.
 
 Maybe we need a separate TM keymap and define a common prefix to the keychains
 in other keymaps.
+
+h2. Update keymaps
+
+All the keymaps (apart from vim) need to be fixed to match current major/minor
+mode structure.
+
+h2. Move queries to the global VER status
+
+The current text status should be more flexible than a simple Entry and it can
+be confusing to be asked for entry in different locations.
+By doing this, we can insert custom widgets into the text status.
+Both vim and emacs do it this way, and it seems to work fine.
+
+h2. Add specs
+
+We should add specs for as many things as possible.
+
+h2. Proper indentation support
+
+At the moment, all we do is maintain indentation when possible.
+But it would be nice if VER could use the information from bundles for that.
+The last attempt had way too much slow backtracking, so I removed it.
+
+h2. Help system
+
+Using YARD, we could nicely present documentation for every constant and method
+with intelligent linking between them.
+
+{{{
+require 'yard'
+YARD::Registry.load_yardoc
+p YARD::Registry.at('VER').docstring
+}}}
