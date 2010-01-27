@@ -1,5 +1,12 @@
 h1. VER Roadmap
 
+This roadmap is not sorted in order of importance, it's more like a verbose
+todo- and wish-list.
+
+Features should be removed once they are implemented.
+
+If you have any non-trivial bugs or ideas, add them here.
+
 h2. Sessions
 
 Storing the current state of VER on disk for next startup.
@@ -28,6 +35,13 @@ h2. Notebook tabs
 
 Using ttk::notebook we could implement tabs instead of the tiling view, or
 combine the two.
+
+We did that, but that's not very useful without the ability to see more than one
+tab at a time.
+Next idea is to have a layout that provides a list of notebooks and assigns a
+view to one of them based on some heuristic.
+Then we can wrap all of that into a tiling layout.
+Keybindings for that should be fun... we can use awesome as reference.
 
 h2. Markdown
 
@@ -80,8 +94,40 @@ h2. Help system
 Using YARD, we could nicely present documentation for every constant and method
 with intelligent linking between them.
 
-{{{
+bc.. # a short example of how to access YARD docs.
 require 'yard'
 YARD::Registry.load_yardoc
-p YARD::Registry.at('VER').docstring
-}}}
+YARD::Registry.at('VER').docstring
+# "This is the doc for VER"
+
+p. Of course we need to make browsing better than the current HTML browsers.
+
+h2. Better tiling through panedwindow
+
+Kiko said that he would like to change the size of buffers on both sides.
+Using ttk::panedwindow instead of our current tiling algorithm could be a cheap
+and good way to do this.
+
+This means a horizontal pane owning two panes (for vertical tiling), one for
+masters, the other for slaves.
+The two inner panes own the views.
+Now you can easily change both the horizontal and vertical size of each view but
+keep the benefits of automatic tiling without any complex math on our part.
+The hardest task is to make sure we carefully move the views between
+panedwindows, but that's hardly more difficult than our current approach.
+
+bc.. The idea is to use a layout like this:
+
++--------------------+
+|       pane         |
+|+--------++--------+|
+||  pane  ||  pane  ||
+||+------+||+------+||
+||| view |||| view |||
+|||      ||||      |||
+|||      |||+------+||
+|||      |||| view |||
+|||      ||||      |||
+||+------+||+------+||
+|+--------++--------+|
++--------------------+
