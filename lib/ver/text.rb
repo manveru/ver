@@ -252,6 +252,19 @@ module VER
       end
     end
 
+    def up_down_line(count)
+      insert = index(:insert)
+
+      @udl_pos_orig = insert if @udl_pos_prev != insert
+
+      lines = count(@udl_pos_orig, insert, :displaylines)
+      target = index("#@udl_pos_orig + #{lines + count} displaylines")
+      @udl_pos_prev = target
+
+      @udl_pos_orig = target if target.x == @udl_pos_orig.x
+      target
+    end
+
     def tag_exists?(given_path)
       tag_names.include?(given_path)
     rescue RuntimeError => ex

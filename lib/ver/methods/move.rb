@@ -304,15 +304,8 @@ module VER::Methods
       # a user-defined maximum delta (something around 200 should do), will
       # implement that on demand.
       def up_down_line(text, count)
-        insert = text.index(:insert)
-
-        @udl_pos_orig = insert if @udl_pos_prev != insert
-
-        lines = text.count(@udl_pos_orig, insert, :displaylines)
-        target = text.index("#@udl_pos_orig + #{lines + count} displaylines")
-        @udl_pos_prev = target
+        target = text.up_down_line(count)
         text.mark_set(:insert, target)
-        @udl_pos_orig = target if target.x == @udl_pos_orig.x
       end
     end
   end
