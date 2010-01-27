@@ -1,81 +1,40 @@
-emacs = VER::Keymap.define(name: :emacs, major: :fundamental)
+module VER
+  major_mode :Fundamental do
+    handler Methods::Basic
+    map :quit, %w[Control-x Control-c]
 
-emacs.major :fundamental do
-  handler VER::Methods::Basic
-  map :quit, %w[Control-x Control-c]
+    handler Methods::Help
+    map :describe_key, %w[Control-h k]
 
-  handler VER::Methods::Help
-  map :describe_key, %w[Control-h k]
+    handler Methods::Undo
+    map :undo, %w[Control-slash], %w[Control-x u], %w[Control-underscore], %w[Undo]
+    map :redo, %w[Redo] # emacs redo breaks my brain... undo only for now
 
-  handler VER::Methods::Move
-  map :next_char, %w[Control-f], %w[Right]
-  map :next_line, %w[Control-n], %w[Down]
-  map :next_page, %w[Control-v], %w[Next]
-  map :next_word, %w[Alt-f]
-  map :prev_char, %w[Control-b], %w[Left]
-  map :prev_line, %w[Control-p], %w[Up]
-  map :prev_page, %w[Alt-v],     %w[Prior]
-  map :prev_word, %w[Alt-b]
+    handler Methods::Move
+    map :end_of_file,     %w[Control-greater]
+    map :end_of_line,     %w[Control-e], %w[End]
+    map :next_char,       %w[Control-f], %w[Right]
+    map :next_line,       %w[Control-n], %w[Down]
+    map :next_page,       %w[Control-v], %w[Next]
+    map :next_word,       %w[Alt-f]
+    map :prev_char,       %w[Control-b], %w[Left]
+    map :prev_line,       %w[Control-p], %w[Up]
+    map :prev_page,       %w[Alt-v],     %w[Prior]
+    map :prev_word,       %w[Alt-b]
+    map :start_of_file,   %w[Control-less]
+    map :start_of_line,   %w[Control-a], %w[Home]
+    map :end_of_sentence, %w[Alt-e]
 
-  handler VER::Methods::Insert
-  missing :string
-end
+    handler Methods::Delete
+    map [:delete_motion, :prev_char],     %w[BackSpace]
+    map [:delete_motion, :next_char],     %w[Control-d], %w[Delete]
+    map [:kill_motion, :end_of_line],     %w[Control-k]
+    map [:kill_motion, :end_of_sentence], %w[Alt-k]
+    map [:kill_motion, :next_word],       %w[Alt-d]
+    map [:kill_motion, :prev_word],       %w[Alt-BackSpace]
 
-__END__
-emacs = VER::Keymap.new(name: :emacs, mode: :basic)
-
-emacs.add_mode :quirks do |mode|
-  mode.arguments = false
-
-  # TODO
-  mode.map :universal_argument,   %w[Control-u]
-  mode.map :keyboard_quit,        %w[Control-g]
-end
-
-emacs.in_mode :basic do
-  inherits :quirks
-  arguments = false
-  missing :insert_string
-
-  key :quit,                            %w[Control-x Control-c]
-  key :page_down,                       %w[Control-v], %w[Next]
-  key :page_up,                         %w[Alt-v], %w[Prior]
-  key :previous_line,                   %w[Control-p], %w[Up]
-  key :next_line,                       %w[Control-n], %w[Down]
-  key :backward_char,                   %w[Control-b], %w[Left]
-  key :forward_char,                    %w[Control-f], %w[Right]
-  key :backward_word,                   %w[Alt-b]
-  key :forward_word,                    %w[Alt-f]
-  key :beginning_of_line,               %w[Control-a]
-  key :end_of_line,                     %w[Control-e]
-  key :go_line,                         %w[Control-less]
-  key :end_of_file,                     %w[Control-greater]
-  key :undo,                            %w[Control-slash], %w[Undo]
-  key :redo,                            %w[Redo]
-  key :join_lines,                      %w[Control-j]
-  key :insert_newline,                  %w[Return]
-  key [:delete_motion, :backward_char], %w[BackSpace]
-  key [:delete_motion, :forward_char],  %w[Control-d], %w[Delete]
-  key [:kill_motion, :end_of_line],     %w[Control-k]
-  key :kill_sentence,                   %w[Alt-k]
-  key [:kill_motion, :forward_word],    %w[Alt-d]
-  key [:kill_motion, :backward_word],   %w[Alt-BackSpace]
-
-  # HACK, this probably shouldn't switch modes.
-  key [:start_selection, :block], %w[Control-space]
-
-  KEYSYMS.each do |sym, name|
-    key [:insert_string, sym], [name]
+    handler VER::Methods::Insert
+    map :newline, %w[Return]
+    missing :string
   end
-
-  # TODO
-  key :recenter_top_bottom, %w[Control-l]
-  key :go_beginning_of_sentence, %w[Alt-a]
-  key :go_end_of_sentence, %w[Alt-e]
-  key :kill_region,          %w[Control-w]
-
-  key :describe_key_briefly, %w[Control-h c]
-  key :describe_key,         %w[Control-h k]
-  key :describe_function,    %w[Control-h f]
-  key :apropos_command,      %w[Control-h a]
 end
