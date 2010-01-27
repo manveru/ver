@@ -102,11 +102,25 @@ module VER::Methods
         text.mark_set(:insert, "#{number}.0")
       end
 
+      # Basically like [go_line] without arguments, but much nicer name.
+      def start_of_file(text)
+        text.mark_set(:insert, "1.0")
+      end
+
       def end_of_file(text, count = text.prefix_arg)
         if count
           text.mark_set(:insert, "#{count}.0")
         else
           text.mark_set(:insert, :end)
+        end
+      end
+
+      def end_of_sentence(text, count = text.prefix_count)
+        text.search_all /\.\s/, 'insert' do |match, from, to|
+          p match: match, from: from, to: to
+          text.mark_set(:insert, "#{to} - 1 chars")
+          count -= 1
+          return if count <= 0
         end
       end
 
