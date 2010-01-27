@@ -1,26 +1,26 @@
 module VER
   minor_mode :help do
-    handler VER::Methods::Help
+    handler Methods::Help
 
     map :describe_key, %w[Control-h k]
   end
 
   minor_mode :open do
-    handler VER::Methods::Open
+    handler Methods::Open
 
     map :file_open_popup, %w[Control-o]
     map :file_open_fuzzy, %w[Alt-o], %w[Control-m o]
   end
 
   minor_mode :save do
-    handler VER::Methods::Save
+    handler Methods::Save
 
     map :file_save,       %w[Control-s]
     map :file_save_popup, %w[Control-Alt-s]
   end
 
   minor_mode :preview do
-    handler VER::Methods::Preview
+    handler Methods::Preview
 
     map :preview, %w[F5]
   end
@@ -28,7 +28,7 @@ module VER
   minor_mode :basic do
     inherits :help, :preview, :save, :open
 
-    handler VER::Methods::Basic
+    handler Methods::Basic
     map :quit,                %w[Control-q]
     map :source_buffer,       %w[Control-R]
     map :status_evaluate,     %w[Alt-x], %w[Control-m x]
@@ -48,8 +48,8 @@ module VER
 
   minor_mode :views do
     inherits :basic
-    handler VER::Methods::Views
-    # handler VER::Methods::Views
+    handler Methods::Views
+    # handler Methods::Views
 
     map :one,           %w[1]
     map :two,           %w[2]
@@ -78,7 +78,7 @@ module VER
   minor_mode :views_control do
     become :views, %w[Control-w r]
 
-    handler VER::Methods::Views
+    handler Methods::Views
     map :change,     ['Control-w', :views]
     map :focus_next, %w[Control-Tab]
     map :focus_prev, %w[Control-Shift-Tab], %w[Control-ISO_Left_Tab]
@@ -89,7 +89,7 @@ module VER
   minor_mode :move do
     inherits :prefix
 
-    handler VER::Methods::Move
+    handler Methods::Move
     map :prev_char,       %w[h], %w[Left]
     map :prev_chunk,      %w[B]
     map :prev_word,       %w[b], %w[Shift-Left]
@@ -114,7 +114,7 @@ module VER
   end
 
   minor_mode :search do
-    handler VER::Methods::Search
+    handler Methods::Search
 
     map :search_char_left,               %w[F]
     map :search_char_right,              %w[f]
@@ -128,14 +128,14 @@ module VER
   end
 
   minor_mode :ctags do
-    handler VER::Methods::CTags
+    handler Methods::CTags
 
     map :find_current,  %w[Control-bracketright] # C-]
     map :prev,          %w[Control-bracketleft]  # C-[
   end
 
   minor_mode :bookmark do
-    handler VER::Methods::Bookmark
+    handler Methods::Bookmark
 
     map :add_char,    %w[m]
     map :visit_char,  %w[quoteleft]
@@ -144,7 +144,7 @@ module VER
   end
 
   minor_mode :complete do
-    handler VER::Methods::Completion
+    handler Methods::Completion
 
     map :aspell,     %w[Control-x Control-a]
     map :contextual, %w[Control-x Control-x]
@@ -156,7 +156,7 @@ module VER
   end
 
   minor_mode :delete do
-    handler VER::Methods::Delete
+    handler Methods::Delete
 
     map :change_line,                    %w[c c]
     map :kill_line,                      %w[d d]
@@ -170,7 +170,7 @@ module VER
   end
 
   minor_mode :clipboard do
-    handler VER::Methods::Clipboard
+    handler Methods::Clipboard
 
     map :copy_line,        %w[y y], %w[Y]
     map :copy_motion,      ['y', :move]
@@ -179,7 +179,7 @@ module VER
   end
 
   minor_mode :undo do
-    handler VER::Methods::Undo
+    handler Methods::Undo
 
     map :redo, %w[Control-r]
     map :undo, %w[u]
@@ -195,7 +195,7 @@ module VER
     become :insert,         %w[i]
     become :replace,        %w[R]
 
-    handler VER::Methods::Control
+    handler Methods::Control
     map :chdir,                             %w[g c]
 
     map :cursor_vertical_bottom,            %w[z b]
@@ -228,7 +228,7 @@ module VER
     map :unindent_line,                     %w[less]
     map :wrap_line,                         %w[g w]
 
-    handler VER::Methods::Insert
+    handler Methods::Insert
     map :indented_newline_above,     %w[O]
     map :indented_newline_below,     %w[o]
   end
@@ -250,11 +250,6 @@ module VER
     map [:kill_motion, :prev_char],  %w[BackSpace]
     map [:kill_motion, :prev_word],  %w[Control-w]
 
-    # map :beginning_of_history,       %w[Control-less]
-    # map :end_of_history,             %w[Control-greater]
-    # map :next_history,               %w[Down], %w[Control-n]
-    # map :prev_history,               %w[Up], %w[Control-p]
-
     missing :insert_string
   end
 
@@ -262,15 +257,15 @@ module VER
     inherits :basic, :views_control, :complete
     become :control, %w[Escape], %w[Control-c]
 
-    handler VER::Methods::AutoFill
+    handler Methods::AutoFill
     map :auto_fill_space,          %w[space]
 
-    handler VER::Methods::Delete
+    handler Methods::Delete
     map [:kill_motion, :next_char],  %w[Delete], %w[Control-d]
     map [:kill_motion, :prev_char],  %w[BackSpace]
     map [:kill_motion, :prev_word],  %w[Control-w]
 
-    handler VER::Methods::Move
+    handler Methods::Move
     map :next_line,      %w[Down], %w[Control-n]
     map :next_page,      %w[Control-f], %w[Next], %w[Shift-Down]
     map :prev_page,      %w[Control-b], %w[Prior], %w[Shift-Up]
@@ -282,11 +277,11 @@ module VER
     map :prev_word,      %w[Shift-Left], %w[Alt-b]
     map :start_of_line,  %w[Home], %w[Control-a]
 
-    handler VER::Methods::Control
+    handler Methods::Control
     map :smart_evaluate,           %w[Alt-e], %w[Control-e]
 
 
-    handler VER::Methods::Insert
+    handler Methods::Insert
     map :indented_newline,  %w[Return]
     map :selection,         %w[Shift-Insert]
     map :tab,               %w[Control-v Tab], %w[Control-i]
@@ -295,15 +290,15 @@ module VER
 
   minor_mode :replace do
     inherits :insert
-    handler VER::Methods::Insert
 
+    handler Methods::Insert
     missing :replace_string
   end
 
   minor_mode :select do
     inherits :basic, :move, :search
 
-    handler VER::Methods::Selection
+    handler Methods::Selection
     map :comment,         %w[comma c]
     map :copy,            %w[y], %w[Y]
     map :indent,          %w[greater]
@@ -318,7 +313,7 @@ module VER
     map :unindent,        %w[less]
     map :wrap,            %w[g w]
 
-    handler VER::Methods::Control
+    handler Methods::Control
     map :smart_evaluate,  %w[Alt-e], %w[Control-e]
   end
 
@@ -329,7 +324,7 @@ module VER
     become :select_line,  %w[V]
     become :select_block, %w[Control-v]
 
-    handler VER::Methods::Selection
+    handler Methods::Selection
     enter :enter
     leave :leave
   end
@@ -341,7 +336,7 @@ module VER
     become :select_char,  %w[v]
     become :select_block, %w[Control-v]
 
-    handler VER::Methods::Selection
+    handler Methods::Selection
     enter :enter
     leave :leave
   end
@@ -353,7 +348,7 @@ module VER
     become :select_char, %w[v]
     become :select_line, %w[V]
 
-    handler VER::Methods::Selection
+    handler Methods::Selection
     enter :enter
     leave :leave
   end
@@ -364,17 +359,12 @@ module VER
     map :ask_abort,         %w[Escape], %w[Control-c]
     map :ask_submit,        %w[Return]
 
-    # map :history_complete,  %w[Tab]
-    # map :history_next,      %w[Down], %w[Control-n]
-    # map :history_prev,      %w[Up], %w[Control-p]
-
     missing :insert_string
   end
 
   minor_mode :list_view_entry do
     inherits :basic, :readline
 
-    # map :update, %w[Key]
     map :cancel,          %w[Escape], %w[Control-c]
     map :completion,      %w[Tab]
     map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
@@ -406,7 +396,7 @@ module VER
   minor_mode :snippet do
     inherits :readline
 
-    handler VER::Methods::Snippet
+    handler Methods::Snippet
     map :cancel, %w[Escape], %w[Control-c]
     map :jump,   %w[Tab]
 
@@ -418,9 +408,6 @@ module VER
   end
 
   major_mode :Status do
-    # inherits :basic, :readline
-    # no handler here, methods are defined on the widget.
-
     map :ask_abort,         %w[Escape], %w[Control-c]
     map :ask_submit,        %w[Return]
 
@@ -438,16 +425,7 @@ module VER
     map :kill_prev_char,    %w[BackSpace]
     map :kill_prev_word,    %w[Control-w]
 
-    # map :beginning_of_history,       %w[Control-less]
-    # map :end_of_history,             %w[Control-greater]
-    # map :next_history,               %w[Down], %w[Control-n]
-    # map :prev_history,               %w[Up], %w[Control-p]
-
     missing :insert_string
-
-    # map :history_complete,  %w[Tab]
-    # map :history_next,      %w[Down], %w[Control-n]
-    # map :history_prev,      %w[Up], %w[Control-p]
   end
 
   major_mode :Executor do
