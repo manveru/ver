@@ -79,7 +79,6 @@ module VER::Methods
       # For just about all purposes, UTF-8 should be what you want to input, and it's what Tk
       # can handle best.
       def string(text)
-        p string: text
         common_string(text, text.event.unicode)
       end
 

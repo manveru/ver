@@ -21,7 +21,7 @@ module VER
     end
 
     def method_missing(method, *args, &block)
-      ::Kernel.p([method, args])
+      # ::Kernel.p([@widget, @event] => [method, args])
       result = @widget.send(method, *args, &block)
 
       if method =~ /=/
