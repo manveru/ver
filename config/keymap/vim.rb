@@ -393,7 +393,7 @@ module VER
     map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
   end
 
-  minor_mode :hover_completion do
+  major_mode :HoverCompletion do
     inherits :basic
 
     map :cancel,               %w[Escape], %w[BackSpace]

@@ -7,25 +7,25 @@ module VER
       include Keymapped
       attr_accessor :hover_completion
 
-      def cancel
+      def cancel(event)
         hover_completion.cancel
       end
 
-      def continue_completion
+      def continue_completion(event)
         hover_completion.continue_completion
       end
 
-      def go_down
+      def go_down(event)
         index = curselection.first + 1
         select(index) if index < size
       end
 
-      def go_up
+      def go_up(event)
         index = curselection.first - 1
         select(index) if index >= 0
       end
 
-      def submit
+      def submit(event)
         hover_completion.submit
       end
 
@@ -44,7 +44,6 @@ module VER
     def initialize(parent, options = {}, &completer)
       @parent, @options, @completer = parent, options, completer
       setup_widgets
-      setup_keymap
       setup_events
       update
     end
@@ -52,12 +51,8 @@ module VER
     def setup_widgets
       @list = Listbox.new(parent, borderwidth: 0, selectmode: :single)
       @list.hover_completion = self
+      @list.major_mode = :HoverCompletion
       @list.focus
-    end
-
-    def setup_keymap
-      @list.keymap = VER.keymap.use(
-        widget: list, mode: :hover_completion)
     end
 
     def setup_events
