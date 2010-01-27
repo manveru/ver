@@ -404,21 +404,6 @@ module VER::Methods
         Kernel.raise exception
       end
 
-      def replace_char(text)
-        VER.message(
-          'Enter character to replace the character under the cursor with')
-
-        text.keymap.gets 1 do |char|
-          if char.size == 1
-            text.replace('insert', 'insert + 1 chars', char)
-            Move.prev_char(text)
-            VER.message "replaced #{char.size} chars"
-          else
-            VER.message 'replace aborted'
-          end
-        end
-      end
-
       def indent_line(text, count = 1)
         indent = (' ' * text.options[:shiftwidth] * count)
         text.insert('insert linestart', indent)

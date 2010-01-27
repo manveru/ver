@@ -194,6 +194,7 @@ module VER
     become :select_line,    %w[V]
     become :insert,         %w[i]
     become :replace,        %w[R]
+    become :replace_char,   %w[r]
 
     handler Methods::Control
     map :chdir,                             %w[g c]
@@ -215,7 +216,6 @@ module VER
     map :open_file_under_cursor,            %w[g f]
 
     map :repeat_command,                    %w[period]
-    map :replace_char,                      %w[r]
     map :smart_evaluate,                    %w[Alt-e], %w[Control-m e]
 
     map [:insert_at, :home_of_line],        %w[I]
@@ -293,6 +293,11 @@ module VER
 
     handler Methods::Insert
     missing :replace_string
+  end
+
+  minor_mode :replace_char do
+    handler Methods::Insert
+    missing :replace_char
   end
 
   minor_mode :select do

@@ -64,13 +64,22 @@ module VER::Methods
         common_string(text, text.event.unicode)
       end
 
-      def replace_string(text, string)
-        return if string.empty?
-
+      def replace_string(text)
+        p text.event
         Undo.record text do |record|
           record.delete(:insert, 'insert + 1 chars')
-          common_string(string, record)
+          common_string(text, text.event.unicode, record)
         end
+      end
+
+      def replace_char(text)
+        p text.event
+        Undo.record text do |record|
+          record.delete(:insert, 'insert + 1 chars')
+          common_string(text, text.event.unicode, record)
+        end
+        text.mark_set(:insert, 'insert - 1 chars')
+        text.minor_mode(:replace_char, :control)
       end
 
       private
