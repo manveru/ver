@@ -15,7 +15,10 @@ module VER::Methods
       # FIXME: nasty hack or neccesary?
       def paste(text)
         content = clipboard_get(text, 'STRING'){
-                  clipboard_get(text, 'ARRAY') }
+          array = clipboard_get(text, 'ARRAY')
+          return paste_array(text, array) if array
+        }
+
         paste_continous(text, content.to_s) if content
       end
 
@@ -74,16 +77,16 @@ module VER::Methods
         end
       end
 
-      # def paste_array(text, marshal_array)
-      #   array = Marshal.load(marshal_array.unpack('m').first)
-      #   insert_y, insert_x = text.index(:insert).split
-      #
-      #   Undo.record text do |record|
-      #     array.each_with_index do |line, index|
-      #       record.insert("#{insert_y + index}.#{insert_x}", line)
-      #     end
-      #   end
-      # end
+      def paste_array(text, marshal_array)
+        array = Marshal.load(marshal_array.unpack('m').first)
+        insert_y, insert_x = text.index(:insert).split
+
+        Undo.record text do |record|
+          array.each_with_index do |line, index|
+            record.insert("#{insert_y + index}.#{insert_x}", line)
+          end
+        end
+      end
 
       def clipboard_get(text, type = 'STRING')
         Tk::Clipboard.get(text, type)
