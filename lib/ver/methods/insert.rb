@@ -16,22 +16,23 @@ module VER::Methods
         text.insert(:insert, "\t")
       end
 
+      def newline(text)
+        text.insert(:insert, "\n")
+      end
+
       def indented_newline_below(text)
         Undo.record text do |record|
           if text.options.autoindent
-            line = text.get('insert linestart', 'insert lineend')
-
-            indent = line.empty? ? "" : (line[/^\s+/] || '')
-            text.mark_set(:insert, 'insert lineend')
-            record.insert(:insert, "\n#{indent}")
+            text.mark_set('insert', 'insert lineend')
+            Indent.insert_newline(text, record)
           else
             text.mark_set(:insert, 'insert lineend')
             record.insert(:insert, "\n")
+            Control.clean_line(text, 'insert - 1 line', record)
           end
-
-          Control.clean_line(text, 'insert - 1 line', record)
-          text.minor_mode(:control, :insert)
         end
+
+        text.minor_mode(:control, :insert)
       end
 
       def indented_newline_above(text)
@@ -50,28 +51,9 @@ module VER::Methods
 
       def indented_newline(text)
         if text.options.autoindent
-          fallback_indented_newline(text)
+          Indent.insert_newline(text)
         else
           text.insert(:insert, "\n")
-        end
-      end
-
-      def fallback_indented_newline(text)
-        Undo.record text do |record|
-          line1 = text.get('insert linestart', 'insert lineend')
-          indentation1 = line1[/^\s+/] || ''
-          record.insert(:insert, "\n")
-
-          line2 = text.get('insert linestart', 'insert lineend')
-          indentation2 = line2[/^\s+/] || ''
-
-          record.replace(
-            'insert linestart',
-            "insert linestart + #{indentation2.size} chars",
-            indentation1
-          )
-
-          Control.clean_line(text, 'insert - 1 line', record)
         end
       end
 
@@ -106,156 +88,6 @@ module VER::Methods
 
         # puts "Insert %p in mode %p" % [string, keymap.mode]
         record.insert(:insert, string)
-      end
-    end
-  end
-end
-
-__END__
-
-      def insert_auto_indented_newline(text)
-        text.insert('insert lineend', "\n")
-        indent_fix_at('insert', indent_fix('insert - 1 line', indent_after('insert - 2 line')))
-      rescue Errno::ENOENT, TypeError
-        fallback_insert_indented_newline
-      end
-
-      def indent_of(index)
-        index = index(index)
-        return 0 if index.y < 1
-
-        line = get(index.linestart, index.lineend)
-
-        if line =~ /^\s*$/
-          return indent_of(index.prev)
-        else
-          indent_size = line[/^\s*/].size
-          return 0 if indent_size == 0
-          return indent_size / 2
-        end
-      end
-
-      def indent_after(index, indent = nil)
-        settings = indent_settings.values_at(:increase, :decrease, :indent_next, :unindented)
-
-        return unless settings.any?
-        increase, decrease, indent_next, unindented = settings
-
-        index = index(index)
-        indent ||= (index.y > 1 ? indent_after(index.prev) : 0)
-
-        linestart, lineend  = index.linestart, index.lineend
-        line = get(linestart, lineend).strip
-
-        if increase && decrease && line =~ increase && line =~ decrease
-          indent -= 1
-          indent += 1
-        elsif decrease && line =~ decrease
-          indent -= 1
-        elsif increase && line =~ increase
-          indent += 1
-        elsif line =~ /^\s*$/
-        else
-        end
-
-        return indent
-      end
-
-      def indent_fix_at(index, indent)
-        settings = indent_settings.values_at(:increase, :decrease, :indent_next, :unindented)
-
-        return unless settings.any?
-        increase, decrease, indent_next, unindented = settings
-
-        index = index(index)
-
-        linestart, lineend  = index.linestart, index.lineend
-        line = get(linestart, lineend).strip
-
-        if increase && decrease && line =~ increase && line =~ decrease
-          indent -= 1
-          replace(linestart, lineend, ('  ' * indent) << line)
-          indent += 1
-        elsif decrease && line =~ decrease
-          replace(linestart, lineend, ('  ' * indent) << line)
-          indent -= 1
-        elsif increase && line =~ increase
-          replace(linestart, lineend, ('  ' * indent) << line)
-          indent += 1
-        elsif line =~ /^\s*$/
-          replace(linestart, lineend, ('  ' * indent) << line)
-        else
-          replace(linestart, lineend, ('  ' * indent) << line)
-        end
-
-        return indent
-      end
-
-      def auto_indent_line
-        if @syntax
-          syntax_indent_line
-        end
-      end
-
-      def indent_settings
-        return {} unless @syntax
-        name = @syntax.name
-        file = VER.find_in_loadpath("preferences/#{name}.rb")
-        pref = eval(file.read)
-
-        indent_settings = {}
-
-        pref.each do |key, value|
-          settings = value['settings']
-          indent_settings[:increase]    ||= settings['increaseIndentPattern']
-          indent_settings[:decrease]    ||= settings['decreaseIndentPattern']
-          indent_settings[:indent_next] ||= settings['indentNextLinePattern']
-          indent_settings[:unindented]  ||= settings['unIndentedLinePattern']
-        end
-
-
-        [:increase, :decrease, :indent_next, :unindented].each do |key|
-          if value = indent_settings[key]
-            indent_settings[key] = Regexp.new(value)
-          else
-            indent_settings.delete(key)
-          end
-        end
-
-        return indent_settings
-      end
-
-      def syntax_indent_file
-        settings = indent_settings.values_at(:increase, :decrease, :indent_next, :unindented)
-
-        return unless settings.any?
-        increase, decrease, indent_next, unindented = settings
-
-        empty_line = /^\s*$/
-        indent = 0
-        indent_token = ' ' * options.shiftwidth
-
-        undo_record do |record|
-          index('1.0').upto(index('end')) do |pos|
-            pos_lineend = pos.lineend
-            line = get(pos, pos_lineend).strip
-
-            if increase && decrease && line =~ increase && line =~ decrease
-              indent -= 1
-              record.replace(pos, pos_lineend, (indent_token * indent) << line)
-              indent += 1
-            elsif decrease && line =~ decrease
-              indent -= 1
-              record.replace(pos, pos_lineend, (indent_token * indent) << line)
-            elsif increase && line =~ increase
-              record.replace(pos, pos_lineend, (indent_token * indent) << line)
-              indent += 1
-            elsif line =~ empty_line
-            else
-              record.replace(pos, pos_lineend, (indent_token * indent) << line)
-            end
-          end
-        end
       end
     end
   end

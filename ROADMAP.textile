@@ -75,12 +75,6 @@ h2. Add specs
 
 We should add specs for as many things as possible.
 
-h2. Proper indentation support
-
-At the moment, all we do is maintain indentation when possible.
-But it would be nice if VER could use the information from bundles for that.
-The last attempt had way too much slow backtracking, so I removed it.
-
 h2. Help system
 
 Using YARD, we could nicely present documentation for every constant and method
