@@ -210,6 +210,7 @@ module VER
     map [:insert_at, :next_char],           %w[a]
 
     map :indent_line,                       %w[greater]
+    map :unindent_line,                     %w[less]
 
     map :join_lines,                        %w[J]
 
@@ -225,12 +226,11 @@ module VER
     map :theme_switch,                      %w[Control-t]
     map :toggle_case,                       %w[asciitilde]
 
-    map :unindent_line,                     %w[less]
     map :wrap_line,                         %w[g w]
 
     handler Methods::Insert
-    map :indented_newline_above,     %w[O]
-    map :indented_newline_below,     %w[o]
+    map :newline_above,     %w[O]
+    map :newline_below,     %w[o]
   end
 
   minor_mode :readline do
@@ -282,9 +282,9 @@ module VER
 
 
     handler Methods::Insert
-    map :indented_newline,  %w[Return]
-    map :selection,         %w[Shift-Insert]
-    map :tab,               %w[Control-v Tab], %w[Control-i]
+    map :newline,    %w[Return]
+    map :selection,  %w[Shift-Insert]
+    map :tab,        %w[Control-v Tab], %w[Control-i]
     missing :string
   end
 

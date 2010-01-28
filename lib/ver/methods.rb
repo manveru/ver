@@ -9,7 +9,6 @@ module VER
     autoload :Control,     'ver/methods/control'
     autoload :Delete,      'ver/methods/delete'
     autoload :Help,        'ver/methods/help'
-    autoload :Indent,      'ver/methods/indent'
     autoload :Insert,      'ver/methods/insert'
     autoload :Move,        'ver/methods/move'
     autoload :Open,        'ver/methods/open'

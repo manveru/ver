@@ -1,7 +1,38 @@
-module VER::Methods
-  module Indent
-    class << self
-      def insert_newline(text, record = text)
+module VER
+  module Methods
+    module SmartAutoindent
+      def self.newline(text)
+        if text.options.autoindent
+          indented_newline(text) # Indent.insert_newline(text)
+        else
+          Insert.newline(text)
+        end
+      end
+
+      def self.newline_below(text)
+        if text.options.autoindent
+          text.mark_set('insert', 'insert lineend')
+          Indent.insert_newline(text, record)
+        else
+          Insert.newline_below(text)
+        end
+      end
+
+      def self.newline_above(text)
+        Undo.record text do |record|
+          if text.index(:insert).y > 1
+            Move.prev_line(text)
+            newline_below(text)
+          else
+            record.insert('insert linestart', "\n")
+            text.mark_set(:insert, 'insert - 1 line')
+            Control.clean_line(text, 'insert - 1 line', record)
+            text.minor_mode(:control, :insert)
+          end
+        end
+      end
+
+      def self.indented_newline(text, record = text)
         settings = indent_settings(text)
         increase, decrease = settings.values_at(:increase, :decrease)
         unless increase || decrease
@@ -82,7 +113,7 @@ module VER::Methods
         record.insert('insert lineend', "\n#{' ' * (next_indent * 2)}")
       end
 
-      def indent_settings(text)
+      def self.indent_settings(text)
         return {} unless text.load_preferences
 
         indent_settings = {}
@@ -106,6 +137,20 @@ module VER::Methods
 
         return indent_settings
       end
+    end
+  end
+
+  case options.keymap
+  when 'vim'
+    minor_mode :control do
+      handler Methods::SmartAutoindent
+      map :newline_below, %w[o]
+      map :newline_above, %w[O]
+    end
+
+    minor_mode :insert do
+      handler Methods::SmartAutoindent
+      map :insert_newline, %w[Return]
     end
   end
 end

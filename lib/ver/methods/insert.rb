@@ -17,29 +17,39 @@ module VER::Methods
       end
 
       def newline(text)
-        text.insert(:insert, "\n")
+        if text.options.autoindent
+          indented_newline(text)
+        else
+          text.insert(:insert, "\n")
+        end
       end
 
-      def indented_newline_below(text)
+      def newline_below(text)
         Undo.record text do |record|
           if text.options.autoindent
-            text.mark_set('insert', 'insert lineend')
-            Indent.insert_newline(text, record)
+            # text.mark_set('insert', 'insert lineend')
+            # Indent.insert_newline(text, record)
+            line = text.get('insert linestart', 'insert lineend')
+
+            indent = line[/^\s*/]
+            text.mark_set(:insert, 'insert lineend')
+            record.insert(:insert, "\n#{indent}")
           else
             text.mark_set(:insert, 'insert lineend')
             record.insert(:insert, "\n")
-            Control.clean_line(text, 'insert - 1 line', record)
           end
+
+          Control.clean_line(text, 'insert - 1 line', record)
         end
 
         text.minor_mode(:control, :insert)
       end
 
-      def indented_newline_above(text)
+      def newline_above(text)
         Undo.record text do |record|
           if text.index(:insert).y > 1
             Move.prev_line(text)
-            indented_newline_below(text)
+            newline_below(text)
           else
             record.insert('insert linestart', "\n")
             text.mark_set(:insert, 'insert - 1 line')
@@ -50,10 +60,21 @@ module VER::Methods
       end
 
       def indented_newline(text)
-        if text.options.autoindent
-          Indent.insert_newline(text)
-        else
-          text.insert(:insert, "\n")
+        Undo.record text do |record|
+          line1 = text.get('insert linestart', 'insert lineend')
+          indentation1 = line1[/^\s+/] || ''
+          record.insert(:insert, "\n")
+
+          line2 = text.get('insert linestart', 'insert lineend')
+          indentation2 = line2[/^\s+/] || ''
+
+          record.replace(
+            'insert linestart',
+            "insert linestart + #{indentation2.size} chars",
+            indentation1
+          )
+
+          Control.clean_line(text, 'insert - 1 line', record)
         end
       end
 
