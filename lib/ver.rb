@@ -36,6 +36,7 @@ module VER
   autoload :Textpow,             'ver/vendor/textpow'
   autoload :Theme,               'ver/theme'
   autoload :TilingLayout,        'ver/layout/tiling'
+  autoload :PanedLayout,         'ver/layout/paned'
   autoload :Undo,                'ver/undo'
   autoload :View,                'ver/view'
   autoload :WidgetEvent,         'ver/widget_event'
