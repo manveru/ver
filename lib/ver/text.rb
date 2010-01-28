@@ -492,7 +492,7 @@ module VER
     end
 
     def setup_highlight_trailing_whitespace
-      tag_configure 'invalid.trailing-whitespace', background: '#f00'
+      tag_configure 'invalid.trailing-whitespace', background: '#400'
     end
 
     def setup_highlight_links
