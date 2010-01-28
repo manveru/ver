@@ -2,6 +2,7 @@ module VER
   def self.major_mode(name, &block)
     major = MajorMode[name]
     major.instance_eval(&block)
+    major
   end
 
   # This mode is responsible for maintaining a keymap of its own and a list of

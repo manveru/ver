@@ -1,7 +1,8 @@
 module VER
   def self.minor_mode(name, &block)
-    major = MinorMode[name]
-    major.instance_eval(&block)
+    minor = MinorMode[name]
+    minor.instance_eval(&block)
+    minor
   end
 
   # A minor mode contains modifications for major modes.
