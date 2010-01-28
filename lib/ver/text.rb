@@ -516,7 +516,7 @@ module VER
     end
 
     def tag_all_uris(given_options = {})
-      tag_all_matching('markup.underline.link', /https?:\/\/[^)\]}\s'"]+/, given_options)
+      tag_all_matching('markup.underline.link', /https?:\/\/[^<>)\]}\s'"]+/, given_options)
     end
 
     def tag_all_trailing_whitespace(given_options = {})
