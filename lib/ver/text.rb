@@ -67,7 +67,6 @@ module VER
 
       on_disk = Digest::MD5.hexdigest(filename.read)
       in_memory = Digest::MD5.hexdigest(value)
-      p on_disk => in_memory
       on_disk == in_memory
     end
 
