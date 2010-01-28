@@ -98,7 +98,7 @@ module VER::Methods
         end
       end
 
-      def go_line(text, number = 0)
+      def go_line(text, number = text.prefix_count)
         text.mark_set(:insert, "#{number}.0")
       end
 
