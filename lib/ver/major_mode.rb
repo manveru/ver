@@ -43,6 +43,8 @@ module VER
       self.bound_keys = Set.new
       self.tag = Tk::BindTag.new("#{name}-mode")
 
+      KEYSYMS.each{|key, sym| bind_key(sym) }
+
       MODES[self.name] = self
     end
 
