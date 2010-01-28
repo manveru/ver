@@ -219,17 +219,9 @@ module VER::Methods
       end
 
       # Replace every character in the selection with the character entered.
-      def replace_char(text)
-        VER.message 'Enter character to replace the selection with'
-
-        text.keymap.gets 1 do |char|
-          if char.size == 1
-            replace_with(text, char, full = true)
-            VER.message "replaced 1 char"
-          else
-            VER.message 'replace aborted'
-          end
-        end
+      def replace_char(text, char = text.event.unicode)
+        replace_with(text, char, full = true)
+        text.minor_mode(:select_replace_char, select_mode(text))
       end
 
       def replace_string(text)

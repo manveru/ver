@@ -314,7 +314,6 @@ module VER
     map :kill,            %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
     map :pipe,            %w[exclam]
     map :lower_case,      %w[u]
-    map :replace_char,    %w[r]
     map :replace_string,  %w[c]
     map :toggle_case,     %w[asciitilde]
     map :upper_case,      %w[U]
@@ -332,6 +331,7 @@ module VER
     become :control,      %w[Escape], %w[Control-c]
     become :select_line,  %w[V]
     become :select_block, %w[Control-v]
+    become :select_replace_char, %w[r]
 
     handler Methods::Selection
     enter :enter
@@ -344,6 +344,7 @@ module VER
     become :control,      %w[Escape], %w[Control-c]
     become :select_char,  %w[v]
     become :select_block, %w[Control-v]
+    become :select_replace_char, %w[r]
 
     handler Methods::Selection
     enter :enter
@@ -356,10 +357,19 @@ module VER
     become :control,     %w[Escape], %w[Control-c]
     become :select_char, %w[v]
     become :select_line, %w[V]
+    become :select_replace_char, %w[r]
 
     handler Methods::Selection
     enter :enter
     leave :leave
+  end
+
+  minor_mode :select_replace_char do
+    become :control, %w[Escape], %w[Control-c]
+
+    handler Methods::Selection
+    map [:replace_char, "\n"], %w[Return]
+    missing :replace_char
   end
 
   minor_mode :status_query do
