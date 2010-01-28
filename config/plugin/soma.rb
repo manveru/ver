@@ -30,23 +30,20 @@ module VER
         soma_tempfile.open('w+'){|io| io.write(text.value) }
       end
 
-      private
-
       def self.soma_tempfile
         Pathname(Dir.tmpdir)/"#{`whoami`.strip}_somarepl_buffer"
       end
     end # Soma
   end # Methods
 
-  if vim = Keymap[:vim]
-    vim.in_mode :soma do
-      no_arguments
+  case options.keymap.to_s
+  when 'vim'
+    minor_mode :soma do
       handler Methods::Soma
-
-      key :soma_buffer, %w[Control-c Control-c]
+      map :soma_buffer, %w[Control-c Control-c]
     end
 
-    vim.in_mode :control do
+    minor_mode :control do
       inherits :soma
     end
   end
