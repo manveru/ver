@@ -182,29 +182,6 @@ module VER
       delete(0, :end)
     end
 
-    def ask_abort(event)
-      self.question = ''
-      self.value = self.backup_value
-      text.focus
-    end
-
-    def ask_submit(event)
-      answer = self.value
-      # history = HISTORY[@question]
-      # history.uniq!
-      # history << answer
-      self.question = ''
-
-      case result = callback.call(answer)
-      when String
-        message(result)
-      when Symbol
-        result
-      else
-        message(result.inspect)
-      end
-    end
-
     def virtual_movement(name, count = 1)
       pos = cursor
       __send__(name, count)

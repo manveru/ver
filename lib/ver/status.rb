@@ -56,6 +56,26 @@ module VER
       end
     end
 
+    def ask_abort(event)
+      self.question = ''
+      self.value = self.backup_value
+      text.focus
+    end
+
+    def ask_submit(event)
+      answer = self.value
+      self.question = ''
+
+      case result = callback.call(answer)
+      when String
+        message(result)
+      when Symbol
+        result
+      else
+        message(result.inspect)
+      end
+    end
+
     def delete(from, to = Tk::None)
       if from < @question.size
         from = @question.size
