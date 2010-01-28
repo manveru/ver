@@ -9,15 +9,14 @@ require_relative '../../../lib/ver/major_mode'
 require_relative '../../../lib/ver/methods/indent'
 
 class SpecText < Tk::Text
-  def syntax
-  end
+  attr_accessor :syntax
 
   def load_preferences
     true
   end
 
   def preferences
-    eval(File.read('config/preferences/Ruby.rb'))
+    eval(File.read("config/preferences/#{syntax}.rb"))
   end
 end
 
@@ -36,8 +35,9 @@ describe VER::Methods::Indent do
       end
     end
 
-    def check(code)
+    def check(syntax, code)
       text = SpecText.new
+      text.syntax = syntax
       fake_input(text, code)
       if $DEBUG
         puts " <result> ".center(80, '*')
@@ -54,7 +54,7 @@ describe VER::Methods::Indent do
 
     it 'indents by simple rules' do
       # the end will be ok once next newline is entered
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 class Foo
   def bar
   end
@@ -63,7 +63,7 @@ class Foo
     end
 
     it 'indents deeper' do
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 class Foo
   def bar
     if foo
@@ -77,7 +77,7 @@ end
     end
 
     it 'indents with empty lines' do
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 class Foo
   def bar
     return 1 if foo
@@ -95,21 +95,21 @@ end
     end
 
     it 'indents partial already' do
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 class Foo
   def bar
       RUBY
     end
 
     it 'indents next line at start of buffer' do
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 class Foo
   
       RUBY
     end
 
     it 'indents an empty case statement' do
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 case foo
 when bar
 when foobar
@@ -119,7 +119,7 @@ end
     end
 
     it 'indents a filled case statement' do
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 case foo
 when bar
   stuff
@@ -133,7 +133,7 @@ else
 
     it 'indents an if/elsif/else statement' do
       # the end will be ok once next newline is entered
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 if 1 == 2
   a
 elsif 2 == 3
@@ -148,7 +148,7 @@ else
 
     it 'indents some block structures' do
       # the end will be ok once next newline is entered
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 [1,2,3].each do |element|
   p element
 end
@@ -169,7 +169,7 @@ while ok
 
     it 'indents begin/rescue/else/end' do
       # the end will be ok once next newline is entered
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 begin
   foo
 rescue
@@ -182,7 +182,7 @@ else
 
     it 'indents rescue in a method' do
       # the end will be ok once next newline is entered
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 class Foo
   def bar
     some stuff
@@ -197,7 +197,7 @@ end
 
     it 'indents after a nested block' do
       # the end will be ok once next newline is entered
-      check(<<-RUBY)
+      check(:Ruby, <<-RUBY)
 module VER
   major_mode :Fundamental do
     stuff do
@@ -208,7 +208,7 @@ RUBY
 
     it 'indents nested module/class/method' do
       # the end will be ok once next newline is entered
-      check(<<-'RUBY')
+      check(:Ruby, <<-'RUBY')
 # the best editor since ed
 module VER
   # a module for modules with methods
@@ -245,6 +245,14 @@ module VER
   end
 end
       RUBY
+    end
+
+    it 'indents after a nested block' do
+      # the end will be ok once next newline is entered
+      check(:newLisp, <<-LISP)
+(if (= 1 2)
+  (+ 1 3))
+LISP
     end
   end
 end

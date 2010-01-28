@@ -4,70 +4,74 @@ module VER::Methods
       def insert_newline(text, record = text)
         settings = indent_settings(text)
         increase, decrease = settings.values_at(:increase, :decrease)
+        unless increase || decrease
+          record.insert :insert, "\n"
+          return
+        end
 
-        reference_line = text.get(
+        ref_line = text.get(
           "insert - 1 lines linestart",
           "insert - 1 lines lineend"
         )
-        reference = reference_line[/^\s*/].size / 2
-        reference_increase = increase =~ reference_line
-        reference_decrease = decrease =~ reference_line
+        ref = ref_line[/^\s*/].size / 2
+        ref_inc = increase ? ref_line.scan(increase).size : 0
+        ref_dec = decrease ? ref_line.scan(decrease).size : 0
 
-        current_line = text.get(
+        cur_line = text.get(
           "insert linestart",
           "insert lineend"
         )
-        current_increase = increase =~ current_line
-        current_decrease = decrease =~ current_line
+        cur_inc = increase ? cur_line.scan(increase).size : 0
+        cur_dec = decrease ? cur_line.scan(decrease).size : 0
 
         # we strip whitespace from previous empty lines, but it's still added to
         # the current one, so we use it as reference.
-        if reference_line.empty?
-          reference = current_line[/^\s*/].size / 2
+        if ref_line.empty?
+          ref = cur_line[/^\s*/].size / 2
         end
 
         pattern = [
-          if reference_increase && reference_decrease; '='
-          elsif reference_increase; '+'
-          elsif reference_decrease; '-'
+          if ref_inc != 0 && ref_dec != 0; '='
+          elsif ref_inc != 0; '+'
+          elsif ref_dec != 0; '-'
           else; '?'
           end,
-          if current_increase && current_decrease; '='
-          elsif current_increase; '+'
-          elsif current_decrease; '-'
+          if cur_inc != 0 && cur_dec != 0; '='
+          elsif cur_inc != 0; '+'
+          elsif cur_dec != 0; '-'
           else; '?'
           end
         ].join
 
-        current_indent, next_indent =
+        cur_indent, next_indent =
           case pattern
-          when '++'; [reference + 1, reference + 2]
-          when '+-'; [reference, reference]
-          when '+='; [reference, reference]
-          when '+?'; [reference + 1, reference + 1]
-          when '-+'; [reference, reference]
-          when '--'; [reference - 1, reference - 2]
-          when '-='; [reference, reference]
-          when '-?'; [reference, reference]
-          when '=+'; [reference + 1, reference + 1]
-          when '=-'; [reference, reference]
-          when '=='; [reference, reference]
-          when '=?'; [reference + 1, reference + 1]
-          when '?+'; [reference, reference + 1]
-          when '?-'; [reference - 1, reference - 2]
-          when '?='; [reference - 1, reference]
-          when '??'; [reference, reference]
+          when '++'; [ref + 1, ref + 2]
+          when '+-'; [ref,     ref]
+          when '+='; [ref,     ref]
+          when '+?'; [ref + 1, ref + 1]
+          when '-+'; [ref,     ref]
+          when '--'; [ref - 1, ref - 2]
+          when '-='; [ref,     ref]
+          when '-?'; [ref,     ref]
+          when '=+'; [ref + 1, ref + 1]
+          when '=-'; [ref,     ref]
+          when '=='; [ref,     ref]
+          when '=?'; [ref + 1, ref + 1]
+          when '?+'; [ref,     ref + 1]
+          when '?-'; [ref - 1, ref - 2]
+          when '?='; [ref - 1, ref]
+          when '??'; [ref,     ref]
           end
 
         if text.index('insert - 1 line') == text.index('insert')
           # first line, replace is futile
           next_indent -= 1
-        elsif current_line =~ /\S/
-          current_indent = [0, current_indent].max
+        elsif cur_line =~ /\S/
+          cur_indent = [0, cur_indent].max
           record.replace(
             'insert linestart',
             'insert lineend',
-            (' ' * (current_indent * 2)) << current_line.lstrip
+            (' ' * (cur_indent * 2)) << cur_line.lstrip
           )
         else # that was an empty line
           record.replace('insert linestart', 'insert lineend', '')
@@ -75,10 +79,7 @@ module VER::Methods
 
         next_indent = [0, next_indent].max
 
-        p pattern if $DEBUG
-        p reference: reference, current: current_indent, next: next_indent if $DEBUG
-
-        record.insert(:insert, "\n#{' ' * (next_indent * 2)}")
+        record.insert('insert lineend', "\n#{' ' * (next_indent * 2)}")
       end
 
       def indent_settings(text)
