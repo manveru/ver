@@ -75,14 +75,18 @@ module VER
     end
 
     def apply
-      stack.each do |view|
-        master_pane.forget(view) rescue nil
-        slave_pane.forget(view) rescue nil
+      masters, slaves = masters_slaves
+
+      (master_pane.panes - masters.map{|view| view.tk_pathname }).each do |view|
+        master_pane.forget(view)
       end
 
-      masters, slaves = masters_slaves
-      masters.each{|view| master_pane.add(view, weight: 1) }
-      slaves.each{|view| slave_pane.add(view, weight: 1) }
+      (slave_pane.panes - slaves.map{|view| view.tk_pathname }).each do |view|
+        slave_pane.forget(view)
+      end
+
+      masters.each{|view| master_pane.insert(:end, view, weight: 1) }
+      slaves.each{|view| slave_pane.insert(:end, view, weight: 1) }
 
       if slaves.empty?
         layout_pane.forget(slave_pane) rescue nil
