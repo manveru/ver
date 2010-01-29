@@ -258,7 +258,7 @@ module VER
   end
 
   def setup_layout
-    @layout = (layout_class || TilingLayout).new(root)
+    @layout = (layout_class || PanedLayout).new(root)
     @layout.configure(
       text: 'Welcome to VER, exit by pressing Control-q',
       labelanchor: :sw

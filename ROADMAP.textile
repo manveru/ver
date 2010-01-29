@@ -101,33 +101,3 @@ YARD::Registry.at('VER').docstring
 # "This is the doc for VER"
 
 p. Of course we need to make browsing better than the current HTML browsers.
-
-h2. Better tiling through panedwindow
-
-Kiko said that he would like to change the size of buffers on both sides.
-Using ttk::panedwindow instead of our current tiling algorithm could be a cheap
-and good way to do this.
-
-This means a horizontal pane owning two panes (for vertical tiling), one for
-masters, the other for slaves.
-The two inner panes own the views.
-Now you can easily change both the horizontal and vertical size of each view but
-keep the benefits of automatic tiling without any complex math on our part.
-The hardest task is to make sure we carefully move the views between
-panedwindows, but that's hardly more difficult than our current approach.
-
-bc.. The idea is to use a layout like this:
-
-+--------------------+
-|       pane         |
-|+--------++--------+|
-||  pane  ||  pane  ||
-||+------+||+------+||
-||| view |||| view |||
-|||      ||||      |||
-|||      |||+------+||
-|||      |||| view |||
-|||      ||||      |||
-||+------+||+------+||
-|+--------++--------+|
-+--------------------+
