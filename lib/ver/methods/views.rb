@@ -85,15 +85,23 @@ module VER::Methods
         text.layout.apply
       end
 
+      # Shrink the master pane by 10%
       def master_shrink(text)
         center = text.layout.options[:center]
         text.layout.options[:center] -= 0.1 if center > 0.1
         text.layout.apply
       end
 
+      # Grow the master pane by 10%
       def master_grow(text)
         center = text.layout.options[:center]
         text.layout.options[:center] += 0.1 if center < 0.9
+        text.layout.apply
+      end
+
+      # Center the split between masters and slaves
+      def master_equal(text)
+        text.layout.options[:center] = 0.5
         text.layout.apply
       end
 

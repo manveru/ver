@@ -70,6 +70,7 @@ module VER
 
     map :master_shrink, %w[h]
     map :master_grow,   %w[l]
+    map :master_equal,  %w[equal]
 
     map :peer,          %w[p]
   end
