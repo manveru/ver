@@ -29,13 +29,18 @@ module VER
       end
 
       def setup_fff
-        root = caller.project_root || Dir.pwd
         @pwd = Pathname(Dir.pwd)
-        @fffinder = FFF.new(root.to_s)
+        setup_fff_with(caller.project_root)
+      rescue FFF::TooManyEntries
+        setup_fff_with(@pwd)
       rescue FFF::TooManyEntries
         VER.message "The FuzzyFileFinder is overwhelmed by the amount of files"
         callback.destroy
         Tk.callback_break
+      end
+
+      def setup_fff_with(root)
+        @fffinder = FFF.new(root.to_s)
       end
 
       def choices(value)
