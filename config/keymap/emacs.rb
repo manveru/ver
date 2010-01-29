@@ -3,6 +3,13 @@ module VER
     handler Methods::Basic
     map :quit, %w[Control-x Control-c]
 
+    handler Methods::Save
+    map :file_save, %w[Control-x Control-s]
+    map :save_all, %w[Control-x s]
+
+    handler Methods::Open
+    map :file_open_popup, %w[Control-x Control-f]
+
     handler Methods::Help
     map :describe_key, %w[Control-h k]
 
