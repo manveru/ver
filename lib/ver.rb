@@ -8,7 +8,7 @@ autoload :Tempfile,  'tempfile'
 
 # eager stdlib
 require 'digest/sha1'
-require 'pp'
+require 'ver/vendor/better_pp_hash'
 require 'securerandom'
 require 'set'
 require 'pathname'
