@@ -41,6 +41,8 @@ module VER
   autoload :View,                'ver/view'
   autoload :WidgetEvent,         'ver/widget_event'
   autoload :WidgetMajorMode,     'ver/widget_major_mode'
+  autoload :KEYSYMS,             'ver/keysyms'
+  autoload :SYMKEYS,             'ver/keysyms'
 
   require 'ver/major_mode'
   require 'ver/minor_mode'
