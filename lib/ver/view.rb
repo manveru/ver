@@ -99,8 +99,8 @@ module VER
       @text.view = self
     end
 
-    def open_path(path, line = 1)
-      Methods::Open.open_path(text, path, line)
+    def open_path(path, line = 1, column = 0)
+      Methods::Open.open_path(text, path, line, column)
     end
 
     def open_empty
@@ -111,23 +111,24 @@ module VER
       text.focus
     end
 
-    def create(path = nil, line = nil)
+    def create(path = nil, line = nil, column = nil)
       layout.create_view do |view|
-        path ? view.open_path(path, line) : view.open_empty
+        path ? view.open_path(path, line, column) : view.open_empty
         yield(view) if block_given?
       end
     end
 
-    def find_or_create(path, line = nil, &block)
+    def find_or_create(path, line = nil, column = nil, &block)
       needle = Pathname(path.to_s).expand_path
 
       if found = layout.views.find{|view| view.filename == needle }
         found.push_top
         found.focus
-        Methods::Move.go_line(found.text, line) if line
+        insert = found.text.index(:insert)
+        found.text.mark_set(:insert, "#{line || insert.y}.#{column || insert.x}")
         yield(found) if block_given?
       else
-        create(needle, line, &block)
+        create(needle, line, column, &block)
       end
     end
 

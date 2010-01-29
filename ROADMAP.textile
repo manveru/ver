@@ -10,10 +10,11 @@ If you have any non-trivial bugs or ideas, add them here.
 h2. Sessions
 
 Storing the current state of VER on disk for next startup.
-Possible naming sessions? default names could be generated from CLI arguments,
-so if you use `ver foo.rb` the session is called 'foo.rb'.
-We should store the currently open buffers, the mode that they are in, the
-insert mark position, and anything else we might come up with later.
+Right now we (re)store the filenames of open views, the position of the insert
+mark, and any bookmarks.
+Modes are not stored, as they could cause very tricky bugs.
+However, that shouldn't be a big problem for most people, i hope.
+Please suggest other things we can persist.
 
 h2. VCS integration
 

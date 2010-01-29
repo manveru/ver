@@ -154,6 +154,7 @@ op = OptionParser.new{|o|
   o.on('--eventmachine', "Use EventMachine"){ options[:eventmachine] = true }
   o.on('--no-eventmachine', "Dont' use EventMachine"){ options[:eventmachine] = false }
   o.on('-k', '--keymap NAME', 'vim or emacs'){|k| options[:keymap] = k }
+  o.on('-s', '--session NAME', 'Keep session called NAME'){|s| options[:session] = s }
   o.separator ' '
   o.on('--install-tm-bundle PATH',
        'Install textmate bundle for use with VER',

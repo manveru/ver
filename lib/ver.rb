@@ -82,6 +82,9 @@ module VER
 
     o "Locations where we look for configuration",
       :loadpath, [home_conf_dir, core_conf_dir]
+
+    o "Name under which the session is stored (nil means to keep no session)",
+      :session, nil
   end
 
   module_function
@@ -158,6 +161,7 @@ module VER
     # dump_options
     setup_widgets
     open_argv || open_welcome
+    open_session
     emergency_bindings
     load_plugins
     run_startup_hooks
@@ -311,6 +315,7 @@ module VER
   end
 
   def exit
+    store_session
     Tk.exit rescue nil
     EM.stop rescue nil
     Kernel.exit
@@ -362,6 +367,55 @@ module VER
     layout.create_view do |view|
       welcome = find_in_loadpath('welcome')
       view.open_path(welcome)
+    end
+  end
+
+  def open_session
+    return unless session_base = options.session
+    basename = "#{session_base}.session.rb"
+    return unless file = find_in_loadpath(basename)
+
+    session = eval(File.read(file))
+    some_view = layout.views.first
+
+    session[:bookmarks].each do |raw_bm|
+      bm = Bookmarks::Bookmark.new
+      bm.name = raw_bm[:name]
+      bm.file = Pathname(raw_bm[:file])
+      bm.index = raw_bm[:index]
+      bookmarks << bm
+    end
+
+    session[:buffers].each do |buffer|
+      some_view.find_or_create(buffer[:filename], *buffer[:insert])
+    end
+  end
+
+  def store_session
+    return unless session_base = VER.options.session
+    basename = "#{session_base}.session.rb"
+    session_path = loadpath.first/basename
+
+    session = {buffers: [], bookmarks: []}
+    layout.views.each do |view|
+      session[:buffers] << {
+        filename: view.filename.to_s,
+        insert: view.text.index(:insert).split,
+      }
+    end
+
+    bookmarks.each do |bm|
+      session[:bookmarks] << {
+        name:  bm.name,
+        file:  bm.file.to_s,
+        index: bm.index,
+      }
+    end
+
+    pp session
+
+    session_path.open('w+:UTF-8') do |io|
+      io.write(session.pretty_inspect)
     end
   end
 

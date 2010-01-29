@@ -104,7 +104,7 @@ module VER::Methods
       #
       # For now, VER will simply fail to open files that contain \0 bytes, and
       # display binary files in a weird way.
-      def open_path(text, path, line = 1)
+      def open_path(text, path, line = 1, column = 0)
         text.filename = path
 
         begin
@@ -118,7 +118,7 @@ module VER::Methods
           text.message("Create #{text.short_filename}")
         end
 
-        after_open(text, line)
+        after_open(text, line, column)
       end
 
       def file_open_popup(text)
@@ -166,11 +166,11 @@ module VER::Methods
         after_open(text)
       end
 
-      def after_open(text, line = 1)
+      def after_open(text, line = 1, column = 0)
         detect_project_paths(text)
         VER.opened_file(text)
 
-        text.mark_set(:insert, "#{line.to_i}.0")
+        text.mark_set(:insert, "#{line.to_i}.#{column.to_i}")
         text.pristine = true
 
         text.undoer = VER::Undo::Tree.new(text)
