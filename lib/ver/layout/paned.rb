@@ -100,7 +100,7 @@ module VER
 
     def masters_slaves
       masters_max, slaves_max = options.values_at(:masters, :slaves)
-      return stack[0, masters_max], stack[masters_max, slaves_max]
+      return [*stack[0, masters_max]], [*stack[masters_max, slaves_max]]
     end
 
     def visible?(view)
