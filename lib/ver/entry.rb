@@ -95,6 +95,14 @@ module VER
       kill_motion :prev_word
     end
 
+    def kill_next_word(event)
+      kill_motion :next_word
+    end
+
+    def kill_end_of_line(event)
+      kill_motion :end_of_line
+    end
+
     ## Movement
 
     # Move to the start of the current line.

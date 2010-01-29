@@ -49,7 +49,6 @@ module VER
   minor_mode :views do
     inherits :basic
     handler Methods::Views
-    # handler Methods::Views
 
     map :one,           %w[1]
     map :two,           %w[2]
@@ -452,11 +451,26 @@ module VER
   end
 
   minor_mode :executor_entry do
-    map :cancel,          %w[Escape], %w[Control-c]
-    map :completion,      %w[Tab]
-    map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
-    map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
-    map :pick_selection,  %w[Return]
+    map :cancel,            %w[Escape], %w[Control-c]
+    map :completion,        %w[Tab]
+    map :end_of_line,       %w[Control-e], %w[End]
+    map :insert_selection,  %w[Shift-Insert]
+    map :insert_tab,        %w[Control-i]
+    map :kill_next_char,    %w[Control-d], %w[Delete]
+    map :kill_prev_char,    %w[BackSpace]
+    map :kill_prev_word,    %w[Control-w]
+    map :kill_next_word,    %w[Alt-d]
+    map :kill_end_of_line,  %w[Control-k]
+    map :line_down,         %w[Down], %w[Control-j], %w[Control-n]
+    map :line_up,           %w[Up], %w[Control-k], %w[Control-p]
+    map :next_char,         %w[Control-f], %w[Right]
+    map :next_word,         %w[Shift-Right], %w[Alt-f]
+    map :pick_selection,    %w[Return]
+    map :prev_char,         %w[Control-b], %w[Left]
+    map :prev_word,         %w[Shift-Left], %w[Alt-b]
+    map :quit,              %w[Control-q]
+    map :start_of_line,     %w[Control-a], %w[Home]
+    map :transpose_chars,   %w[Control-t]
 
     missing :insert_string
   end
