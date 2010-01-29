@@ -14,8 +14,8 @@ module VER::Methods
         found.push_top
       end
 
-      def find_or_create(text, file)
-        text.view.find_or_create(file)
+      def find_or_create(text, file, &block)
+        text.view.find_or_create(file, &block)
       end
 
       def create(text)

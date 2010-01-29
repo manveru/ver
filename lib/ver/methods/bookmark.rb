@@ -76,11 +76,11 @@ module VER
         end
 
         def next(text)
-          open(bookmarks.next_from(bookmark_value(text)))
+          open(text, bookmarks.next_from(bookmark_value(text)))
         end
 
         def prev(text)
-          open(bookmarks.prev_from(bookmark_value(text)))
+          open(text, bookmarks.prev_from(bookmark_value(text)))
         end
 
         private
@@ -98,7 +98,8 @@ module VER
 
           Views.find_or_create(text, bookmark.file) do |view|
             y, x = use_x ? bookmark.index.split : [bookmark.index.y, 0]
-            view.text.mark_set(:insert, "#{y}.#{x}")
+            Methods::Move.go_line(text, y)
+            Methods::Move.go_column(text, x)
           end
         end
       end

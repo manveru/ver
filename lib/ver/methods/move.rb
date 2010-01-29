@@ -102,6 +102,10 @@ module VER::Methods
         text.mark_set(:insert, "#{number}.0")
       end
 
+      def go_column(text, number = text.prefix_count)
+        text.mark_set(:insert, "insert linestart + #{number} chars")
+      end
+
       # Basically like [go_line] without arguments, but much nicer name.
       def start_of_file(text)
         text.mark_set(:insert, "1.0")

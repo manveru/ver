@@ -51,7 +51,7 @@ module VER
       bind '<<Modified>>' do |event|
         if value.size >= target
           bind('<<Modified>>'){}
-          ask_submit
+          ask_submit(event)
         end
       end
     end
