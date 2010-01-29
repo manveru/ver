@@ -12,7 +12,6 @@ module VER
 
       def setup
         callback.update_on_change = true
-        setup_fff
 
         tree.configure(
           show: [:headings],
@@ -25,6 +24,8 @@ module VER
         tree.column('dir', width: 100, anchor: :w)
         tree.column('file', width: 100, anchor: :w)
         tree.column('score', width: 50, stretch: false, anchor: :e)
+
+        setup_fff
       end
 
       def setup_fff
@@ -34,6 +35,7 @@ module VER
       rescue FFF::TooManyEntries
         VER.message "The FuzzyFileFinder is overwhelmed by the amount of files"
         callback.destroy
+        Tk.callback_break
       end
 
       def choices(value)
