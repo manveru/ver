@@ -102,3 +102,57 @@ YARD::Registry.at('VER').docstring
 # "This is the doc for VER"
 
 p. Of course we need to make browsing better than the current HTML browsers.
+
+h2. Equivalent to vim : or emacs M-x
+
+Executor is fun, but it's not powerful enough yet.
+We have <Alt-x> bound to a simple eval query right now, which is also nice, but
+not helping much if you have no idea what to eval.
+So what we need, is a mix of Executor::Method and eval, which is quite a
+challenge.
+What we could do, is go through all the Action instances of the major and minor
+modes for the buffer and make completion based on this.
+I have no idea how that would be best presented, but in the worst case we can
+rip something off.
+
+I also really like the way emacs does the fast-forward completion in a
+not-too-annoying way, that's going to be another tough challenge.
+
+h2. Power to the Modes
+
+Major and minor modes are working out well, they are precise and fast, but still
+lack some power over the buffer outside of events fired by the user.
+It would be nice, for example, to have a minor mode that can act like a wiki
+templating engine, which is needed for org-mode.
+It needs to elide some text, inserting other text instead of that, and keep
+everything sane at the same time, making sure that the right version of the
+buffer is stored to a file can also be tricky...
+
+h2. Dired alike
+
+One common task I always go to the terminal for is creating directories,
+renaming or moving files around, it would be both useful and a testament to the
+power of VER to implement a dired alike.
+I'm still hoping that some day we can get that Finder from lianj, but it's just
+not the same.
+
+h2. Simulatanous file overwrite protection
+
+When two instances of VER edit the same file, there is no mechanism to detect
+that fact.
+This can cause serious problems that VER should be able to handle.
+Emacs protects against it by creating a symlink that points to the emacs
+instance that has the file open.
+
+A link looks like this:
+`lrwxrwxrwx 1 manveru users 36 Jan 30 02:28 .#AUTHORS -> manveru@delta.local.28003:1264265541`
+
+When another instance opens the same file, it can check the symlink and knows
+who's editing.
+It may then replace the symlink to "steal" ownership, ignore the lock, or forbid
+modification.
+
+Another safeguard is to check the file mtime when opening, and see whether it's
+still the same before writing the file to disk again.
+This allows for a small race-condition, but it's still vastly better than
+no protection at all.
