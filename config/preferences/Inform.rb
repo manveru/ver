@@ -1,3 +1,0 @@
-# Encoding: UTF-8
-
-[]

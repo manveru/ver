@@ -2,6 +2,7 @@
 
 require 'pathname'
 require 'optparse'
+require 'shellwords'
 
 # annoying fixes
 class Pathname
@@ -21,6 +22,10 @@ class Pathname
     else
       Dir.glob(to_s)
     end
+  end
+
+  def shellescape
+    to_s.shellescape
   end
 end
 
@@ -47,6 +52,8 @@ module VER
     require 'pp'
     require 'fileutils'
     require 'shellwords'
+
+    trap('INT'){ exit }
 
     install_tm_syntax(path)
     install_tm_preferences(path)
@@ -122,6 +129,11 @@ module VER
   end
 
   def install_rb_source(type, path, name, plist)
+    if plist.empty?
+      puts "#{type} - #{path} - #{name} -- not installing because of empty plist" if $DEBUG
+      return
+    end
+
     filename = name.gsub(/[\/\u2014]/, '-')
     target = File.expand_path("#{path}/#{filename}.rb", ROOT)
 
