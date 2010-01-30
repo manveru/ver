@@ -37,7 +37,7 @@ module VER
 
       bind('<Escape>'){
         pack_forget
-        VER.buffers.first.focus
+        VER.buffers.values.first.focus
       }
     end
 

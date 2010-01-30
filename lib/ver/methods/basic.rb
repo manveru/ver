@@ -55,7 +55,7 @@ module VER::Methods
       end
 
       def open_grep_buffers(text)
-        filenames = VER.buffers.map(&:filename)
+        filenames = VER.buffers.map{|key, buffer| buffer.filename }
         glob = "{#{ filenames.join(',') }}"
 
         Buffer::List::Grep.new text, glob do |file, line|

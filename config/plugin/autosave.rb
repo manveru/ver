@@ -11,7 +11,7 @@
 
 VER.startup_hook do
   VER.when_inactive_for 1000 do
-    VER.buffers.each do |buffer|
+    VER.buffers.each do |name, buffer|
       text = buffer.text
 
       next if text.pristine? || text.persisted?

@@ -151,7 +151,7 @@ module VER::Methods
       end
 
       def prepare_exec_F
-        p F: (ENV['F'] = VER.buffers.map{|b| b.filename }.join(' '))
+        p F: (ENV['F'] = VER.buffers.map{|key, buffer| buffer.filename }.join(' '))
       end
 
       def prepare_exec_i

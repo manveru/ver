@@ -50,7 +50,7 @@ module VER
       alias P percent
 
       def buffer(width = 0)
-        "%#{width}s" % VER.buffers.index(text.buffer)
+        "%#{width}s" % VER.buffers.values.index(text.buffer)
       end
       alias b buffer
 
