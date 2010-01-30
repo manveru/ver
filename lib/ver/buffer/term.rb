@@ -2,7 +2,7 @@ require 'thread'
 require 'strscan'
 require 'pty'
 
-class VER::View::Terminal
+class VER::Buffer::Terminal
   def initialize(parent)
     @parent = parent
     setup_widgets

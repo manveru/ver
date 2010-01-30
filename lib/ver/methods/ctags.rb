@@ -45,16 +45,16 @@ module VER::Methods
         when /^\d+$/
           VER.ctag_stack << Bookmarks::Bookmark.new(nil, *bookmark_value)
 
-          Views.find_or_create(text, file_name, ex_cmd.to_i)
+          VER.find_or_create_buffer(file_name, ex_cmd.to_i)
         when /^\/(.*)\/$/
           VER.ctag_stack << Bookmarks::Bookmark.new(nil, *bookmark_value)
 
           source = $1.gsub(/(?!\\)([()])/, '\\\\\\1')
           regexp = Regexp.new(source)
 
-          Views.find_or_create(file_name) do |view|
-            view.text.tag_all_matching(Search::TAG, regexp, Search::HIGHLIGHT)
-            Search.next(view.text)
+          VER.find_or_create_buffer(file_name) do |buffer|
+            buffer.text.tag_all_matching(Search::TAG, regexp, Search::HIGHLIGHT)
+            Search.next(buffer.text)
           end
         else
           raise ArgumentError, "Unknown Ex command: %p" % [ex_cmd]

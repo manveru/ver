@@ -5,7 +5,7 @@ module VER
   #
   # TODO: Handle C and evaled methods.
   #       Once 1.9.2 is out, use Method#parameters.
-  class View::List::Methods < View::List
+  class Buffer::List::Methods < Buffer::List
     def update
       list.value = update_choices.map{|choice|
         method, score = choice.values_at(:method, :score)
@@ -69,9 +69,9 @@ module VER
     #   Window::y
     #   Window#y
     #   VER y
-    #   VER::View::File#copy
-    #   VER::View::File.copy
-    #   VER::View::File::copy
+    #   VER::Buffer::File#copy
+    #   VER::Buffer::File.copy
+    #   VER::Buffer::File::copy
     #
     # The matching is very tolerant, so you can search for methods in
     # completely different namespaces but still get good results:
@@ -86,15 +86,15 @@ module VER
     #
     #   VER.ask
     #   # => #<Class:VER>.ask
-    #   # => VER::View::File::Methods.buffer_ask
-    #   # => VER::View::File::Methods.execute_ask
-    #   # => VER::View::File::Methods.execute_ask_context
-    #   # => VER::View::File::Methods.filter_selection_ask
-    #   # => VER::View::File::Methods.goto_line_ask
+    #   # => VER::Buffer::File::Methods.buffer_ask
+    #   # => VER::Buffer::File::Methods.execute_ask
+    #   # => VER::Buffer::File::Methods.execute_ask_context
+    #   # => VER::Buffer::File::Methods.filter_selection_ask
+    #   # => VER::Buffer::File::Methods.goto_line_ask
     #   # => #<Class:FFI::NCurses>.mousemask
-    #   # => VER::View::File::Methods.save_as_ask
-    #   # => VER::View::File::Methods.search_ask
-    #   # => VER::View::File::Methods.search_ask_context
+    #   # => VER::Buffer::File::Methods.save_as_ask
+    #   # => VER::Buffer::File::Methods.search_ask
+    #   # => VER::Buffer::File::Methods.search_ask_context
     #
     # We are only using string comparisions to find matches, so input is
     # never interpreted as a regular expression and can include anything

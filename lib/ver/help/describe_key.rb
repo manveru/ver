@@ -75,7 +75,7 @@ Arguments: #{args.inspect}
 
       def open_method(method)
         file, line = method.source_location
-        @parent.view.find_or_create(file, line)
+        VER.find_or_create_buffer(file, line)
         Tk::After.idle{ destroy }
       end
     end

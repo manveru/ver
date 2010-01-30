@@ -12,7 +12,7 @@ module VER
       end
 
       def action(path)
-        caller.view.find_or_create(path)
+        VER.find_or_create_buffer(path)
       end
     end
   end

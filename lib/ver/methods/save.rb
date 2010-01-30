@@ -32,8 +32,8 @@ module VER::Methods
       end
 
       def save_all(text)
-        VER.layout.views.each do |view|
-          file_save(view.text)
+        VER.layout.buffers.each do |buffer|
+          file_save(buffer.text)
         end
       end
 

@@ -1,18 +1,15 @@
 module VER
   class PanedLayout < Tk::Tile::LabelFrame
-    # contains the views in the order they were opened
-    attr_reader :views
-
-    # contains the views in the order they are displayed
+    # contains the buffers in the order they are displayed
     attr_reader :stack
 
     # contains the master and slave pane
     attr_reader :layout_pane
 
-    # contains master views
+    # contains master buffers
     attr_reader :master_pane
 
-    # contains slave views
+    # contains slave buffers
     attr_reader :slave_pane
 
     # options specific for the paned layout
@@ -33,7 +30,7 @@ module VER
 
       pack(fill: :both, expand: true)
 
-      @views, @stack = [], []
+      @stack = []
 
       @layout_pane = Tk::Tile::PanedWindow.new(self, orient: :horizontal)
       @master_pane = Tk::Tile::PanedWindow.new(@layout_pane, orient: :vertical)
@@ -45,27 +42,25 @@ module VER
       @layout_pane.bind('<Map>'){ apply }
     end
 
-    # Create a new [View] inside the [PanedLayout], +options+ are passed to
-    # [View.new].
-    # The new [View] will be at top of the [stack] and bottom of [views].
-    def create_view(options = {})
-      view = View.new(self, options)
-      yield view
-      views.push(view)
-      stack.unshift(view)
+    # Create a new {View} inside the {PanedLayout}, +options+ are passed to
+    # {View.new}.
+    # The new {View} will be at top of the {stack}.
+    def create_buffer(options = {})
+      buffer = Buffer.new(self, options)
+      yield buffer
+      stack.unshift(buffer)
       apply
-      view.focus
+      buffer.focus
     end
 
-    def forget_view(view)
-      views.delete(view)
-      stack.delete(view)
+    def forget_buffer(buffer)
+      stack.delete(buffer)
       apply
     end
 
-    def close_view(view)
-      forget_view(view)
-      view.destroy
+    def close_buffer(buffer)
+      forget_buffer(buffer)
+      buffer.destroy
 
       if previous = stack.first
         previous.focus
@@ -77,16 +72,16 @@ module VER
     def apply
       masters, slaves = masters_slaves
 
-      (master_pane.panes - masters.map{|view| view.tk_pathname }).each do |view|
-        master_pane.forget(view)
+      (master_pane.panes - masters.map{|bff| bff.tk_pathname }).each do |bff|
+        master_pane.forget(bff)
       end
 
-      (slave_pane.panes - slaves.map{|view| view.tk_pathname }).each do |view|
-        slave_pane.forget(view)
+      (slave_pane.panes - slaves.map{|bff| bff.tk_pathname }).each do |bff|
+        slave_pane.forget(bff)
       end
 
-      masters.each{|view| master_pane.insert(:end, view, weight: 1) }
-      slaves.each{|view| slave_pane.insert(:end, view, weight: 1) }
+      masters.each{|bff| master_pane.insert(:end, bff, weight: 1) }
+      slaves.each{|bff| slave_pane.insert(:end, bff, weight: 1) }
 
       if slaves.empty?
         layout_pane.forget(slave_pane) rescue nil
@@ -103,68 +98,68 @@ module VER
       return [*stack[0, masters_max]], [*stack[masters_max, slaves_max]]
     end
 
-    def visible?(view)
-      visible.index(view)
+    def visible?(buffer)
+      visible.index(buffer)
     end
 
     def visible
       masters_slaves.flatten
     end
 
-    def focus_next(current)
-      return unless index = visible.index(current)
+    def focus_next(buffer)
+      return unless index = visible.index(buffer)
 
       found = visible[index + 1] || visible[0]
       found.focus
     end
 
-    def focus_prev(current)
-      return unless index = visible.index(current)
+    def focus_prev(buffer)
+      return unless index = visible.index(buffer)
 
       found = visible[index - 1]
       found.focus
     end
 
-    def push_up(current)
-      return unless index = stack.index(current)
+    def push_up(buffer)
+      return unless index = stack.index(buffer)
       previous = stack[index - 1]
-      current.raise(previous)
-      stack[index - 1], stack[index] = current, previous
+      buffer.raise(previous)
+      stack[index - 1], stack[index] = buffer, previous
 
       apply
-      previous.focus unless visible?(current)
+      previous.focus unless visible?(buffer)
     end
 
-    def push_down(current)
-      return unless index = stack.index(current)
+    def push_down(buffer)
+      return unless index = stack.index(buffer)
       following = stack[index + 1] || stack[0]
-      current.raise(following)
-      stack[stack.index(following)], stack[index] = current, following
+      buffer.raise(following)
+      stack[stack.index(following)], stack[index] = buffer, following
 
       apply
-      following.focus unless visible?(current)
+      following.focus unless visible?(buffer)
     end
 
-    def push_top(current)
-      stack.unshift(stack.delete(current))
+    def push_top(buffer)
+      stack.unshift(stack.delete(buffer))
       apply
     end
 
-    def push_bottom(view)
-      stack.push(stack.delete(view))
+    def push_bottom(buffer)
+      stack.push(stack.delete(buffer))
       apply
-      stack.last.focus unless visible?(view)
+      stack.last.focus unless visible?(buffer)
     end
 
-    def cycle_next(current)
-      return unless index = stack.index(current)
+    def cycle_next(buffer)
+      return unless index = stack.index(buffer)
       stack.push(stack.shift)
       apply
       stack[index].focus
     end
 
-    def cycle_prev(current)
-      return unless index = stack.index(current)
+    def cycle_prev(buffer)
+      return unless index = stack.index(buffer)
       stack.unshift(stack.pop)
       apply
       stack[index].focus

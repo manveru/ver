@@ -4,14 +4,14 @@ module VER
     autoload :Context, 'ver/status/context'
     include Keymapped
 
-    attr_accessor :view, :backup_value, :callback
+    attr_accessor :buffer, :backup_value, :callback
 
     HISTORY = Hash.new{|k,v| k[v] = [] }
 
-    def initialize(view, options = {})
+    def initialize(buffer, options = {})
       options[:style] ||= VER.obtain_style_name('Status', 'TEntry')
       super
-      self.view = view
+      self.buffer = buffer
       @question = ''
 
       self.major_mode = :Status
@@ -32,7 +32,7 @@ module VER
     end
 
     def text
-      view.text
+      buffer.text
     end
 
     def ask(question, options = {}, &callback)

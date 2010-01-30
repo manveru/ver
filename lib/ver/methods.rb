@@ -18,6 +18,6 @@ module VER
     autoload :Selection,   'ver/methods/selection'
     autoload :Snippet,     'ver/methods/snippet'
     autoload :Undo,        'ver/methods/undo'
-    autoload :Views,       'ver/methods/views'
+    autoload :Layout,      'ver/methods/layout'
   end
 end

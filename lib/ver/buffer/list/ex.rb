@@ -1,5 +1,5 @@
 module VER
-  class View::List::Ex < View::List
+  class Buffer::List::Ex < Buffer::List
     def initialize(parent, filter, &callback)
       @filter = filter
       @previous = ''

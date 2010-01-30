@@ -22,7 +22,7 @@ module VER
 
       def action(path)
         throw(:invalid) if File.directory?(path)
-        caller.view.find_or_create(path)
+        VER.find_or_create_buffer(path)
       end
     end
 
@@ -33,8 +33,8 @@ module VER
       def action(path)
         throw(:invalid) if File.directory?(path)
 
-        caller.view.find_or_create(path) do |view|
-          text = view.text
+        VER.find_or_create_buffer(path) do |buffer|
+          text = buffer.text
           text.value = caller.value.chomp
           Methods::Save.file_save(text)
         end

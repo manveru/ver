@@ -11,7 +11,7 @@ module VER
 
       def action(path)
         throw(:invalid) if File.directory?(path)
-        caller.view.find_or_create(path)
+        VER.find_or_create_buffer(path)
       end
     end
   end

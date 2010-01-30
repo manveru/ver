@@ -93,14 +93,11 @@ module VER
           [text.filename, *text.index(:insert).split]
         end
 
-        def open(text, bookmark, use_x = true)
+        def open(text, bookmark, use_col = true)
           return unless bookmark.respond_to?(:file) && bookmark.respond_to?(:index)
 
-          Views.find_or_create(text, bookmark.file) do |view|
-            y, x = use_x ? bookmark.index : [bookmark.line, 0]
-            Methods::Move.go_line(text, y)
-            Methods::Move.go_column(text, x)
-          end
+          line, col = use_col ? bookmark.index : [bookmark.line, 0]
+          VER.find_or_create_buffer(bookmark.file, line, col)
         end
       end # << self
     end # Bookmark

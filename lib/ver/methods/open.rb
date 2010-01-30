@@ -69,7 +69,7 @@ module VER::Methods
 
       def open_file_under_cursor(text)
         return unless found = file_under_cursor(text)
-        Views.find_or_create(text, found)
+        VER.find_or_create_buffer(found)
       end
 
       # TODO:
@@ -131,12 +131,12 @@ module VER::Methods
 
         return unless fpath
 
-        Views.view_find_or_create(text, fpath)
+        VER.find_or_create_buffer(fpath)
       end
 
       def file_open_fuzzy(text)
-        View::List::FuzzyFileFinder.new text do |path|
-          Views.view_find_or_create(text, path)
+        Buffer::List::FuzzyFileFinder.new text do |path|
+          VER.find_or_create_buffer(text, path)
         end
       end
 

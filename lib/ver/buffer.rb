@@ -1,19 +1,48 @@
 module VER
-  class View < Tk::Tile::Frame
-    autoload :Entry,   'ver/view/entry'
-    autoload :List,    'ver/view/list'
-    autoload :Console, 'ver/view/console'
+  class Buffer < Tk::Tile::Frame
+    autoload :Entry,   'ver/buffer/entry'
+    autoload :List,    'ver/buffer/list'
+    autoload :Console, 'ver/buffer/console'
+
+    def self.create(path = nil, line = nil, column = nil)
+      VER.layout.create_buffer do |buffer|
+        path ? buffer.open_path(path, line, column) : buffer.open_empty
+        yield(buffer) if block_given?
+        VER.buffers[buffer.name] = buffer
+      end
+    end
+
+    def self.find_or_create(path, line = nil, column = nil, &block)
+      needle = Pathname(path.to_s).expand_path
+
+      if buffer = VER.buffers[needle]
+        buffer.layout.push_top(buffer)
+        buffer.focus
+        insert = buffer.text.index(:insert)
+        buffer.text.mark_set(:insert, "#{line || insert.y}.#{column || insert.x}")
+        yield(buffer) if block_given?
+      else
+        create(needle, line, column, &block)
+      end
+    end
 
     attr_reader :layout, :text, :status
 
     def initialize(layout, options = {})
       peer = options.delete(:peer)
-      options[:style] ||= VER.obtain_style_name('View', 'TFrame')
+      options[:style] ||= VER.obtain_style_name('Buffer', 'TFrame')
       super
+
       @layout = layout
       @text = @status = @ybar = @xbar = nil
       setup(peer)
+
       configure takefocus: false, padding: 2, border: 0, relief: :solid
+    end
+
+    # this should be customized when neccesary
+    def name
+      filename
     end
 
     # +-------+---+
@@ -96,7 +125,7 @@ module VER
 
     def setup_misc
       @text.status = @status
-      @text.view = self
+      @text.buffer = self
     end
 
     def open_path(path, line = 1, column = 0)
@@ -111,69 +140,26 @@ module VER
       text.focus
     end
 
-    def create(path = nil, line = nil, column = nil)
-      layout.create_view do |view|
-        path ? view.open_path(path, line, column) : view.open_empty
-        yield(view) if block_given?
-      end
-    end
-
-    def find_or_create(path, line = nil, column = nil, &block)
-      needle = Pathname(path.to_s).expand_path
-
-      if found = layout.views.find{|view| view.filename == needle }
-        found.push_top
-        found.focus
-        insert = found.text.index(:insert)
-        found.text.mark_set(:insert, "#{line || insert.y}.#{column || insert.x}")
-        yield(found) if block_given?
-      else
-        create(needle, line, column, &block)
+    def create_peer
+      layout.create_buffer(peer: text) do |buffer|
+        yield(buffer) if block_given?
       end
     end
 
     def close
       Methods::Save.may_close text do
-        layout.close_view(self)
-      end
-    end
-
-    def focus_next
-      layout.focus_next(self)
-    end
-
-    def focus_prev
-      layout.focus_prev(self)
-    end
-
-    def push_up
-      layout.push_up(self)
-    end
-
-    def push_down
-      layout.push_down(self)
-    end
-
-    def push_top
-      layout.push_top(self)
-    end
-
-    def push_bottom
-      layout.push_bottom(self)
-    end
-
-    def create_peer
-      layout.create_view(peer: @text) do |view|
-        yield(view) if block_given?
+        layout.close_buffer(self)
       end
     end
 
     def destroy
       style_name = style
+      buffer_name = name
       [@text, @ybar, @xbar, @status].compact.each(&:destroy)
 
       super
     ensure
+      VER.buffers.delete(buffer_name)
       VER.return_style_name(style_name)
     end
 

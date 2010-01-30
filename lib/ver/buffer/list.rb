@@ -1,25 +1,25 @@
 module VER
-  class View::List < Struct.new(:parent, :frame, :list, :entry, :tag, :callback)
-    autoload :Buffer,          'ver/view/list/buffer'
-    autoload :Grep,            'ver/view/list/grep'
-    autoload :Methods,         'ver/view/list/methods'
-    autoload :Window,          'ver/view/list/buffer'
-    autoload :FuzzyFileFinder, 'ver/view/list/fuzzy_file_finder'
-    autoload :Syntax,          'ver/view/list/syntax'
-    autoload :Theme,           'ver/view/list/theme'
-    autoload :Ex,              'ver/view/list/ex'
+  class Buffer::List < Struct.new(:parent, :frame, :list, :entry, :tag, :callback)
+    autoload :Buffer,          'ver/buffer/list/buffer'
+    autoload :Grep,            'ver/buffer/list/grep'
+    autoload :Methods,         'ver/buffer/list/methods'
+    autoload :Window,          'ver/buffer/list/buffer'
+    autoload :FuzzyFileFinder, 'ver/buffer/list/fuzzy_file_finder'
+    autoload :Syntax,          'ver/buffer/list/syntax'
+    autoload :Theme,           'ver/buffer/list/theme'
+    autoload :Ex,              'ver/buffer/list/ex'
 
     class Listbox < Tk::Listbox
       include Keymapped
 
-      attr_accessor :list_view
+      attr_accessor :list_buffer
 
       def cancel
-        list_view.cancel
+        list_buffer.cancel
       end
 
       def pick_selection
-        list_view.pick_selection
+        list_buffer.pick_selection
       end
 
       def line_up
@@ -71,21 +71,21 @@ module VER
         font: VER.options[:font]
       )
       list.pack fill: :both, expand: true
-      list.list_view = self
+      list.list_buffer = self
 
-      self.entry = entry = View::Entry.new(frame)
+      self.entry = entry = Buffer::Entry.new(frame)
       entry.configure font: VER.options[:font]
       entry.pack fill: :x, expand: false
       entry.focus
-      entry.list_view = self
+      entry.list_buffer = self
     end
 
     def setup_keymap
       list.keymap = VER.keymap.use(
-        widget: list, mode: :list_view_list)
+        widget: list, mode: :list_buffer_list)
 
       entry.keymap = VER.keymap.use(
-        widget: entry, mode: :list_view_entry)
+        widget: entry, mode: :list_buffer_entry)
     end
 
     # Setup this event, because Keymap gets very confused when you bind 'Key' and

@@ -28,7 +28,7 @@ module VER
 Welcome to the internal Help system of VER.
 You most likely got here by pressing [<Help.help_for_help>].
 
-You can close the help using [<Views.view_close>].
+You can close the help using [<Buffers.view_close>].
         HELP
       end
 

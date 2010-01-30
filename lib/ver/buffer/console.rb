@@ -1,7 +1,7 @@
 require 'eventmachine'
 
 module VER
-  class View
+  class Buffer
     class Console
       class Process < EventMachine::Connection
         attr_accessor :callback

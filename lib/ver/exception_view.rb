@@ -15,6 +15,7 @@ module VER
       @backtrace_tags = ['backtrace']
 
       setup_config
+      setup_binds
     end
 
     def setup_config
@@ -29,6 +30,15 @@ module VER
 
       tag_configure('error', background: '#f88')
       tag_configure('backtrace', background: '#8f8')
+    end
+
+    def setup_binds
+      bind('<<TreeviewOpen>>'){ on_treeview_open }
+
+      bind('<Escape>'){
+        pack_forget
+        VER.buffers.first.focus
+      }
     end
 
     def on_treeview_open
@@ -49,7 +59,7 @@ module VER
         }
       when Array
         filename, lineno = frame
-        VER.layout.views.first.find_or_create(filename, lineno){|view|
+        VER.find_or_create_buffer(filename, lineno){|buffer|
           pack_forget
         }
       end

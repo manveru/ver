@@ -34,44 +34,44 @@ module VER::Methods
       end
 
       def open_terminal(text)
-        require 'ver/view/term'
-        View::Terminal.new(text)
+        require 'ver/buffer/term'
+        Buffer::Terminal.new(text)
       end
 
       def open_console(text)
-        View::Console.new(text)
+        Buffer::Console.new(text)
       end
 
       def open_buffer_switch(text)
-        View::List::Buffer.new text do |file|
-          Views.find_or_create(text, file) if File.exists?(file)
+        Buffer::List::Buffer.new text do |file|
+          VER.find_or_create_buffer(text, file) if File.exists?(file)
         end
       end
 
       def open_grep_buffer(text)
-        View::List::Grep.new text, filename do |file, line|
-          Views.find_or_create(text, file, line)
+        Buffer::List::Grep.new text, filename do |file, line|
+          VER.find_or_create_buffer(text, file, line)
         end
       end
 
       def open_grep_buffers(text)
-        filenames = text.layout.views.map{|v| v.text.filename }
+        filenames = VER.buffers.map(&:filename)
         glob = "{#{ filenames.join(',') }}"
 
-        View::List::Grep.new text, glob do |file, line|
-          Views.find_or_create(text, file, line)
+        Buffer::List::Grep.new text, glob do |file, line|
+          VER.find_or_create_buffer(text, file, line)
         end
       end
 
       def open_grep_list(text)
-        View::List::Grep.new text do |file, line|
-          Views.find_or_create(text, file, line)
+        Buffer::List::Grep.new text do |file, line|
+          VER.find_or_create_buffer(text, file, line)
         end
       end
 
       def open_method_list(text)
-        View::List::Methods.new text do |file, line|
-          Views.find_or_create(text, file, line)
+        Buffer::List::Methods.new text do |file, line|
+          VER.find_or_create_buffer(text, file, line)
         end
       end
 
@@ -79,9 +79,9 @@ module VER::Methods
         if count
           # p count: count
         else
-          View::List::Window.new text do |view|
-            Views.push_top(text)
-            view.focus
+          Buffer::List::Window.new text do |buffer|
+            Layout.push_top(text)
+            buffer.focus
           end
         end
       end

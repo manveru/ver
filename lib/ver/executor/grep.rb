@@ -59,7 +59,7 @@ module VER
         item = tree.focus_item
         file, line, _ = item.options(:values)
         return unless file && line
-        caller.view.find_or_create(file.to_s, line.to_i)
+        VER.find_or_create_buffer(file.to_s, line.to_i)
         callback.destroy
       end
     end

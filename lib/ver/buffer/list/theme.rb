@@ -1,5 +1,5 @@
 module VER
-  class View::List::Theme < View::List
+  class Buffer::List::Theme < Buffer::List
     def update
       list.value = sublist(themes)
     end

@@ -1,5 +1,5 @@
 module VER
-  class View::List::Syntax < View::List
+  class Buffer::List::Syntax < Buffer::List
     def update
       list.value = sublist(syntaxes)
     end

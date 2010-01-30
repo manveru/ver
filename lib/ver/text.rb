@@ -11,14 +11,14 @@ module VER
       /replace/ => {insertbackground: 'orange', blockcursor: true},
     }
 
-    attr_accessor(:view, :status, :project_root, :project_repo, :encoding,
+    attr_accessor(:buffer, :status, :project_root, :project_repo, :encoding,
                   :undoer, :pristine, :syntax, :prefix_arg)
     attr_reader :filename, :options, :snippets, :preferences, :store_hash
 
-    def initialize(view, options = {})
+    def initialize(buffer, options = {})
       if peer = options.delete(:peer)
         @tag_commands = {}
-        @tk_parent = view
+        @tk_parent = buffer
         @store_hash = peer.store_hash
         Tk.execute(peer.tk_pathname, 'peer', 'create', assign_pathname, options)
         self.filename = peer.filename
@@ -28,7 +28,7 @@ module VER
         super
       end
 
-      widget_setup(view)
+      widget_setup(buffer)
     end
 
     # This is a noop, it simply provides a target with a sane name.
@@ -91,12 +91,12 @@ module VER
       touch!('1.0', 'end')
     end
 
-    def peer_create(view)
-      self.class.new(view, peer: self)
+    def peer_create(buffer)
+      self.class.new(buffer, peer: self)
     end
 
-    def widget_setup(view)
-      self.view = view
+    def widget_setup(buffer)
+      self.buffer = buffer
       @options = Options.new(:text, VER.options)
 
       @undoer = VER::Undo::Tree.new(self)
@@ -145,11 +145,11 @@ module VER
       Dir.chdir(filename.dirname.to_s) if options.auto_chdir
       set_window_title
       see(:insert)
-      Tk::Tile::Style.configure(view.style, border: 1, background: '#f00')
+      Tk::Tile::Style.configure(buffer.style, border: 1, background: '#f00')
     end
 
     def on_focus_out(event)
-      Tk::Tile::Style.configure(view.style, border: 1, background: '#fff')
+      Tk::Tile::Style.configure(buffer.style, border: 1, background: '#fff')
     end
 
     def pristine?
@@ -183,7 +183,7 @@ module VER
     end
 
     def layout
-      view.layout
+      buffer.layout
     end
 
     def status_projection(into)

@@ -58,7 +58,7 @@ module VER
 
       def action(path)
         throw(:invalid) unless File.file?(path)
-        caller.view.find_or_create(path)
+        VER.find_or_create_buffer(path)
       end
     end
   end

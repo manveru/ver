@@ -1,53 +1,55 @@
 module VER::Methods
-  module Views
+  module Layout
     class << self
       def change(text, action, *count)
         action.call(text, *count)
       end
 
       def peer(text)
-        text.view.create_peer
+        text.layout.create_buffer(peer: text) do |buffer|
+          yield(buffer) if block_given?
+        end
       end
 
       def focus(text, index = 0)
-        return unless found = text.layout.views[index - 1]
-        found.push_top
+        return unless found = text.layout.buffers[index - 1]
+        text.layout.push_top(found)
       end
 
       def find_or_create(text, file, &block)
-        text.view.find_or_create(file, &block)
+        VER::Buffer.find_or_create(file, &block)
       end
 
       def create(text)
-        text.view.create
+        VER::Buffer.create
       end
 
       def close(text)
-        text.view.close
+        text.buffer.close
       end
 
       def focus_next(text)
-        text.view.focus_next
+        text.layout.focus_next(text.buffer)
       end
 
       def focus_prev(text)
-        text.view.focus_prev
+        text.layout.focus_prev(text.buffer)
       end
 
       def push_up(text)
-        text.view.push_up
+        text.layout.push_up(text.buffer)
       end
 
       def push_down(text)
-        text.view.push_down
+        text.layout.push_down(text.buffer)
       end
 
       def push_top(text)
-        text.view.push_top
+        text.layout.push_top(text.buffer)
       end
 
       def push_bottom(text)
-        text.view.push_bottom
+        text.layout.push_bottom(text.buffer)
       end
 
       def one(text)
@@ -62,7 +64,7 @@ module VER::Methods
 
       def slave_inc(text)
         stacking = text.layout.options[:stacking]
-        unless stacking >= text.layout.views.size
+        unless stacking >= text.layout.buffers.size
           text.layout.options[:stacking] += 1
           text.layout.apply
         end
@@ -106,11 +108,11 @@ module VER::Methods
       end
 
       def cycle_next(text)
-        text.layout.cycle_next(text.view)
+        text.layout.cycle_next(text.buffer)
       end
 
       def cycle_prev(text)
-        text.layout.cycle_prev(text.view)
+        text.layout.cycle_prev(text.buffer)
       end
     end
   end

@@ -1,7 +1,7 @@
 require 'ver/vendor/fuzzy_file_finder'
 
 module VER
-  class View::List::FuzzyFileFinder < View::List
+  class Buffer::List::FuzzyFileFinder < Buffer::List
     FFF = ::FuzzyFileFinder
 
     def fffinder

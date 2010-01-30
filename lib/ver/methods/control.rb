@@ -151,7 +151,7 @@ module VER::Methods
       end
 
       def prepare_exec_F
-        p F: (ENV['F'] = layout.views.map{|v| v.text.filename }.join(' '))
+        p F: (ENV['F'] = VER.buffers.map{|b| b.filename }.join(' '))
       end
 
       def prepare_exec_i
@@ -247,7 +247,7 @@ module VER::Methods
           p command
           system(command)
           target.open('w+'){|io| io.write(`#{command}`) }
-          view.find_or_create(target)
+          VER.find_or_create_buffer(target)
         else
           status_ask 'Command: ' do |command|
             exec_into_new(command)
@@ -312,7 +312,7 @@ module VER::Methods
       def status_ex
         completion = method(:status_ex_filter)
 
-        View::List::Ex.new self, completion do |command, propose|
+        Buffer::List::Ex.new self, completion do |command, propose|
           begin
             result = propose ? send(command, propose) : eval(command)
             status.message "%s # => %p" % [command, result]
@@ -347,13 +347,13 @@ module VER::Methods
       def theme_switch
         return unless @syntax
 
-        View::List::Theme.new(self){|name| load_theme(name) }
+        Buffer::List::Theme.new(self){|name| load_theme(name) }
       end
 
       def syntax_switch
         return unless @syntax
 
-        View::List::Syntax.new(self){|name| load_syntax(name) }
+        Buffer::List::Syntax.new(self){|name| load_syntax(name) }
       end
 
       def smart_evaluate(text)

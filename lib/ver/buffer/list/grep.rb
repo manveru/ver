@@ -1,5 +1,5 @@
 module VER
-  class View::List::Grep < View::List
+  class Buffer::List::Grep < Buffer::List
     def initialize(parent, glob = nil, &block)
       super(parent, &block)
 
