@@ -2,7 +2,7 @@
 
 require 'nokogiri'
 require 'pp'
-require_relative 'better_pp_hash'
+require_relative 'vendor/better_pp_hash'
 
 # Define some magic constants that aren't available but may be returned from
 # Regexp#options so we can make sure that roundtrip via PP works.
