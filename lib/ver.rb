@@ -51,7 +51,7 @@ module VER
   @options = Options.new(:ver)
 
   class << self
-    attr_reader(:ctag_stack, :keymap, :style_name_pool, :style_name_register,
+    attr_reader(:ctag_stack, :keymap, :style_name_pools, :style_name_register,
                 :bookmarks, :buffers, :layout, :options, :paths, :root, :status)
     attr_accessor :layout_class
   end
@@ -152,7 +152,7 @@ module VER
     @bookmarks = Bookmarks.new
     @ctag_stack = []
     @style_name_register = []
-    @style_name_pool = []
+    @style_name_pools = {}
     @buffers = {}
 
     load 'rc'
@@ -435,19 +435,26 @@ module VER
   end
 
   def obtain_style_name(widget_name, widget_class)
-    unless style_name = style_name_pool.shift
+    suffix = "#{widget_name}.#{widget_class}"
+    pool = style_name_pools[suffix] ||= []
+    register = style_name_register
+
+    unless name = pool.shift
       begin
         id = SecureRandom.hex
-        style_name = "#{id}.#{widget_name}.#{widget_class}"
-      end while style_name_register.include?(style_name)
-      style_name_register << style_name
+        name = "#{id}.#{suffix}"
+      end while register.include?(name)
+
+      register << name
     end
 
-    style_name
+    return name
   end
 
   def return_style_name(style_name)
-    style_name_pool << style_name
+    id, widget_name, widget_class = style_name.split('.')
+    suffix = "#{widget_name}.#{widget_class}"
+    style_name_pools[suffix] << style_name
   end
 
   def dump_options
