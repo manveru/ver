@@ -86,6 +86,8 @@ module VER
         self,
         borderwidth:      0,
         exportselection:  true, # copy into X11 buffer automatically
+        foreground:       '#fff', # when first showing, it's not highlighted...
+        background:       '#000',
         font:             font,
         insertofftime:    VER.options.insertofftime,
         insertontime:     VER.options.insertontime,
