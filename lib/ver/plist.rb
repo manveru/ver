@@ -117,7 +117,7 @@ module VER
                 value = child.inner_text
 
                 case key
-                when :begin, :match, :foldingStartMarker, :foldingStopMarker, :keyEquivalent
+                when :begin, :match, :foldingStartMarker, :foldingStopMarker
                   sanitize_regexp(value)
                 else
                   value
