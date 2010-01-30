@@ -15,7 +15,7 @@
 	|^\s*%>
 	|(^\s*|<%\s*)(?i:end\ (if|while|for\ each|for|case|method|save\ output)|until)\b
 	)/,
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "HTML (Active4D)",
  patterns: 
   [{begin: /(<)([a-zA-Z0-9:]+)(?=[^>]*><\/\2>)/,

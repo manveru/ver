@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["cfg"],
- keyEquivalent: /^~Q/,
+ keyEquivalent: "^~Q",
  name: "Quake Style .cfg",
  patterns: 
   [{comment: 

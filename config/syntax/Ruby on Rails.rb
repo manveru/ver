@@ -34,7 +34,7 @@
 	|   ^     \s*+ [}\]] \s*+ ([#].*)? $
 	|   [#] .*? \(end\) \s*+ $    # Sune’s special marker
 	)/,
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "Ruby on Rails",
  patterns: 
   [{begin: 

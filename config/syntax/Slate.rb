@@ -3,7 +3,7 @@
 {fileTypes: ["slate"],
  foldingStartMarker: /^\s*[_A-z0-9]+@.+$/,
  foldingStopMarker: /^.*(\])[A-z ]*\.$/,
- keyEquivalent: /^~S/,
+ keyEquivalent: "^~S",
  name: "Slate",
  patterns: 
   [{match: 

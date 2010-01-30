@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["hs"],
- keyEquivalent: /^~H/,
+ keyEquivalent: "^~H",
  name: "Haskell",
  patterns: 
   [{captures: 

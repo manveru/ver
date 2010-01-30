@@ -4,7 +4,7 @@
  firstLineMatch: "^%!PS",
  foldingStartMarker: /\/\*\*|\{\s*$/,
  foldingStopMarker: /\*\*\/|^\s*\}/,
- keyEquivalent: /^~P/,
+ keyEquivalent: "^~P",
  name: "Postscript",
  patterns: 
   [{begin: /\(/,

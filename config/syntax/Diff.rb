@@ -5,7 +5,7 @@
   "(?x)^\n\t\t(===\\ modified\\ file\n\t\t|==== \\s* // .+ \\s - \\s .+ \\s+ ====\n\t\t|Index:\\ \n\t\t|---\\ [^%]\n\t\t|\\*\\*\\*.*\\d{4}\\s*$\n\t\t|\\d+(,\\d+)* (a|d|c) \\d+(,\\d+)* $\n\t\t|diff\\ --git\\ \n\t\t)\n\t",
  foldingStartMarker: /^\+\+\+/,
  foldingStopMarker: /^---|^$/,
- keyEquivalent: /^~D/,
+ keyEquivalent: "^~D",
  name: "Diff",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.separator.diff"}},

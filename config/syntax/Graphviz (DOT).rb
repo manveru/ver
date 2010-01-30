@@ -3,7 +3,7 @@
 {fileTypes: ["dot", "DOT"],
  foldingStartMarker: /\{/,
  foldingStopMarker: /\}/,
- keyEquivalent: /^~G/,
+ keyEquivalent: "^~G",
  name: "Graphviz (DOT)",
  patterns: 
   [{match: /\b(node|edge|graph|digraph|subgraph|strict)\b/,

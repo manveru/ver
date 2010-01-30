@@ -3,7 +3,7 @@
 {fileTypes: ["cfdg", "context free"],
  foldingStartMarker: /[\{\[]\s*$/,
  foldingStopMarker: /^\s*[\}\]]/,
- keyEquivalent: /^~C/,
+ keyEquivalent: "^~C",
  name: "Context Free",
  patterns: 
   [{include: "#comment"},

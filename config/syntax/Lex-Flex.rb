@@ -3,7 +3,7 @@
 {fileTypes: ["l"],
  foldingStartMarker: /\/\*\*|\{\s*$/,
  foldingStopMarker: /\*\*\/|^\s*\}/,
- keyEquivalent: /^~L/,
+ keyEquivalent: "^~L",
  name: "Lex/Flex",
  patterns: 
   [{begin: /\A(?!%%$)/,

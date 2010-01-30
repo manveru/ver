@@ -3,7 +3,7 @@
 {fileTypes: ["CMakeLists.txt", "cmake"],
  foldingStartMarker: /\/\*\*|\{\s*$/,
  foldingStopMarker: /\*\*\/|^\s*\}/,
- keyEquivalent: /^~C/,
+ keyEquivalent: "^~C",
  name: "CMake Listfile",
  patterns: 
   [{begin: /(?i)^\s*(function|macro)\s*(\()/,

@@ -38,7 +38,7 @@
 	  | (^\s*(<\/[^>]+>|\/>|-->)\s*$)		# XML						
 	)
 	/,
- keyEquivalent: /^~P/,
+ keyEquivalent: "^~P",
  name: "Property List",
  patterns: 
   [{begin: /xml|plist/,

@@ -3,7 +3,7 @@
 {fileTypes: ["Snw", "Rnw", "snw", "rnw"],
  foldingStartMarker: /^<<(.*)>>=|\\begin\{.*\}/,
  foldingStopMarker: /^@(.*)$|\\end\{.*\}/,
- keyEquivalent: /^~S/,
+ keyEquivalent: "^~S",
  name: "SWeave",
  patterns: 
   [{begin: /^(<<)/,

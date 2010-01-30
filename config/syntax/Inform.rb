@@ -4,7 +4,7 @@
  fileTypes: ["inf"],
  foldingStartMarker: /\[/,
  foldingStopMarker: /\]/,
- keyEquivalent: /^~I/,
+ keyEquivalent: "^~I",
  name: "Inform",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.inform"}},

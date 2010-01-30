@@ -26,7 +26,7 @@
 	(?i:(end))				# the word end, was insensitive
 	.*$						# anything until the end of the line
 	/,
- keyEquivalent: /^~F/,
+ keyEquivalent: "^~F",
  name: "Fortran - Modern",
  patterns: 
   [{begin: /^[Cc]\s+/,

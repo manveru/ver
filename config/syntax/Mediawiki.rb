@@ -5,7 +5,7 @@
  fileTypes: ["mediawiki", "wikipedia", "wiki"],
  foldingStartMarker: /^(=+)/,
  foldingStopMarker: /^.*$(?=\n(=+)|(?!\n))/,
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "Mediawiki",
  patterns: [{include: "#block"}, {include: "#inline"}],
  repository: 

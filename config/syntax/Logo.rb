@@ -4,7 +4,7 @@
  fileTypes: [],
  foldingStartMarker: /^to \w+/,
  foldingStopMarker: /^end$/,
- keyEquivalent: /^~L/,
+ keyEquivalent: "^~L",
  name: "Logo",
  patterns: 
   [{match: /^to [\w.]+/, name: "entity.name.function.logo"},

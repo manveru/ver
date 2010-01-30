@@ -5,7 +5,7 @@
  fileTypes: ["adb", "ads"],
  foldingStartMarker: /\b(?i:(procedure|package|function|task|type|loop))\b/,
  foldingStopMarker: /\b(?i:(end))\b/,
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "Ada",
  patterns: 
   [{captures: 

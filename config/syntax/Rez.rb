@@ -5,7 +5,7 @@
  fileTypes: ["r"],
  foldingStartMarker: /(\/\*\*|\{\s*$)/,
  foldingStopMarker: /(\*\*\/|^\s*\})/,
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "Rez",
  patterns: 
   [{begin: /\/\*/,

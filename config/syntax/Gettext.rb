@@ -5,7 +5,7 @@
  fileTypes: ["po", "potx"],
  foldingStartMarker: /#[ \.:,|]/,
  foldingStopMarker: /^\s*$/,
- keyEquivalent: /^~G/,
+ keyEquivalent: "^~G",
  name: "Gettext",
  patterns: 
   [{begin: /msgid\s+""/, end: "^$", name: "entity.name.section.header.po"},

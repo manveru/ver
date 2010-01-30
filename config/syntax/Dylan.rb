@@ -3,7 +3,7 @@
 {fileTypes: ["dylan"],
  foldingStartMarker: /\b(define|begin|block)\b/,
  foldingStopMarker: /\bend\b/,
- keyEquivalent: /^~D/,
+ keyEquivalent: "^~D",
  name: "Dylan",
  patterns: 
   [{begin: /\/\*/,

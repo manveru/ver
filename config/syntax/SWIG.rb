@@ -3,7 +3,7 @@
 {fileTypes: ["i", "swg"],
  foldingStartMarker: /(\/\*\*|%?\{\s*$)/,
  foldingStopMarker: /(\*\*\/|^\s*%?\})/,
- keyEquivalent: /^~S/,
+ keyEquivalent: "^~S",
  name: "SWIG",
  patterns: 
   [{comment: 

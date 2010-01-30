@@ -1,6 +1,6 @@
 # Encoding: UTF-8
 
-{keyEquivalent: /^~T/,
+{keyEquivalent: "^~T",
  name: "Twiki",
  patterns: 
   [{begin: /"/,

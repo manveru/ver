@@ -14,7 +14,7 @@
 	|^\s*-->
 	|(^|\s)\}
 	)/,
- keyEquivalent: /^~B/,
+ keyEquivalent: "^~B",
  name: "Blog — Markdown",
  patterns: 
   [{captures: 

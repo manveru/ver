@@ -4,7 +4,7 @@
  firstLineMatch: "^#!/.*\\btclsh\\b",
  foldingStartMarker: /\{\s*$/,
  foldingStopMarker: /^\s*\}/,
- keyEquivalent: /^~T/,
+ keyEquivalent: "^~T",
  name: "Tcl",
  patterns: 
   [{begin: /(?<=^|;)\s*((#))/,

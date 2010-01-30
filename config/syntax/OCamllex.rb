@@ -3,7 +3,7 @@
 {fileTypes: ["mll"],
  foldingStartMarker: /{/,
  foldingStopMarker: /}/,
- keyEquivalent: /^~O/,
+ keyEquivalent: "^~O",
  name: "OCamllex",
  patterns: 
   [{begin: /^\s*({)/,

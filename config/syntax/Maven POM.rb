@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["pom.xml"],
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "Maven POM",
  patterns: 
   [{include: "#profiles"}, {include: "#pom-body"}, {include: "#maven-xml"}],

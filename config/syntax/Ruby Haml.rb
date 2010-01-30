@@ -3,7 +3,7 @@
 {fileTypes: ["haml", "sass"],
  foldingStartMarker: /^\s*([-%#\:\.\w\=].*)\s$/,
  foldingStopMarker: /^\s*$/,
- keyEquivalent: /^~H/,
+ keyEquivalent: "^~H",
  name: "Ruby Haml",
  patterns: 
   [{begin: /^\s*==/,

@@ -3,7 +3,7 @@
 {fileTypes: ["sql", "ddl", "dml"],
  foldingStartMarker: /\s*\(\s*$/,
  foldingStopMarker: /^\s*\)/,
- keyEquivalent: /^~S/,
+ keyEquivalent: "^~S",
  name: "SQL",
  patterns: 
   [{include: "#comments"},

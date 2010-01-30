@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["t2t"],
- keyEquivalent: /^~T/,
+ keyEquivalent: "^~T",
  name: "Txt2tags",
  patterns: 
   [{begin: /^%%%\s*$/, end: "^%%%\\s*$\\n?", name: "comment.block.txt2tags"},

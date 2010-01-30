@@ -4,7 +4,7 @@
  foldingStartMarker: 
   /^\s*(<[^!?%\/](?!.+?(\/>|<\/.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))/,
  foldingStopMarker: /^\s*(<\/[^>]+>|[\/%]>|-->)\s*$/,
- keyEquivalent: /^~X/,
+ keyEquivalent: "^~X",
  name: "XML strict",
  patterns: 
   [{begin: /<\?/,

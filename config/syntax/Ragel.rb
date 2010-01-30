@@ -7,7 +7,7 @@
 	|^(?![^{]*?\/\/|[^{]*?\/\*(?!.*?\*\/.*?\{)).*?\{\s*($|\/\/|\/\*(?!.*?\*\/.*\S))
 	/,
  foldingStopMarker: /(?<!\*)\*\*\/|^\s*\}/,
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "Ragel",
  patterns: 
   [{begin: /%%{/,

@@ -4,7 +4,7 @@
  firstLineMatch: "// ==UserScript==",
  foldingStartMarker: /\/\/ ==UserScript==/,
  foldingStopMarker: /\/\/ ==\/UserScript==/,
- keyEquivalent: /^~G/,
+ keyEquivalent: "^~G",
  name: "Greasemonkey",
  patterns: 
   [{match: /\bunsafeWindow\b/, name: "support.class.greasemonkey"},

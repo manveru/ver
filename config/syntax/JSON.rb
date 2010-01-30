@@ -24,7 +24,7 @@
                          \s*    # some optional space
                          [}\]]  # and the close of an object or array
                        )/,
- keyEquivalent: /^~J/,
+ keyEquivalent: "^~J",
  name: "JSON",
  patterns: [{include: "#value"}],
  repository: 

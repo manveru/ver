@@ -3,7 +3,7 @@
 {fileTypes: ["pas", "p"],
  foldingStartMarker: /\b(?i:(function|package|procedure|try|type))\b/,
  foldingStopMarker: /\b(?i:(end))\b/,
- keyEquivalent: /^~P/,
+ keyEquivalent: "^~P",
  name: "Pascal",
  patterns: 
   [{match: 

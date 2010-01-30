@@ -3,7 +3,7 @@
 {fileTypes: ["as"],
  foldingStartMarker: /(\/\*\*|\{\s*$)/,
  foldingStopMarker: /(\*\*\/|^\s*\})/,
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "MEL",
  patterns: 
   [{match: /\b(matrix|string|vector|float|int|void)\b/,

@@ -3,7 +3,7 @@
 {comment: 
   "syntax highlighting for reStructuredText http://docutils.sourceforge.net, based on rst mode from jEdit",
  fileTypes: ["rst", "rest"],
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "reStructuredText",
  patterns: 
   [{begin: /^([ \t]*)(?=\S)/,

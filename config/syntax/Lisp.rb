@@ -4,7 +4,7 @@
  fileTypes: ["lisp", "cl", "l", "mud", "el"],
  foldingStartMarker: /\(/,
  foldingStopMarker: /\)/,
- keyEquivalent: /^~L/,
+ keyEquivalent: "^~L",
  name: "Lisp",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.lisp"}},

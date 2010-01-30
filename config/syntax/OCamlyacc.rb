@@ -3,7 +3,7 @@
 {fileTypes: ["mly"],
  foldingStartMarker: /%{|%%/,
  foldingStopMarker: /%}|%%/,
- keyEquivalent: /^~O/,
+ keyEquivalent: "^~O",
  name: "OCamlyacc",
  patterns: 
   [{begin: /(%{)\s*$/,

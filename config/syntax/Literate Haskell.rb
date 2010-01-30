@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["lhs"],
- keyEquivalent: /^~H/,
+ keyEquivalent: "^~H",
  name: "Literate Haskell",
  patterns: 
   [{begin: /^((\\)begin)({)code(})(\s*\n)?/,

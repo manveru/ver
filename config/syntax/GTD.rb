@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["gtd"],
- keyEquivalent: /^~G/,
+ keyEquivalent: "^~G",
  name: "GTD",
  patterns: 
   [{match: /[A-Z][a-z]+([A-Z][a-z]*)+/, name: "markup.other.pagename"},

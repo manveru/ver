@@ -8,7 +8,7 @@
 	|^(?![^{]*?\/\/|[^{]*?\/\*(?!.*?\*\/.*?\{)).*?\{\s*($|\/\/|\/\*(?!.*?\*\/.*\S))
 	/,
  foldingStopMarker: /(?<!\*)\*\*\/|^\s*\}/,
- keyEquivalent: /^~Q/,
+ keyEquivalent: "^~Q",
  name: "C++ Qt",
  patterns: 
   [{match: /\bQ_(CLASSINFO|ENUMS|FLAGS|INTERFACES|OBJECT|PROPERTY)\b/,

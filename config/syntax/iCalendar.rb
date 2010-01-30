@@ -3,7 +3,7 @@
 {fileTypes: ["ics", "ifb"],
  foldingStartMarker: /^BEGIN:/,
  foldingStopMarker: /^END:/,
- keyEquivalent: /^~I/,
+ keyEquivalent: "^~I",
  name: "iCalendar",
  patterns: 
   [{captures: {1 => {name: "entity.name.section.icalendar"}},

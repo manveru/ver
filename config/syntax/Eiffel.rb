@@ -3,7 +3,7 @@
 {fileTypes: ["e"],
  foldingStartMarker: /(class|once|do|external)/,
  foldingStopMarker: /(ensure|end)/,
- keyEquivalent: /^~E/,
+ keyEquivalent: "^~E",
  name: "Eiffel",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.eiffel"}},

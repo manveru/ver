@@ -4,7 +4,7 @@
  foldingStartMarker: 
   /^\s*(def|class)\s+([.a-zA-Z0-9_ b]+)\s*(\((.*)\))?\s*:|\{\s*$|\(\s*$|\[\s*$/,
  foldingStopMarker: /^\s*$|^\s*\}|^\s*\]|^\s*\)/,
- keyEquivalent: /^~P/,
+ keyEquivalent: "^~P",
  name: "Python Django",
  patterns: 
   [{match: 

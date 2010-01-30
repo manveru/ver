@@ -3,7 +3,7 @@
 {comment: "Yahoo User Interface Library 2.8.0",
  foldingStartMarker: /(^.*{[^}]*$|^.*\([^\)]*$|^.*\/\*(?!.*\*\/).*$)/,
  foldingStopMarker: /(^\s*\}|^\s*\)|^(?!.*\/\*).*\*\/)/,
- keyEquivalent: /^~J/,
+ keyEquivalent: "^~J",
  name: "Javascript YUI",
  patterns: 
   [{match: /\b(YAHOO|YAHOO_config)\b/, name: "support.class.js.yui"},

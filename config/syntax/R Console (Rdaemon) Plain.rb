@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["Rcon"],
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "R Console (Rdaemon) Plain",
  patterns: 
   [{begin: /(?i)^\s*(error|erreur|fehler|errore|erro)( |:)/,

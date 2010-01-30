@@ -5,7 +5,7 @@
   /(<(?i:(head|table|tr|div|style|script|ul|ol|form|dl))\b.*?>|{% (block|comment|filter|for|if|ifchanged|ifequal|ifnotequal))/,
  foldingStopMarker: 
   /(<\/(?i:(head|table|tr|div|style|script|ul|ol|form|dl))>|{% (endblock|endblocktrans|endcomment|endfilter|endfor|endif|endifchanged|endifequal|endifnotequal) %})/,
- keyEquivalent: /^~D/,
+ keyEquivalent: "^~D",
  name: "HTML (Django)",
  patterns: 
   [{comment: 

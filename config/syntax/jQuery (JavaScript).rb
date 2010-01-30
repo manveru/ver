@@ -3,7 +3,7 @@
 {comment: "jQuery Javascript Framework. By Jonathan Chaffer & Karl Swedberg.",
  foldingStartMarker: /(^.*{[^}]*$|^.*\([^\)]*$|^.*\/\*(?!.*\*\/).*$)/,
  foldingStopMarker: /(^\s*\}|^\s*\)|^(?!.*\/\*).*\*\/)/,
- keyEquivalent: /^~J/,
+ keyEquivalent: "^~J",
  name: "jQuery (JavaScript)",
  patterns: 
   [{begin: /(\$)(\()/,

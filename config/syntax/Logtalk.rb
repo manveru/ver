@@ -3,7 +3,7 @@
 {fileTypes: ["lgt"],
  foldingStartMarker: /(\/\*|:-\s+(object|protocol|category)(?=[(]))/,
  foldingStopMarker: /(\*\/|:-\s+end_(object|protocol|category)(?=[.]))/,
- keyEquivalent: /^~L/,
+ keyEquivalent: "^~L",
  name: "Logtalk",
  patterns: 
   [{begin: /\/\*/,

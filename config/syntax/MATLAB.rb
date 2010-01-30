@@ -3,7 +3,7 @@
 {foldingStartMarker: 
   /^\s*(function|if|switch|while|for|try)\b(?!.*\bend\b).*$/,
  foldingStopMarker: /^\s*(end|return)\b.*$/,
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "MATLAB",
  patterns: 
   [{begin: 

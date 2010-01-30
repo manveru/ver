@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["pro", "pri"],
- keyEquivalent: /^~Q/,
+ keyEquivalent: "^~Q",
  name: "qmake Project file",
  patterns: 
   [{begin: /(TEMPLATE)\s*(=)/,

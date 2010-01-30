@@ -5,7 +5,7 @@
  firstLineMatch: "^#!.*\\bperl\\b",
  foldingStartMarker: /(\/\*|(\{|\[|\()\s*$)/,
  foldingStopMarker: /(\*\/|^\s*(\}|\]|\)))/,
- keyEquivalent: /^~P/,
+ keyEquivalent: "^~P",
  name: "Perl",
  patterns: 
   [{include: "#line_comment"},

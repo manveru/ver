@@ -16,7 +16,7 @@
 	|\{\{?\/(if|foreach|capture|literal|foreach|php|section|strip)
 	|^[^{]*\}
 	)/,
- keyEquivalent: /^~B/,
+ keyEquivalent: "^~B",
  name: "Blog — HTML",
  patterns: 
   [{captures: 

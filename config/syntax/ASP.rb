@@ -6,7 +6,7 @@
  foldingStartMarker: 
   /(?i)^\s*(Public|Private)?\s*(Class|Function|Sub|Property)\s*([a-zA-Z_]\w*)\s*(\(.*\)\s*)?$/,
  foldingStopMarker: /(?i)^\s*End (Class|Function|Sub|Property)\s*$/,
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "ASP",
  patterns: 
   [{captures: 

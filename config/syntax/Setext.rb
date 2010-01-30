@@ -2,7 +2,7 @@
 
 {fileTypes: ["etx", "etx.txt"],
  firstLineMatch: "setext",
- keyEquivalent: /^~S/,
+ keyEquivalent: "^~S",
  name: "Setext",
  patterns: 
   [{include: "#inline"},

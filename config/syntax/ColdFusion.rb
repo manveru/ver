@@ -11,7 +11,7 @@
 	(<\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl|cfloop|cfif|cfswitch|cfcomponent)>
 	|^(?!.*?<!---).*?---\s*>
 	)/,
- keyEquivalent: /^~C/,
+ keyEquivalent: "^~C",
  name: "ColdFusion",
  patterns: 
   [{begin: /(?:^\s+)?<((?i:cfoutput))\b(?![^>]*\/>)/,

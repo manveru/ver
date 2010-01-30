@@ -3,7 +3,7 @@
 {fileTypes: ["R", "r", "s", "S", "Rprofile"],
  foldingStartMarker: /^[^#]*(\([^\)]*$|\{\s*$)/,
  foldingStopMarker: /(^\s*\)|^\s*\})/,
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "R",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.r"}},

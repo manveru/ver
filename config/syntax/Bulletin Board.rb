@@ -13,7 +13,7 @@
         |^\s*-->
         |(^|\s)\}
         )/,
- keyEquivalent: /^~B/,
+ keyEquivalent: "^~B",
  name: "Bulletin Board",
  patterns: 
   [{begin: /(\[)(?i:list)(\])/,

@@ -19,7 +19,7 @@
 	|\{\{?\/(if|foreach|capture|literal|foreach|php|section|strip)
 	|(^|\s)\}
 	)/,
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "HTML (ASP.net)",
  patterns: 
   [{include: "#php"},

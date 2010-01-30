@@ -2,7 +2,7 @@
 
 {foldingStartMarker: /(\{|\()\s*$/,
  foldingStopMarker: /^\s*(\}|\))/,
- keyEquivalent: /^~L/,
+ keyEquivalent: "^~L",
  name: "Lighttpd",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.lighttpd-config"}},

@@ -37,7 +37,7 @@
 	|   [#] .*? \(end\) \s*+ $    # Sune’s special marker
 	|   ^=end
 	)/,
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "RSpec",
  patterns: 
   [{match: /(?<!\.)\b(before|after)\b(?![?!])/,

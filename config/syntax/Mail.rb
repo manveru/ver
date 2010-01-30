@@ -2,7 +2,7 @@
 
 {fileTypes: ["mail"],
  firstLineMatch: "^From: .*(?=\\w+@[\\w-]+\\.\\w+)",
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "Mail",
  patterns: 
   [{begin: /((?i:subject))(:)\s*/,

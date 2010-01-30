@@ -7,7 +7,7 @@
   /(<(?i:(head|table|div|style|script|ul|ol|form|dl))\b.*?>|\{|^\s*<?%?\s*'?\s*(?i:(sub|private\s+Sub|public\s+Sub|function|if|while|For))\s*.*$)/,
  foldingStopMarker: 
   /(<\/(?i:(head|table|div|style|script|ul|ol|form|dl))>?|\}|^\s*<?%?\s*\s*'?\s*(?i:(end|Next))\s*.*$)/,
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "ASP vb.NET",
  patterns: 
   [{match: /\n/, name: "meta.ending-space"},

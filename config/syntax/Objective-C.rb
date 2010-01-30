@@ -8,7 +8,7 @@
 	|^@(interface|protocol|implementation)\b
 	/,
  foldingStopMarker: /(?<!\*)\*\*\/|^\s*\}|^@end\b/,
- keyEquivalent: /^~O/,
+ keyEquivalent: "^~O",
  name: "Objective-C",
  patterns: 
   [{begin: 

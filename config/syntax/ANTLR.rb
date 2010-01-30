@@ -3,7 +3,7 @@
 {fileTypes: ["g"],
  foldingStartMarker: /\/\*(?!\*\/)|\{\s*$/,
  foldingStopMarker: /\*\/|^\s*\}/,
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "ANTLR",
  patterns: 
   [{include: "#strings"},

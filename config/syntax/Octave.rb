@@ -5,7 +5,7 @@
   /^\s*(function|if|switch|while|for|try)\b(?!.*\b(end|endfunction|endif|endswitch|endwhile|endfor|endtry)\b).*$/,
  foldingStopMarker: 
   /^\s*(end|return|endfunction|endif|endswitch|endwhile|endfor|endtry)\b.*$/,
- keyEquivalent: /^~O/,
+ keyEquivalent: "^~O",
  name: "Octave",
  patterns: 
   [{begin: 

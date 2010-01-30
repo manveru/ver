@@ -3,7 +3,7 @@
 {firstLineMatch: "^\\\\documentclass(?!.*\\{beamer\\})",
  foldingStartMarker: /\\begin\{.*\}|%.*\(fold\)\s*$/,
  foldingStopMarker: /\\end\{.*\}|%.*\(end\)\s*$/,
- keyEquivalent: /^~L/,
+ keyEquivalent: "^~L",
  name: "LaTeX Rdaemon",
  patterns: 
   [{begin: /(?:\s*)((\\)begin)(\{)(Rdaemon)(\})/,

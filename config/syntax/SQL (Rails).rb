@@ -3,7 +3,7 @@
 {fileTypes: ["erbsql", "sql.erb"],
  foldingStartMarker: /\s*\(\s*$/,
  foldingStopMarker: /^\s*\)/,
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "SQL (Rails)",
  patterns: 
   [{begin: /<%+(?!>)=?/,

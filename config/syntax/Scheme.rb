@@ -10,7 +10,7 @@
 	  )
 	$/,
  foldingStopMarker: /^\s*$/,
- keyEquivalent: /^~S/,
+ keyEquivalent: "^~S",
  name: "Scheme",
  patterns: 
   [{include: "#comment"},

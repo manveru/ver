@@ -9,7 +9,7 @@
   /(?x)
 	(^\s*(?i:end\ (if|while|for\ each|for|case|method|save output)|until)\b
 	)/,
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "Active4D",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.active4d"}},

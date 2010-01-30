@@ -3,7 +3,7 @@
 {fileTypes: ["rd", "Rd"],
  foldingStartMarker: /\/\w*\{\s*$/,
  foldingStopMarker: /^\s*\}/,
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "Rd (R Documentation)",
  patterns: 
   [{begin: 

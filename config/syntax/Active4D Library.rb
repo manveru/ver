@@ -11,7 +11,7 @@
 	(^\s*(?i:end\ (if|while|for\ each|for|case|method)|until)\b
 	|^\s*<\/fusedoc>
 	)/,
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "Active4D Library",
  patterns: 
   [{match: /(?i:end library|library)/, name: "keyword.other.active4d"},

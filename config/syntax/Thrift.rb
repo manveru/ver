@@ -3,7 +3,7 @@
 {fileTypes: ["thrift"],
  foldingStartMarker: /\{\s*$/,
  foldingStopMarker: /^\s*\}/,
- keyEquivalent: /^~T/,
+ keyEquivalent: "^~T",
  name: "Thrift",
  patterns: 
   [{include: "#comments"},

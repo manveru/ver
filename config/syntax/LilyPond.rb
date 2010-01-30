@@ -5,7 +5,7 @@
  fileTypes: ["ly", "lily", "ily"],
  foldingStartMarker: /(\{|<<)\s*$/,
  foldingStopMarker: /(\}|>>)/,
- keyEquivalent: /^~L/,
+ keyEquivalent: "^~L",
  name: "LilyPond",
  patterns: 
   [{include: "#comments"},

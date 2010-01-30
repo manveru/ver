@@ -5,7 +5,7 @@
  foldingStartMarker: 
   /^\s*\b(function|local\s+function|if|for)\b|{[ \t]*$|\[\[/,
  foldingStopMarker: /\bend\b|^\s*}|\]\]/,
- keyEquivalent: /^~L/,
+ keyEquivalent: "^~L",
  name: "Lua",
  patterns: 
   [{captures: 

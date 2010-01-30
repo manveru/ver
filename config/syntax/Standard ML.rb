@@ -3,7 +3,7 @@
 {fileTypes: ["sml", "sig"],
  foldingStartMarker: /\(\*|\b(struct|sig)\b/,
  foldingStopMarker: /\*\)|\bend\b/,
- keyEquivalent: /^~S/,
+ keyEquivalent: "^~S",
  name: "Standard ML",
  patterns: 
   [{include: "#comments"},

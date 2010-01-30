@@ -12,7 +12,7 @@
  firstLineMatch: "^#!.*\\b(bash|zsh|sh|tcsh)",
  foldingStartMarker: /\b(if|case)\b|(\{|\b(do)\b)$/,
  foldingStopMarker: /^\s*(\}|(done|fi|esac)\b)/,
- keyEquivalent: /^~S/,
+ keyEquivalent: "^~S",
  name: "Shell Script (Bash)",
  patterns: 
   [{include: "#comment"},

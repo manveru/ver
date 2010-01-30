@@ -4,7 +4,7 @@
   "This is a wrapper for and adds nested bracket scopes to Prototype & Script.aculo.us (JavaScript). It also allow for embedded ruby source. By Thomas Aylott",
  foldingStartMarker: /(\{[^\}]*$|\([^\)]*$|<%)/,
  foldingStopMarker: /(^[^\{]*\}|^\s*\)|%>)/,
- keyEquivalent: /^~J/,
+ keyEquivalent: "^~J",
  name: "Prototype & Script.aculo.us (JavaScript) Bracketed",
  patterns: 
   [{begin: /<%=/,

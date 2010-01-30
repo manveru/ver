@@ -5,7 +5,7 @@
   /(\b(module|class|)\s.*?=\s*$|\bbegin|sig|struct|(object(\s*\(_?[a-z]+\))?)\s*$|\bwhile\s.*?\bdo\s*$|^let(?:\s+rec)?\s+[a-z_][a-zA-Z0-9_]*\s+(?!=)\S)/,
  foldingStopMarker: 
   /(\bend(\s+in)?[ \t]*(;{1,2}|=)?|\bdone;?|^\s*;;|^\s*in)[ \t]*$/,
- keyEquivalent: /^~O/,
+ keyEquivalent: "^~O",
  name: "OCaml",
  patterns: 
   [{captures: 

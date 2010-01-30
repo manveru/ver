@@ -3,7 +3,7 @@
 {fileTypes: ["ini", "conf"],
  foldingStartMarker: /\[/,
  foldingStopMarker: /\[/,
- keyEquivalent: /^~I/,
+ keyEquivalent: "^~I",
  name: "Ini",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.ini"}},

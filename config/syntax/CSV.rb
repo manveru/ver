@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["csv"],
- keyEquivalent: /^~C/,
+ keyEquivalent: "^~C",
  name: "CSV",
  patterns: [{include: "#table"}],
  repository: 

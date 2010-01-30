@@ -13,7 +13,7 @@
 	|^\s*-->
 	|(^|\s)\}
 	)/,
- keyEquivalent: /^~E/,
+ keyEquivalent: "^~E",
  name: "HTML (Erlang)",
  patterns: 
   [{begin: /<erl>/,

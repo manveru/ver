@@ -3,7 +3,7 @@
 {fileTypes: ["yaml", "yml"],
  foldingStartMarker: /^[^#]\s*.*:(\s*\[?| &.+)?$/,
  foldingStopMarker: /^\s*$|^\s*\}|^\s*\]|^\s*\)/,
- keyEquivalent: /^~Y/,
+ keyEquivalent: "^~Y",
  name: "YAML",
  patterns: 
   [{include: "#erb"},

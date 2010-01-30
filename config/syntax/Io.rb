@@ -3,7 +3,7 @@
 {fileTypes: ["io"],
  foldingStartMarker: /(\/\*\*|\([^\)]*$|if\()/,
  foldingStopMarker: /(\*\*\/|^\s*\))/,
- keyEquivalent: /^~I/,
+ keyEquivalent: "^~I",
  name: "Io",
  patterns: 
   [{captures: {1 => {name: "meta.empty-parenthesis.io"}},

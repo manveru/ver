@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["moinmoin"],
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "MoinMoin",
  patterns: 
   [{captures: 

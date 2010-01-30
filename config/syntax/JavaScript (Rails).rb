@@ -3,7 +3,7 @@
 {fileTypes: ["js.erb"],
  foldingStartMarker: /\/\*\*|\{\s*$/,
  foldingStopMarker: /\*\*\/|^\s*\}/,
- keyEquivalent: /^~J/,
+ keyEquivalent: "^~J",
  name: "JavaScript (Rails)",
  patterns: 
   [{begin: /<%+#/,

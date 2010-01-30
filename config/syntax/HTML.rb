@@ -30,7 +30,7 @@
 	|\{\{?\/(if|foreach|capture|literal|foreach|php|section|strip)
 	|^[^{]*\}
 	)/,
- keyEquivalent: /^~H/,
+ keyEquivalent: "^~H",
  name: "HTML",
  patterns: 
   [{begin: /(<)([a-zA-Z0-9:]++)(?=[^>]*><\/\2>)/,

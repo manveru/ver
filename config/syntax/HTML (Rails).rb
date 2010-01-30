@@ -13,7 +13,7 @@
 	|^\s*-->
 	|(^|\s)\}
 	)/,
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "HTML (Rails)",
  patterns: 
   [{begin: /<%+#/,

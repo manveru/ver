@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["s", "mips", "spim", "asm"],
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "MIPS Assembler",
  patterns: 
   [{comment: 

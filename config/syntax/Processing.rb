@@ -3,7 +3,7 @@
 {fileTypes: ["pde"],
  foldingStartMarker: /(\/\*\*|\{\s*$)/,
  foldingStopMarker: /(\*\*\/|^\s*\})/,
- keyEquivalent: /^~P/,
+ keyEquivalent: "^~P",
  name: "Processing",
  patterns: 
   [{match: 

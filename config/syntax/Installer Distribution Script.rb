@@ -4,7 +4,7 @@
  foldingStartMarker: 
   /^\s*(<[^!?%\/](?!.+?(\/>|<\/.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))/,
  foldingStopMarker: /^\s*(<\/[^>]+>|[\/%]>|-->)\s*$/,
- keyEquivalent: /^~I/,
+ keyEquivalent: "^~I",
  name: "Installer Distribution Script",
  patterns: 
   [{begin: /((<)(script)(>))/,

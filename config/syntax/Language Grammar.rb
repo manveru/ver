@@ -4,7 +4,7 @@
  firstLineMatch: "^\\{\\s*scopeName = .*$",
  foldingStartMarker: /^\s*([a-zA-Z_-]+ = )?[{(](?!.*[)}][;,]?\s*$)/,
  foldingStopMarker: /^\s*(\}|\))/,
- keyEquivalent: /^~L/,
+ keyEquivalent: "^~L",
  name: "Language Grammar",
  patterns: 
   [{begin: /(\{)/,

@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["rjs"],
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "RJS",
  patterns: [{include: "source.ruby"}],
  scopeName: "source.ruby.rails.rjs",

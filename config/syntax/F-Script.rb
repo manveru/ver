@@ -3,7 +3,7 @@
 {fileTypes: ["fscript"],
  foldingStartMarker: /\[/,
  foldingStopMarker: /\]/,
- keyEquivalent: /^~F/,
+ keyEquivalent: "^~F",
  name: "F-Script",
  patterns: 
   [{match: /(:|\w):/, name: "meta.dummy.symbol.ignore.fscript"},

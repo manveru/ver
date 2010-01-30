@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["ini"],
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "Active4D Config",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.active4d-ini"}},

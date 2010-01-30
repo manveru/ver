@@ -6,7 +6,7 @@
  foldingStartMarker: 
   /(?x)\/\*\*(?!\*)|^(?![^{]*?\/\/|[^{]*?\/\*(?!.*?\*\/.*?\{)).*?\{\s*($|\/\/|\/\*(?!.*?\*\/.*\S))/,
  foldingStopMarker: /(?<!\*)\*\*\/|^\s*\}/,
- keyEquivalent: /^~D/,
+ keyEquivalent: "^~D",
  name: "D",
  patterns: 
   [{captures: {0 => {name: "punctuation.definition.comment.d"}},

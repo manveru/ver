@@ -3,7 +3,7 @@
 {fileTypes: ["fxscript"],
  foldingStartMarker: /(^|(?<=;)[ \t]*)on[ \t]+(\w+)[ \t]*/,
  foldingStopMarker: /end(;|;?[ \t]*|;?[ \t]*\/\/.*[ \t]*)/,
- keyEquivalent: /^~F/,
+ keyEquivalent: "^~F",
  name: "FXScript",
  patterns: 
   [{begin: /(^|(?<=;)[ \t]*)on[ \t]+(\w+)[ \t]*(?=\([^\)]*\))/,

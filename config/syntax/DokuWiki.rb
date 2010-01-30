@@ -4,7 +4,7 @@
  firstLineMatch: "^\\s*={2,}(.*)={2,}\\s*$",
  foldingStartMarker: /(<(php|html|file|nowiki)>|<code(\s*.*)?>)|\/\*\*|\{\s*$/,
  foldingStopMarker: /(<\/(code|php|html|file|nowiki)>)|\*\*\/|^\s*\}/,
- keyEquivalent: /^~D/,
+ keyEquivalent: "^~D",
  name: "DokuWiki",
  patterns: 
   [{include: "#php"},

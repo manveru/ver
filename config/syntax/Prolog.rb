@@ -3,7 +3,7 @@
 {fileTypes: [],
  foldingStartMarker: /%\s*region \w*/,
  foldingStopMarker: /%\s*end(\s*region)?/,
- keyEquivalent: /^~P/,
+ keyEquivalent: "^~P",
  name: "Prolog",
  patterns: 
   [{begin: /'/,

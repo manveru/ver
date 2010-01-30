@@ -2,7 +2,7 @@
 
 {fileTypes: ["blog.txt"],
  firstLineMatch: "^Type: Blog Post \\(Text\\)",
- keyEquivalent: /^~B/,
+ keyEquivalent: "^~B",
  name: "Blog — Text",
  patterns: 
   [{captures: 

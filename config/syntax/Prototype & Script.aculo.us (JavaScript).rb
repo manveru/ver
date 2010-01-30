@@ -4,7 +4,7 @@
   "Prototype and Scriptaculous Javascript Frameworks. By Justin Palmer, Thomas Aylott & Martin Ström",
  foldingStartMarker: /(^.*{[^}]*$|^.*\([^\)]*$|^.*\/\*(?!.*\*\/).*$)/,
  foldingStopMarker: /(^\s*\}|^\s*\)|^(?!.*\/\*).*\*\/)/,
- keyEquivalent: /^~J/,
+ keyEquivalent: "^~J",
  name: "Prototype & Script.aculo.us (JavaScript)",
  patterns: 
   [{match: 

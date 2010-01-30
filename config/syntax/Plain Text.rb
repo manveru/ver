@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["txt"],
- keyEquivalent: /^~P/,
+ keyEquivalent: "^~P",
  name: "Plain Text",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.item.text"}},

@@ -3,7 +3,7 @@
 {fileTypes: ["gtd", "gtdlog"],
  foldingStartMarker: /^\s*project/,
  foldingStopMarker: /^\s*end\s*$/,
- keyEquivalent: /^~G/,
+ keyEquivalent: "^~G",
  name: "GTDalt",
  patterns: 
   [{begin: /^\s*(project)\s+(.*)(\n)/,

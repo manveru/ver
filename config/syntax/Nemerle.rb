@@ -3,7 +3,7 @@
 {fileTypes: ["n"],
  foldingStartMarker: /(\{|\(|<\[)/,
  foldingStopMarker: /(\}|\)|\]>)/,
- keyEquivalent: /^~N/,
+ keyEquivalent: "^~N",
  name: "Nemerle",
  patterns: 
   [{begin: /\/\//,

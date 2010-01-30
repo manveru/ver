@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["m3", "cm3"],
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "Modula-3",
  patterns: 
   [{match: 

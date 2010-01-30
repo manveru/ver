@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["tsv"],
- keyEquivalent: /^~T/,
+ keyEquivalent: "^~T",
  name: "TSV",
  patterns: [{include: "#table"}],
  repository: 

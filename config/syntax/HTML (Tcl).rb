@@ -5,7 +5,7 @@
   /(<(?i:(head|table|div|style|script|ul|ol|form|dl))\b.*?>|\{)/,
  foldingStopMarker: 
   /(<\/(?i:(head|table|div|style|script|ul|ol|form|dl))>|\})/,
- keyEquivalent: /^~T/,
+ keyEquivalent: "^~T",
  name: "HTML (Tcl)",
  patterns: 
   [{begin: /<%/,

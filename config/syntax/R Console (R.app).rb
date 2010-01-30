@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: [],
- keyEquivalent: /^~R/,
+ keyEquivalent: "^~R",
  name: "R Console (R.app)",
  patterns: 
   [{begin: /^> /,
