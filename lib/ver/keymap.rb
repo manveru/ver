@@ -69,7 +69,7 @@ module VER
             when IMPOSSIBLE
               false
             else
-              return cvalue.combine(resolved)
+              return cvalue.combine(resolved.last)
             end
           end
 
