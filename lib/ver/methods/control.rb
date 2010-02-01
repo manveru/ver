@@ -99,10 +99,10 @@ module VER::Methods
         :search,
       ]
 
-      def repeat_command(text, count = 1)
-        bundle = []
-        text.keymap.execute_history.reverse_each do |mode, widget, action, arg|
-          if bundle.empty?
+      def repeat_command(text, count = text.prefix_count)
+        actions = []
+        text.major_mode.action_history.reverse_each do |event, mode, action|
+          if actions.empty?
             next if REPEAT_BREAK_CMD.include?(action.method)
             next if REPEAT_BREAK_MODE.include?(mode.name)
           else
@@ -110,16 +110,14 @@ module VER::Methods
             break if REPEAT_BREAK_MODE.include?(mode.name)
           end
 
-          bundle << [mode, widget, action, arg]
+          actions << [action, event]
         end
 
-        bundle.reverse!
+        actions.reverse!
 
-        count.times do
-          bundle.each do |mode, widget, action, arg|
-            # p [cmd, arg]
-            mode.execute_without_history(widget, action, arg)
-          end
+        actions.each do |action, event|
+          event.prefix_arg = count
+          action.call(event)
         end
       end
 

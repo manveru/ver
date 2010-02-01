@@ -113,12 +113,14 @@ module VER
           found = minor.resolve(sequence)
           found != IMPOSSIBLE
         }
+      else
+        found = [self, found]
       end
 
       if found == IMPOSSIBLE && fa = self.fallback_action
-        fa
+        return self, fa
       else
-        found
+        return found
       end
     end
 

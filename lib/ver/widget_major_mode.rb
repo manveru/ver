@@ -9,14 +9,16 @@ module VER
   #
   # It is responsible to keep the keymaps of major and minor modes functioning
   # by ensuring that they are actually bound to the tag of the major mode.
-  class WidgetMajorMode < Struct.new(:widget, :major, :minors, :history, :stack)
+  class WidgetMajorMode < Struct.new(:widget, :major, :minors, :stack,
+                                     :event_history, :action_history)
     INCOMPLETE = Keymap::INCOMPLETE
     IMPOSSIBLE = Keymap::IMPOSSIBLE
 
     def initialize(widget, major)
       self.widget = widget
       self.major = MajorMode[major]
-      self.history = SizedArray.new(100)
+      self.event_history = SizedArray.new(100)
+      self.action_history = SizedArray.new(100)
       self.stack = []
       self.minors = []
 
@@ -58,7 +60,7 @@ module VER
 
     def on_event(event)
       stack << event.sequence
-      history << {
+      event_history << {
         sequence: event.sequence,
         keysym: event.keysym,
         unicode: event.unicode
@@ -75,7 +77,10 @@ module VER
         stack.clear
       else
         stack.clear
-        result.call(WidgetEvent.new(widget, event))
+        mode, action = result
+        widget_event = WidgetEvent.new(widget, event)
+        action.call(widget_event)
+        action_history << [widget_event, *result]
         VER.message "#{stack_string} => #{result}"
       end
     end
@@ -148,7 +153,7 @@ module VER
       out = ['#<Ver::WidgetMajorMode']
       { major: major.name,
         minors: minors.map{|m| m.to_sym },
-        history: history.map{|h| h[:keysym] },
+        event_history: event_history.map{|h| h[:keysym] },
         stack: stack,
       }.each{|k,v| out << "#{k}=#{v.inspect}" }
       out.join(' ') << '>'

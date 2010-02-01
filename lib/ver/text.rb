@@ -35,7 +35,7 @@ module VER
     def update_prefix_arg(widget)
       numbers = []
 
-      major_mode.history.reverse_each do |event|
+      major_mode.event_history.reverse_each do |event|
         break unless event[:sequence] =~ /^(\d+)$/
         numbers << $1
       end
