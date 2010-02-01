@@ -58,7 +58,7 @@ module VER::Methods
         text.mark_set(:insert, from) if from
       end
 
-      def search_next(text, count = 1)
+      def search_next(text, count = text.prefix_count)
         count.times do
           from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
           text.mark_set(:insert, from) if from
@@ -79,7 +79,7 @@ module VER::Methods
         end
       end
 
-      def search_prev(text, count = 1)
+      def search_prev(text, count = text.prefix_count)
         count.times do
           from, to = text.tag_prevrange(TAG, 'insert - 1 chars', '1.0')
           text.mark_set(:insert, from) if from
@@ -104,7 +104,7 @@ module VER::Methods
         search_prev(text)
       end
 
-      def search_char_right(text, count = 1)
+      def search_char_right(text, count = text.prefix_count)
         return
         VER.message 'Press the character to find to the right'
 
@@ -127,7 +127,7 @@ module VER::Methods
         end
       end
 
-      def search_char_left(text, count = 1)
+      def search_char_left(text, count = text.prefix_count)
         return
         VER.message 'Press the character to find to the left'
 

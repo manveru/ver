@@ -8,7 +8,7 @@ module VER::Methods
         find(text, word)
       end
 
-      def prev(text, count = 1)
+      def prev(text, count = text.prefix_count)
         bm = VER.ctag_stack.pop(count).first
 
         if bm

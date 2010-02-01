@@ -81,7 +81,7 @@ module VER::Methods
       # Toggle case of the character under the cursor up to +count+ characters
       # forward (+count+ is inclusive the first character).
       # This only works for alphabetic ASCII characters, no other encodings.
-      def toggle_case(text, count = 1)
+      def toggle_case(text, count = text.prefix_count)
         from, to = 'insert', "insert + #{count} chars"
         chunk = text.get(from, to)
         chunk.tr!('a-zA-Z', 'A-Za-z')
@@ -402,12 +402,12 @@ module VER::Methods
         Kernel.raise exception
       end
 
-      def indent_line(text, count = 1)
+      def indent_line(text, count = text.prefix_count)
         indent = (' ' * text.options[:shiftwidth] * count)
         text.insert('insert linestart', indent)
       end
 
-      def unindent_line(text, count = 1)
+      def unindent_line(text, count = text.prefix_count)
         indent = ' ' * text.options[:shiftwidth]
         replace_from = 'insert linestart'
         replace_to = "insert linestart + #{indent.size} chars"
