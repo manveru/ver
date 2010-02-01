@@ -29,13 +29,11 @@ module VER
     require 'fileutils'
     require 'shellwords'
 
-    trap('INT'){ exit }
-
     install_tm_syntax(path)
     install_tm_preferences(path)
     install_tm_snippets(path)
-  ensure
-    exit
+
+    exit 0
   end
 
   def install_tm_syntax(path)

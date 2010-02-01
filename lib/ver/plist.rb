@@ -147,47 +147,6 @@ module VER
 
       private
 
-=begin
-Parsing /home/manveru/prog/projects/textmate/Bundles/Markdown.tmbundle/Syntaxes/Markdown.plist
-Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:116 - invalid backref number/name: /(?x)^
-
-Parsing /home/manveru/prog/projects/textmate/Bundles/Markdown.tmbundle/Syntaxes/Markdown.plist
-Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:239 - invalid backref number/name: /(?x)^
-	(?=	[ ]{,3}>.
-	|	([ ]{4}|\t)(?!$)
-	|	[#]{1,6}\s*+
-	|	[ ]{,3}(?<marker>[-*_])([ ]{,2}\k<marker>){2,}[ \t]*+$
-	)(.*?)(?x)^
-	(?!	[ ]{,3}>.
-	|	([ ]{4}|\t)
-	|	[#]{1,6}\s*+
-	|	[ ]{,3}(?<marker>[-*_])([ ]{,2}\k<marker>){2,}[ \t]*+$
-	)/
-
-Parsing /home/manveru/prog/projects/textmate/Bundles/PHP.tmbundle/Syntaxes/PHP.plist
-Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:281 - invalid multibyte escape: /[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/
-Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:281 - invalid multibyte escape: /(?i)\b(new)\s+(?:(\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)|(\w+))|(\w+)(?=::)/
-Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:281 - invalid multibyte escape: /(?x)
-	((\$\{)(?<name>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(\}))
-	/
-Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:281 - invalid multibyte escape: /(?x)
-	((\$)(?<name>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*))
-	(?:
-	(->)
-	(?:
-	(\g<name>)
-	|
-	(\$\g<name>)
-	)
-	|
-	(\[)
-	(?:(\d+)|((\$)\g<name>)|(\w+)|(.*?))
-	(\])
-	)?
-	/
-
-=end
-
       SANITIZE_REGEXP = {}
       r = lambda{|string, replacement|
         pattern =
@@ -242,6 +201,9 @@ Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:281
 
       # '\b\u\w+\u\w+' => '\b\\u\w+\\u\w+'
       r[/\\(u)/i, '\\\\\1']
+
+      # found in MEL.tmbundle/Syntaxes/MEL.plist
+      r['(\$)[a-zA-Z_\x{7f}-\x{ff}][a-zA-Z0-9_\x{7f}-\x{ff}]*?\b', '(\$)\w\w*?\b']
 
       # "[\x{7f}-\x{ff}]" => "[\x7f-\xff]"
       r[/\\x\{(\h+)\}/, '\\\\x\1']
@@ -303,6 +265,7 @@ Exception `RegexpError' at /home/manveru/github/manveru/ver/lib/ver/plist.rb:281
         p value
         puts value
         puts '-' * 80
+        exit 2
         /#{value.force_encoding(Encoding::BINARY)}/n
       end
     end
