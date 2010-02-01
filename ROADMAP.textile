@@ -156,3 +156,32 @@ Another safeguard is to check the file mtime when opening, and see whether it's
 still the same before writing the file to disk again.
 This allows for a small race-condition, but it's still vastly better than
 no protection at all.
+
+h2. A major mode per bundle
+
+Right now, a major mode is a compilation of minor modes plus a keymap of its own.
+What we would like is a major mode that takes responsibility of the
+syntax/snippets/preferences (bundle) being used.
+The hard part about this is that we would have to know which major mode name is
+associated with a bundle.
+We face a bit of a bootstrapping problem, for emacs this is no issue, as lots
+of code monkeys wrote lots of major modes for their favorite languages.
+We don't have that benefit, all we have is a bunch of bundles from TM that we
+can scavange.
+We could create our own kind of Bundle format.
+
+config/bundles/Ruby
+config/bundles/Ruby/keymaps/vim.rb
+config/bundles/Ruby/syntax.rb
+config/bundles/Ruby/preferences.rb
+config/bundles/Ruby/snippets.rb
+
+this way, to share a bundle you can simply tar up the folder and put it somewhere.
+This also makes it easier to keep bundles outside of the VER folder structure,
+in another git repo, for example, and just point VER to that location.
+
+Text => .syntax
+Text => .preferences
+Text => .snippets
+
+WidgetMajorMode(widget, major) => MajorMode(name) => Ruby(Syntax, preferences, snippets)
