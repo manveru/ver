@@ -104,11 +104,11 @@ module VER::Methods
       end
 
       # Basically like [go_line] without arguments, but much nicer name.
-      def start_of_file(text)
+      def start_of_text(text)
         text.mark_set(:insert, "1.0")
       end
 
-      def end_of_file(text, count = text.prefix_arg)
+      def end_of_text(text, count = text.prefix_arg)
         if count
           text.mark_set(:insert, "#{count}.0")
         else
