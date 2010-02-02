@@ -19,12 +19,23 @@ module VER
       end
     end
 
-
     def describe(*args, &block)
       @contexts << Bacon::Context.new(args.join(' '), &block)
     end
   end
 
+  # Schedule all describe blocks in a 'after idle' block that is scheduled by tcl.
+  # The last 'after idle' will output the bacon summary and call [Tk.exit].
+  # Not sure how well this handles nested describe blocks, but it might just work?
+  #
+  # @example usgage
+  #   VER.spec do
+  #     describe 'number of open buffers' do
+  #       it 'should open one buffer by default' do
+  #         VER.buffers.size.should == 1
+  #       end
+  #     end
+  #   end
   def self.spec(&block)
     specs = Spec.new(&block)
 
