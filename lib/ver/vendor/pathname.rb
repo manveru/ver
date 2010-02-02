@@ -1,3 +1,5 @@
+require 'pathname'
+
 # annoying fixes
 class Pathname
   alias / join

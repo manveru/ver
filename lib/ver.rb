@@ -8,12 +8,11 @@ autoload :Tempfile,  'tempfile'
 
 # eager stdlib
 require 'digest/sha1'
-require 'ver/vendor/better_pp_hash'
 require 'securerandom'
 require 'set'
-require 'pathname'
-
-autoload :SizedArray, 'ver/vendor/sized_array'
+require 'ver/vendor/better_pp_hash'
+require 'ver/vendor/pathname'
+require 'ver/vendor/sized_array'
 
 # This is the doc for VER
 module VER
