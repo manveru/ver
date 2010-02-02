@@ -53,26 +53,26 @@ module VER::Methods
       end
 
       def one(text)
-        text.layout.options.merge! master: 1, stacking: 0
+        text.layout.options.merge! master: 1, slaves: 0
         push_top(text)
       end
 
       def two(text)
-        text.layout.options.merge! master: 1, stacking: 1
+        text.layout.options.merge! master: 1, slaves: 1
         push_top(text)
       end
 
       def slave_inc(text)
-        stacking = text.layout.options[:stacking]
-        unless stacking >= text.layout.buffers.size
-          text.layout.options[:stacking] += 1
+        slaves = text.layout.options[:slaves]
+        unless slaves >= text.layout.buffers.size
+          text.layout.options[:slaves] += 1
           text.layout.apply
         end
       end
 
       def slave_dec(text)
-        stacking = text.layout.options[:stacking]
-        text.layout.options[:stacking] -= 1 if stacking > 0
+        slaves = text.layout.options[:slaves]
+        text.layout.options[:slaves] -= 1 if slaves > 0
         text.layout.apply
       end
 
