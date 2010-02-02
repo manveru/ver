@@ -8,7 +8,6 @@ module VER::Methods
 
       def copy_motion(text, motion, count = 1)
         movement = Move.virtual(text, motion, count)
-        p movement: movement
         copy(text, text.get(*movement))
       end
 

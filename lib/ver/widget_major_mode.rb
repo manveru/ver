@@ -81,7 +81,6 @@ module VER
         widget_event = WidgetEvent.new(widget, event)
         action.call(widget_event)
         action_history << [widget_event, *result]
-        VER.message "#{stack_string} => #{result}"
       end
     end
 
