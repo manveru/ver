@@ -32,6 +32,33 @@ VER.spec do
       text.index(:insert).should == text.index('1.0')
     end
 
+    it 'moves to next word' do
+      text.value = 'one two'
+      text.mark_set(:insert, '1.0')
+      text.get('insert', 'insert lineend').should == 'one two'
+
+      VER::Methods::Move.next_word(text)
+      text.get('insert', 'insert lineend').should == 'two'
+
+      VER::Methods::Move.next_word(text)
+      text.get('insert', 'insert lineend').should == ''
+    end
+
+    it 'moves to previous word' do
+      text.value = 'one two'
+      text.mark_set(:insert, 'end')
+      text.get('insert', 'insert lineend').should == ''
+
+      VER::Methods::Move.prev_word(text)
+      text.get('insert', 'insert lineend').should == 'two'
+
+      VER::Methods::Move.prev_word(text)
+      text.get('insert', 'insert lineend').should == 'one two'
+
+      VER::Methods::Move.prev_word(text)
+      text.get('insert', 'insert lineend').should == 'one two'
+    end
+
     it 'jumps to matching brace in (foo)' do
       text.value = "(foo)"
       text.mark_set(:insert, '1.0') # -> (foo
