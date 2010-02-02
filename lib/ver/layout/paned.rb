@@ -42,22 +42,33 @@ module VER
       @layout_pane.bind('<Map>'){ apply }
     end
 
-    # Create a new {View} inside the {PanedLayout}, +options+ are passed to
-    # {View.new}.
-    # The new {View} will be at top of the {stack}.
-    def create_buffer(options = {})
-      buffer = Buffer.new(self, options)
-      yield buffer
+    # Add the given +buffer+ to the {stack}, apply, and focus +buffer+.
+    def add_buffer(buffer)
       stack.unshift(buffer)
       apply
       buffer.focus
     end
 
+    # Remove given +buffer+ from {stack} and apply.
     def forget_buffer(buffer)
       stack.delete(buffer)
       apply
     end
 
+    # Create a new {Buffer} inside the {PanedLayout}, +options+ are passed to
+    # {Buffer.new}.
+    # The new {Buffer} will be at top of the {stack}.
+    #
+    # @see add_buffer
+    def create_buffer(options = {})
+      buffer = Buffer.new(self, options)
+      yield buffer
+      add_buffer(buffer)
+    end
+
+    # Forget and destroy the given +buffer+.
+    #
+    # @see forget_buffer
     def close_buffer(buffer)
       forget_buffer(buffer)
       buffer.destroy
