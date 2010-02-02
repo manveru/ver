@@ -64,7 +64,7 @@ module VER::Methods
 
       def slave_inc(text)
         slaves = text.layout.options[:slaves]
-        unless slaves >= text.layout.buffers.size
+        unless slaves >= text.layout.stack.size
           text.layout.options[:slaves] += 1
           text.layout.apply
         end
