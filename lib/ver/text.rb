@@ -223,32 +223,41 @@ module VER
       end
     end
 
-    def search_all(regexp, from = '1.0', to = 'end - 1 chars')
-      return Enumerator.new(self, :search_all, regexp, from) unless block_given?
-      from, to = from.to_s, to.to_s
+    def search_all(regexp, start = '1.0', stop = 'end - 1 chars')
+      unless block_given?
+        return Enumerator.new(self, :search_all, regexp, start, stop)
+      end
 
-      while result = search(regexp, from, to, :count)
+      while result = search(regexp, start, stop, :count)
         pos, len = result
-        break if !pos || len == 0
+        return if !pos || len == 0
 
-        match = get(pos, "#{pos} + #{len} chars")
-        from = "#{pos} + #{len} chars"
+        from  = index(pos)
+        to    = index("#{pos} + #{len} chars")
+        match = get(from, to)
 
-        yield(match, pos, from)
+        yield(match, from, to)
+
+        start = to
       end
     end
 
-    def rsearch_all(regexp, from = 'end', to = '1.0')
-      return Enumerator.new(self, :rsearch_all, regexp, from) unless block_given?
+    def rsearch_all(regexp, start = 'end', stop = '1.0')
+      unless block_given?
+        return Enumerator.new(self, :rsearch_all, regexp, start, stop)
+      end
 
-      while result = rsearch(regexp, from, to, :count)
+      while result = rsearch(regexp, start, stop, :count)
         pos, len = result
         break if !pos || len == 0
 
-        match = get(pos, "#{pos} + #{len} chars")
-        from = index("#{pos} - #{len} chars")
+        from = index(pos)
+        to   = index("#{pos} + #{len} chars")
+        match = get(from, to)
 
-        yield(match, pos, from)
+        yield(match, from, to)
+
+        start = from
       end
     end
 
