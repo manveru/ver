@@ -2,10 +2,7 @@ module VER
   class Executor
     class ExMethod < Entry
       def setup
-        @methods = caller.methods.map{|name|
-          method = caller.method(name)
-          [method.name.to_s, signature_of(method)]
-        }.sort
+        @actions = caller.major_mode.actions.sort_by(&:method)
 
         setup_tree
       end
@@ -13,7 +10,7 @@ module VER
       def setup_tree
         tree.configure(
           show: [:headings],
-          columns: %w[method signature],
+          columns: %w[id method signature],
           displaycolumns: %w[method signature],
         )
 
@@ -21,12 +18,39 @@ module VER
         tree.heading('signature', text: 'Signature')
       end
 
-      def choices(name)
-        subset(name, @methods)
+      def tree_selection_value
+        return unless item = tree.selection.first
+        item.options[:values][1]
       end
 
-      def action(method)
-        eval("caller.#{method}")
+      def after_update
+        total = tree.winfo_width
+        third = total / 3
+
+        tree.column('method',    width: third, stretch: true)
+        tree.column('signature', width: third * 2, stretch: true)
+      end
+
+      def choices(name)
+        subset(name, @actions.map.with_index{|action, id|
+          receiver = action.receiver || caller
+          method = receiver.method(action.method)
+          [id, method.name.to_s, signature_of(method)]
+        }.compact, 1)
+      end
+
+      def accept_line(event)
+        self.tabcount = 0
+        return unless item = tree.selection.first
+        id = item.options[:values].first.to_i
+        return unless action = @actions[id]
+        callback.destroy
+        action.call(caller)
+      end
+
+      def action(id)
+        p id => @actions[id]
+        # eval("caller.#{method}")
       rescue Exception => ex
         VER.message ex.message
       end

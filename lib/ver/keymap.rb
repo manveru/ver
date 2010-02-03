@@ -3,7 +3,21 @@ require 'set'
 module VER
   class Keymap < Struct.new(:keymap, :keys)
     # A subclass to make lookup unambigous
-    class MapHash < Hash; end
+    class MapHash < Hash
+      def deep_each(&block)
+        if block
+          each do |key, value|
+            if value.respond_to?(:deep_each)
+              value.deep_each(&block)
+            else
+              yield key, value
+            end
+          end
+        else
+          Enumerator.new(self, :deep_each)
+        end
+      end
+    end
 
     # Indicate that no result can and will be found in the keymap
     class Impossible; end
@@ -94,6 +108,10 @@ module VER
       self.keymap = keymap.keymap.merge(self.keymap, &MERGER)
       self.keys += keymap.keys
       keymap
+    end
+
+    def actions
+      keymap.deep_each.map{|key, value| value }
     end
 
     def key_to_canonical(key)

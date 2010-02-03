@@ -183,6 +183,10 @@ module VER
       name.to_s.split('_').map{|e| e.capitalize}.join
     end
 
+    def actions
+      unfold.map{|minor| minor.keymap.actions }
+    end
+
     def to_sym
       name
     end

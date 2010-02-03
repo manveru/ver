@@ -141,6 +141,10 @@ module VER
       bound_keys << key
     end
 
+    def actions
+      keymap.actions
+    end
+
     def to_sym
       name
     end

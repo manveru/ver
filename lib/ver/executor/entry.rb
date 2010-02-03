@@ -78,21 +78,24 @@ module VER
       # To account for typos and give relevant similar results, we then refine
       # the score with the levenshtein distance between needle and value.
       # If two values have the same score, they are sorted alphabetically.
-      def subset(needle, values)
+      def subset(needle, values, sort_index = 0)
         lower_needle = needle.to_s.downcase
 
         scored = values.map do |value|
           if value.respond_to?(:to_ary)
-            value = value.to_ary.first
+            value = value.to_ary
+            decider = value[sort_index]
+          else
+            decider = value
           end
 
           score = 0
-          lower_value = value.downcase
+          lower_value = decider.downcase
 
           if lower_value.start_with?(lower_needle)
-            score -= (needle.size + value.size)
+            score -= (needle.size + decider.size)
           elsif lower_value.include?(lower_needle)
-            score -= value.size
+            score -= decider.size
           end
 
           score += Levenshtein.distance(lower_needle, lower_value)

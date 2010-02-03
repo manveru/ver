@@ -132,6 +132,10 @@ module VER
       end
     end
 
+    def actions
+      major.actions + minors.map{|minor| minor.actions }.flatten
+    end
+
     def name
       major.name
     end
