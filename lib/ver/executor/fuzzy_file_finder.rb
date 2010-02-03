@@ -11,21 +11,37 @@ module VER
       end
 
       def setup
-        callback.update_on_change = true
-
         tree.configure(
           show: [:headings],
-          columns: %w[path dir file score],
-          displaycolumns: %w[dir file score],
+          columns: %w[
+            path abbr directory name highlighted_directory highlighted_name
+            highlighted_path score
+          ],
+          displaycolumns: %w[
+            path abbr highlighted_path score
+          ],
         )
-        tree.heading('dir', text: 'Directory')
-        tree.heading('file', text: 'File')
+
+        tree.heading('path', text: 'Path')
+        tree.heading('abbr', text: 'Abbr')
+        tree.heading('directory', text: 'Directory')
+        tree.heading('name', text: 'Name')
+        tree.heading('highlighted_directory', text: 'Directory (hl)')
+        tree.heading('highlighted_name', text: 'Name (hl)')
+        tree.heading('highlighted_path', text: 'Path (hl)')
         tree.heading('score', text: 'Score')
-        tree.column('dir', width: 100, anchor: :w)
-        tree.column('file', width: 100, anchor: :w)
-        tree.column('score', width: 50, stretch: false, anchor: :e)
 
         setup_fff
+      end
+
+      def after_update
+        total = tree.winfo_width
+        third = (total - 50) / 3
+
+        tree.column('path', width: third, stretch: true)
+        tree.column('abbr', width: third, stretch: true)
+        tree.column('highlighted_path', width: third, stretch: true)
+        tree.column('score', width: 50, stretch: true)
       end
 
       def setup_fff
@@ -49,8 +65,12 @@ module VER
         choices.map{|match|
           [
             match[:path],
+            match[:abbr],
+            match[:directory],
+            match[:name],
             match[:highlighted_directory],
             match[:highlighted_name],
+            match[:highlighted_path],
             match[:score].round(2),
           ]
         }
@@ -59,6 +79,7 @@ module VER
       def action(path)
         throw(:invalid) unless File.file?(path)
         VER.find_or_create_buffer(path)
+        callback.destroy
       end
     end
   end

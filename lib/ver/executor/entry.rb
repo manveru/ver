@@ -3,7 +3,7 @@ module VER
     class Entry < VER::Entry
       include Keymapped
 
-      attr_accessor :parent, :callback
+      attr_accessor :parent, :callback, :update_on_change, :tabcount
       attr_reader :caller, :tree
 
       def initialize(parent, options = {})
@@ -19,6 +19,36 @@ module VER
         self.parent = parent
         self.major_mode = :Executor
         self.minor_mode(:executor_label, mode) if mode
+
+        self.tabcount = 0
+        self.update_on_change = true
+
+        bind('<<Inserted>>'){|event| on_insert(event) }
+        bind('<<Deleted>>'){|event|  on_delete(event) }
+      end
+
+      # Called on <<Inserted>> events.
+      def on_insert(event)
+        self.tabcount = 0
+        update_tree if update_on_change
+      end
+
+      # Called on <<Deleted>> events.
+      def on_delete(event)
+        self.tabcount = 0
+        update_tree if update_on_change
+      end
+
+      def update_tree
+        values = choices(value)
+        tree.clear
+
+        items = values.map{|value| tree.insert(nil, :end, values: [*value]) }
+
+        return unless first = items.first
+
+        first.focus
+        first.selection_set
       end
 
       def setup
@@ -51,7 +81,7 @@ module VER
       def subset(needle, values)
         lower_needle = needle.to_s.downcase
 
-        sorted = values.sort_by do |value|
+        scored = values.map do |value|
           if value.respond_to?(:to_ary)
             value = value.to_ary.first
           end
@@ -66,111 +96,83 @@ module VER
           end
 
           score += Levenshtein.distance(lower_needle, lower_value)
-          [score, lower_value]
+          [score, lower_value, value]
         end
+
+        scored.sort.select{|score, lower, value| score < 1 }.map{|score, lower, value| value }
       end
 
-      # keymap callbacks
+      def update_only
+        values = choices(value)
+        tree.clear
 
-      def completion(event = nil)
-        callback.completion do |entry_value|
-          values = choices(entry_value)
-          tree.clear
+        items = values.map{|value|
+          tree.insert(nil, :end, values: [*value])
+        }
 
-          items = values.map{|value|
-            tree.insert(nil, :end, values: [*value])
-          }
+        return unless first = items.first
 
-          return unless first = items.first
+        first.focus
+        first.selection_set
 
-          first.focus
-          first.selection_set
-        end
-      rescue => ex
-        VER.error(ex)
+        after_update
       end
 
-      def pick_selection(event = nil)
-        callback.complete_or_pick do |value|
-          if block_given?
-            callback.destroy if yield(value)
-          else
-            catch(:invalid){
-              action(value)
-              callback.destroy
-            }
-          end
-        end
-      rescue => ex
-        VER.error(ex)
+      def after_update
+      end
+
+      def tree_selection_value
+        return unless item = tree.selection.first
+        item.options[:values].first
+      end
+
+      def sync_value_with_tree_selection
+        return unless value = tree_selection_value
+        self.value = value
       end
 
       def action(value)
-        true
+        p action: value
+        raise NotImplementedError, "Implement in subclass"
       end
 
-      def speed_selection(event = nil)
-        completion
-        pick_selection
-        pick_selection
-        entry = callback.entry
-        entry.completion if entry
-      rescue => ex
-        VER.error(ex)
-      end
-
-      def cancel(event = nil)
+      def cancel(event)
         callback.destroy
       end
 
-      LINE_UP = <<-'TCL'.strip
-set children [%path% children {}]
-set children_length [llength $children]
-
-if { $children_length > 1 } {
-  set item [%path% prev [%path% focus]]
-
-  if { $item == {} } { set item [lindex $children [expr $children_length - 1]] }
-
-  %path% focus $item
-  %path% see $item
-  %path% selection set $item
-}
-      TCL
-
-      # Go one item in the tree up, wraps around to the bottom if the first item
-      # has focus.
-      #
-      # Some lists may be huge, so we handle this in tcl to avoid lots of
-      # useless traffic between tcl and ruby.
-      # My apologies.
-      def line_up(event = nil)
-        Tk.eval(LINE_UP.gsub(/%path%/, tree.tk_pathname))
+      def next_line(event)
+        tree.line_down
       end
 
-      LINE_DOWN = <<-'TCL'.strip
-set children [%path% children {}]
-set children_length [llength $children]
+      def prev_line(event)
+        tree.line_up
+      end
 
-if { $children_length > 1 } {
-  set item [%path% next [%path% focus]]
+      def accept_line(event)
+        self.tabcount = 0
+        catch(:invalid){ action(tree_selection_value) }
+      end
 
-  if { $item == {} } { set item [lindex $children 0] }
+      def speed_selection(event)
+        accept_line(event)
+      end
 
-  %path% focus $item
-  %path% see $item
-  %path% selection set $item
-}
-      TCL
+      def completion(event)
+        self.tabcount += 1
 
-      # Go one line in the tree down, wraps around to the top if the last item
-      # has focus.
-      #
-      # Some lists may be huge, so we handle this in tcl to avoid lots of
-      # useless traffic between tcl and ruby.
-      # My apologies.
-      def line_down(event = nil)
-        Tk.eval(LINE_DOWN.gsub(/%path%/, tree.tk_pathname))
+        if tabcount == 1
+          update_only
+        else
+          items = tree.children(nil)
+
+          if items.size == 1
+            self.tabcount = 0
+          else
+            tree.line_down
+          end
+        end
+
+        sync_value_with_tree_selection
       end
     end
   end

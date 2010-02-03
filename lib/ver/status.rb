@@ -101,8 +101,9 @@ module VER
     end
 
     def cursor=(pos)
-      return if pos < @question.size
+      oldpos = cursor
       super
+      super(oldpos) if cursor < @question.size
     end
 
     def history_prev

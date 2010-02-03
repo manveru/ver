@@ -13,8 +13,15 @@ module VER
         tree.heading('file', text: 'File')
         tree.heading('line', text: 'Line')
         tree.heading('source', text: 'Source')
-        tree.column('file', width: 100, stretch: false, anchor: :w)
-        tree.column('line', width: 50, stretch: false, anchor: :e)
+
+      end
+
+      def after_update
+        total = tree.winfo_width - 50
+
+        tree.column('file',   width: (total * 0.3).to_i, stretch: false, anchor: :w)
+        tree.column('line',   width: 50,  stretch: false, anchor: :e)
+        tree.column('source', width: (total * 0.7).to_i, stretch: false, anchor: :w)
       end
 
       def choices(glob_needle)

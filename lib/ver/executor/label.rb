@@ -31,21 +31,22 @@ module VER
           displaycolumns: %w[ex],
         )
         tree.heading('ex', text: 'Execution Method')
+        update_only
       end
 
       def choices(name)
         subset(name, COMPLETERS.keys)
       end
 
-      def pick_selection
-        super do |name|
-          completer_name = COMPLETERS.fetch(name)
-          completer = Executor.const_get(completer_name)
-          entry = callback.use_entry(completer)
-          entry.focus
-          configure(state: :disabled)
-          false
-        end
+      def action(name)
+        completer_name = COMPLETERS.fetch(name)
+        completer = Executor.const_get(completer_name)
+        self.value = completer_name
+        entry = callback.use_entry(completer)
+        entry.focus
+        entry.update_only
+        configure(state: :disabled)
+        false
       rescue KeyError
       end
     end

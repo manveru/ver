@@ -2,6 +2,7 @@ module VER
   class Executor
     class ExLocate < Entry
       def setup
+        self.update_on_change = false
       end
 
       def choices(name)

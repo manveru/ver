@@ -51,6 +51,12 @@ module VER
     end
     alias kill delete # nobody wants to copy that way, right? ;)
 
+    def cursor=(pos)
+      selection_clear
+      super
+      Tk::Event.generate(self, '<<Movement>>')
+    end
+
     ## Insert
 
     def insert_string(event)
@@ -101,6 +107,38 @@ module VER
 
     def kill_end_of_line(event)
       kill_motion :end_of_line
+    end
+
+    ## Selection
+
+    def sel_prev_char(event)
+      # bind TEntry <Shift-Key-Left> 		{ ttk::entry::Extend %W prevchar }
+      Tk.execute_only('ttk::entry::Extend', self, :prevchar)
+    end
+
+    def sel_next_char(event)
+      # bind TEntry <Shift-Key-Right>		{ ttk::entry::Extend %W nextchar }
+      Tk.execute_only('ttk::entry::Extend', self, :nextchar)
+    end
+
+    def sel_prev_word(event)
+      # bind TEntry <Shift-Control-Key-Left>	{ ttk::entry::Extend %W prevword }
+      Tk.excute_only('ttk::entry::Extend', self, :prevword)
+    end
+
+    def sel_next_word(event)
+      # bind TEntry <Shift-Control-Key-Right>	{ ttk::entry::Extend %W nextword }
+      Tk.execute_only('ttk::entry::Extend', self, :nextword)
+    end
+
+    def sel_start_of_line(event)
+      # bind TEntry <Shift-Key-Home>		{ ttk::entry::Extend %W home }
+      Tk.execute_only('ttk::entry::Extend', self, :home)
+    end
+
+    def sel_end_of_line(event)
+      # bind TEntry <Shift-Key-End>		{ ttk::entry::Extend %W end }
+      Tk.execute_only('ttk::entry::Extend', self, :end)
     end
 
     ## Movement

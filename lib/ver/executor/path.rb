@@ -2,10 +2,6 @@ module VER
   class Executor
     # Open or focus a buffer with the given path.
     class ExPath < Entry
-      def setup
-        callback.update_on_change = true
-      end
-
       def choices(origin)
         origin = origin.sub(/^.*\/\//, '/')
         origin = origin.sub(/^.*\/~\//, '~/')
@@ -13,16 +9,17 @@ module VER
 
         Dir.glob("#{origin}*").map do |path|
           if File.directory?(path)
-            path = "#{path}/"
+            "#{path}/"
+          else
+            path
           end
-
-          path
         end
       end
 
       def action(path)
         throw(:invalid) if File.directory?(path)
         VER.find_or_create_buffer(path)
+        callback.destroy
       end
     end
 
@@ -38,6 +35,8 @@ module VER
           text.value = caller.value.chomp
           Methods::Save.file_save(text)
         end
+
+        callback.destroy
       end
     end
   end
