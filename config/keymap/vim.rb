@@ -100,7 +100,7 @@ module VER
     map :next_char,       %w[l], %w[Right]
     map :next_chunk,      %w[W]
     map :next_word,       %w[w], %w[Shift-Right]
-    map :start_of_text,   %w[g g]
+    map :go_line,         %w[g g]
     map :matching_brace,  %w[percent]
     map :next_line,       %w[j], %w[Down], %w[Control-n]
     map :next_page,       %w[Control-f], %w[Next]
