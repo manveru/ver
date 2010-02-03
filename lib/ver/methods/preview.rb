@@ -36,16 +36,18 @@ read
           end
         end
 
+        frame.bind '<Map>' do |event|
+          cmd = "urxvt -embed #{frame.winfo_id} -e $SHELL -c '%s' &" % [command]
+          # puts cmd
+          `#{cmd}`
+        end
+
         frame.bind '<Destroy>' do |event|
           Tk::After.idle do
             layout.close_buffer(frame)
             text.focus(:force) # need to use force, the term was outside tk
           end
         end
-
-        cmd = "urxvt -embed #{frame.winfo_id} -e $SHELL -c '%s' &" % [command]
-        # puts cmd
-        `#{cmd}`
       end
     end
   end
