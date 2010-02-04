@@ -4,7 +4,6 @@ module VER
       def setup
         callback.update_on_change = true
         @buffers = VER.paths.map(&:to_s).select {|b| ! b.empty? }
-        tree.configure(show: [], columns: %w[buffer], displaycolumns: %w[buffer])
       end
 
       def choices(name)
