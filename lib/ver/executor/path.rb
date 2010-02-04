@@ -16,7 +16,8 @@ module VER
         end
       end
 
-      def action(path)
+      def action(selected)
+        path = selected || value
         throw(:invalid) if File.directory?(path)
         VER.find_or_create_buffer(path)
         callback.destroy
@@ -27,7 +28,8 @@ module VER
     # into it.
     # Then save it for good measure.
     class ExWrite < ExPath
-      def action(path)
+      def action(selected)
+        path = selected || value
         throw(:invalid) if File.directory?(path)
 
         VER.find_or_create_buffer(path) do |buffer|
