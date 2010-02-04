@@ -4,12 +4,13 @@ module VER
       include Keymapped
 
       attr_accessor :parent, :callback, :update_on_change, :tabcount
-      attr_reader :caller, :tree
+      attr_reader :caller, :tree, :ybar
 
       def initialize(parent, options = {})
         @callback = options.delete(:callback)
         @caller   = @callback.caller
         @tree     = @callback.tree
+        @ybar     = @callback.ybar
 
         mode = options.delete(:mode)
         options[:style] ||= VER.obtain_style_name('ExEntry', 'TEntry')
@@ -30,25 +31,33 @@ module VER
       # Called on <<Inserted>> events.
       def on_insert(event)
         self.tabcount = 0
-        update_tree if update_on_change
+        update_only if update_on_change
       end
 
       # Called on <<Deleted>> events.
       def on_delete(event)
         self.tabcount = 0
-        update_tree if update_on_change
+        update_only if update_on_change
       end
 
-      def update_tree
+      def update_items(values)
+        values.map{|value|
+          tree.insert(nil, :end, values: [*value])
+        }
+      end
+
+      def update_only
         values = choices(value)
         tree.clear
 
-        items = values.map{|value| tree.insert(nil, :end, values: [*value]) }
+        items = update_items(values)
 
         return unless first = items.first
 
         first.focus
         first.selection_set
+
+        after_update
       end
 
       def setup
@@ -103,22 +112,6 @@ module VER
         end
 
         scored.sort.select{|score, lower, value| score < 1 }.map{|score, lower, value| value }
-      end
-
-      def update_only
-        values = choices(value)
-        tree.clear
-
-        items = values.map{|value|
-          tree.insert(nil, :end, values: [*value])
-        }
-
-        return unless first = items.first
-
-        first.focus
-        first.selection_set
-
-        after_update
       end
 
       def after_update
