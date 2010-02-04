@@ -14,9 +14,14 @@ module VER
       if receiver = self.receiver
         self.last = [receiver, method, widget.tk_pathname, args]
         receiver.send(method, widget, *args)
-      else receiver = widget
-        self.last = [widget.tk_pathname, method, widget.event, args]
-        widget.send(method, widget.event, *args)
+      elsif receiver = widget
+        if widget.respond_to?(:event)
+          self.last = [widget.tk_pathname, method, widget.event, args]
+          widget.send(method, widget.event, *args)
+        else
+          self.last = [widget.tk_pathname, method, widget, args]
+          widget.send(method, widget, *args)
+        end
       end
     rescue => ex
       puts self

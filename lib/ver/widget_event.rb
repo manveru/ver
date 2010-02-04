@@ -20,6 +20,10 @@ module VER
       @widget, @event = widget, event
     end
 
+    def respond_to?(method)
+      method.to_sym == :event || @widget.respond_to?(method)
+    end
+
     def method_missing(method, *args, &block)
       # ::Kernel.p([@widget, @event] => [method, args])
       result = @widget.send(method, *args, &block)
