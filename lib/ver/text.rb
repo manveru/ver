@@ -13,13 +13,15 @@ module VER
 
     attr_accessor(:buffer, :status, :project_root, :project_repo, :encoding,
                   :undoer, :pristine, :syntax, :prefix_arg)
-    attr_reader :filename, :options, :snippets, :preferences, :store_hash
+    attr_reader(:filename, :options, :snippets, :preferences, :store_hash,
+                :default_theme_config)
 
     def initialize(buffer, options = {})
       if peer = options.delete(:peer)
         @tag_commands = {}
         @tk_parent = buffer
         @store_hash = peer.store_hash
+        @default_theme_config = peer.default_theme_config
         Tk.execute(peer.tk_pathname, 'peer', 'create', assign_pathname, options)
         self.filename = peer.filename
         configure(peer.configure)
