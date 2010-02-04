@@ -18,7 +18,7 @@ module VER
             highlighted_path score
           ],
           displaycolumns: %w[
-            path abbr highlighted_path score
+            highlighted_path score
           ],
         )
 
@@ -26,22 +26,27 @@ module VER
         tree.heading('abbr', text: 'Abbr')
         tree.heading('directory', text: 'Directory')
         tree.heading('name', text: 'Name')
-        tree.heading('highlighted_directory', text: 'Directory (hl)')
-        tree.heading('highlighted_name', text: 'Name (hl)')
-        tree.heading('highlighted_path', text: 'Path (hl)')
+        tree.heading('highlighted_directory', text: 'Fuzzy Directory')
+        tree.heading('highlighted_name', text: 'Fuzzy Name')
+        tree.heading('highlighted_path', text: 'Fuzzy Path')
         tree.heading('score', text: 'Score')
+
+        tree.column('path', stretch: true)
+        tree.column('score', width: 50, stretch: false)
+
+        tree.tag_configure(:icy,  foreground: 'red')
+        tree.tag_configure(:cold, foreground: 'orange')
+        tree.tag_configure(:warm, foreground: 'blue')
+        tree.tag_configure(:hot,  foreground: 'green')
 
         setup_fff
       end
 
       def after_update
-        total = tree.winfo_width
-        third = (total - 50) / 3
+        total = tree.winfo_width - 50
 
-        tree.column('path', width: third, stretch: true)
-        tree.column('abbr', width: third, stretch: true)
-        tree.column('highlighted_path', width: third, stretch: true)
-        tree.column('score', width: 50, stretch: true)
+        tree.column('highlighted_path', width: total, stretch: true)
+        tree.column('score', width: 50, stretch: false)
       end
 
       def setup_fff
@@ -57,6 +62,20 @@ module VER
 
       def setup_fff_with(root)
         @fffinder = FFF.new(root.to_s)
+      end
+
+      def update_items(values)
+        values.map do |value|
+          score = value.last
+          tag =
+            if score < 0.3; :icy
+            elsif score < 0.6; :cold
+            elsif score < 0.9; :warm
+            else; :hot
+            end
+
+          tree.insert(nil, :end, values: [*value], tags: [tag])
+        end
       end
 
       def choices(value)
