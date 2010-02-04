@@ -1,12 +1,6 @@
-require 'bacon'
-Bacon.summary_on_exit
+require_relative '../../helper'
 
-require 'ffi-tk'
-
-require_relative '../../../lib/ver/widget_event'
-require_relative '../../../lib/ver/keymap'
-require_relative '../../../lib/ver/major_mode'
-require_relative '../../../lib/ver/methods/indent'
+plugin :smart_autoindent
 
 class SpecText < Tk::Text
   attr_accessor :syntax

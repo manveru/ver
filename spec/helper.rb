@@ -1,5 +1,5 @@
 require 'bacon'
-Bacon.summary_at_exit
+# Bacon.summary_at_exit
 
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'lib/ver'
@@ -12,17 +12,36 @@ module VER
     end
 
     def run
-      @contexts.each do |spec|
-        Tk::After.idle{
-          spec.run
-        }
+      if context = @contexts.shift
+        Tk::After.idle do
+          context.run
+          run
+        end
+      else
+        Tk::After.idle{ bacon_summary }
       end
     end
 
     def describe(*args, &block)
       @contexts << Bacon::Context.new(args.join(' '), &block)
     end
+
+    def bacon_summary
+      Bacon.handle_summary
+
+      if $!
+        Kernel.raise $!
+      elsif Bacon::Counter[:errors] + Bacon::Counter[:failed] > 0
+        Kernel.exit 1
+      else
+        Kernel.exit 0
+      end
+    ensure
+      $stdout.flush
+      Tk.exit
+    end
   end
+
 
   # Schedule all describe blocks in a 'after idle' block that is scheduled by tcl.
   # The last 'after idle' will output the bacon summary and call [Tk.exit].
@@ -41,11 +60,6 @@ module VER
 
     VER.run fork: false do
       specs.run
-
-      Tk::After.idle do
-        Bacon.handle_summary
-        Tk.exit
-      end
     end
   end
 end
