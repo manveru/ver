@@ -5,13 +5,22 @@ module VER::Methods
         return unless syntax = text.syntax
 
         case syntax.name
-        when 'Ruby'
-          open_rxvt(text, <<-SHELL)
+        when 'Ruby'; preview_ruby(text)
+        end
+      end
+
+      def preview_ruby(text)
+        save(text)
+        open_rxvt(text, <<-SHELL)
 ruby #{text.filename.shellescape}
 echo "\nPreview finished, press <Return> to return to VER"
 read
-          SHELL
-        end
+exit
+        SHELL
+      end
+
+      def save(text)
+        VER::Methods::Save.file_save(text)
       end
 
       # Open a new urxvt term and manage it inside the layout of VER.
