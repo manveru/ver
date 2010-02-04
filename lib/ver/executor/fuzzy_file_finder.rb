@@ -60,7 +60,7 @@ module VER
       end
 
       def choices(value)
-        choices = @fffinder.find(value.chomp('/')).
+        choices = @fffinder.find(value).
           sort_by{|match| [-match[:score], match[:path]] }
         choices.map{|match|
           [
