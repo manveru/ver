@@ -192,7 +192,7 @@ module VER
       end
 
       def to_a
-        [name, file, y, x]
+        [name, file, *index]
       end
     end # Bookmark
   end # Bookmarks
