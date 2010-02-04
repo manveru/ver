@@ -231,6 +231,9 @@ module VER
     handler Methods::Insert
     map :newline_above,     %w[O]
     map :newline_below,     %w[o]
+
+    handler Methods::SearchAndReplace
+    map :query, %w[Alt-percent]
   end
 
   minor_mode :readline do
@@ -310,6 +313,19 @@ module VER
     handler Methods::Insert
     map [:replace_char, "\n"], %w[Return]
     missing :replace_char
+  end
+
+  minor_mode :search_and_replace do
+    become :control, %w[Escape], %w[Control-c], %w[q]
+
+    handler Methods::SearchAndReplace
+    enter :enter
+    leave :leave
+
+    map :replace_all,  %w[a], %w[exclam]
+    map :replace_once, %w[y]
+    map :next,         %w[n], %w[s], %w[j], %w[Control-n]
+    map :prev,         %w[k], %w[Control-p]
   end
 
   minor_mode :select do
