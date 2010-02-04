@@ -13,7 +13,7 @@ module VER::Methods
       def status_evaluate(text)
         text.status_ask 'Eval expression: ' do |term|
           begin
-            eval(term)
+            text.instance_eval(term)
           rescue Exception => ex
             ex
           end
