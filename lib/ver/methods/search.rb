@@ -105,47 +105,33 @@ module VER::Methods
       end
 
       def search_char_right(text, count = text.prefix_count)
-        return
         VER.message 'Press the character to find to the right'
 
-        text.keymap.gets 1 do |char|
-          if char.size == 1
-            from, to = 'insert + 1 chars', 'insert lineend'
-            regexp = Regexp.new(Regexp.escape(char))
+        text.major_mode.read 1 do |event|
+          from, to = 'insert + 1 chars', 'insert lineend'
+          regexp = Regexp.new(Regexp.escape(event[:unicode]))
 
-            counter = 0
-            text.search_all regexp, from, to do |match, pos, mark|
-              text.mark_set :insert, pos
-              counter += 1
-              break if counter == count
-            end
-
-            VER.message ""
-          else
-            VER.message "abort: #{char} is not a single character"
+          counter = 0
+          text.search_all regexp, from, to do |match, pos, mark|
+            text.mark_set :insert, pos
+            counter += 1
+            break if counter == count
           end
         end
       end
 
       def search_char_left(text, count = text.prefix_count)
-        return
         VER.message 'Press the character to find to the left'
 
-        text.keymap.gets 1 do |char|
-          if char.size == 1
-            from, to = 'insert', 'insert linestart'
-            regexp = Regexp.new(Regexp.escape(char))
+        text.major_mode.read 1 do |event|
+          from, to = 'insert', 'insert linestart'
+          regexp = Regexp.new(Regexp.escape(event[:unicode]))
 
-            counter = 0
-            text.rsearch_all regexp, from, to do |match, pos, mark|
-              text.mark_set(:insert, pos)
-              counter += 1
-              break if counter == count
-            end
-
-            VER.message ""
-          else
-            VER.message "abort: #{char} is not a single character"
+          counter = 0
+          text.rsearch_all regexp, from, to do |match, pos, mark|
+            text.mark_set(:insert, pos)
+            counter += 1
+            break if counter == count
           end
         end
       end

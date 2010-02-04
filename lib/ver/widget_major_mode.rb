@@ -10,7 +10,8 @@ module VER
   # It is responsible to keep the keymaps of major and minor modes functioning
   # by ensuring that they are actually bound to the tag of the major mode.
   class WidgetMajorMode < Struct.new(:widget, :major, :minors, :stack,
-                                     :event_history, :action_history)
+                                     :event_history, :action_history, :reader,
+                                     :read_amount)
     INCOMPLETE = Keymap::INCOMPLETE
     IMPOSSIBLE = Keymap::IMPOSSIBLE
 
@@ -66,6 +67,8 @@ module VER
         unicode: event.unicode
       }
 
+      return handle_reader(event) if reader && read_amount
+
       stack_string = stack.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
 
       case result = resolve(stack)
@@ -82,6 +85,26 @@ module VER
         action.call(widget_event)
         action_history << [widget_event, *result]
       end
+    end
+
+    # ignore event for now, it might be needed later
+    def handle_reader(event)
+      if stack.size >= read_amount
+        stack.clear
+        handled = true
+        reader.call(*event_history.last(read_amount))
+      else
+        handled = false
+      end
+    ensure
+      self.read_amount = self.reader = nil if handled
+    end
+
+    def read(amount, &reader)
+      amount = amount.to_int
+      raise ArgumentError, "amount must be greater than 0" unless amount > 0
+      self.read_amount = amount
+      self.reader = reader
     end
 
     def resolve(sequence)
