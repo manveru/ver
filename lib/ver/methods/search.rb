@@ -42,8 +42,7 @@ module VER::Methods
           needle = Regexp.escape(term)
         end
 
-        text.tag_all_matching(TAG, needle, HIGHLIGHT)
-        text.tag_lower(TAG)
+        tag(text, needle)
         from, to = text.tag_nextrange(TAG, 1.0, :end)
         text.see(from) if from
       end
@@ -91,16 +90,14 @@ module VER::Methods
       def next_word_under_cursor(text)
         word = text.get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
-        text.tag_all_matching(TAG, word, HIGHLIGHT)
-        text.tag_lower(TAG)
+        tag(text, word)
         self.next(text)
       end
 
       def prev_word_under_cursor(text)
         word = text.get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
-        text.tag_all_matching(TAG, word, HIGHLIGHT)
-        text.tag_lower(TAG)
+        tag(text, word)
         prev(text)
       end
 
@@ -138,6 +135,18 @@ module VER::Methods
 
       def clear(text)
         text.tag_remove(TAG, 1.0, :end)
+      end
+
+      def again(text)
+        return unless needle = text.store(self, :last)
+        tag(text, needle)
+        self.next(text)
+      end
+
+      def tag(text, needle)
+        text.store(self, :last, needle)
+        text.tag_all_matching(TAG, needle, HIGHLIGHT)
+        text.tag_lower(TAG)
       end
     end
   end
