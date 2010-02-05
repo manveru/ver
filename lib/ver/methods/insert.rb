@@ -1,6 +1,8 @@
-module VER::Methods
-  module Insert
-    class << self
+module VER
+  module Methods
+    module Insert
+      module_function
+
       def file_contents(filename)
         content = read_file(filename)
         insert :insert, content
@@ -101,8 +103,6 @@ module VER::Methods
         text.mark_set(:insert, 'insert - 1 chars')
         text.minor_mode(:replace_char, :control)
       end
-
-      private
 
       def common_string(text, string, record = text)
         return if string.empty?

@@ -1,6 +1,8 @@
-module VER::Methods
-  module Control
-    class << self
+module VER
+  module Methods
+    module Control
+      module_function
+
       def start(text)
         clean_line(text, :insert)
       end
@@ -306,6 +308,7 @@ module VER::Methods
         VER::Executor.new(text, action: action)
       end
       alias ex executor
+      module_function :ex
 
       def wrap_line(text)
         content = text.get('insert linestart', 'insert lineend')

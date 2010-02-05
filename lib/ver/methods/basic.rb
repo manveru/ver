@@ -1,6 +1,8 @@
-module VER::Methods
-  module Basic
-    class << self
+module VER
+  module Methods
+    module Basic
+      module_function
+
       def quit(text)
         Save.quit(text)
       end

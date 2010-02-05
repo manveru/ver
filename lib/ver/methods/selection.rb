@@ -1,6 +1,8 @@
-module VER::Methods
-  module Selection
-    class << self
+module VER
+  module Methods
+    module Selection
+      module_function
+
       def enter(text, old_mode, new_mode)
         unless old_mode.name =~ /^select/
           text.store(self, :start, text.index(:insert))
@@ -243,8 +245,6 @@ module VER::Methods
         finish(text)
         text.mark_set :insert, from
       end
-
-      private
 
       # TODO: find better name for +full+
       def replace_with(text, string, full)

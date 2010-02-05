@@ -1,6 +1,8 @@
-module VER::Methods
-  module Completion
-    class << self
+module VER
+  module Methods
+    module Completion
+      module_function
+
       # TODO: use the tag names at the location to customize completion choices
       # the textmate bundles have quite some stuff for that.
       def smart_tab(text)

@@ -1,12 +1,14 @@
-module VER::Methods
-  module Search
-    HIGHLIGHT = {
-      foreground: '#fff',
-      background: '#660',
-    }
-    TAG = :search
+module VER
+  module Methods
+    module Search
+      HIGHLIGHT = {
+        foreground: '#fff',
+        background: '#660',
+      }
+      TAG = :search
 
-    class << self
+      module_function
+
       def remove(text)
         text.tag_remove(TAG, 1.0, :end)
       end

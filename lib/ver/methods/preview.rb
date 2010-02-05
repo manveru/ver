@@ -1,6 +1,8 @@
-module VER::Methods
-  module Preview
-    class << self
+module VER
+  module Methods
+    module Preview
+      module_function
+
       def preview(text)
         return unless syntax = text.syntax
 
@@ -20,7 +22,7 @@ exit
       end
 
       def save(text)
-        VER::Methods::Save.file_save(text)
+        Save.file_save(text)
       end
 
       # Open a new urxvt term and manage it inside the layout of VER.

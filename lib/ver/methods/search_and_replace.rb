@@ -4,11 +4,13 @@ module VER
       HIGHLIGHT = Search::HIGHLIGHT
       TAG = :search_and_replace
 
-      def self.leave(text, old_mode, new_mode)
+      module_function
+
+      def leave(text, old_mode, new_mode)
         text.tag_remove(TAG, 1.0, :end)
       end
 
-      def self.enter(text, old_mode, new_mode)
+      def enter(text, old_mode, new_mode)
         pattern = text.store(self, :pattern)
         text.tag_all_matching(TAG, pattern, HIGHLIGHT)
         from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
@@ -17,7 +19,7 @@ module VER
         VER.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
-      def self.query(text)
+      def query(text)
         if old_pattern = text.store(self, :pattern)
           old_pattern = old_pattern.inspect[1..-1]
         end
@@ -44,7 +46,7 @@ module VER
         end
       end
 
-      def self.replace_once(text)
+      def replace_once(text)
         from, to = text.tag_nextrange(TAG, 'insert', 'end')
         text.replace(from, to, text.store(self, :replacement))
         text.tag_all_matching(TAG, text.store(self, :pattern), HIGHLIGHT)
@@ -54,7 +56,7 @@ module VER
         VER.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
-      def self.replace_all(text)
+      def replace_all(text)
         replacement = text.store(self, :replacement)
         from, to = text.tag_nextrange(TAG, 'insert', 'end')
         return unless from
@@ -68,14 +70,14 @@ module VER
         end
       end
 
-      def self.next(text)
+      def next(text)
         from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
         text.mark_set(:insert, from) if from
 
         VER.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
-      def self.prev(text)
+      def prev(text)
         from, to = text.tag_prevrange(TAG, 'insert', '1.0')
         text.mark_set(:insert, from) if from
 

@@ -3,114 +3,114 @@ require 'strscan'
 module VER
   module Methods
     module Snippet
-      class << self
-        def dwim(text)
-          jump(text) or complete(text) && jump(text)
-        end
+      module_function
 
-        def jump(text)
-          jump_marks_and_tags(text) || jump_home(text)
-        end
+      def dwim(text)
+        jump(text) or complete(text) && jump(text)
+      end
 
-        def jump_home(text)
-          if text.mark_names.include?(:ver_snippet_0)
-            text.mark_set(:insert, :ver_snippet_0)
-            text.mark_unset(:ver_snippet_0)
-            true
-          else
-            cancel(text)
-            false
-          end
-        end
+      def jump(text)
+        jump_marks_and_tags(text) || jump_home(text)
+      end
 
-        def jump_marks_and_tags(text)
-          (marks(text) + tags(text)).
-            sort_by{|_, name, _|
-              name =~ /_0$/ ? 'zero' : name
-            }.each do |idx, name, type|
-            case type
-            when :tag
-              return jump_tag(text, name)
-            when :mark
-              return jump_mark(text, name)
-            end
-          end
-
+      def jump_home(text)
+        if text.mark_names.include?(:ver_snippet_0)
+          text.mark_set(:insert, :ver_snippet_0)
+          text.mark_unset(:ver_snippet_0)
+          true
+        else
+          cancel(text)
           false
         end
+      end
 
-        def marks(text)
-          text.mark_names.map{|mark|
-            next unless mark =~ /^ver_snippet_(\d+)$/
-            [$1.to_i, mark, :mark]
-          }.compact
-        end
-
-        def tags(text)
-          text.tag_names.map{|tag|
-            next unless tag =~ /^ver\.snippet\.(\d+)$/
-            [$1.to_i, tag, :tag]
-          }.compact
-        end
-
-        def jump_tag(text, name)
-          text.minor_mode(:control, :snippet)
-          from, to = text.tag_ranges(name).first
-          return unless from
-
-          text.mark_set(:insert, from)
-          true
-        end
-
-        def jump_mark(text, name)
-          text.mark_set('insert', name)
-          if name =~ /_0$/
-            cancel(text, :insert)
-          else
-            text.mark_unset(name)
-          end
-
-          true
-        end
-
-        def cancel(text, into_mode = :control)
-          marks(text).each{|_, mark, _| text.mark_unset(mark) }
-          tags(text).each{|_, tag, _| text.tag_delete(tag) }
-          text.minor_mode(:snippet, into_mode) if text.minor_mode?(:snippet)
-        end
-
-        def insert_string(text, string)
-          tag = text.tag_names(:insert).find{|tag| tag =~ /^ver\.snippet\.(\d+)$/ }
-
-          if tag
-            from, to = text.tag_ranges(tag).first
-            text.tag_delete(tag, from, to)
-            text.replace(from, to, string)
-          else
-            text.insert(:insert, string)
+      def jump_marks_and_tags(text)
+        (marks(text) + tags(text)).
+          sort_by{|_, name, _|
+            name =~ /_0$/ ? 'zero' : name
+          }.each do |idx, name, type|
+          case type
+          when :tag
+            return jump_tag(text, name)
+          when :mark
+            return jump_mark(text, name)
           end
         end
 
-        def complete(text)
-          head = text.get('insert linestart', 'insert')
-          name = head[/\S+$/]
-          from = text.index("insert - #{name.size} chars")
-          to = text.index("insert")
+        false
+      end
 
-          return unless snippet = text.snippets[name]
-          insert(text, from, to, snippet)
-          true
+      def marks(text)
+        text.mark_names.map{|mark|
+          next unless mark =~ /^ver_snippet_(\d+)$/
+          [$1.to_i, mark, :mark]
+        }.compact
+      end
+
+      def tags(text)
+        text.tag_names.map{|tag|
+          next unless tag =~ /^ver\.snippet\.(\d+)$/
+          [$1.to_i, tag, :tag]
+        }.compact
+      end
+
+      def jump_tag(text, name)
+        text.minor_mode(:control, :snippet)
+        from, to = text.tag_ranges(name).first
+        return unless from
+
+        text.mark_set(:insert, from)
+        true
+      end
+
+      def jump_mark(text, name)
+        text.mark_set('insert', name)
+        if name =~ /_0$/
+          cancel(text, :insert)
+        else
+          text.mark_unset(name)
         end
 
-        def insert(text, from, to, snippet_source)
-          text.delete(from, to)
-          text.mark_set(:insert, from)
-          snippet = VER::Snippet.new(snippet_source[:content])
-          snippet.apply_on(text)
+        true
+      end
+
+      def cancel(text, into_mode = :control)
+        marks(text).each{|_, mark, _| text.mark_unset(mark) }
+        tags(text).each{|_, tag, _| text.tag_delete(tag) }
+        text.minor_mode(:snippet, into_mode) if text.minor_mode?(:snippet)
+      end
+
+      def insert_string(text, string)
+        tag = text.tag_names(:insert).find{|tag| tag =~ /^ver\.snippet\.(\d+)$/ }
+
+        if tag
+          from, to = text.tag_ranges(tag).first
+          text.tag_delete(tag, from, to)
+          text.replace(from, to, string)
+        else
+          text.insert(:insert, string)
         end
       end
-    end
-  end
+
+      def complete(text)
+        head = text.get('insert linestart', 'insert')
+        name = head[/\S+$/]
+        from = text.index("insert - #{name.size} chars")
+        to = text.index("insert")
+
+        return unless snippet = text.snippets[name]
+        insert(text, from, to, snippet)
+        true
+      end
+
+      def insert(text, from, to, snippet_source)
+        text.delete(from, to)
+        text.mark_set(:insert, from)
+        snippet = VER::Snippet.new(snippet_source[:content])
+        snippet.apply_on(text)
+      end
+    end # Snippet
+  end # Methods
 
   # TODO: transformations
   class Snippet
@@ -240,5 +240,5 @@ module VER
         end
       end
     end
-  end
-end
+  end # Snippet
+end # VER

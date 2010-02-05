@@ -1,6 +1,8 @@
-module VER::Methods
-  module Delete
-    class << self
+module VER
+  module Methods
+    module Delete
+      module_function
+
       def change_motion(text, motion, count = text.prefix_count)
         delete_motion(text, motion, count)
         text.minor_mode(:control, :insert)

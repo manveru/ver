@@ -1,6 +1,8 @@
-module VER::Methods
-  module AutoFill
-    class << self
+module VER
+  module Methods
+    module AutoFill
+      module_function
+
       def auto_fill_space(text)
         enabled = text.store(self, :enable)
         return text.insert(:insert, ' ') unless enabled

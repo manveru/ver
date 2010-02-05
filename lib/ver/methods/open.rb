@@ -1,6 +1,6 @@
-module VER::Methods
-  module Open
-    class << self
+module VER
+  module Methods
+    module Open
       GUESS_ENCODING_ORDER = [
         Encoding::US_ASCII,
         Encoding::UTF_8,
@@ -27,6 +27,8 @@ module VER::Methods
         Encoding::UTF8_MAC,
         Encoding::BINARY,
       ]
+
+      module_function
 
       # Try to determine the file under the cursor.
       # This handles names without spaces if no quotes are found

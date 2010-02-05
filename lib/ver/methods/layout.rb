@@ -1,6 +1,8 @@
-module VER::Methods
-  module Layout
-    class << self
+module VER
+  module Methods
+    module Layout
+      module_function
+
       def change(text, action, *count)
         action.call(text, *count)
       end

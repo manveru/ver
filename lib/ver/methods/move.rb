@@ -240,8 +240,6 @@ module VER::Methods
         VER.error(ex)
       end
 
-      private
-
       def word_char_type(char)
         case char
         when /\w/; :word

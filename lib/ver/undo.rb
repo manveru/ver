@@ -85,7 +85,7 @@ module VER
       def separate!
         applied.separator = true if applied
       end
-    end
+    end # Tree
 
     class AutoSeparator < Struct.new(:tree, :records)
       def initialize(tree)
@@ -117,7 +117,7 @@ module VER
           records << record
         end
       end
-    end
+    end # AutoSeparator
 
     # Every Record is responsible for one change that it can apply or undo.
     # There is only a very limited set of methods for modifications, as some of
@@ -304,6 +304,6 @@ module VER
       def inspect
         "#<Undo::Record sep=%p undo=%p redo=%p>" % [separator, undo_info, redo_info]
       end
-    end
-  end
-end
+    end # Record
+  end # Undo
+end # VER

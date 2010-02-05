@@ -1,8 +1,10 @@
-module VER::Methods
-  # TODO: add project directory and Dir.pwd to lookup path, maybe share code
-  #       with the project directory lookup
-  module CTags
-    class << self
+module VER
+  module Methods
+    # TODO: add project directory and Dir.pwd to lookup path, maybe share code
+    #       with the project directory lookup
+    module CTags
+      module_function
+
       def find_current(text)
         word = text.get('insert wordstart', 'insert wordend')
         find(text, word)

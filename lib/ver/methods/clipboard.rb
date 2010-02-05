@@ -1,6 +1,8 @@
-module VER::Methods
-  module Clipboard
-    class << self
+module VER
+  module Methods
+    module Clipboard
+      module_function
+
       def copy_line(text)
         content = text.get('insert linestart', 'insert lineend + 1 chars')
         copy(text, content)

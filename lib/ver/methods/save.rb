@@ -1,8 +1,10 @@
-module VER::Methods
-  # TODO: we _must_ write backup files, VER can corrupt files on a system
-  #       crash for some reason.
-  module Save
-    class << self
+module VER
+  module Methods
+    # TODO: we _must_ write backup files, VER can corrupt files on a system
+    #       crash for some reason.
+    module Save
+      module_function
+
       def may_close(text)
         return yield if text.pristine?
         return yield if text.persisted?
