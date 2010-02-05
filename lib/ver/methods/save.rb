@@ -9,7 +9,7 @@ module VER::Methods
 
         question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
 
-        status_ask question, take: 1 do |answer|
+        text.status_ask question, take: 1 do |answer|
           case answer[0]
           when 'Y', 'y'
             yield if file_save
