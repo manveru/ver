@@ -52,6 +52,15 @@ VER.spec do
         text.destroy
       end
 
+      def with_text(syntax)
+        text = SpecText.new
+        text.syntax = syntax
+        yield text
+        text.value.chomp
+      ensure
+        text.destroy
+      end
+
       it 'indents by simple rules' do
         # the end will be ok once next newline is entered
         check(:Ruby, <<-RUBY)
@@ -253,6 +262,14 @@ end
 (if (= 1 2)
   (+ 1 3))
 LISP
+      end
+
+      it 'inserts newlines in the middle of a line' do
+        with_text(:Ruby){|text|
+          text.insert :insert, "one two"
+          text.mark_set :insert, '4.0'
+          Indent.newline(text)
+        }.should == "one\ntwo"
       end
     end
   end
