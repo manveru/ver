@@ -11,6 +11,15 @@
     </note>
     <note priority="high" time="1265354683">
         Update keymaps for major/minor modes
+        <note priority="high" time="1265361228">
+            diakonos
+        </note>
+        <note priority="high" time="1265361231">
+            nano
+        </note>
+        <note priority="high" time="1265361233">
+            emacs
+        </note>
     </note>
     <note priority="high" time="1265354790">
         Help system based on YARD
@@ -20,6 +29,12 @@
         <note priority="high" time="1265354873">
             notify user when file is opened already
         </note>
+    </note>
+    <note priority="high" time="1265355024">
+        make ExFFF easier to read, might have to remove the color
+    </note>
+    <note priority="high" time="1265357714">
+        ask when closing modified buffers
     </note>
     <note priority="medium" time="1265354113">
         VCS plugins
