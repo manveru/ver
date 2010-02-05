@@ -18,11 +18,25 @@ module VER
       end
 
       def self.query(text)
-        text.status_ask 'Replace pattern: ' do |pattern|
-          text.store(self, :pattern, /#{pattern}/)
+        if old_pattern = text.store(self, :pattern)
+          old_pattern = old_pattern.inspect[1..-1]
+        end
+
+        text.status_ask 'Replace pattern: /', value: old_pattern do |pattern|
+          pattern << '/i' unless pattern =~ /\/[ixm]*$/
+
+          begin
+            regexp = eval("/#{pattern}")
+          rescue RegexpError, SyntaxError
+            regexp = Regexp.new(Regexp.escape(term))
+          end
+
+          text.store(self, :pattern, regexp)
 
           VER.defer do
-            text.status_ask "Replace #{pattern} with: " do |replacement|
+            old_replacement = text.store(self, :replacement)
+            question = "Replace %p with: " % [regexp]
+            text.status_ask question, value: old_replacement do |replacement|
               text.store(self, :replacement, replacement)
               text.minor_mode(:control, :search_and_replace)
             end
