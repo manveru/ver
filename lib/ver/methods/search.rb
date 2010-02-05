@@ -7,32 +7,32 @@ module VER::Methods
     TAG = :search
 
     class << self
-      def search_remove(text)
+      def remove(text)
         text.tag_remove(TAG, 1.0, :end)
       end
 
-      def status_search_next(text)
-        status_search_common(text, '/'){ search_next(text) }
+      def status_next(text)
+        status_common(text, '/'){ self.next(text) }
       end
 
-      def status_search_prev(text)
-        status_search_common(text, '?'){ search_prev(text) }
+      def status_prev(text)
+        status_common(text, '?'){ prev(text) }
       end
 
-      def status_search_common(text, question)
+      def status_common(text, question)
         text.status.bind('<<Modified>>') do
-          search_incremental(text, text.status.value)
+          incremental(text, text.status.value)
         end
 
         text.status_ask question do |term|
           text.status.bind('<<Modified>>'){ }
-          search_incremental(text, term, force = true)
-          search_prev(text)
+          incremental(text, term, force = true)
+          prev(text)
           yield
         end
       end
 
-      def search_incremental(text, term, force = false)
+      def incremental(text, term, force = false)
         return if !term || term.empty?
         return if !force && term.size <= text.options.search_incremental_min
 
@@ -48,26 +48,26 @@ module VER::Methods
         text.see(from) if from
       end
 
-      def search_first(text)
+      def first(text)
         from, to = text.tag_nextrange(TAG, 1.0, :end)
         text.mark_set(:insert, from) if from
       end
 
-      def search_last(text)
+      def last(text)
         from, to = tag_prevrange(TAG, :end, 1.0)
         text.mark_set(:insert, from) if from
       end
 
-      def search_next(text, count = text.prefix_count)
+      def next(text, count = text.prefix_count)
         count.times do
           from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
           text.mark_set(:insert, from) if from
         end
 
-        search_display_matches_count(text)
+        display_matches_count(text)
       end
 
-      def search_display_matches_count(text)
+      def display_matches_count(text)
         total = text.tag_ranges(TAG).size
 
         if total == 1
@@ -79,32 +79,32 @@ module VER::Methods
         end
       end
 
-      def search_prev(text, count = text.prefix_count)
+      def prev(text, count = text.prefix_count)
         count.times do
           from, to = text.tag_prevrange(TAG, 'insert - 1 chars', '1.0')
           text.mark_set(:insert, from) if from
         end
 
-        search_display_matches_count(text)
+        display_matches_count(text)
       end
 
-      def search_next_word_under_cursor(text)
+      def next_word_under_cursor(text)
         word = text.get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
         text.tag_all_matching(TAG, word, HIGHLIGHT)
         text.tag_lower(TAG)
-        search_next(text)
+        self.next(text)
       end
 
-      def search_prev_word_under_cursor(text)
+      def prev_word_under_cursor(text)
         word = text.get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
         text.tag_all_matching(TAG, word, HIGHLIGHT)
         text.tag_lower(TAG)
-        search_prev(text)
+        prev(text)
       end
 
-      def search_char_right(text, count = text.prefix_count)
+      def char_right(text, count = text.prefix_count)
         VER.message 'Press the character to find to the right'
 
         text.major_mode.read 1 do |event|
@@ -120,7 +120,7 @@ module VER::Methods
         end
       end
 
-      def search_char_left(text, count = text.prefix_count)
+      def char_left(text, count = text.prefix_count)
         VER.message 'Press the character to find to the left'
 
         text.major_mode.read 1 do |event|
@@ -136,7 +136,7 @@ module VER::Methods
         end
       end
 
-      def search_clear(text)
+      def clear(text)
         text.tag_remove(TAG, 1.0, :end)
       end
     end

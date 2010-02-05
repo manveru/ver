@@ -116,15 +116,15 @@ module VER
   minor_mode :search do
     handler Methods::Search
 
-    map :search_char_left,               %w[F]
-    map :search_char_right,              %w[f]
-    map :search_next,                    %w[n]
-    map :search_next_word_under_cursor,  %w[asterisk]
-    map :search_prev,                    %w[N]
-    map :search_prev_word_under_cursor,  %w[numbersign]
-    map :search_remove,                  %w[g slash]
-    map :status_search_next,             %w[slash]
-    map :status_search_prev,             %w[question]
+    map :char_left,               %w[F]
+    map :char_right,              %w[f]
+    map :next,                    %w[n]
+    map :next_word_under_cursor,  %w[asterisk]
+    map :prev,                    %w[N]
+    map :prev_word_under_cursor,  %w[numbersign]
+    map :remove,                  %w[g slash]
+    map :status_next,             %w[slash]
+    map :status_prev,             %w[question]
   end
 
   minor_mode :ctags do

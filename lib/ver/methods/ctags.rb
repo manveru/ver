@@ -18,8 +18,6 @@ module VER::Methods
         end
       end
 
-      private
-
       def go(text, name = nil)
         if name
           content text do |tag_name, file_name, ex_cmd|
