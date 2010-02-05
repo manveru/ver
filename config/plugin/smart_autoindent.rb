@@ -3,7 +3,7 @@ module VER
     module SmartAutoindent
       def self.newline(text)
         if text.options.autoindent
-          indented_newline(text) # Indent.insert_newline(text)
+          indented_newline(text)
         else
           Insert.newline(text)
         end
@@ -12,7 +12,8 @@ module VER
       def self.newline_below(text)
         if text.options.autoindent
           text.mark_set('insert', 'insert lineend')
-          Indent.insert_newline(text, record)
+          newline(text)
+          text.minor_mode(:control, :insert)
         else
           Insert.newline_below(text)
         end
@@ -150,7 +151,7 @@ module VER
 
     minor_mode :insert do
       handler Methods::SmartAutoindent
-      map :insert_newline, %w[Return]
+      map :newline, %w[Return]
     end
   end
 end
