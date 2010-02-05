@@ -12,6 +12,7 @@ module VER
     autoload :Insert,           'ver/methods/insert'
     autoload :Layout,           'ver/methods/layout'
     autoload :Move,             'ver/methods/move'
+    autoload :Nano,             'ver/methods/nano'
     autoload :Open,             'ver/methods/open'
     autoload :Preview,          'ver/methods/preview'
     autoload :Save,             'ver/methods/save'
