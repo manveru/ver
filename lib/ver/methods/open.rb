@@ -134,12 +134,6 @@ module VER::Methods
         VER.find_or_create_buffer(fpath)
       end
 
-      def file_open_fuzzy(text)
-        Buffer::List::FuzzyFileFinder.new text do |path|
-          VER.find_or_create_buffer(text, path)
-        end
-      end
-
       # Read given file into memory and convert to @encoding
       def read_file(text, path)
         path = Pathname(path.to_s).expand_path

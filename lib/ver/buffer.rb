@@ -1,7 +1,5 @@
 module VER
   class Buffer < Tk::Tile::Frame
-    autoload :Entry,   'ver/buffer/entry'
-    autoload :List,    'ver/buffer/list'
     autoload :Console, 'ver/buffer/console'
 
     def self.create(path = nil, line = nil, column = nil)

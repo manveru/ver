@@ -307,31 +307,11 @@ module VER::Methods
       end
       alias ex executor
 
-      # TODO: make this better?
-      def status_ex
-        completion = method(:status_ex_filter)
+      def ex_grep_open_buffers(text)
+        filenames = VER.buffers.map{|key, buffer| buffer.filename }
+        glob = "{#{ filenames.join(',') }}"
 
-        Buffer::List::Ex.new self, completion do |command, propose|
-          begin
-            result = propose ? send(command, propose) : eval(command)
-            status.message "%s # => %p" % [command, result]
-          rescue Exception => ex
-            status.error "%s # => %p" % [command, ex]
-          end
-        end
-      end
-
-      def status_ex_filter(input)
-        input = input.to_s.split.last
-        return [] if !input || input.empty?
-
-        begin
-          regexp = Regexp.new(input)
-        rescue ArgumentError, RegexpError, SyntaxError
-          regexp = Regexp.new(Regexp.escape(input))
-        end
-
-        self.methods.grep(regexp).sort_by{|sym| sym =~ regexp }
+        VER::Executor.new(text, action: action, value: glob)
       end
 
       def wrap_line(text)
@@ -341,18 +321,6 @@ module VER::Methods
         lines.rstrip!
 
         text.replace('insert linestart', 'insert lineend', lines)
-      end
-
-      def theme_switch
-        return unless @syntax
-
-        Buffer::List::Theme.new(self){|name| load_theme(name) }
-      end
-
-      def syntax_switch
-        return unless @syntax
-
-        Buffer::List::Syntax.new(self){|name| load_syntax(name) }
       end
 
       def smart_evaluate(text)

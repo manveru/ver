@@ -41,50 +41,6 @@ module VER::Methods
       def open_console(text)
         Buffer::Console.new(text)
       end
-
-      def open_buffer_switch(text)
-        Buffer::List::Buffer.new text do |file|
-          VER.find_or_create_buffer(text, file) if File.exists?(file)
-        end
-      end
-
-      def open_grep_buffer(text)
-        Buffer::List::Grep.new text, filename do |file, line|
-          VER.find_or_create_buffer(text, file, line)
-        end
-      end
-
-      def open_grep_buffers(text)
-        filenames = VER.buffers.map{|key, buffer| buffer.filename }
-        glob = "{#{ filenames.join(',') }}"
-
-        Buffer::List::Grep.new text, glob do |file, line|
-          VER.find_or_create_buffer(text, file, line)
-        end
-      end
-
-      def open_grep_list(text)
-        Buffer::List::Grep.new text do |file, line|
-          VER.find_or_create_buffer(text, file, line)
-        end
-      end
-
-      def open_method_list(text)
-        Buffer::List::Methods.new text do |file, line|
-          VER.find_or_create_buffer(text, file, line)
-        end
-      end
-
-      def open_window_switch(text, count = nil)
-        if count
-          # p count: count
-        else
-          Buffer::List::Window.new text do |buffer|
-            Layout.push_top(text)
-            buffer.focus
-          end
-        end
-      end
     end
   end
 end
