@@ -35,14 +35,6 @@ module VER
 
     map :open_terminal,       %w[F9]
     map :open_console,        %w[Control-exclam] if defined?(::EM)
-
-    # to be deprecated
-    map :open_buffer_switch,  %w[Alt-b], %w[Control-m b]
-    map :open_grep_buffer,    %w[Alt-g], %w[Control-m g]
-    map :open_grep_buffers,   %w[Alt-G], %w[Control-m G]
-    map :open_grep_list,      %w[Control-Alt-g], %w[Control-m Control-g]
-    map :open_method_list,    %w[F10]
-    map :open_window_switch,  %w[Alt-B], %w[Control-m B]
   end
 
   minor_mode :layout do
@@ -163,9 +155,9 @@ module VER
     map :change_motion,                  ['c', :move]
     map [:change_motion, :end_of_line],  %w[C]
     map [:change_word_right_end],        %w[c w]
-    map [:kill_motion, :prev_char],  %w[X]
+    map [:kill_motion, :prev_char],      %w[X]
     map [:kill_motion, :end_of_line],    %w[D]
-    map [:kill_motion, :next_char],   %w[x]
+    map [:kill_motion, :next_char],      %w[x]
   end
 
   minor_mode :clipboard do
@@ -211,7 +203,7 @@ module VER
     map :indent_line,                       %w[greater]
     map :unindent_line,                     %w[less]
 
-    map :join_lines,                        %w[J]
+    map :join_line_forward,                 %w[J]
 
     map :open_file_under_cursor,            %w[g f]
 
@@ -220,12 +212,20 @@ module VER
 
     map [:insert_at, :home_of_line],        %w[I]
 
-    map :executor,                          %w[colon]
-    map :syntax_switch,                     %w[Control-y]
-    map :theme_switch,                      %w[Control-t]
-    map :toggle_case,                       %w[asciitilde]
+    map :executor, %w[colon colon], %w[colon x]
+    map [:ex, :buffer], %w[colon b], %w[Alt-b], %w[Control-m b]
+    map [:ex, :edit],   %w[colon e]
+    map [:ex, :fuzzy],  %w[colon f]
+    map [:ex, :grep],   %w[colon g]
+    map [:ex, :locate], %w[colon l]
+    map [:ex, :method], %w[colon m]
+    map [:ex, :open],   %w[colon o]
+    map [:ex, :syntax], %w[colon s]
+    map [:ex, :theme],  %w[colon t]
+    map [:ex, :write],  %w[colon w]
 
-    map :wrap_line,                         %w[g w]
+    map :toggle_case, %w[asciitilde]
+    map :wrap_line, %w[g w]
 
     handler Methods::Insert
     map :newline_above,     %w[O]

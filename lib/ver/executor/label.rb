@@ -41,11 +41,13 @@ module VER
       def action(name)
         completer_name = COMPLETERS.fetch(name)
         completer = Executor.const_get(completer_name)
-        self.value = completer_name
         entry = callback.use_entry(completer)
+
+        self.value = completer_name
+        configure(state: :disabled, takefocus: false)
+
         entry.focus
         entry.update_only
-        configure(state: :disabled)
       rescue KeyError
       end
     end

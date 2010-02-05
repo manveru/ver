@@ -302,9 +302,10 @@ module VER::Methods
         end
       end
 
-      def executor(text)
-        VER::Executor.new(text)
+      def executor(text, action = nil)
+        VER::Executor.new(text, action: action)
       end
+      alias ex executor
 
       # TODO: make this better?
       def status_ex

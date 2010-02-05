@@ -6,7 +6,7 @@ module VER
     attr_reader :caller, :tree, :label, :entry, :ybar
     attr_accessor :update_on_change
 
-    def initialize(caller)
+    def initialize(caller, options = {})
       @caller = caller
       @tab_count = 0
 
@@ -14,7 +14,12 @@ module VER
       setup_layout
 
       @label.setup
-      @label.focus
+
+      if action = options.delete(:action)
+        @label.action(action.to_s)
+      else
+        @label.focus
+      end
     end
 
     def setup_widgets
