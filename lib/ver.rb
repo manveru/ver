@@ -375,7 +375,12 @@ module VER
     basename = "#{session_base}.session.rb"
     return unless file = find_in_loadpath(basename)
 
-    session = eval(File.read(file))
+    begin
+      session = eval(File.read(file))
+    rescue SyntaxError => ex
+      puts "#{ex.class}: #{ex}", *ex.backtrace
+      return
+    end
 
     session[:bookmarks].each do |raw_bm|
       bm = Bookmarks::Bookmark.new
@@ -396,8 +401,9 @@ module VER
     session_path = loadpath.first/basename
 
     session = {buffers: [], bookmarks: []}
-    buffers.each do |buffer|
+    buffers.each do |name, buffer|
       session[:buffers] << {
+        name: name.to_s,
         filename: buffer.filename.to_s,
         insert: buffer.text.index(:insert).split,
       }
