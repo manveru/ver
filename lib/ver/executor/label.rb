@@ -2,6 +2,7 @@ module VER
   class Executor
     autoload :ExFuzzyFileFinder, 'ver/executor/fuzzy_file_finder'
     autoload :ExGrep,            'ver/executor/grep'
+    autoload :ExGrepBuffers,     'ver/executor/grep'
     autoload :ExLocate,          'ver/executor/locate'
     autoload :ExMethod,          'ver/executor/method'
     autoload :ExPath,            'ver/executor/path'
@@ -12,16 +13,17 @@ module VER
 
     class ExLabel < Entry
       COMPLETERS = {
-        'edit'   => :ExPath,
-        'fuzzy'  => :ExFuzzyFileFinder,
-        'grep'   => :ExGrep,
-        'locate' => :ExLocate,
-        'method' => :ExMethod,
-        'open'   => :ExPath,
-        'syntax' => :ExSyntax,
-        'theme'  => :ExTheme,
-        'write'  => :ExWrite,
-        'buffer' => :ExBuffer,
+        'edit'         => :ExPath,
+        'fuzzy'        => :ExFuzzyFileFinder,
+        'grep'         => :ExGrep,
+        'grep_buffers' => :ExGrepBuffers,
+        'locate'       => :ExLocate,
+        'method'       => :ExMethod,
+        'open'         => :ExPath,
+        'syntax'       => :ExSyntax,
+        'theme'        => :ExTheme,
+        'write'        => :ExWrite,
+        'buffer'       => :ExBuffer,
       }
 
       def setup

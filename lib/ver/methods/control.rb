@@ -307,13 +307,6 @@ module VER::Methods
       end
       alias ex executor
 
-      def ex_grep_open_buffers(text)
-        filenames = VER.buffers.map{|key, buffer| buffer.filename }
-        glob = "{#{ filenames.join(',') }}"
-
-        VER::Executor.new(text, action: action, value: glob)
-      end
-
       def wrap_line(text)
         content = text.get('insert linestart', 'insert lineend')
         textwidth = text.options.textwidth

@@ -36,14 +36,20 @@ module VER
 
         return [] if needle =~ /^\s*$/
 
-        regexp = Regexp.new(needle)
+        begin
+          regexp = Regexp.new(needle)
+        rescue RegexpError, SyntaxError
+          regexp = Regexp.new(Regexp.escape(needle))
+        end
+
         grep_with(glob, regexp)
       end
 
-      def grep_with(glob, regexp)
+      def grep_with(glob, regexp, with_root = true)
         results = []
+        root = with_root ? @root/glob : glob
 
-        (@root/glob).glob do |path|
+        root.glob do |path|
           next unless path.file?
 
           path.open do |io|
@@ -70,6 +76,25 @@ module VER
 
       # Ignore sync
       def sync_value_with_tree_selection
+      end
+    end
+
+    # Grep the open buffers interactively
+    class ExGrepBuffers < ExGrep
+      def choices(needle)
+        choices = []
+        return choices if needle =~ /^\s*$/
+
+        files = VER.buffers.map{|name, buffer| buffer.filename }
+        glob = Pathname("{#{files.join(',')}}")
+
+        begin
+          regexp = Regexp.new(needle)
+        rescue RegexpError, SyntaxError
+          regexp = Regexp.new(Regexp.escape(needle))
+        end
+
+        grep_with(glob, regexp, false)
       end
     end
   end
