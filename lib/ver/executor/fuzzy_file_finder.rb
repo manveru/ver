@@ -34,11 +34,6 @@ module VER
         tree.column('path', stretch: true)
         tree.column('score', width: 50, stretch: false)
 
-        tree.tag_configure(:icy,  foreground: 'red')
-        tree.tag_configure(:cold, foreground: 'orange')
-        tree.tag_configure(:warm, foreground: 'blue')
-        tree.tag_configure(:hot,  foreground: 'green')
-
         setup_fff
       end
 
