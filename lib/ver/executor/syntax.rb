@@ -14,6 +14,7 @@ module VER
 
       def action(name)
         caller.load_syntax(name)
+        caller.touch!('1.0', 'end')
         callback.destroy
       end
     end
