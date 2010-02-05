@@ -40,6 +40,7 @@ module VER
       @history_idx = -1
 
       self.question = question
+      self.value = options[:value].to_s
       submit_when_taken(options[:take])
       focus
     end

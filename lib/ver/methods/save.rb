@@ -3,10 +3,6 @@ module VER::Methods
   #       crash for some reason.
   module Save
     class << self
-      def call(widget, command, arg)
-        send(*command, widget, *arg)
-      end
-
       def may_close(text)
         return yield if text.pristine?
         return yield if text.persisted?
@@ -27,13 +23,23 @@ module VER::Methods
         end
       end
 
-      def quit(text)
+      def quit(text = nil)
         VER.exit
       end
 
       def save_all(text)
         VER.layout.buffers.each do |buffer|
           file_save(buffer.text)
+        end
+      end
+
+      def save(text)
+        save_to(text, text.filename)
+      end
+
+      def save_as(text)
+        text.status_ask 'Filename: ', value: text.filename.dirname do |filename|
+          save_to(text, Pathname(filename).expand_path)
         end
       end
 

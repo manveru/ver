@@ -52,6 +52,10 @@ module VER
     become :select_char, %w[Control-space]
     become :select_line, %w[Escape Control-space], %w[Control-Alt-space]
 
+    handler Methods::Save
+    map :save,    %w[Control-s]
+    map :save_as, %w[Alt-S]
+
     handler Methods::Layout
     map :close, %w[Control-w]
     1.upto(9){|n| map([:focus, n], ["Alt-#{n}"], ["Escape", n.to_s]) }

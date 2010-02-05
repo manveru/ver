@@ -14,9 +14,8 @@ module VER
 
   minor_mode :save do
     handler Methods::Save
-
-    map :file_save,       %w[Control-s]
-    map :file_save_popup, %w[Control-Alt-s]
+    map :save,    %w[Control-s]
+    map :save_as, %w[Control-S]
   end
 
   minor_mode :preview do
