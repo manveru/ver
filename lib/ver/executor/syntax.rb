@@ -6,7 +6,6 @@ module VER
         @syntaxes = VER::Syntax.list.map{|fullpath|
           File.basename(fullpath, File.extname(fullpath))
         }
-        tree.configure(show: [], columns: %w[syntax], displaycolumns: %w[syntax])
       end
 
       def choices(name)
