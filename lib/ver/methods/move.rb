@@ -99,6 +99,21 @@ module VER::Methods
         text.mark_set(:insert, "#{number}.0")
       end
 
+      def ask_go_line(text)
+        question = 'Go to [line number|+lines][,column number]: '
+        text.status_ask question do |answer|
+          case answer.to_s.strip
+          when /^\+(\d+)(?:,(\d+))?$/
+            line, column = $1.to_i, $2.to_i
+            current = text.index(:insert)
+            text.mark_set(:insert, "#{current.line + line}.#{column}")
+          when /^(\d+)(?:,(\d+))?$/
+            line, column = $1.to_i, $2.to_i
+            text.mark_set(:insert, "#{line}.#{column}")
+          end
+        end
+      end
+
       def go_column(text, number = text.prefix_count)
         text.mark_set(:insert, "insert linestart + #{number} chars")
       end

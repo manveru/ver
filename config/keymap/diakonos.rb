@@ -1,173 +1,175 @@
-diakonos = VER::Keymap.new(name: :diakonos, mode: :buffer)
+module VER
+  PanedLayout::OPTIONS[:slaves] = 0
 
-diakonos.arguments = false
-
-diakonos.in_mode :basic do
-  key :quit, %w[Control-q]
-end
-
-diakonos.in_mode :buffers do
-  key :view_close, %w[Control-w]
-
-  1.upto(9) do |n|
-    key [:view_focus, n], ["Alt-#{n}"], ["Escape", n.to_s]
-  end
-end
-
-diakonos.in_mode :readline do
-  key [:kill_motion, :backward_char],   %w[BackSpace]
-  key [:kill_motion, :forward_char],    %w[Delete], %w[Control-d]
-  key [:kill_motion, :backward_word],   %w[Control-w]
-  key :backward_char,                   %w[Left], %w[Control-b]
-  key :forward_char,                    %w[Right], %w[Control-f]
-  key :backward_word,                   %w[Shift-Left], %w[Alt-b]
-  key :forward_word,                    %w[Shift-Right], %w[Alt-f]
-  key :beginning_of_line,               %w[Home], %w[Control-a]
-  key :end_of_line,                     %w[End], %w[Control-e]
-  key :insert_selection,                %w[Shift-Insert]
-  key :accept_line,                     %w[Return]
-  key :previous_history,                %w[Up], %w[Control-p]
-  key :next_history,                    %w[Down], %w[Control-n]
-  key :beginning_of_history,            %w[Control-less]
-  key :end_of_history,                  %w[Control-greater]
-  key :transpose_chars,                 %w[Control-t]
-  key :insert_tab,                      %w[Control-v Tab]
-
-  KEYSYMS.each do |sym, name|
-    key [:insert_string, sym], [name]
-  end
-end
-
-diakonos.in_mode :status_query do
-  inherits :basic, :readline
-
-  key :ask_abort,        %w[Escape], %w[Control-c]
-  key :history_prev,     %w[Up], %w[Control-p]
-  key :history_next,     %w[Down], %w[Control-n]
-  key :history_complete, %w[Tab]
-  key :ask_submit,       %w[Return]
-
-  missing :insert_string
-end
-
-diakonos.in_mode :bookmark do
-  key :bookmark_toggle, %w[Alt-b Alt-b]
-  key :next_bookmark,   %w[Alt-b Alt-n]
-  key :prev_bookmark,   %w[Alt-b Alt-p]
-
-  key :named_bookmark_add,    %w[Alt-b Alt-a]
-  key :named_bookmark_remove, %w[Alt-b Alt-r]
-  key :named_bookmark_visit,  %w[Alt-b Alt-g]
-
-  # these are only valid on US keymap, don't know a better way.
-  key [:named_bookmark_add, '1'], %w[Alt-b Alt-exclam]
-  key [:named_bookmark_add, '2'], %w[Alt-b Alt-at]
-  key [:named_bookmark_add, '3'], %w[Alt-b Alt-numbersign]
-  key [:named_bookmark_add, '4'], %w[Alt-b Alt-dollar]
-  key [:named_bookmark_add, '5'], %w[Alt-b Alt-percent]
-
-  key [:named_bookmark_visit, '1'], %w[Alt-b Alt-1]
-  key [:named_bookmark_visit, '2'], %w[Alt-b Alt-2]
-  key [:named_bookmark_visit, '3'], %w[Alt-b Alt-3]
-  key [:named_bookmark_visit, '4'], %w[Alt-b Alt-4]
-  key [:named_bookmark_visit, '5'], %w[Alt-b Alt-5]
-end
-
-diakonos.in_mode :ctags do
-  key :ctags_go,           %w[Alt-t]
-  key :ctags_find_current, %w[Alt-parenright]
-  key :ctags_prev,         %w[Alt-parenleft]
-end
-
-diakonos.in_mode :search do
-  key :status_search_next, %w[Control-f]
-  key :search_next,        %w[F3]
-  key :search_clear,       %w[Control-Alt-u]
-
-  # TODO: this doesn't work, investiate.
-  key :search_prev,        %w[Shift-F3]
-end
-
-diakonos.in_mode :select do
-  key :start_select_char_mode, %w[Control-space]
-  key :start_select_line_mode, %w[Escape Control-space], %w[Control-Alt-space]
-end
-
-diakonos.in_mode :buffer do
-  inherits :basic, :buffers, :readline, :bookmark, :search, :select
-
-  key :backward_char,      %w[Left]
-  key :forward_char,       %w[Right]
-  key :previous_line,      %w[Up]
-  key :next_line,          %w[Down]
-  key :beginning_of_line,  %w[Home]
-  key :end_of_line,        %w[End]
-  key :page_up,            %w[Prior]
-  key :page_down,          %w[Next]
-  key :end_of_file,        %w[Alt-greater]
-  key :go_line,            %w[Alt-less]
-
-  key :forward_scroll,  %w[Alt-n]
-  key :backward_scroll, %w[Alt-p]
-
-  key [:delete_motion, :backward_char], %w[BackSpace]
-  key [:delete_motion, :forward_char],  %w[Delete]
-  key :kill_line,                       %w[Control-k], %w[Control-d Control-d]
-  key [:delete_motion, :end_of_line],   %w[Control-Alt-k], %w[Control-d dollar]
-  key [:delete_motion, :end_of_line],   %w[Control-Alt-k], %w[Control-d dollar]
-
-  key :insert_indented_newline, %w[Return]
-
-  key :indent_line,   %w[Alt-i], %w[Escape i]
-  key :unindent_line, %w[Alt-I], %w[Escape I]
-
-  key :complete_word, %w[Alt-e], %w[Escape e]
-
-  key :exec_into_new,  %w[F2]
-  key :exec_into_void, %w[F8]
-  key [:exec_into_new, 'ruby -c $f'], %w[Control-Alt-c]
-
-  key :insert_tab, %w[Control-t]
-  key :paste,      %w[Control-v]
-  key :undo,       %w[Control-z]
-  key :redo,       %w[Control-y]
-
-=begin
-  # TODO
-  key :top_of_view,        %w[Alt-comma], %w[Escape comma]
-  key :bottom_of_view,     %w[Alt-period], %w[Escape period]
-  key :previous_cursor,    %w[Control-j]
-  key :forward_cursor,     %w[Control-l]
-
-  key :ask_go_line,        %w[Control-g]
-
-
-  key :forward_join_lines, %w[Alt-j], %w[Escape j]
-  key :backward_join_lines, %w[Alt-J], %w[Escape J]
-=end
-
-  KEYSYMS.each do |sym, name|
-    key [:insert_string, sym], [name]
+  major_mode :Fundamental do
+    use :control
   end
 
-  missing :insert_string
-end
+  major_mode :Status do
+    use :basic, :readline
 
-diakonos.in_mode :select_char do
-  inherits :buffer
+    map :ask_abort,  %w[Escape], %w[Control-c]
+    map :ask_submit, %w[Return]
+  end
 
-  key :copy_selection, %w[Control-c]
-  key :kill_selection, %w[Control-x]
-  key :delete_selection, %w[BackSpace], %w[Delete]
-  key :replace_selection_with_clipboard, %w[Control-v]
-end
+  major_mode :HoverCompletion do
+    use :basic
 
-diakonos.in_mode :hover_completion do
-  inherits :basic
+    map :cancel,              %w[Escape], %w[BackSpace]
+    map :continue_completion, %w[Right], %w[Tab]
+    map :go_down,             %w[Down], %w[Control-p]
+    map :go_up,               %w[Up], %w[Control-n]
+    map :submit,              %w[Return]
+  end
 
-  key :go_up,               %w[Up], %w[Control-n]
-  key :go_down,             %w[Down], %w[Control-p]
-  key :continue_completion, %w[Right], %w[Tab]
-  key :submit,              %w[Return]
-  key :cancel,              %w[Escape], %w[BackSpace]
+  minor_mode :basic do
+    handler Methods::Basic
+    map :quit, %w[Control-q]
+  end
+
+  minor_mode :move do
+    handler Methods::Move
+    map :ask_go_line,     %w[Control-g]
+    map :end_of_line,     %w[End], %w[Control-e]
+    map :end_of_text,     %w[Alt-greater]
+    map :next_char,       %w[Right], %w[Control-f]
+    map :next_line,       %w[Down], %w[Control-n]
+    map :next_page,       %w[Next]
+    map :next_word,       %w[Shift-Right], %w[Alt-f]
+    map :prev_char,       %w[Left], %w[Control-b]
+    map :prev_line,       %w[Up], %w[Control-p]
+    map :prev_page,       %w[Prior]
+    map :prev_word,       %w[Shift-Left], %w[Alt-b]
+    map :start_of_line,   %w[Home], %w[Control-a]
+    map :start_of_text,   %w[Alt-less]
+    map :forward_scroll,  %w[Alt-n]
+    map :backward_scroll, %w[Alt-p]
+  end
+
+  minor_mode :control do
+    inherits :basic, :move
+
+    become :select_char, %w[Control-space]
+    become :select_line, %w[Escape Control-space], %w[Control-Alt-space]
+
+    handler Methods::Layout
+    map :close, %w[Control-w]
+    1.upto(9){|n| map([:focus, n], ["Alt-#{n}"], ["Escape", n.to_s]) }
+
+    handler Methods::Insert
+    map :newline,    %w[Return]
+    map :selection,  %w[Shift-Insert]
+    map :tab,        %w[Control-t]
+    missing :string
+
+    handler Methods::Control
+    map :indent_line,                   %w[Alt-i], %w[Escape i]
+    map :unindent_line,                 %w[Alt-I], %w[Escape I]
+    map :exec_into_new,                 %w[F2]
+    map :exec_into_void,                %w[F8]
+    map [:exec_into_new, 'ruby -c $f'], %w[Control-Alt-c]
+    map :cursor_vertical_top,           %w[Alt-comma], %w[Escape comma]
+    map :cursor_vertical_bottom,        %w[Alt-period], %w[Escape period]
+    map :join_line_forward,             %w[Alt-j], %w[Escape j]
+    map :join_line_backward,            %w[Alt-J], %w[Escape J]
+
+    handler Methods::Completion
+    map :word, %w[Alt-e], %w[Escape e]
+
+    handler Methods::Clipboard
+    map :paste, %w[Control-v]
+
+    handler Methods::Undo
+    map :undo, %w[Control-z]
+    map :redo, %w[Control-y]
+
+    handler Methods::Delete
+    map :kill_line,                      %w[Control-k], %w[Control-d Control-d]
+    map [:delete_motion, :end_of_line],  %w[Control-Alt-k], %w[Control-d dollar]
+    map [:delete_motion, :prev_char],    %w[BackSpace]
+    map [:delete_motion, :next_char],    %w[Delete]
+
+    handler Methods::Bookmark
+    map :add_named,    %w[Alt-b Alt-a]
+    map :next,         %w[Alt-b Alt-n]
+    map :prev,         %w[Alt-b Alt-p]
+    map :remove_named, %w[Alt-b Alt-r]
+    map :toggle,       %w[Alt-b Alt-b]
+    map :visit_named,  %w[Alt-b Alt-g]
+    # these are only valid on US keymap, don't know a better way.
+    map [:add_named, '1'],   %w[Alt-b Alt-exclam]
+    map [:add_named, '2'],   %w[Alt-b Alt-at]
+    map [:add_named, '3'],   %w[Alt-b Alt-numbersign]
+    map [:add_named, '4'],   %w[Alt-b Alt-dollar]
+    map [:add_named, '5'],   %w[Alt-b Alt-percent]
+    map [:visit_named, '1'], %w[Alt-b Alt-1]
+    map [:visit_named, '2'], %w[Alt-b Alt-2]
+    map [:visit_named, '3'], %w[Alt-b Alt-3]
+    map [:visit_named, '4'], %w[Alt-b Alt-4]
+    map [:visit_named, '5'], %w[Alt-b Alt-5]
+
+    handler Methods::CTags
+    map :go,           %w[Alt-t]
+    map :find_current, %w[Alt-parenright]
+    map :prev,         %w[Alt-parenleft]
+
+    handler Methods::Search
+    map :status_next, %w[Control-f]
+    map :next,        %w[F3]
+    map :clear,       %w[Control-Alt-u]
+    # TODO: this doesn't work, investiate.
+    map :prev,        %w[Shift-F3]
+  end
+
+  minor_mode :select do
+    handler Methods::Selection
+    map :copy,                   %w[Control-c]
+    map :kill,                   %w[Control-x]
+    map :delete,                 %w[BackSpace], %w[Delete]
+    map :replace_with_clipboard, %w[Control-v]
+  end
+
+  minor_mode :select_char do
+    inherits :move, :select
+    become :control, %w[Escape]
+    handler Methods::Selection
+    enter :enter
+    leave :leave
+  end
+
+  minor_mode :select_line do
+    inherits :move, :select
+    become :control, %w[Escape]
+    handler Methods::Selection
+    enter :enter
+    leave :leave
+  end
+
+  minor_mode :readline do
+    map :accept_line,       %w[Return]
+
+    map :end_of_line,       %w[End], %w[Control-e]
+    map :insert_selection,  %w[Shift-Insert]
+    map :insert_tab,        %w[Control-v Tab]
+    map :kill_end_of_line,  %w[Control-k]
+    map :kill_next_char,    %w[Control-d], %w[Delete]
+    map :kill_next_word,    %w[Alt-d]
+    map :kill_prev_char,    %w[BackSpace]
+    map :kill_prev_word,    %w[Control-w]
+    map :next_char,         %w[Right], %w[Control-f]
+    map :next_word,         %w[Shift-Right], %w[Alt-f]
+    map :prev_char,         %w[Left], %w[Control-b]
+    map :prev_word,         %w[Shift-Left], %w[Alt-b]
+    map :start_of_line,     %w[Home], %w[Control-a]
+    map :transpose_chars,   %w[Control-t]
+
+    map :sel_prev_char,     %w[Shift-Left]
+    map :sel_next_char,     %w[Shift-Right]
+    map :sel_prev_word,     %w[Shift-Control-Left]
+    map :sel_next_word,     %w[Shift-Control-Right]
+    map :sel_start_of_line, %w[Shift-Home]
+    map :sel_end_of_line,   %w[Shift-End]
+
+    missing :insert_string
+  end
 end

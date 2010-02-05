@@ -394,12 +394,16 @@ module VER::Methods
         VER.error(exception)
       end
 
-      def join_lines(text)
-        start_of_next_line = text.search(/\S/, 'insert lineend').first
-        text.replace('insert lineend', start_of_next_line, ' ')
-      rescue RuntimeError => exception
-        return if exception.message =~ /Index "\d+\.\d+" before "insert lineend" in the text/
-        Kernel.raise exception
+      def join_line_forward(text)
+        from, to = 'insert linestart', 'insert + 1 lines lineend'
+        lines = text.get(from, to)
+        text.replace(from, to, lines.gsub(/\s*\n\s*/, ' '))
+      end
+
+      def join_line_backward(text)
+        from, to = 'insert - 1 lines linestart', 'insert lineend'
+        lines = text.get(from, to)
+        text.replace(from, to, lines.gsub(/\s*\n\s*/, ' '))
       end
 
       def indent_line(text, count = text.prefix_count)
