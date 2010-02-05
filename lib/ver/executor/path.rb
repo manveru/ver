@@ -20,7 +20,7 @@ module VER
         path = selected || value
         throw(:invalid) if File.directory?(path)
         VER.find_or_create_buffer(path)
-        callback.destroy
+        callback.destroy(false)
       end
     end
 
@@ -38,7 +38,7 @@ module VER
           Methods::Save.file_save(text)
         end
 
-        callback.destroy
+        callback.destroy(false)
       end
     end
   end

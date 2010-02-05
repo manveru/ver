@@ -12,6 +12,7 @@ module VER
 
       def action(path)
         VER.find_or_create_buffer(path)
+        callback.destroy(false)
       end
     end
   end

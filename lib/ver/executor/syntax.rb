@@ -15,6 +15,7 @@ module VER
 
       def action(name)
         caller.load_syntax(name)
+        callback.destroy
       end
     end
   end

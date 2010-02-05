@@ -13,6 +13,7 @@ module VER
       def action(path)
         throw(:invalid) if File.directory?(path)
         VER.find_or_create_buffer(path)
+        callback.destroy(false)
       end
     end
   end

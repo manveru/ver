@@ -15,6 +15,7 @@ module VER
 
       def action(name)
         caller.load_theme(name)
+        callback.destroy
       end
     end
   end

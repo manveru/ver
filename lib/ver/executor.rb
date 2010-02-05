@@ -56,12 +56,12 @@ module VER
       @entry
     end
 
-    def destroy
+    def destroy(caller_focus = true)
       [@entry, @label, @tree, @ybar, @top, @bottom].compact.each(&:destroy)
 
       caller.layout.close_buffer(@frame)
       @frame.destroy
-      @caller.focus
+      @caller.focus if caller_focus
     end
   end
 end

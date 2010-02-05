@@ -13,7 +13,6 @@ module VER
         tree.heading('file', text: 'File')
         tree.heading('line', text: 'Line')
         tree.heading('source', text: 'Source')
-
       end
 
       def after_update
@@ -61,13 +60,16 @@ module VER
         results
       end
 
-      # completion has little meaning with grep, so ignore it.
-      def pick_selection
+      def action(selected)
         item = tree.focus_item
         file, line, _ = item.options(:values)
         return unless file && line
         VER.find_or_create_buffer(file.to_s, line.to_i)
-        callback.destroy
+        callback.destroy(false)
+      end
+
+      # Ignore sync
+      def sync_value_with_tree_selection
       end
     end
   end

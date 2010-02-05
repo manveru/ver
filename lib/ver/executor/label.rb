@@ -46,7 +46,6 @@ module VER
         entry.focus
         entry.update_only
         configure(state: :disabled)
-        false
       rescue KeyError
       end
     end
