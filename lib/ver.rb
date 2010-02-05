@@ -417,8 +417,6 @@ module VER
       }
     end
 
-    pp session
-
     session_path.open('w+:UTF-8') do |io|
       io.write(session.pretty_inspect)
     end
