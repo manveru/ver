@@ -2,6 +2,27 @@ require 'set'
 
 module VER
   class Keymap < Struct.new(:keymap, :keys)
+    module Results
+      # Indicate that no result can and will be found in the keymap
+      class Impossible < Struct.new(:sequence)
+        def to_s
+          stack = sequence.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
+          "#{stack} is undefined"
+        end
+      end
+
+      # Indicate that no result could be found yet.
+      class Incomplete < Struct.new(:sequence, :choices)
+        def to_s
+          stack = sequence.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
+          follow = choices.keys.map(&:inspect).join('|')
+          "#{stack} -- (#{follow})"
+        end
+      end
+    end
+
+    include Results
+
     # A subclass to make lookup unambigous
     class MapHash < Hash
       def deep_each(&block)
@@ -18,14 +39,6 @@ module VER
         end
       end
     end
-
-    # Indicate that no result can and will be found in the keymap
-    class Impossible; end
-    IMPOSSIBLE = Impossible.new
-
-    # Indicate that no result could be found yet.
-    class Incomplete; end
-    INCOMPLETE = Incomplete.new
 
     MERGER = proc{|key, v1, v2|
       if v1.respond_to?(:merge) && v2.respond_to?(:merge)
@@ -64,9 +77,10 @@ module VER
 
     def [](*sequence)
       sequence = [*sequence].flatten
+      remaining = sequence.dup
 
       current = keymap
-      while key = sequence.shift
+      while key = remaining.shift
         previous = current
 
         if current.key?(key)
@@ -77,23 +91,23 @@ module VER
           current.find do |ckey, cvalue|
             next unless ckey.is_a?(Symbol)
 
-            case resolved = MinorMode[ckey].resolve([key, *sequence])
-            when INCOMPLETE
+            case resolved = MinorMode[ckey].resolve([key, *remaining])
+            when Incomplete
               return found
-            when IMPOSSIBLE
+            when Impossible
               false
             else
               return cvalue.combine(resolved.last)
             end
           end
 
-          return IMPOSSIBLE
+          return Impossible.new(sequence)
         end
       end
 
       case current
       when MapHash # incomplete
-        INCOMPLETE
+        Incomplete.new(sequence, current)
       else
         current
       end

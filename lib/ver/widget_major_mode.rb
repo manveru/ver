@@ -12,8 +12,7 @@ module VER
   class WidgetMajorMode < Struct.new(:widget, :major, :minors, :stack,
                                      :event_history, :action_history, :reader,
                                      :read_amount)
-    INCOMPLETE = Keymap::INCOMPLETE
-    IMPOSSIBLE = Keymap::IMPOSSIBLE
+    include Keymap::Results
 
     def initialize(widget, major)
       self.widget = widget
@@ -69,14 +68,12 @@ module VER
 
       return handle_reader(event) if reader && read_amount
 
-      stack_string = stack.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
-
       case result = resolve(stack)
-      when INCOMPLETE
-        VER.message "#{stack_string} -"
+      when Incomplete
+        VER.message result.to_s
         # don't do anything yet...
-      when IMPOSSIBLE
-        VER.message "#{stack_string} is undefined"
+      when Impossible
+        VER.message result.to_s
         stack.clear
       else
         stack.clear

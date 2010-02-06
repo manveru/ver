@@ -51,11 +51,11 @@ VER.spec do
       action_mode.should == control
       action.method.should == :quit
 
-      control.resolve(['Z']).should == Keymap::INCOMPLETE
-      control.resolve(['X']).should == Keymap::IMPOSSIBLE
+      control.resolve(['Z']).should.be.kind_of Keymap::Results::Incomplete
+      control.resolve(['X']).should.be.kind_of Keymap::Results::Impossible
     end
 
-    it 'may have a fallback that is returned on IMPOSSIBLE results' do
+    it 'may have a fallback that is returned on Impossible results' do
       mode = MinorMode[:spec]
       mode.map(:kill_word, ['d', 'w'])
       mode.missing(:insert)

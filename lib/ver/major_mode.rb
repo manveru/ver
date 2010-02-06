@@ -18,9 +18,8 @@ module VER
   class MajorMode < Struct.new(:name, :minors, :keymap, :receiver,
                                :fallback_action, :tag, :bound_keys)
 
+    include Keymap::Results
     MODES = {}
-    INCOMPLETE = Keymap::INCOMPLETE
-    IMPOSSIBLE = Keymap::IMPOSSIBLE
 
     def self.[](name)
       name = name.to_sym
@@ -107,17 +106,17 @@ module VER
     # modes.
     def resolve(sequence, minors = [])
       case found = keymap[sequence]
-      when INCOMPLETE
-      when IMPOSSIBLE
+      when Incomplete
+      when Impossible
         minors.find{|minor|
           found = minor.resolve(sequence)
-          found != IMPOSSIBLE
+          !found.kind_of?(Impossible)
         }
       else
         found = [self, found]
       end
 
-      if found == IMPOSSIBLE && fa = self.fallback_action
+      if found.kind_of?(Impossible) && fa = self.fallback_action
         return self, fa
       else
         return found

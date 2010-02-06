@@ -33,13 +33,13 @@ describe Keymap = VER::Keymap do
   it "indicates when the given key-sequence doesn't match yet" do
     km = Keymap.new
     km['a', 'b', 'c', 'd'] = 'abcd'
-    km['a', 'b'].should == Keymap::INCOMPLETE
+    km['a', 'b'].should.be.kind_of Keymap::Results::Incomplete
   end
 
   it "indicates when the given key-sequence will never match" do
     km = Keymap.new
     km['a', 'b', 'c', 'd'] = 'abcd'
-    km['x', 'y'].should == Keymap::IMPOSSIBLE
+    km['x', 'y'].should.be.kind_of Keymap::Results::Impossible
   end
 
   it 'performs a merge with another keymap' do

@@ -20,8 +20,7 @@ module VER
   # part of the tree of minors of this major mode.
   class MinorMode < Struct.new(:name, :parents, :keymap, :receiver,
                                :fallback_action, :enter_action, :leave_action)
-    INCOMPLETE = Keymap::INCOMPLETE
-    IMPOSSIBLE = Keymap::IMPOSSIBLE
+    include Keymap::Results
 
     MODES = {}
 
@@ -53,18 +52,18 @@ module VER
     # recursively try to find the sequence in the minor mode and its parents.
     def resolve(sequence)
       case found = keymap[sequence]
-      when INCOMPLETE
-      when IMPOSSIBLE
+      when Incomplete
+      when Impossible
         parents.find{|parent|
           next if parent == self
           found = parent.resolve(sequence)
-          found != IMPOSSIBLE
+          !found.kind_of?(Impossible)
         }
       else
         found = [self, found]
       end
 
-      if found == IMPOSSIBLE && fa = self.fallback_action
+      if found.kind_of?(Impossible) && fa = self.fallback_action
         return self, fa
       else
         return found

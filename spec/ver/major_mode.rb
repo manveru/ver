@@ -83,10 +83,10 @@ VER.spec do
       action.method.should == :kill_word
 
       action = fund.resolve(['<Control-c>', '<Control-c>'])
-      action.should == Keymap::IMPOSSIBLE
+      action.should.be.kind_of Keymap::Results::Impossible
     end
 
-    it 'may have a fallback that is invoked on IMPOSSIBLE results' do
+    it 'may have a fallback that is invoked on impossible results' do
       mode = MajorMode[:spec]
       mode.map(:kill_word, ['d', 'w'])
       mode.missing(:insert)
