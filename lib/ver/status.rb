@@ -1,30 +1,38 @@
 module VER
   # The status bar
   class Status < Tk::Tile::Frame
-    autoload :Context, 'ver/status/context'
+    autoload :Label,         'ver/status/label'
+    autoload :ShortFilename, 'ver/status/short_filename'
+    autoload :Position,      'ver/status/position'
+    autoload :Percent,       'ver/status/percent'
+    autoload :Battery,       'ver/status/battery'
+    autoload :Encoding,      'ver/status/encoding'
+    autoload :Mode,          'ver/status/mode'
+    autoload :Syntax,        'ver/status/syntax'
+
+    LINES = {
+      vim: lambda{|status|
+             [ ShortFilename.new(status, weight: 1),
+               Position.new(status),
+               Percent.new(status),
+               Mode.new(status),
+               Syntax.new(status),
+               Encoding.new(status),
+               Battery.new(status, width: 100, height: 17),
+             ]
+           },
+    }
 
     attr_accessor :buffer
-
-    def self.variable(*names)
-      names.each do |name|
-        class_eval(<<-RUBY, __FILE__, __LINE__)
-          def #{name}=(value) @#{name}.set(value); end
-          def #{name}; @#{name}.get; end
-        RUBY
-      end
-    end
-
-    variable :file, :position, :percent, :mode, :syntax, :encoding, :battery
 
     def initialize(buffer, options = {})
       super
       self.buffer = buffer
 
-      @widgets = Set.new
-
-      text.options.statusline.each do |name, options|
-        iv = "@#{name}"
-        instance_variable_set(iv, add_label(name, options))
+      @widgets = VER.options.statusline.call(self)
+      @widgets.each.with_index do |widget, index|
+        widget.grid_configure(row: 0, column: index, sticky: :we)
+        grid_columnconfigure(widget, weight: widget.weight)
       end
     end
 
@@ -32,30 +40,8 @@ module VER
       buffer.text
     end
 
-    DEFAULT = {
-      sticky: :ew,
-      weight: 0,
-      row: 0,
-    }
-
-    def add_label(name, options = {})
-      options = DEFAULT.merge(options)
-      font = text.options.font
-      id = Digest::MD5.hexdigest(tk_pathname)
-      var = Tk::Variable.new("#{name}_#{id}")
-
-      label = Tk::Tile::Label.new(self, font: font, textvariable: var)
-      @widgets << label
-
-      weight = options.delete(:weight)
-      label.grid_configure(options)
-      grid_columnconfigure label, weight: weight
-
-      var
-    end
-
     def style=(config)
-      Tk::After.idle{ @widgets.each{|widget| widget.configure(config) } }
+      Tk::After.idle{ @widgets.each{|widget| widget.style = config } }
     end
   end
 end

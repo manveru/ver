@@ -115,11 +115,6 @@ module VER
       event_setup
     end
 
-    def encoding=(enc)
-      @encoding = enc
-      status.encoding = enc.name if status
-    end
-
     def event_setup
       bind '<<EnterMinorMode>>' do |event|
         sync_mode_status
@@ -187,12 +182,20 @@ module VER
 
     def filename=(path)
       @filename = Pathname(path.to_s).expand_path
-      status.file = short_filename if status
+      return unless status
+      Tk::Event.generate(status, '<<Filename>>')
     end
 
     def syntax=(syn)
       @syntax = syn
-      status.syntax = syntax.name if syn && status
+      return unless syn && status
+      Tk::Event.generate(status, '<<Syntax>>')
+    end
+
+    def encoding=(enc)
+      @encoding = enc
+      return unless status
+      Tk::Event.generate(status, '<<Encoding>>')
     end
 
     def layout
@@ -200,33 +203,20 @@ module VER
     end
 
     def sync_mode_status
-      string = [ major_mode.name, *major_mode.minors.map(&:name) ].join(', ')
-      status.mode = "[#{string}]"
+      Tk::Event.generate(status, '<<Mode>>')
     end
 
     def sync_position_status
-      status.position = "%4d,%3d" % [
-        count(1.0, :insert, :lines) + 1,
-        count('insert linestart', :insert, :displaychars)
-      ]
+      Tk::Event.generate(status, '<<Position>>')
       sync_percent_status
     end
 
     def sync_encoding_status
-      status.encoding = @encoding.name
+      Tk::Event.generate(status, '<<Encoding>>')
     end
 
     def sync_percent_status
-      here = count(1.0, :insert, :lines)
-      total = count(1.0, :end, :lines)
-      percent = ((100.0 / total) * here).round
-
-      status.percent =
-        case percent
-        when 100, 99; 'Bot'
-        when 0      ; 'Top'
-        else        ; '%2d%%' % percent
-        end
+      Tk::Event.generate(status, '<<Percent>>')
     end
 
     TAG_ALL_MATCHING_OPTIONS = { from: '1.0', to: 'end - 1 chars' }
