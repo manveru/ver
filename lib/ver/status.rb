@@ -5,47 +5,54 @@ module VER
 
     attr_accessor :buffer
 
+    def self.variable(*names)
+      names.each do |name|
+        class_eval(<<-RUBY, __FILE__, __LINE__)
+          def #{name}=(value) @#{name}.set(value); end
+          def #{name}; @#{name}.get; end
+        RUBY
+      end
+    end
+
+    variable :file, :position, :percent, :mode, :syntax, :encoding, :battery
+
     def initialize(buffer, options = {})
       super
       self.buffer = buffer
 
-      @widgets = []
-      setup_widgets
+      @widgets = Set.new
+
+      text.options.statusline.each do |name, options|
+        iv = "@#{name}"
+        instance_variable_set(iv, add_label(name, options))
+      end
     end
 
     def text
       buffer.text
     end
 
-    def setup_widgets
+    DEFAULT = {
+      sticky: :ew,
+      weight: 0,
+      row: 0,
+    }
+
+    def add_label(name, options = {})
+      options = DEFAULT.merge(options)
       font = text.options.font
       id = Digest::MD5.hexdigest(tk_pathname)
-      %w[file pos percent mode syntax encoding battery].each.with_index do |name, index|
-        var = Tk::Variable.new("#{name}_#{id}")
-        label = Tk::Tile::Label.new(self, font: font, textvariable: var)
-        label.grid_configure row: 0, column: index, sticky: :ew
-        instance_variable_set("@#{name}_label", label)
-        instance_variable_set("@#{name}_var", var)
-        @widgets << label
-      end
+      var = Tk::Variable.new("#{name}_#{id}")
 
-      grid_columnconfigure 0, weight: 1
+      label = Tk::Tile::Label.new(self, font: font, textvariable: var)
+      @widgets << label
+
+      weight = options.delete(:weight)
+      label.grid_configure(options)
+      grid_columnconfigure label, weight: weight
+
+      var
     end
-
-    def file=(value)         @file_var.set(value) end
-    def file;                @file_var.get;       end
-    def encoding=(value) @encoding_var.set(value) end
-    def encoding;        @encoding_var.get;       end
-    def syntax=(value)     @syntax_var.set(value) end
-    def syntax;            @syntax_var.get;       end
-    def pos=(value)           @pos_var.set(value) end
-    def pos;                  @pos_var.get;       end
-    def percent=(value)   @percent_var.set(value) end
-    def percent;          @percent_var.get;       end
-    def mode=(value)         @mode_var.set(value) end
-    def mode;                @mode_var.get;       end
-    def battery=(value)   @battery_var.set(value) end
-    def battery;          @battery_var.get;       end
 
     def style=(config)
       Tk::After.idle{ @widgets.each{|widget| widget.configure(config) } }

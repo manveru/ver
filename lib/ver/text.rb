@@ -128,13 +128,13 @@ module VER
 
       bind '<<Modified>>' do |event|
         see :insert
-        sync_pos_status
+        sync_position_status
       end
 
       bind '<<Movement>>' do |event|
         see :insert
         Methods::Selection.refresh(self)
-        sync_pos_status
+        sync_position_status
       end
 
       bind('<FocusIn>') do |event|
@@ -204,8 +204,8 @@ module VER
       status.mode = "[#{string}]"
     end
 
-    def sync_pos_status
-      status.pos = "%4d,%3d" % [
+    def sync_position_status
+      status.position = "%4d,%3d" % [
         count(1.0, :insert, :lines) + 1,
         count('insert linestart', :insert, :displaychars)
       ]

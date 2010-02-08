@@ -63,7 +63,14 @@ VER.options.dsl do
     :insertofftime, 0
 
   o "Format for Statusline",
-    :statusline, '%r\t%4l,%c %P\t[%m%_s%_e]'
+    :statusline, {
+      file:      {column: 0, weight: 1},
+      position:  {column: 1},
+      percent:   {column: 2},
+      mode:      {column: 3},
+      syntax:    {column: 4},
+      encoding:  {column: 5},
+      battery:   {column: 6}}
 
   o "Default filetype if no matching syntax can be found",
     :filetype, "Plain Text"
