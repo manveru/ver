@@ -1,6 +1,16 @@
 module VER
   module Methods
     module Preview
+      class Frame < Tk::Frame
+        def shown?
+          true
+        end
+
+        def hidden?
+          false
+        end
+      end
+
       module_function
 
       def preview(text)
@@ -31,7 +41,7 @@ exit
         layout = text.layout
 
         # No Tk::Tile::Frame as it doesn't support container
-        frame = Tk::Frame.new(layout, container: true)
+        frame = Frame.new(layout, container: true)
         layout.add_buffer(frame)
 
         frame.bind '<MapRequest>' do |event|

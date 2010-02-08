@@ -3,6 +3,16 @@ module VER
     autoload :Entry,   'ver/executor/entry'
     autoload :ExLabel, 'ver/executor/label'
 
+    class Frame < Tk::Tile::Frame
+      def shown?
+        true
+      end
+
+      def hidden?
+        false
+      end
+    end
+
     attr_reader :caller, :tree, :label, :entry, :ybar
     attr_accessor :update_on_change
 
@@ -25,9 +35,9 @@ module VER
     def setup_widgets
       layout = caller.layout
 
-      @frame = Tk::Tile::Frame.new(layout)
-      @top = Tk::Tile::Frame.new(@frame)
-      @bottom = Tk::Tile::Frame.new(@frame)
+      @frame  = Frame.new(layout)
+      @top    = Frame.new(@frame)
+      @bottom = Frame.new(@frame)
 
       @tree  = Treeview.new(@top)
       @ybar  = Tk::Tile::YScrollbar.new(@top)
