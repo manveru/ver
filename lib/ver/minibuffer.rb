@@ -10,14 +10,12 @@ module VER
       font = VER.options.font
       configure(
         font: font,
-        height: 1,
-        width: 80,
         wrap: :none,
         undo: true,
         borderwidth: 0,
         exportselection: true,
         insertofftime: 0,
-        setgrid: true,
+        setgrid: false, # wtf?
         autoseparators: true,
         blockcursor: false
       )
