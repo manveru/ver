@@ -115,7 +115,7 @@ module VER
     end
 
     def setup_status
-      @status = Entry.new(self, font: VER.options[:font], takefocus: false)
+      @status = Status.new(self)
     end
 
     def setup_grid

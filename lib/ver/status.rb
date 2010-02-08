@@ -1,97 +1,53 @@
 module VER
   # The status bar
-  class Status < VER::Entry
+  class Status < Tk::Tile::Frame
     autoload :Context, 'ver/status/context'
-    include Keymapped
 
-    attr_accessor :buffer, :backup_value, :callback
-
-    HISTORY = Hash.new{|k,v| k[v] = [] }
+    attr_accessor :buffer
 
     def initialize(buffer, options = {})
-      options[:style] ||= VER.obtain_style_name('Status', 'TEntry')
       super
       self.buffer = buffer
-      @question = ''
 
-      self.major_mode = :Status
-    end
-
-    def inspect
-      details = {
-        mode: major_mode
-      }.map{|key, value| "%s=%p" % [key, value ] }.join(' ')
-      "#<VER::Status #{details}>"
-    end
-
-    def destroy
-      style_name = style
-      super
-    ensure
-      VER.return_style_name(style_name)
+      @widgets = []
+      setup_widgets
     end
 
     def text
       buffer.text
     end
 
-    def delete(from, to = Tk::None)
-      if from < @question.size
-        from = @question.size
+    def setup_widgets
+      font = text.options.font
+      %w[file pos percent mode syntax encoding battery].each.with_index do |name, index|
+        var = Tk::Variable.new(name)
+        label = Tk::Tile::Label.new(self, font: font, textvariable: var)
+        label.grid_configure row: 0, column: index, sticky: :ew
+        instance_variable_set("@#{name}_label", label)
+        instance_variable_set("@#{name}_var", var)
+        @widgets << label
       end
 
-      super(from, to)
+      grid_columnconfigure 0, weight: 1
     end
 
-    def value=(string)
-      super([@question, string].join)
-    end
+    def file=(value)         @file_var.set(value) end
+    def file;                @file_var.get;       end
+    def encoding=(value) @encoding_var.set(value) end
+    def encoding;        @encoding_var.get;       end
+    def syntax=(value)     @syntax_var.set(value) end
+    def syntax;            @syntax_var.get;       end
+    def pos=(value)           @pos_var.set(value) end
+    def pos;                  @pos_var.get;       end
+    def percent=(value)   @percent_var.set(value) end
+    def percent;          @percent_var.get;       end
+    def mode=(value)         @mode_var.set(value) end
+    def mode;                @mode_var.get;       end
+    def battery=(value)   @battery_var.set(value) end
+    def battery;          @battery_var.get;       end
 
-    def value
-      regex = Regexp.escape(@question)
-      get.sub(/^#{regex}/, '')
-    end
-
-    def cursor=(pos)
-      oldpos = cursor
-      super
-      super(oldpos) if cursor < @question.size
-    end
-
-    def history_prev
-      @history_idx -= 1
-      history = HISTORY[@question]
-
-      if @history_idx < 0
-        @history_idx = history.size - 1
-      end
-
-      answer = history[@history_idx]
-      return unless answer
-      self.value = answer
-    end
-
-    def history_next
-      @history_idx += 1
-      history = HISTORY[@question]
-
-      if @history_idx > history.size
-        @history_idx = 0
-      end
-
-      answer = history[@history_idx]
-      return unless answer
-      self.value = answer
-    end
-
-    def history_complete
-      history = HISTORY[@question]
-      so_far = value.sub(@question, '')
-      needle = Regexp.escape(so_far)
-      list = history.grep(/#{needle}/i)
-      return if list.empty?
-
-      self.value = answer
+    def style=(config)
+      Tk::After.idle{ @widgets.each{|widget| widget.configure(config) } }
     end
   end
 end

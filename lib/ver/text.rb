@@ -6,15 +6,15 @@ module VER
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
     MODE_STYLES = {
-      :insert  => {insertbackground: 'red', blockcursor: false},
-      /select/ => {insertbackground: 'yellow', blockcursor: true},
+      :insert   => {insertbackground: 'red', blockcursor: false},
+      /select/  => {insertbackground: 'yellow', blockcursor: true},
       /replace/ => {insertbackground: 'orange', blockcursor: true},
     }
 
-    attr_accessor(:buffer, :status, :project_root, :project_repo, :encoding,
-                  :undoer, :pristine, :syntax, :prefix_arg)
+    attr_accessor(:buffer, :status, :project_root, :project_repo,
+                  :undoer, :pristine, :prefix_arg)
     attr_reader(:filename, :options, :snippets, :preferences, :store_hash,
-                :default_theme_config)
+                :default_theme_config, :encoding, :syntax)
 
     def initialize(buffer, options = {})
       if peer = options.delete(:peer)
@@ -105,31 +105,36 @@ module VER
 
       self.major_mode = :Fundamental
 
-      apply_mode_style
+      sync_mode_style
       setup_tags
 
       @pristine = true
       @syntax = nil
-      @encoding = Encoding.default_internal
+      self.encoding = Encoding.default_internal
 
       event_setup
     end
 
+    def encoding=(enc)
+      @encoding = enc
+      status.encoding = enc.name if status
+    end
+
     def event_setup
       bind '<<EnterMinorMode>>' do |event|
-        status_projection(status)
-        apply_mode_style(event.detail)
+        sync_mode_status
+        sync_mode_style(event.detail)
       end
 
       bind '<<Modified>>' do |event|
         see :insert
-        status_projection(status)
+        sync_pos_status
       end
 
       bind '<<Movement>>' do |event|
         see :insert
         Methods::Selection.refresh(self)
-        status_projection(status)
+        sync_pos_status
       end
 
       bind('<FocusIn>') do |event|
@@ -176,33 +181,52 @@ module VER
       if root = @project_root
         filename.relative_path_from(root).to_s
       else
-        filename.sub(Dir.pwd + '/', '')
+        filename.sub(Dir.pwd + '/', '').to_s
       end
     end
 
     def filename=(path)
       @filename = Pathname(path.to_s).expand_path
+      status.file = short_filename if status
+    end
+
+    def syntax=(syn)
+      @syntax = syn
+      status.syntax = syntax.name if syn && status
     end
 
     def layout
       buffer.layout
     end
 
-    def status_projection(into)
-      return unless into
-      format = options.statusline.dup
+    def sync_mode_status
+      string = [ major_mode.name, *major_mode.minors.map(&:name) ].join(', ')
+      status.mode = "[#{string}]"
+    end
 
-      format.gsub!(/%([[:alpha:]]+)/, '#{\1()}')
-      format.gsub!(/%_([[:alpha:]]+)/, '#{(_ = \1()) ? " #{_}" : ""}')
-      format.gsub!(/%([+-]?\d+)([[:alpha:]]+)/, '#{\2(\1)}')
-      format = "%{#{format}}"
+    def sync_pos_status
+      status.pos = "%4d,%3d" % [
+        count(1.0, :insert, :lines) + 1,
+        count('insert linestart', :insert, :displaychars)
+      ]
+      sync_percent_status
+    end
 
-      context = Status::Context.new(self)
-      line = context.instance_eval(format)
+    def sync_encoding_status
+      status.encoding = @encoding.name
+    end
 
-      into.value = line
-    rescue => ex
-      puts ex, ex.backtrace
+    def sync_percent_status
+      here = count(1.0, :insert, :lines)
+      total = count(1.0, :end, :lines)
+      percent = ((100.0 / total) * here).round
+
+      status.percent =
+        case percent
+        when 100, 99; 'Bot'
+        when 0      ; 'Top'
+        else        ; '%2d%%' % percent
+        end
     end
 
     TAG_ALL_MATCHING_OPTIONS = { from: '1.0', to: 'end - 1 chars' }
@@ -353,7 +377,7 @@ module VER
       return unless filename
       return if @encoding == Encoding::BINARY
 
-      if @syntax = Syntax.from_filename(filename)
+      if self.syntax = Syntax.from_filename(filename)
         VER.cancel_block(@highlight_block)
 
         interval = options.syntax_highlight_interval.to_int
@@ -363,7 +387,7 @@ module VER
 
         touch!('1.0', 'end')
 
-        status_projection(status) if status
+        sync_mode_status
       end
     end
 
@@ -390,14 +414,14 @@ module VER
       theme = syntax.theme
 
       if name.is_a?(Syntax)
-        @syntax = Syntax.new(name.name, theme)
+        self.syntax = Syntax.new(name.name, theme)
       elsif found = Syntax.find(name)
-        @syntax = Syntax.new(name, theme)
+        self.syntax = Syntax.new(name, theme)
       else
         return false
       end
 
-      message "Syntax #{@syntax.name} loaded"
+      message "Syntax #{syntax.name} loaded"
     end
 
     def handle_pending_syntax_highlights
@@ -429,7 +453,7 @@ module VER
 
     def default_theme_config=(config)
       @default_theme_config = config
-      apply_mode_style
+      sync_mode_style
     end
 
     def ask(prompt, options = {}, &action)
@@ -438,9 +462,9 @@ module VER
     end
 
     def load_preferences
-      return unless @syntax
+      return unless syntax
 
-      name = @syntax.name
+      name = syntax.name
       return unless file = VER.find_in_loadpath("preferences/#{name}.rb")
       @preferences = eval(file.read)
     rescue Errno::ENOENT, TypeError => ex
@@ -448,18 +472,16 @@ module VER
     end
 
     def load_snippets
-      return unless @syntax
+      return unless syntax
 
-      name = @syntax.name
+      name = syntax.name
       return unless file = VER.find_in_loadpath("snippets/#{name}.rb")
       @snippets = eval(file.read)
     rescue Errno::ENOENT, TypeError => ex
       VER.error(ex)
     end
 
-    private
-
-    def apply_mode_style(given_mode = nil)
+    def sync_mode_style(given_mode = nil)
       config = (@default_theme_config || {}).merge(blockcursor: false)
 
       modes = given_mode ? [given_mode] : major_mode.minors
@@ -475,11 +497,18 @@ module VER
       configure(config)
       return unless status && color = config[:insertbackground]
 
-      Tk::Tile::Style.configure(status.style,
-        fieldbackground: color,
-        foreground: Theme.invert_rgb(color)
-      )
+      status.style = {
+        background: color,
+        foreground: Theme.invert_rgb(color),
+      }
+
+      # Tk::Tile::Style.configure(status.style,
+      #   fieldbackground: color,
+      #   foreground: Theme.invert_rgb(color)
+      # )
     end
+
+    private
 
     def setup_tags
       setup_highlight_trailing_whitespace

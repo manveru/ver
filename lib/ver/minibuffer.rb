@@ -27,7 +27,7 @@ module VER
       self.messages_pending = 0
       self.char_width = font.measure('0')
 
-      tag_configure 'info',  foreground: '#fff'
+      tag_configure 'info', foreground: '#000'
       tag_configure 'warn', foreground: '#f00'
 
       bind('<Configure>'){ adjust_size }
