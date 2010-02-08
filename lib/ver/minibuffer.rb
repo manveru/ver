@@ -14,6 +14,10 @@ module VER
         width: 80,
         wrap: :none,
         undo: true,
+        borderwidth: 0,
+        exportselection: true,
+        insertofftime: 0,
+        setgrid: true,
         autoseparators: true,
         blockcursor: false
       )
@@ -23,14 +27,17 @@ module VER
       self.messages_pending = 0
       self.char_width = font.measure('0')
 
-      tag_configure 'msg', foreground: '#060'
+      tag_configure 'info',  foreground: '#fff'
       tag_configure 'warn', foreground: '#f00'
 
-      bind('<Configure>'){ adjust_width }
+      bind('<Configure>'){ adjust_size }
     end
 
-    def adjust_width
-      configure width: tk_parent.winfo_width / char_width
+    def adjust_size
+      configure(
+        width: (tk_parent.winfo_width / char_width.to_f).floor,
+        height: count('1.0', 'end', :lines)
+      )
     end
 
     def prompt=(prompt)
@@ -57,7 +64,7 @@ module VER
       ''
     end
 
-    def message(string, tag = 'msg')
+    def message(string, tag = 'info')
       Tk::After.idle do
         insert = index('insert')
 
