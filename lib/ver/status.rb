@@ -19,8 +19,9 @@ module VER
 
     def setup_widgets
       font = text.options.font
+      id = Digest::MD5.hexdigest(tk_pathname)
       %w[file pos percent mode syntax encoding battery].each.with_index do |name, index|
-        var = Tk::Variable.new(name)
+        var = Tk::Variable.new("#{name}_#{id}")
         label = Tk::Tile::Label.new(self, font: font, textvariable: var)
         label.grid_configure row: 0, column: index, sticky: :ew
         instance_variable_set("@#{name}_label", label)
