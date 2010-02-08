@@ -64,6 +64,7 @@ module VER
       buffer = Buffer.new(self, options)
       yield buffer
       add_buffer(buffer)
+      buffer
     end
 
     # Forget and destroy the given +buffer+.
@@ -106,7 +107,9 @@ module VER
 
     def masters_slaves
       masters_max, slaves_max = options.values_at(:masters, :slaves)
-      return [*stack[0, masters_max]], [*stack[masters_max, slaves_max]]
+      stack.compact!
+      possible = stack.select{|buffer| buffer.shown? }
+      return [*possible[0, masters_max]], [*possible[masters_max, slaves_max]]
     end
 
     def visible?(buffer)

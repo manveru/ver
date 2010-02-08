@@ -81,6 +81,7 @@ module VER
     inherits :prefix
 
     handler Methods::Move
+    (0..9).each{|n| map :ask_go_line, ['colon', n.to_s] }
     map :prev_char,       %w[h], %w[Left]
     map :prev_chunk,      %w[B]
     map :prev_word,       %w[b], %w[Shift-Left]
@@ -241,7 +242,7 @@ module VER
 
     map :end_of_line,       %w[End], %w[Control-e]
     map :insert_selection,  %w[Shift-Insert]
-    map :insert_tab,        %w[Control-v Tab]
+    map :insert_tab,        %w[Control-v Tab], %w[Control-i]
     map :kill_end_of_line,  %w[Control-k]
     map :kill_next_char,    %w[Control-d], %w[Delete]
     map :kill_next_word,    %w[Alt-d]
@@ -290,7 +291,6 @@ module VER
 
     handler Methods::Control
     map :smart_evaluate,           %w[Alt-e], %w[Control-e]
-
 
     handler Methods::Insert
     map :newline,    %w[Return]
@@ -450,11 +450,16 @@ module VER
     use :control
   end
 
-  major_mode :Status do
-    use :basic, :readline
+  major_mode :MiniBuffer do
+    use :readline
 
-    map :ask_abort,         %w[Escape], %w[Control-c]
-    map :ask_submit,        %w[Return]
+    map :abort,    %w[Escape], %w[Control-c]
+    map :attempt,  %w[Return]
+    map :complete_large, %w[Double-Tab]
+    map :complete_small, %w[Tab]
+
+    handler Methods::Basic
+    map :quit, %w[Control-q]
   end
 
   major_mode :Executor do

@@ -35,48 +35,6 @@ module VER
       buffer.text
     end
 
-    def ask(question, options = {}, &callback)
-      @backup_value, @callback = value, callback
-      @history_idx = -1
-
-      self.question = question
-      self.value = options[:value].to_s
-      submit_when_taken(options[:take])
-      focus
-    end
-
-    def submit_when_taken(length)
-      return unless length
-      target = value.size + length
-
-      bind '<<Modified>>' do |event|
-        if value.size >= target
-          bind('<<Modified>>'){}
-          ask_submit(event)
-        end
-      end
-    end
-
-    def ask_abort(event)
-      self.question = ''
-      self.value = self.backup_value
-      text.focus
-    end
-
-    def ask_submit(event)
-      answer = self.value
-      self.question = ''
-
-      case result = callback.call(answer)
-      when String
-        message(result)
-      when Symbol
-        result
-      else
-        message(result.inspect)
-      end
-    end
-
     def delete(from, to = Tk::None)
       if from < @question.size
         from = @question.size
@@ -92,13 +50,6 @@ module VER
     def value
       regex = Regexp.escape(@question)
       get.sub(/^#{regex}/, '')
-    end
-
-    def question=(string)
-      execute_only(:delete, 0, :end)
-      execute_only(:insert, 0, string)
-      @question = string.to_s
-      Tk::Event.generate(self, '<<Modified>>')
     end
 
     def cursor=(pos)

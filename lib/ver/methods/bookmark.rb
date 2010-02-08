@@ -3,13 +3,25 @@ module VER
     module Bookmark
       module_function
 
+      def ask(text)
+        text.ask 'Bookmark name: ' do |answer, action|
+          case action
+          when :modified, :attempt
+            if name = answer[0]
+              yield name
+              :abort
+            else
+              VER.message 'Need a bookmark name'
+            end
+          end
+        end
+      end
+
       def visit_char(text, name = nil)
         if name
           visit_named(text, name)
         else
-          text.status_ask 'Bookmark name: ', take: 1 do |bm_name|
-            visit_named(text, bm_name)
-          end
+          ask(text){|bm| visit_named(text, bm) }
         end
       end
 
@@ -17,20 +29,16 @@ module VER
         if name
           add_named(text, name)
         else
-          text.status_ask 'Bookmark name: ', take: 1 do |bm_name|
-            add_named(text, bm_name)
-          end
+          ask(text){|bm| add_named(text, bm) }
         end
       end
 
       def add_named(text, name = nil)
         if name
-          bm = bookmarks.add_named(name, bookmark_value(text))
+          bm = bookmarks.add_named(name, value(text))
           VER.message("Added bookmark [%s|%s:%d,%d]." % bm.to_a)
         else
-          text.status_ask 'Bookmark name: ' do |bm_name|
-            add_named(text, bm_name)
-          end
+          ask(text){|bm| add_named(text, bm) }
         end
       end
 
@@ -42,9 +50,7 @@ module VER
             VER.message("No Bookmark named %p." % [name])
           end
         else
-          text.status_ask 'Bookmark name: ' do |bm_name|
-            remove_named(text, bm_name)
-          end
+          ask(text){|bm| remove_named(text, bm) }
         end
       end
 
@@ -56,14 +62,12 @@ module VER
             VER.message("No Bookmark named %p." % [name])
           end
         else
-          text.status_ask 'Bookmark name: ' do |bm_name|
-            visit_named(text, bm_name)
-          end
+          ask(text){|bm| visit_named(text, bm) }
         end
       end
 
       def toggle(text)
-        pos = bookmark_value(text)
+        pos = value(text)
 
         if bm = bookmarks.at(pos)
           bookmarks.delete(bm)
@@ -77,18 +81,18 @@ module VER
       end
 
       def next(text)
-        open(text, bookmarks.next_from(bookmark_value(text)))
+        open(text, bookmarks.next_from(value(text)))
       end
 
       def prev(text)
-        open(text, bookmarks.prev_from(bookmark_value(text)))
+        open(text, bookmarks.prev_from(value(text)))
       end
 
       def bookmarks
         VER.bookmarks
       end
 
-      def bookmark_value(text)
+      def value(text)
         [text.filename, *text.index(:insert).split]
       end
 

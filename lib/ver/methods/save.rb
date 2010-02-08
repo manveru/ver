@@ -11,16 +11,22 @@ module VER
 
         question = 'Save this buffer before closing? [y]es [n]o [c]ancel: '
 
-        text.status_ask question, take: 1 do |answer|
-          case answer[0]
-          when 'Y', 'y'
-            yield if file_save
-            :saved
-          when 'N', 'n'
-            yield
-            :close_without_saving
-          else
-            "Cancel closing"
+        text.ask question, value: 'y' do |answer, action|
+          case action
+          when :attempt
+            case answer[0]
+            when /y/i
+              yield if save(text)
+              VER.message 'saved'
+              :abort
+            when /n/i
+              yield
+              VER.message 'closing without saving'
+              :abort
+            else
+              VER.warn "Cancel closing"
+              :abort
+            end
           end
         end
       end
@@ -40,8 +46,22 @@ module VER
       end
 
       def save_as(text)
-        text.status_ask 'Filename: ', value: text.filename.dirname do |filename|
-          save_to(text, Pathname(filename).expand_path)
+        dir = text.filename.dirname.to_s + '/'
+
+        text.ask 'Filename: ', value: dir do |answer, action|
+          case action
+          when :complete
+            Pathname(answer + '*').expand_path.glob.map{|f|
+              File.directory?(f) ? "#{f}/" : f
+            }
+          when :attempt
+            begin
+              save_to(text, Pathname(answer).expand_path)
+              :abort
+            rescue => ex
+              VER.warn ex
+            end
+          end
         end
       end
 

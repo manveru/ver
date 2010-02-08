@@ -2,11 +2,16 @@ module VER
   class Buffer < Tk::Tile::Frame
     autoload :Console, 'ver/buffer/console'
 
+    def self.[](name, line = nil, column = nil)
+      find_or_create(name, line, column)
+    end
+
     def self.create(path = nil, line = nil, column = nil)
       VER.layout.create_buffer do |buffer|
         path ? buffer.open_path(path, line, column) : buffer.open_empty
-        yield(buffer) if block_given?
         VER.buffers[buffer.name] = buffer
+        yield(buffer) if block_given?
+        buffer
       end
     end
 
@@ -19,12 +24,13 @@ module VER
         insert = buffer.text.index(:insert)
         buffer.text.mark_set(:insert, "#{line || insert.y}.#{column || insert.x}")
         yield(buffer) if block_given?
+        buffer
       else
         create(needle, line, column, &block)
       end
     end
 
-    attr_reader :layout, :text, :status
+    attr_reader :layout, :text, :status, :shown
 
     def initialize(layout, options = {})
       peer = options.delete(:peer)
@@ -33,6 +39,7 @@ module VER
 
       @layout = layout
       @text = @status = @ybar = @xbar = nil
+      @shown = true
       setup(peer)
 
       configure takefocus: false, padding: 2, border: 0, relief: :solid
@@ -108,7 +115,7 @@ module VER
     end
 
     def setup_status
-      @status = Status.new(self, font: VER.options[:font], takefocus: false)
+      @status = Entry.new(self, font: VER.options[:font], takefocus: false)
     end
 
     def setup_grid
@@ -150,6 +157,24 @@ module VER
       Methods::Save.may_close text do
         layout.close_buffer(self)
       end
+    end
+
+    def shown?
+      @shown
+    end
+
+    def hidden?
+      not @shown
+    end
+
+    def show
+      @shown = true
+      layout.apply
+    end
+
+    def hide
+      @shown = false
+      layout.apply
     end
 
     def destroy

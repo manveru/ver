@@ -9,9 +9,16 @@ module VER
 
       module_function
 
+      def jump(text, needle)
+        tag(text, needle)
+        self.next(text)
+      end
+
       def remove(text)
         text.tag_remove(TAG, 1.0, :end)
       end
+      alias clear remove
+      module_function :clear
 
       def status_next(text)
         status_common(text, '/'){ self.next(text) }
@@ -22,15 +29,16 @@ module VER
       end
 
       def status_common(text, question)
-        text.status.bind('<<Modified>>') do
-          incremental(text, text.status.value)
-        end
-
-        text.status_ask question do |term|
-          text.status.bind('<<Modified>>'){ }
-          incremental(text, term, force = true)
-          prev(text)
-          yield
+        text.ask question do |answer, action|
+          case action
+          when :modified
+            incremental(text, answer)
+          when :attempt
+            incremental(text, answer, force = true)
+            prev(text)
+            yield
+            :abort
+          end
         end
       end
 
@@ -133,10 +141,6 @@ module VER
             break if counter == count
           end
         end
-      end
-
-      def clear(text)
-        text.tag_remove(TAG, 1.0, :end)
       end
 
       def again(text)

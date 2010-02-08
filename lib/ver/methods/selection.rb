@@ -167,9 +167,13 @@ module VER
       end
 
       def pipe(text)
-        text.status_ask 'Pipe command: ' do |cmd|
-          pipe_execute(text, cmd)
-          finish(text)
+        text.ask 'Pipe command: ' do |answer, action|
+          case action
+          when :attempt
+            pipe_execute(text, cmd)
+            finish(text)
+            :abort
+          end
         end
       end
 
@@ -227,12 +231,16 @@ module VER
       end
 
       def replace_string(text)
-        text.status_ask 'Replace selection with: ', do |string|
-          if string.size > 0
-            replace_with(text, string, full = false)
-            "replaced #{string.size} chars"
-          else
-            'replace aborted'
+        text.ask 'Replace selection with: ', do |answer, action|
+          case action
+          when :attempt
+            if answer.size > 0
+              replace_with(text, answer, full = false)
+              VER.message "replaced #{answer.size} chars"
+              :abort
+            else
+              VER.warn "replacement required"
+            end
           end
         end
       end

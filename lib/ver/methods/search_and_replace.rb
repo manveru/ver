@@ -24,7 +24,7 @@ module VER
           old_pattern = old_pattern.inspect[1..-1]
         end
 
-        text.status_ask 'Replace pattern: /', value: old_pattern do |pattern|
+        text.ask 'Replace pattern: /', value: old_pattern do |pattern|
           pattern << '/i' unless pattern =~ /\/[ixm]*$/
 
           begin
@@ -38,7 +38,7 @@ module VER
           VER.defer do
             old_replacement = text.store(self, :replacement)
             question = "Replace %p with: " % [regexp]
-            text.status_ask question, value: old_replacement do |replacement|
+            text.ask question, value: old_replacement do |replacement|
               text.store(self, :replacement, replacement)
               text.minor_mode(:control, :search_and_replace)
             end

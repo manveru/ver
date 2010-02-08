@@ -100,17 +100,38 @@ module VER::Methods
       end
 
       def ask_go_line(text)
+        initial = $1 if text.event.unicode =~ /^(\d+)$/
         question = 'Go to [line number|+lines][,column number]: '
-        text.status_ask question do |answer|
-          case answer.to_s.strip
-          when /^\+(\d+)(?:,(\d+))?$/
-            line, column = $1.to_i, $2.to_i
-            current = text.index(:insert)
-            text.mark_set(:insert, "#{current.line + line}.#{column}")
-          when /^(\d+)(?:,(\d+))?$/
-            line, column = $1.to_i, $2.to_i
-            text.mark_set(:insert, "#{line}.#{column}")
+        text.ask question, value: initial do |answer, action|
+          case action
+          when :attempt
+            parse_go_line text, answer do |index|
+              text.mark_set(:insert, index)
+              :abort
+            end
+          when :modified
+            parse_go_line text, answer do |index|
+              text.tag_configure(Search::TAG, Search::HIGHLIGHT)
+              text.tag_add(Search::TAG, index, index.lineend)
+              text.see(index)
+              Tk::After.ms(3000){
+                text.tag_remove(Search::TAG, index, index.lineend)
+                text.see(:insert)
+              }
+            end
           end
+        end
+      end
+
+      def parse_go_line(text, input)
+        case input.to_s.strip
+        when /^\+(\d+)(?:,(\d+))?$/
+          line, column = $1.to_i, $2.to_i
+          current = text.index(:insert)
+          yield text.index("#{current.line + line}.#{column}")
+        when /^(\d+)(?:,(\d+))?$/
+          line, column = $1.to_i, $2.to_i
+          yield text.index("#{line}.#{column}")
         end
       end
 

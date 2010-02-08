@@ -14,7 +14,7 @@ module VER
         bm = VER.ctag_stack.pop(count).first
 
         if bm
-          bookmark_open(bm)
+          Bookmark.open(text, bm)
         else
           message("Tag stack empty.")
         end
@@ -27,8 +27,12 @@ module VER
             return execute(text, file_name, ex_cmd)
           end
         else
-          text.status_ask 'Tag name: ' do |tag_name|
-            go text, tag_name
+          text.ask 'Tag name: ' do |answer, action|
+            case action
+            when :attempt
+              go(text, answer)
+              :abort
+            end
           end
         end
       end
@@ -43,18 +47,17 @@ module VER
       def execute(text, file_name, ex_cmd)
         case ex_cmd
         when /^\d+$/
-          VER.ctag_stack << Bookmarks::Bookmark.new(nil, *bookmark_value)
+          VER.ctag_stack << Bookmarks::Bookmark.new(nil, *Bookmark.value(text))
 
           VER.find_or_create_buffer(file_name, ex_cmd.to_i)
         when /^\/(.*)\/$/
-          VER.ctag_stack << Bookmarks::Bookmark.new(nil, *bookmark_value)
+          VER.ctag_stack << Bookmarks::Bookmark.new(nil, *Bookmark.value(text))
 
           source = $1.gsub(/(?!\\)([()])/, '\\\\\\1')
           regexp = Regexp.new(source)
 
           VER.find_or_create_buffer(file_name) do |buffer|
-            buffer.text.tag_all_matching(Search::TAG, regexp, Search::HIGHLIGHT)
-            Search.next(buffer.text)
+            Search.jump(buffer.text, regexp)
           end
         else
           raise ArgumentError, "Unknown Ex command: %p" % [ex_cmd]

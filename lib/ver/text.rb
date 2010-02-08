@@ -163,7 +163,7 @@ module VER
     end
 
     def message(*args)
-      status.message(*args)
+      VER.message(*args)
     end
 
     def noop(*args)
@@ -432,20 +432,9 @@ module VER
       apply_mode_style
     end
 
-    def status_ask(prompt, options = {}, &callback)
-      status.ask(prompt, options){|*args|
-        begin
-          callback.call(*args)
-        rescue => ex
-          VER.error(ex)
-        ensure
-          begin
-            focus
-          rescue RuntimeError
-            # might have been destroyed, stay silent
-          end
-        end
-      }
+    def ask(prompt, options = {}, &action)
+      options[:caller] ||= self
+      VER.minibuf.ask(prompt, options, &action)
     end
 
     def load_preferences

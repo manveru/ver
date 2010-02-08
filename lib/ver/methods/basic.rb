@@ -13,11 +13,16 @@ module VER
       end
 
       def status_evaluate(text)
-        text.status_ask 'Eval expression: ' do |term|
-          begin
-            text.instance_eval(term)
-          rescue Exception => ex
-            ex
+        text.ask 'Eval expression: ' do |answer, action|
+          case action
+          when :attempt
+            begin
+              result = text.instance_eval(answer)
+              VER.message result.inspect
+            rescue Exception => ex
+              VER.message("#{ex.class}: #{ex}")
+            end
+            :abort
           end
         end
       end

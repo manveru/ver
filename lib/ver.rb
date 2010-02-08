@@ -30,6 +30,7 @@ module VER
   autoload :Keymapped,           'ver/keymap/keymapped'
   autoload :Levenshtein,         'ver/vendor/levenshtein'
   autoload :Methods,             'ver/methods'
+  autoload :MiniBuffer,          'ver/minibuffer'
   autoload :NotebookLayout,      'ver/layout/notebook'
   autoload :PanedLayout,         'ver/layout/paned'
   autoload :SYMKEYS,             'ver/keysyms'
@@ -52,7 +53,8 @@ module VER
 
   class << self
     attr_reader(:ctag_stack, :keymap, :style_name_pools, :style_name_register,
-                :bookmarks, :buffers, :layout, :options, :paths, :root, :status)
+                :bookmarks, :buffers, :layout, :options, :paths, :root, :status,
+                :minibuf)
     attr_accessor :layout_class
   end
 
@@ -261,14 +263,16 @@ module VER
     setup_layout
 
     load("keymap/#{options.keymap}.rb")
+
+    @minibuf = MiniBuffer.new(@layout)
+    @layout.configure(
+      labelwidget: minibuf,
+      labelanchor: :sw
+    )
   end
 
   def setup_layout
     @layout = (layout_class || PanedLayout).new(root)
-    @layout.configure(
-      text: 'Welcome to VER, exit by pressing Control-q',
-      labelanchor: :sw
-    )
   end
 
   def sanitize_options
@@ -422,8 +426,8 @@ module VER
     end
   end
 
-  def find_or_create_buffer(file, line = nil, column = nil)
-    Buffer.find_or_create(file, line, column)
+  def find_or_create_buffer(file, line = nil, column = nil, &block)
+    Buffer.find_or_create(file, line, column, &block)
   end
 
   def emergency_bindings
@@ -434,8 +438,12 @@ module VER
     @paths << text.filename
   end
 
-  def message(string)
-    @layout.configure text: string
+  def message(*args)
+    minibuf.message(*args)
+  end
+
+  def warn(*args)
+    minibuf.warn(*args)
   end
 
   def obtain_style_name(widget_name, widget_class)

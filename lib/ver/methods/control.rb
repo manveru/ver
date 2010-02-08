@@ -74,9 +74,19 @@ module VER
       end
 
       def chdir(text)
-        text.status_ask 'Change to: ' do |path|
-          return unless File.directory?(path.to_s)
-          Dir.chdir(path)
+        text.ask 'Change to: ' do |path, action|
+          case action
+          when :attempt
+            path = File.expand_path(path.to_s)
+
+            begin
+              Dir.chdir(path)
+              VER.message 'Changed working directory to %s' % [path]
+              :abort
+            rescue Errno::ENOENT => ex
+              VER.warn ex
+            end
+          end
         end
       end
 
@@ -133,36 +143,36 @@ module VER
       #
       # @param [String] command
       #   The string containing the command executed
-      def prepare_exec(command)
-        prepare_exec_f if command =~ /\$f/
-        prepare_exec_d if command =~ /\$d/
-        prepare_exec_F if command =~ /\$F/
-        prepare_exec_i if command =~ /\$i/
-        prepare_exec_c if command =~ /\$c/
-        prepare_exec_s if command =~ /\$s/
+      def prepare_exec(text, command)
+        prepare_exec_f(text) if command =~ /\$f/
+        prepare_exec_d(text) if command =~ /\$d/
+        prepare_exec_F(text) if command =~ /\$F/
+        prepare_exec_i(text) if command =~ /\$i/
+        prepare_exec_c(text) if command =~ /\$c/
+        prepare_exec_s(text) if command =~ /\$s/
       end
 
-      def prepare_exec_f
+      def prepare_exec_f(text)
         p f: (ENV['f'] = filename.to_s)
       end
 
-      def prepare_exec_d
+      def prepare_exec_d(text)
         p d: (ENV['d'] = filename.directory.to_s)
       end
 
-      def prepare_exec_F
+      def prepare_exec_F(text)
         p F: (ENV['F'] = VER.buffers.map{|key, buffer| buffer.filename }.join(' '))
       end
 
-      def prepare_exec_i
+      def prepare_exec_i(text)
         raise NotImplementedError
       end
 
-      def prepare_exec_c
+      def prepare_exec_c(text)
         p c: (ENV['c'] = clipboard_get)
       end
 
-      def prepare_exec_s
+      def prepare_exec_s(text)
         content = []
 
         each_selected_line do |y, fx, tx|
@@ -240,32 +250,47 @@ module VER
         content.join("\n")
       end
 
-      def exec_into_new(command = nil)
+      def exec_into_new(text, command = nil)
         if command
-          target = options.home_conf_dir/'shell-result.txt'
+          target = text.options.home_conf_dir/'shell-result.txt'
           prepare_exec(command)
-          p command
           system(command)
           target.open('w+'){|io| io.write(`#{command}`) }
           VER.find_or_create_buffer(target)
         else
-          status_ask 'Command: ' do |command|
-            exec_into_new(command)
+          text.ask 'Command: ' do |command, action|
+            case action
+            when :attempt
+              begin
+                exec_into_new(command)
+                :abort
+              rescue => ex
+                VER.warn(ex)
+              end
+            end
           end
         end
       end
 
-      def exec_into_void
-        status_ask 'Command: ' do |command|
-          system(command)
-          message("Exit code: #{$?}")
+      def exec_into_void(text)
+        text.ask 'Command: ' do |command, action|
+          case action
+          when :attempt
+            begin
+              system(command)
+              VER.message("Exit code: #{$?}")
+              :abort
+            rescue => ex
+              VER.warn(ex)
+            end
+          end
         end
       end
 
       def tags_at(index = :insert)
         index = index(index)
         tags = tag_names(index)
-        message tags.inspect
+        VER.message tags.inspect
 
         require 'ver/tooltip'
 
@@ -290,7 +315,7 @@ module VER
           end
         end
 
-        message "Performed gsub on #{total} lines"
+        VER.message "Performed gsub on #{total} lines"
       end
 
       # Substitute on current line
