@@ -6,11 +6,13 @@ module VER
     use :control
   end
 
-  major_mode :Status do
+  major_mode :MiniBuffer do
     use :basic, :readline
 
-    map :ask_abort,  %w[Escape], %w[Control-c]
-    map :ask_submit, %w[Return]
+    map :abort,          %w[Escape], %w[Control-c]
+    map :attempt,        %w[Return]
+    map :complete_large, %w[Double-Tab]
+    map :complete_small, %w[Tab]
   end
 
   major_mode :HoverCompletion do
@@ -59,7 +61,8 @@ module VER
 
     handler Methods::Layout
     map :close, %w[Control-w]
-    1.upto(9){|n| map([:focus, n], ["Alt-#{n}"], ["Escape", n.to_s]) }
+    1.upto(9){|n|
+      map([:focus, n], ["Alt-KeyPress-#{n}"], ["Escape", n.to_s]) }
 
     handler Methods::Insert
     map :newline,    %w[Return]
