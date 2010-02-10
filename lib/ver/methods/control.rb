@@ -3,8 +3,12 @@ module VER
     module Control
       module_function
 
-      def start(text)
+      def enter(text, old_mode, new_mode)
         clean_line(text, :insert)
+      end
+
+      def leave(text, old_mode, new_mode)
+        # clean_line(text, :insert)
       end
 
       def insert_at(text, motion, *count)

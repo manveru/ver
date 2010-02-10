@@ -189,6 +189,8 @@ module VER
     become :replace_char,   %w[r]
 
     handler Methods::Control
+    enter :enter
+    leave :leave
     map :chdir,                             %w[g c]
 
     map :cursor_vertical_bottom,            %w[z b]
