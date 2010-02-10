@@ -173,12 +173,11 @@ module VER
 
   def when_inactive_for(ms)
     block = lambda{
-      inactive = Tk.root.tk_inactive
-
       if @cancel_blocks[block]
         @cancel_blocks.delete(block)
       else
-        if inactive > ms
+
+        if Tk.root.tk_inactive > ms
           yield
           Tk.root.tk_inactive('reset')
           Tk::After.ms(ms, &block)
@@ -322,6 +321,7 @@ module VER
 
   def exit
     store_session
+    @cancel_blocks.keys.each{|key| @cancel_blocks[key] = true }
     Tk.exit rescue nil
     EM.stop rescue nil
     Kernel.exit
