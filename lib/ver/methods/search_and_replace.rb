@@ -24,24 +24,33 @@ module VER
           old_pattern = old_pattern.inspect[1..-1]
         end
 
-        text.ask 'Replace pattern: /', value: old_pattern do |pattern|
-          pattern << '/i' unless pattern =~ /\/[ixm]*$/
+        text.ask 'Replace pattern: /', value: old_pattern do |pattern, action|
+          case action
+          when :attempt
+            pattern << '/i' unless pattern =~ /\/[ixm]*$/
 
-          begin
-            regexp = eval("/#{pattern}")
-          rescue RegexpError, SyntaxError
-            regexp = Regexp.new(Regexp.escape(term))
-          end
-
-          text.store(self, :pattern, regexp)
-
-          VER.defer do
-            old_replacement = text.store(self, :replacement)
-            question = "Replace %p with: " % [regexp]
-            text.ask question, value: old_replacement do |replacement|
-              text.store(self, :replacement, replacement)
-              text.minor_mode(:control, :search_and_replace)
+            begin
+              regexp = eval("/#{pattern}")
+            rescue RegexpError, SyntaxError
+              regexp = Regexp.new(Regexp.escape(term))
             end
+
+            text.store(self, :pattern, regexp)
+
+            VER.defer do
+              old_replacement = text.store(self, :replacement)
+              question = "Replace %p with: " % [regexp]
+              text.ask question, value: old_replacement do |replacement, action|
+                case action
+                when :attempt
+                  text.store(self, :replacement, replacement)
+                  text.minor_mode(:control, :search_and_replace)
+                  :abort
+                end
+              end
+            end
+
+            :abort
           end
         end
       end
