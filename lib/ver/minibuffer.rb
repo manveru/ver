@@ -54,6 +54,8 @@ module VER
       replace 'answer.first', 'answer.last', answer, 'answer'
     rescue
       insert 'prompt.last', answer, 'answer'
+    rescue
+      insert 'end', answer, 'answer'
     end
 
     def answer
@@ -96,7 +98,6 @@ module VER
 
     def ask(prompt, options = {}, &action)
       @action = action || options[:action]
-      @completer = options[:completer]
       @caller = options.fetch(:caller)
 
       self.prompt = prompt
@@ -123,9 +124,7 @@ module VER
 
     def show_completions(completions)
       buffer = VER::Buffer['*Completions*']
-      buffer.text.value = completions.map{|completion|
-        completion.sub(answer, '')
-      }.join("\n")
+      buffer.text.value = completions.join("\n")
       buffer.show
     end
 
