@@ -1,8 +1,8 @@
 module VER
   class Status
     class NanoPosition < Label
-      def triggers
-        ['<<Position>>']
+      def setup
+        register :position
       end
 
       def style=(config)

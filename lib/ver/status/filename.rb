@@ -1,12 +1,12 @@
 module VER
   class Status
-    class ShortFilename < Label
+    class Filename < Label
       def setup
         register :filename
       end
 
       def to_s
-        text.short_filename
+        text.filename.to_s
       end
     end
   end

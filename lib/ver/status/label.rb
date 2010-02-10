@@ -1,7 +1,7 @@
 module VER
   class Status
     class Label < Tk::Tile::Label
-      attr_reader :status, :variable, :weight, :row, :column, :sticky
+      attr_reader :status, :variable, :weight, :row, :column, :sticky, :format
 
       def initialize(status, options = {})
         @status = status
@@ -9,7 +9,8 @@ module VER
         @row = options.delete(:row)
         @column = options.delete(:column)
         @sticky = options.delete(:sticky)
-        options[:font] ||= text.options.font
+        @format = options.delete(:format) || '%s'
+        options[:font] ||= options.delete(:font) || text.options.font
 
         super
 
@@ -18,29 +19,26 @@ module VER
         @variable = Tk::Variable.new("#{name}_#{id}")
         configure(textvariable: @variable)
 
-        triggers.each do |trigger|
-          add_trigger(trigger)
-        end
+        setup
+      end
+
+      def setup
+      end
+
+      def update(event)
+        variable.set(to_s)
+      end
+
+      def register(*events)
+        status.register(self, *events)
       end
 
       def style=(config)
         configure(config)
       end
 
-      def triggers
-        []
-      end
-
-      def add_trigger(event)
-        status.bind(event){|ev| update(ev) }
-      end
-
       def text
         status.text
-      end
-
-      def update(event)
-        variable.set(to_s)
       end
 
       def to_s

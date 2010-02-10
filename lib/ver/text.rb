@@ -186,17 +186,17 @@ module VER
 
     def filename=(path)
       @filename = Pathname(path.to_s).expand_path
-      status.event :Filename if status
+      status.event :filename if status
     end
 
     def syntax=(syn)
       @syntax = syn
-      status.event :Syntax if syn && status
+      status.event :syntax if syn && status
     end
 
     def encoding=(enc)
       @encoding = enc
-      status.event :Encoding if enc && status
+      status.event :encoding if enc && status
     end
 
     def layout
@@ -204,20 +204,19 @@ module VER
     end
 
     def sync_mode_status
-      status.event :Mode
+      status.event :mode
     end
 
     def sync_position_status
-      status.event :Position
-      sync_percent_status
+      status.event :position, :percent
     end
 
     def sync_encoding_status
-      status.event :Encoding
+      status.event :encoding
     end
 
     def sync_percent_status
-      status.event :Percent
+      status.event :percent
     end
 
     TAG_ALL_MATCHING_OPTIONS = { from: '1.0', to: 'end - 1 chars' }

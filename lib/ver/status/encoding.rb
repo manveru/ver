@@ -1,8 +1,8 @@
 module VER
   class Status
     class Encoding < Label
-      def triggers
-        ['<<Encoding>>']
+      def setup
+        register :encoding
       end
 
       def to_s

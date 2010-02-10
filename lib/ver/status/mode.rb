@@ -1,8 +1,8 @@
 module VER
   class Status
     class Mode < Label
-      def triggers
-        ['<<Mode>>']
+      def setup
+        register :mode
       end
 
       def to_s

@@ -1,12 +1,12 @@
 module VER
   class Status
     class Syntax < Label
-      def triggers
-        ['<<Syntax>>']
+      def setup
+        register :syntax
       end
 
       def to_s
-        text.syntax.name
+        format % text.syntax.name
       end
     end
   end

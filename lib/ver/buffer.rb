@@ -128,6 +128,7 @@ module VER
       grid_columnconfigure 1, weight: 0
       grid_rowconfigure    0, weight: 1
       grid_rowconfigure    1, weight: 0
+      grid_rowconfigure    2, weight: 0
     end
 
     def setup_misc
