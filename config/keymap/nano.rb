@@ -1,5 +1,6 @@
 module VER
   PanedLayout::OPTIONS[:slaves] = 0
+  layout.options[:slaves] = 0
 
   major_mode :Fundamental do
     use :control
