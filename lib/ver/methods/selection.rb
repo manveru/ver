@@ -167,10 +167,24 @@ module VER
       end
 
       def pipe(text)
+        paths = ENV['PATH'].split(':').map{|path| Pathname(path).expand_path }
+
         text.ask 'Pipe command: ' do |answer, action|
           case action
+          when :complete
+            current = answer.split.last
+            paths.map{|path|
+              (path/"*#{current}*").glob.select{|file|
+                begin
+                  file = File.readlink(file) if File.symlink?(file)
+                  stat = File.stat(file)
+                  stat.file? && stat.executable?
+                rescue Errno::ENOENT
+                end
+              }
+            }.flatten.compact
           when :attempt
-            pipe_execute(text, cmd)
+            pipe_execute(text, answer)
             finish(text)
             :abort
           end
