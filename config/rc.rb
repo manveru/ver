@@ -63,7 +63,7 @@ VER.options.dsl do
     :insertofftime, 0
 
   o "Format for Statusline",
-    :statusline, Status::LINES[:vim]
+    :statusline, nil
 
   o "Default filetype if no matching syntax can be found",
     :filetype, "Plain Text"

@@ -141,6 +141,10 @@ module VER
         on_focus_out(event)
         Tk.callback_break
       end
+
+      bind '<Destroy>' do |event|
+        VER.cancel_block(@highlight_block)
+      end
     end
 
     def on_focus_in(event)
@@ -182,20 +186,17 @@ module VER
 
     def filename=(path)
       @filename = Pathname(path.to_s).expand_path
-      return unless status
-      Tk::Event.generate(status, '<<Filename>>')
+      status.event :Filename if status
     end
 
     def syntax=(syn)
       @syntax = syn
-      return unless syn && status
-      Tk::Event.generate(status, '<<Syntax>>')
+      status.event :Syntax if syn && status
     end
 
     def encoding=(enc)
       @encoding = enc
-      return unless status
-      Tk::Event.generate(status, '<<Encoding>>')
+      status.event :Encoding if enc && status
     end
 
     def layout
@@ -203,20 +204,20 @@ module VER
     end
 
     def sync_mode_status
-      Tk::Event.generate(status, '<<Mode>>')
+      status.event :Mode
     end
 
     def sync_position_status
-      Tk::Event.generate(status, '<<Position>>')
+      status.event :Position
       sync_percent_status
     end
 
     def sync_encoding_status
-      Tk::Event.generate(status, '<<Encoding>>')
+      status.event :Encoding
     end
 
     def sync_percent_status
-      Tk::Event.generate(status, '<<Percent>>')
+      status.event :Percent
     end
 
     TAG_ALL_MATCHING_OPTIONS = { from: '1.0', to: 'end - 1 chars' }
@@ -434,11 +435,6 @@ module VER
         tag_all_uris(from: from, to: to)
         tag_remove('ver.highlight.pending', from, to)
       end
-    end
-
-    def destroy
-      VER.cancel_block(@highlight_block)
-      super
     end
 
     def default_theme_config=(config)

@@ -1,12 +1,15 @@
 module VER
   class Status
     class Battery < Tk::Canvas
-      attr_reader :status, :weight, :format
+      attr_reader :status, :weight, :format, :row, :column, :sticky
 
       def initialize(status, options = {})
         @status = status
         @weight = options.delete(:weight) || 0
         @format = options.delete(:format) || '[%b] %p% %t'
+        @row = options.delete(:row)
+        @column = options.delete(:column)
+        @sticky = options.delete(:sticky)
         super
 
         @width, @height = cget(:width), cget(:height)
@@ -17,14 +20,18 @@ module VER
         percent, string = Battery.update(format)
         show(percent / 100.0, string)
 
-        VER.when_inactive_for 5000 do
+        @show_block = VER.when_inactive_for(5000){
           percent, string = Battery.update(format)
           show(percent / 100.0, string)
+        }
+
+        tk_parent.bind '<Destroy>' do |event|
+          VER.cancel_block(@show_block)
         end
       end
 
       def style=(config)
-        configure background: config[:background]
+        configure(background: config[:background])
       end
 
       def draw_battery

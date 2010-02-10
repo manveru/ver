@@ -5,11 +5,13 @@ module VER
     use :control
   end
 
-  major_mode :Status do
+  major_mode :MiniBuffer do
     use :basic, :readline
 
-    map :ask_abort,  %w[Escape], %w[Control-c]
-    map :ask_submit, %w[Return]
+    map :abort,          %w[Escape], %w[Control-c], %w[Control-x]
+    map :attempt,        %w[Return]
+    map :complete_large, %w[Double-Tab]
+    map :complete_small, %w[Tab]
   end
 
   major_mode :HoverCompletion do
@@ -85,18 +87,22 @@ module VER
     map :again,       %w[Alt-w], %w[F16]
 
     handler Methods::Move
-    map :prev_page, %w[Control-y], %w[F7]
-    map :next_page, %w[Control-v], %w[F8]
-    map :start_of_file, %w[Alt-backslash], %w[Alt-bar]
-    map :end_of_file, %w[Alt-slash], %w[Alt-question]
     map :ask_go_line, %w[Control-underscore], %w[F13]
-    map :next_word, %w[Control-space]
-    map :prev_word, %w[Alt-space]
-    map :prev_line, %w[Control-p], %w[Up]
-    map :next_line, %w[Control-n], %w[Down]
-    map :matching_brace, %w[Control-bracketleft]
     map :backward_scroll, %w[Alt-minus], %w[Alt-underscore]
+    map :end_of_file, %w[Alt-slash], %w[Alt-question]
+    map :end_of_line, %w[End], %w[Control-e]
     map :forward_scroll, %w[Alt-plus], %w[Alt-equal]
+    map :matching_brace, %w[Control-bracketleft]
+    map :next_char, %w[Right], %w[Control-f]
+    map :next_line, %w[Control-n], %w[Down]
+    map :next_page, %w[Control-v], %w[F8]
+    map :next_word, %w[Shift-Right], %w[Alt-f], %w[Control-space]
+    map :prev_char, %w[Left], %w[Control-b]
+    map :prev_line, %w[Control-p], %w[Up]
+    map :prev_page, %w[Control-y], %w[F7]
+    map :prev_word, %w[Shift-Left], %w[Alt-b], %w[Alt-space]
+    map :start_of_file, %w[Alt-backslash], %w[Alt-bar]
+    map :start_of_line, %w[Home], %w[Control-a]
 
     # M-(     (M-9)           Go to beginning of paragraph; then of previous paragraph
     map :start_of_paragraph, %w[Control-braceleft], %w[Alt-9]
