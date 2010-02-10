@@ -14,8 +14,9 @@ module VER
       end
 
       def focus(text, index = 0)
-        return unless found = text.layout.buffers[index - 1]
+        return unless found = VER.buffers.values[index - 1]
         text.layout.push_top(found)
+        found.focus
       end
 
       def find_or_create(text, file, &block)
