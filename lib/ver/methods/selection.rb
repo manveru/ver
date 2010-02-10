@@ -101,18 +101,39 @@ module VER
 
       # Delete selection without copying it.
       def delete(text)
-        queue = text.tag_ranges(:sel).flatten
-        text.delete(*queue)
-        text.mark_set(:insert, queue.first)
+        case select_mode(text)
+        when :select_char, :select_block
+          queue = text.tag_ranges(:sel).flatten
+          Delete.delete(text, *queue)
+          text.mark_set(:insert, queue.first)
+        when :select_line
+          from, to = text.tag_ranges(:sel).flatten
+          to = "#{to} + 1 lines linestart"
+          Delete.delete(text, from, to)
+          text.mark_set(:insert, from)
+        else
+          Kernel.raise "Not in select mode?"
+        end
 
         finish(text)
       end
 
       # Copy selection and delete it.
       def kill(text)
-        queue = text.tag_ranges(:sel).flatten
-        Delete.kill(text, *queue)
-        text.mark_set(:insert, queue.first)
+        case select_mode(text)
+        when :select_char, :select_block
+          queue = text.tag_ranges(:sel).flatten
+          Delete.kill(text, *queue)
+          text.mark_set(:insert, queue.first)
+        when :select_line
+          from, to = text.tag_ranges(:sel).flatten
+          Clipboard.copy(text, text.get(from, to))
+          to = "#{to} + 1 lines linestart"
+          Delete.delete(text, from, to)
+          text.mark_set(:insert, from)
+        else
+          Kernel.raise "Not in select mode?"
+        end
 
         finish(text)
       end
@@ -305,6 +326,8 @@ module VER
       #
       # @see each_selected_line
       def each(text)
+        return Enumerator.new(self, :each, text) unless block_given?
+
         text.tag_ranges(:sel).each do |sel|
           (fy, fx), (ty, tx) = sel.map{|pos| pos.split('.').map(&:to_i) }
 
