@@ -370,8 +370,10 @@ module VER
 
           return if queue.empty?
 
-          text.delete(*queue)
-          text.insert(queue.first, output)
+          Undo.record text do |record|
+            record.delete(*queue)
+            record.insert(queue.first, output.chomp)
+          end
         end
       end
 
