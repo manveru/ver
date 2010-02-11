@@ -177,7 +177,7 @@ module VER
           VER.defer do
             text.setup_highlight
             apply_modeline(text)
-            text.focus
+            # text.focus
           end
           text.bind('<Map>'){ text.see(:insert) }
         end
