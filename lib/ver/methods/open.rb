@@ -113,6 +113,7 @@ module VER
           text.clear
           content = read_file(text, text.filename)
           text.encoding = content.encoding
+          text.readonly = !text.filename.writable?
           text.insert(1.0, content)
           text.message "Opened #{text.short_filename}"
         rescue Errno::ENOENT
@@ -170,6 +171,7 @@ module VER
         text.pristine = true
 
         text.undoer = VER::Undo::Tree.new(text)
+        update_mtime(text)
 
         text.bind('<Map>') do
           VER.defer do
@@ -179,6 +181,11 @@ module VER
           end
           text.bind('<Map>'){ text.see(:insert) }
         end
+      end
+
+      def update_mtime(text)
+        text.store(:stat, :mtime, text.filename.mtime)
+      rescue Errno::ENOENT
       end
 
       PROJECT_DIRECTORY_GLOB = '{.git/,.hg/,_darcs/,_FOSSIL_}'

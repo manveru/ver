@@ -28,6 +28,7 @@ module VER
       # @yieldparam [VER::Undo::AutoSeparator]
       #   proxy for delete/insert/replace methods
       def record(text, &block)
+        VER.warn "Buffer is Read-only" if text.readonly
         text.undoer.record_multi(&block)
         text.pristine = false
       end

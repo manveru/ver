@@ -92,8 +92,15 @@ module VER
       }
     end
 
-    def warn(string)
-      message(string, 'warn')
+    def warn(object)
+      case object
+      when Exception
+        message("#{object.class}: #{object}", 'warn')
+      when Symbol, String
+        message(object.to_s, 'warn')
+      else
+        message(object.to_str, 'warn')
+      end
     end
 
     def ask(prompt, options = {}, &action)
@@ -104,6 +111,7 @@ module VER
       self.answer = options[:value].to_s
 
       message ''
+      warn ''
       self.messages_expire = true
       bind('<FocusOut>'){ focus }
       focus

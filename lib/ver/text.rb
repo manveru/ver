@@ -12,7 +12,7 @@ module VER
     }
 
     attr_accessor(:buffer, :status, :project_root, :project_repo,
-                  :undoer, :pristine, :prefix_arg)
+                  :undoer, :pristine, :prefix_arg, :readonly)
     attr_reader(:filename, :options, :snippets, :preferences, :store_hash,
                 :default_theme_config, :encoding, :syntax)
 
