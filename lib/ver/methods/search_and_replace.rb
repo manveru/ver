@@ -19,40 +19,59 @@ module VER
         VER.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
-      def query(text)
-        if old_pattern = text.store(self, :pattern)
-          old_pattern = old_pattern.inspect[1..-1]
-        end
+      def last_pattern(text)
+        pattern = text.store(self, :pattern)
+        pattern.inspect[1..-1] if pattern
+      end
 
-        text.ask 'Replace pattern: /', value: old_pattern do |pattern, action|
+      def query(text)
+        question = 'Replace pattern: /'
+        value = last_pattern(text)
+
+        text.ask question, value: value do |answer, action|
+          case action
+          when :modified
+            begin
+              regexp = answer_to_regex(answer)
+              VER.warn ''
+              VER.message(" => #{regexp.inspect}")
+            rescue RegexpError, SyntaxError => ex
+              VER.warn(ex.message)
+            end
+          when :attempt
+            begin
+              regexp = answer_to_regex(answer)
+              VER.message(" => #{regexp.inspect}")
+              VER.defer{ query_attempt(text, regexp) }
+              :abort
+            rescue RegexpError, SyntaxError => ex
+              VER.warn(ex.message)
+            end
+          end
+        end
+      end
+
+      def answer_to_regex(answer)
+        answer << '/' unless answer =~ /\/[eimnosux]*$/
+        eval("/#{answer}")
+      end
+
+      def query_attempt(text, pattern)
+        question = "Replace %p with: " % [pattern]
+        value = text.store(self, :replacement)
+        text.ask question, value: value do |replacement, action|
           case action
           when :attempt
-            pattern << '/i' unless pattern =~ /\/[ixm]*$/
-
-            begin
-              regexp = eval("/#{pattern}")
-            rescue RegexpError, SyntaxError
-              regexp = Regexp.new(Regexp.escape(term))
-            end
-
-            text.store(self, :pattern, regexp)
-
-            VER.defer do
-              old_replacement = text.store(self, :replacement)
-              question = "Replace %p with: " % [regexp]
-              text.ask question, value: old_replacement do |replacement, action|
-                case action
-                when :attempt
-                  text.store(self, :replacement, replacement)
-                  text.minor_mode(:control, :search_and_replace)
-                  :abort
-                end
-              end
-            end
-
+            query_done(text, pattern, replacement)
             :abort
           end
         end
+      end
+
+      def query_done(text, pattern, replacement)
+        text.store(self, :pattern, pattern)
+        text.store(self, :replacement, replacement)
+        text.minor_mode(:control, :search_and_replace)
       end
 
       def replace_once(text)
@@ -77,6 +96,8 @@ module VER
             from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
           end while from
         end
+
+        text.minor_mode(:search_and_replace, :control)
       end
 
       def next(text)
