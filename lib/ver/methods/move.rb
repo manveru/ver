@@ -153,7 +153,7 @@ module VER::Methods
       end
 
       def end_of_sentence(text, count = text.prefix_count)
-        text.search_all /\.\s/, 'insert' do |match, from, to|
+        text.search_all(/\.\s/, 'insert') do |match, from, to|
           p match: match, from: from, to: to
           text.mark_set(:insert, "#{to} - 1 chars")
           count -= 1

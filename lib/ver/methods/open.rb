@@ -245,8 +245,6 @@ module VER
         end
       end
 
-      attr_reader :options
-
       def set(text, option, value)
         method = "set_#{option}"
 

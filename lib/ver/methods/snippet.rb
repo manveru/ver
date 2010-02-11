@@ -81,7 +81,7 @@ module VER
       end
 
       def insert_string(text, string)
-        tag = text.tag_names(:insert).find{|tag| tag =~ /^ver\.snippet\.(\d+)$/ }
+        tag = text.tag_names(:insert).find{|name| name =~ /^ver\.snippet\.(\d+)$/ }
 
         if tag
           from, to = text.tag_ranges(tag).first

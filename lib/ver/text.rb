@@ -17,6 +17,8 @@ module VER
                 :default_theme_config, :encoding, :syntax)
 
     def initialize(buffer, options = {})
+      @project_repo = @project_root = @highlighter = nil
+
       if peer = options.delete(:peer)
         @tag_commands = {}
         @tk_parent = buffer
@@ -26,6 +28,7 @@ module VER
         self.filename = peer.filename
         configure(peer.configure)
       else
+        @default_theme_config = nil
         @store_hash = Hash.new{|h,k| h[k] = {} }
         super
       end
@@ -143,7 +146,7 @@ module VER
       end
 
       bind '<Destroy>' do |event|
-        VER.cancel_block(@highlight_block)
+        VER.cancel_block(@highlighter)
       end
     end
 
@@ -368,10 +371,10 @@ module VER
       return if @encoding == Encoding::BINARY
 
       if self.syntax = Syntax.from_filename(filename)
-        VER.cancel_block(@highlight_block)
+        VER.cancel_block(@highlighter)
 
         interval = options.syntax_highlight_interval.to_int
-        @highlight_block = VER.when_inactive_for(interval){
+        @highlighter = VER.when_inactive_for(interval){
           handle_pending_syntax_highlights
         }
 
@@ -467,7 +470,7 @@ module VER
     end
 
     def sync_mode_style(given_mode = nil)
-      config = (@default_theme_config || {}).merge(blockcursor: false)
+      config = (default_theme_config || {}).merge(blockcursor: false)
 
       modes = given_mode ? [given_mode] : major_mode.minors
 

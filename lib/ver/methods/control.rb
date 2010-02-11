@@ -262,11 +262,11 @@ module VER
           target.open('w+'){|io| io.write(`#{command}`) }
           VER.find_or_create_buffer(target)
         else
-          text.ask 'Command: ' do |command, action|
+          text.ask 'Command: ' do |answer, action|
             case action
             when :attempt
               begin
-                exec_into_new(command)
+                exec_into_new(answer)
                 :abort
               rescue => ex
                 VER.warn(ex)

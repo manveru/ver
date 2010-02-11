@@ -21,7 +21,7 @@ module VER
         if name
           visit_named(text, name)
         else
-          ask(text){|bm| visit_named(text, bm) }
+          ask(text){|answer| visit_named(text, answer) }
         end
       end
 
@@ -29,7 +29,7 @@ module VER
         if name
           add_named(text, name)
         else
-          ask(text){|bm| add_named(text, bm) }
+          ask(text){|answer| add_named(text, answer) }
         end
       end
 
@@ -38,7 +38,7 @@ module VER
           bm = bookmarks.add_named(name, value(text))
           VER.message("Added bookmark [%s|%s:%d,%d]." % bm.to_a)
         else
-          ask(text){|bm| add_named(text, bm) }
+          ask(text){|answer| add_named(text, answer) }
         end
       end
 
@@ -50,7 +50,7 @@ module VER
             VER.message("No Bookmark named %p." % [name])
           end
         else
-          ask(text){|bm| remove_named(text, bm) }
+          ask(text){|answer| remove_named(text, answer) }
         end
       end
 
@@ -62,7 +62,7 @@ module VER
             VER.message("No Bookmark named %p." % [name])
           end
         else
-          ask(text){|bm| visit_named(text, bm) }
+          ask(text){|answer| visit_named(text, answer) }
         end
       end
 
