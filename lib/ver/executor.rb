@@ -47,7 +47,7 @@ module VER
     end
 
     def setup_layout
-      caller.layout.add_buffer(@frame)
+      VER.defer{ caller.layout.add_buffer(@frame) }
 
       @top.grid_configure(row: 0, column: 0, sticky: :nswe)
       @tree.grid_configure(row: 0, column: 0, sticky: :nswe)
