@@ -27,6 +27,7 @@ module VER
 
       tag_configure 'info', foreground: '#000'
       tag_configure 'warn', foreground: '#f00'
+      tag_configure 'highlight', background: '#ff0'
 
       bind('<Configure>'){ adjust_size }
     end
@@ -78,7 +79,15 @@ module VER
         see "#{tag}.first"
 
         message_expire(tag) if messages_expire
+        message_notify(tag)
       end
+    end
+
+    def message_notify(tag, timeout = 500)
+      tag_add('highlight', "#{tag}.first", "#{tag}.last")
+      Tk::After.ms(timeout.to_int){
+        tag_remove('highlight', "#{tag}.first", "#{tag}.last")
+      }
     end
 
     def message_expire(tag, timeout = 3000)
