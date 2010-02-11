@@ -14,8 +14,10 @@ module VER
 
   minor_mode :save do
     handler Methods::Save
-    map :save,    %w[Control-s]
-    map :save_as, %w[Control-S]
+    map :save,     %w[Control-s], %w[colon w Return]
+    map :save_as,  %w[Control-S], %w[colon w space]
+    map :save_all, %w[colon w a]
+    map :quit,     %w[colon q a], %w[colon q exclam], %w[colon q Return], %w[Z Z], %w[colon x]
   end
 
   minor_mode :preview do
@@ -28,7 +30,6 @@ module VER
     inherits :help, :preview, :save, :open
 
     handler Methods::Basic
-    map :quit,                %w[Control-q]
     map :source_buffer,       %w[Control-R]
     map :status_evaluate,     %w[Alt-x], %w[Control-m x]
     map :tags_at,             %w[Control-g t]
@@ -73,8 +74,9 @@ module VER
     map :change,     ['Control-w', :layout]
     map :focus_next, %w[Control-Tab]
     map :focus_prev, %w[Control-Shift-Tab], %w[Control-ISO_Left_Tab]
-    map :cycle_next, %w[Alt-Tab]
-    map :cycle_prev, %w[Alt-Shift-Tab], %w[Alt-ISO_Left_Tab]
+    map :cycle_next, %w[Alt-Tab], %w[colon b n]
+    map :cycle_prev, %w[Alt-Shift-Tab], %w[Alt-ISO_Left_Tab], %w[colon b p]
+    map :close,      %w[colon w q], %w[colon q w]
   end
 
   minor_mode :move do
@@ -215,18 +217,18 @@ module VER
 
     map [:insert_at, :home_of_line],        %w[I]
 
-    map :executor, %w[colon colon], %w[colon x]
-    map [:ex, :buffer],       %w[colon b], %w[Alt-b], %w[Control-m b]
-    map [:ex, :edit],         %w[colon e]
+    map :executor, %w[colon colon]
+    map [:ex, :buffer],       %w[colon b u], %w[Alt-b], %w[Control-m b]
+    map [:ex, :edit],         %w[colon e space]
     map [:ex, :fuzzy],        %w[colon f]
     map [:ex, :grep],         %w[colon g]
     map [:ex, :grep_buffers], %w[colon G]
     map [:ex, :locate],       %w[colon l]
     map [:ex, :method],       %w[colon m]
-    map [:ex, :open],         %w[colon o]
+    map [:ex, :open],         %w[colon o space]
     map [:ex, :syntax],       %w[colon s]
     map [:ex, :theme],        %w[colon t]
-    map [:ex, :write],        %w[colon w]
+    # map [:ex, :write],        %w[colon w]
 
     map :toggle_case, %w[asciitilde]
     map :wrap_line, %w[g w]
@@ -398,36 +400,6 @@ module VER
     missing :replace_char
   end
 
-  minor_mode :status_query do
-    inherits :basic, :readline
-
-    map :ask_abort,         %w[Escape], %w[Control-c]
-    map :ask_submit,        %w[Return]
-
-    missing :insert_string
-  end
-
-  minor_mode :list_buffer_entry do
-    inherits :basic, :readline
-
-    map :cancel,          %w[Escape], %w[Control-c]
-    map :completion,      %w[Tab]
-    map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
-    map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
-    map :pick_selection,  %w[Return]
-
-    missing :insert_string
-  end
-
-  minor_mode :list_buffer_list do
-    inherits :basic
-
-    map :cancel,          %w[Escape], %w[Control-c]
-    map :pick_selection,  %w[Return], %w[Double-Button-1]
-    map :line_up,         %w[Up], %w[Control-k], %w[Control-p]
-    map :line_down,       %w[Down], %w[Control-j], %w[Control-n]
-  end
-
   major_mode :HoverCompletion do
     inherits :basic
 
@@ -459,9 +431,6 @@ module VER
     map :attempt,  %w[Return]
     map :complete_large, %w[Double-Tab]
     map :complete_small, %w[Tab]
-
-    handler Methods::Basic
-    map :quit, %w[Control-q]
   end
 
   major_mode :Executor do

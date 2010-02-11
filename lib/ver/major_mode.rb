@@ -43,6 +43,7 @@ module VER
       self.tag = Tk::BindTag.new("#{name}-mode")
 
       KEYSYMS.each{|key, sym| bind_key(sym) }
+      bind_key('<Escape>')
 
       MODES[self.name] = self
     end

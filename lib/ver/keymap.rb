@@ -15,8 +15,13 @@ module VER
       class Incomplete < Struct.new(:sequence, :choices)
         def to_s
           stack = sequence.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
-          follow = choices.keys.map(&:inspect).join('|')
-          "#{stack} -- (#{follow})"
+          if choices.size > 2
+            follow = choices.keys.map(&:inspect).join('|')
+            "#{stack} -- (#{follow})"
+          else
+            follow = choices.map{|key, action| "#{key} => #{action}" }.join(' | ')
+            "#{stack} -- (#{follow})"
+          end
         end
       end
     end

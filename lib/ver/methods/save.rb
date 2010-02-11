@@ -77,7 +77,7 @@ module VER
       end
 
       def save_all(text)
-        VER.layout.buffers.each do |name, buffer|
+        VER.buffers.each do |name, buffer|
           save(buffer.text)
         end
       end
