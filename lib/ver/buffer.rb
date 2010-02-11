@@ -96,7 +96,7 @@ module VER
         font:             font,
         insertofftime:    VER.options.insertofftime,
         insertontime:     VER.options.insertontime,
-        setgrid:          true, # tell the wm that this is a griddy window
+        setgrid:          false,
         takefocus:        true,
         tabs:             tabs,
         tabstyle:         :wordprocessor,
