@@ -44,6 +44,19 @@ module VER
       def to_s
         ''
       end
+
+      def toggle
+        info = grid_info
+
+        if info.empty?
+          grid_configure(@last_grid_info)
+          true
+        else
+          @last_grid_info = info
+          grid_forget
+          false
+        end
+      end
     end
   end
 end

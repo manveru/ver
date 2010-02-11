@@ -51,13 +51,12 @@ module VER
 
       # Constant cursor position display enable/disable
       def toggle_cursor_pos(text)
-        status = text.status
+        widgets = text.status.widgets
+        np = widgets.find{|widget| widget.kind_of?(Status::NanoPosition) }
 
-        if status.winfo_ismapped
-          status.grid_forget
-          message "Constant cursor position display disabled"
+        if np.toggle
+          message "Constant cursor position display enabled"
         else
-          status.grid_configure row: 2, column: 0, sticky: :ew, columnspan: 2
           message "Constant cursor position display disabled"
         end
       end
@@ -114,7 +113,10 @@ module VER
 
       # Help mode enable/disable
       def toggle_help_mode(text)
-        mumble "Toggle help mode"
+        widgets = text.status.widgets
+        np = widgets.find{|widget| widget.kind_of?(Status::NanoHelp) }
+
+        message(np.toggle ? "Help mode enabled" : "Help mode disabled")
       end
 
       # Use of one more line for editing enable/disable
