@@ -80,27 +80,39 @@ module VER
         mark_set('insert', insert)
         see "#{tag}.first"
 
-        message_expire(tag) if messages_expire
+        message_expire(tag) #  if messages_expire
         message_notify(tag)
+        message_buffer_insert(string, tag)
       end
+    end
+
+    def message_buffer_insert(string, tag)
+      string = "#{string}\n" unless string.end_with?("\n")
+      buffer = Buffer[:Messages]
+      buffer.text.execute(:insert, :end, string, tag)
+
+      last_focus = Tk::Focus.focus # for some reason
+      buffer.text.see(:end)        # this changes focus to the text
+      Tk::Focus.focus(last_focus)  # so we restore it here
     end
 
     def message_notify(tag, timeout = 500)
       tag_add('highlight', "#{tag}.first", "#{tag}.last")
-      Tk::After.ms(timeout.to_int){
+
+      Tk::After.ms timeout.to_int do
         tag_remove('highlight', "#{tag}.first", "#{tag}.last")
-      }
+      end
     end
 
     def message_expire(tag, timeout = 3000)
       self.messages_pending += 1
 
-      Tk::After.ms(timeout.to_int){
+      Tk::After.ms timeout.to_int do
         self.messages_pending -= 1
         if messages_pending == 0
           delete("#{tag}.first", "#{tag}.last") rescue nil
         end
-      }
+      end
     end
 
     def warn(object)
