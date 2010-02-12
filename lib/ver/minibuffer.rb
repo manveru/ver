@@ -17,7 +17,9 @@ module VER
         insertofftime: 0,
         setgrid: false, # wtf?
         autoseparators: true,
-        blockcursor: false
+        blockcursor: false,
+        background: '#000',
+        foreground: '#fff'
       )
 
       self.major_mode = :MiniBuffer
@@ -25,9 +27,9 @@ module VER
       self.messages_pending = 0
       self.char_width = font.measure('0')
 
-      tag_configure 'info', foreground: '#000'
+      tag_configure 'info', foreground: '#fff'
       tag_configure 'warn', foreground: '#f00'
-      tag_configure 'highlight', background: '#ff0'
+      tag_configure 'highlight', background: '#330'
 
       bind('<Configure>'){ adjust_size }
     end
