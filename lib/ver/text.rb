@@ -512,7 +512,7 @@ module VER
     end
 
     def setup_highlight_pending
-      tag_configure 'ver.highlight.pending', background: '#200'
+      # tag_configure 'ver.highlight.pending', underline: true
     end
 
     def setup_highlight_trailing_whitespace
