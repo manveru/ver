@@ -33,6 +33,7 @@ module VER
         @doc = Nokogiri(xml)
         @plist = {}
         @parsed = nil
+        @exceptions = []
       end
 
       def parse
@@ -47,6 +48,9 @@ module VER
         else
           raise ArgumentError, 'This is no XML plist'
         end
+
+        fail "#{@exceptions.size} errors encountered" if @exceptions.any?
+        @parsed
       end
 
       def handle_array(array)
@@ -256,17 +260,28 @@ module VER
 
         Regexp.new(value)
       rescue RegexpError => ex
+        if ex.message =~ /^invalid multibyte escape:/
+          begin
+            /#{value.force_encoding(Encoding::BINARY)}/n
+          rescue RegexpError => ex
+            error(ex, original, value)
+          end
+        else
+          error(ex, original, value)
+        end
+      end
+
+      def error(exception, original, modified)
         puts ' [ exception ] '.center(80, '-')
-        puts ex, *ex.backtrace
+        puts exception, *exception.backtrace
         puts ' [ original regexp ] '.center(80, '-')
         p original
         puts original
         puts ' [ modified regexp ] '.center(80, '-')
-        p value
-        puts value
+        p modified
+        puts modified
         puts '-' * 80
-        exit 2
-        /#{value.force_encoding(Encoding::BINARY)}/n
+        @exceptions << exception
       end
     end
 
