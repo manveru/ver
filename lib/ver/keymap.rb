@@ -13,6 +13,11 @@ module VER
 
       # Indicate that no result could be found yet.
       class Incomplete < Struct.new(:sequence, :choices)
+        def merge!(incomplete)
+          return unless sequence == incomplete.sequence
+          choices.deep_merge!(incomplete.choices)
+        end
+
         def to_s
           stack = sequence.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
           if choices.size > 2
@@ -42,6 +47,14 @@ module VER
         else
           Enumerator.new(self, :deep_each)
         end
+      end
+
+      def deep_merge!(other)
+        replace(merge(other, &MERGER))
+      end
+
+      def deep_merge(other)
+        merge(other, &MERGER)
       end
     end
 
@@ -92,13 +105,12 @@ module VER
           current = current[key]
           break unless current.respond_to?(:key?)
         else
-          found = nil
           current.find do |ckey, cvalue|
             next unless ckey.is_a?(Symbol)
 
             case resolved = MinorMode[ckey].resolve([key, *remaining])
             when Incomplete
-              return found
+              return resolved
             when Impossible
               false
             else

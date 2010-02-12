@@ -53,12 +53,19 @@ module VER
     def resolve(sequence)
       case found = keymap[sequence]
       when Incomplete
+        parents.each do |parent|
+          next if parent == self
+          case resolved = parent.resolve(sequence)
+          when Incomplete
+            found.merge!(resolved)
+          end
+        end
       when Impossible
-        parents.find{|parent|
+        parents.find do |parent|
           next if parent == self
           found = parent.resolve(sequence)
           !found.kind_of?(Impossible)
-        }
+        end
       else
         found = [self, found]
       end

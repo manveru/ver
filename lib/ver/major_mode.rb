@@ -108,11 +108,17 @@ module VER
     def resolve(sequence, minors = [])
       case found = keymap[sequence]
       when Incomplete
+        minors.each do |minor|
+          case resolved = minor.resolve(sequence)
+          when Incomplete
+            found.merge!(resolved)
+          end
+        end
       when Impossible
-        minors.find{|minor|
+        minors.find do |minor|
           found = minor.resolve(sequence)
           !found.kind_of?(Impossible)
-        }
+        end
       else
         found = [self, found]
       end
