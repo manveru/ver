@@ -3,6 +3,7 @@ module VER
     autoload :Index, 'ver/text/index'
     include Keymapped
 
+    None = Object.new
     MATCH_WORD_RIGHT =  /[^a-zA-Z0-9]+[a-zA-Z0-9'"{}\[\]\n-]/
     MATCH_WORD_LEFT =  /(^|\b)\S+(\b|$)/
     MODE_STYLES = {
@@ -75,7 +76,6 @@ module VER
       on_disk == in_memory
     end
 
-    None = Object.new
     def store(namespace, key, value = None)
       if None == value
         @store_hash[namespace][key]
@@ -498,14 +498,9 @@ module VER
       return unless status && color = config[:insertbackground]
 
       status.style = {
-        background: color,
-        foreground: Theme.invert_rgb(color),
+        background: cget(:background),
+        foreground: color,
       }
-
-      # Tk::Tile::Style.configure(status.style,
-      #   fieldbackground: color,
-      #   foreground: Theme.invert_rgb(color)
-      # )
     end
 
     private
