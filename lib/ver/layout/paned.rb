@@ -98,10 +98,12 @@ module VER
       if slaves.empty?
         layout_pane.forget(slave_pane) rescue nil
       else
-        layout_pane.add(slave_pane) rescue nil
+        layout_pane.add(slave_pane, weight: 1) rescue nil
+
         width = layout_pane.winfo_width
-        center = width * options[:center]
-        layout_pane.sashpos(0, center.to_i)
+        center = (width * options[:center]).to_i
+
+        # layout_pane.sashpos(0, center)
       end
     end
 

@@ -131,7 +131,7 @@ module VER
       self.prompt = ''
       bind('<FocusOut>'){ }
       self.messages_expire = false
-      VER::Buffer['*Completions*'].hide
+      VER::Buffer[:Completions].hide
       @caller.focus
     end
 
@@ -140,13 +140,13 @@ module VER
     end
 
     def show_completions(completions)
-      buffer = VER::Buffer['*Completions*']
+      buffer = VER::Buffer[:Completions]
       buffer.text.value = completions.join("\n")
       buffer.show
     end
 
     def hide_completions
-      VER::Buffer['*Completions*'].hide
+      VER::Buffer[:Completions].hide
     end
 
     def complete_small(event)

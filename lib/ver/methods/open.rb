@@ -115,13 +115,42 @@ module VER
           text.encoding = content.encoding
           text.readonly = !text.filename.writable?
           text.insert(1.0, content)
-          text.message "Opened #{text.short_filename}"
+          VER.message "Opened #{text.short_filename}"
         rescue Errno::ENOENT
           text.clear
-          text.message("Create #{text.short_filename}")
+          VER.message("Created #{text.short_filename}")
         end
 
         after_open(text, line, column)
+      end
+
+      def open_symbolic(text, name, line = 1, column = 0)
+        text.name = name
+        text.clear
+
+        case name
+        when :Scratch
+          text.insert(:insert, <<-TEXT)
+# This buffer is for notes you don't want to save, and for Ruby evaluation.
+# If you want to create a file, visit that file with :o.
+# then enter the text in that file's own buffer.
+          TEXT
+          after_open(text, 1, 0, Syntax.new('Ruby'))
+        when :Messages
+          text.tag_configure(:info, foreground: '#aaf')
+          text.tag_configure(:warn, foreground: '#faa')
+          after_open(text, 1, 0, Syntax.new('Plain Text'))
+        else
+          after_open(text, 1, 0, Syntax.new('Plain Text'))
+        end
+
+        VER.message "Created #{name}"
+      end
+
+      def open_empty(text)
+        text.clear
+        text.message "[No File]"
+        after_open(text, 1, 0, Syntax.new('Plain Text'))
       end
 
       def file_open_popup(text)
@@ -157,13 +186,7 @@ module VER
         return content.chomp
       end
 
-      def open_empty(text)
-        text.clear
-        text.message "[No File]"
-        after_open(text)
-      end
-
-      def after_open(text, line = 1, column = 0)
+      def after_open(text, line = 1, column = 0, syntax = nil)
         detect_project_paths(text)
         VER.opened_file(text)
 
@@ -175,16 +198,16 @@ module VER
 
         text.bind('<Map>') do
           VER.defer do
-            text.setup_highlight
+            syntax ? text.setup_highlight_for(syntax) : text.setup_highlight
             apply_modeline(text)
-            # text.focus
           end
           text.bind('<Map>'){ text.see(:insert) }
         end
       end
 
       def update_mtime(text)
-        text.store(:stat, :mtime, text.filename.mtime)
+        return unless filename = text.filename
+        text.store(:stat, :mtime, filename.mtime)
       rescue Errno::ENOENT
       end
 

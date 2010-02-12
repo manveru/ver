@@ -268,6 +268,10 @@ module VER
       labelwidget: minibuf,
       labelanchor: :sw
     )
+
+    [:Messages, :Scratch].each do |name|
+      defer{ Buffer[name].hide }
+    end
   end
 
   def setup_layout

@@ -8,25 +8,36 @@ module VER
 
     def self.create(path = nil, line = nil, column = nil)
       VER.layout.create_buffer do |buffer|
-        path ? buffer.open_path(path, line, column) : buffer.open_empty
+        case path
+        when nil
+          buffer.open_empty
+        when Symbol
+          buffer.open_symbolic(path, line, column)
+        when Pathname
+          buffer.open_path(path, line, column)
+        else
+          raise ArgumentError, "invalid path: %p" % [path]
+        end
+
         VER.buffers[buffer.name] = buffer
         yield(buffer) if block_given?
         buffer
       end
     end
 
-    def self.find_or_create(path, line = nil, column = nil, &block)
-      needle = Pathname(path.to_s).expand_path
-
-      if buffer = VER.buffers[needle]
-        buffer.layout.push_top(buffer)
-        buffer.focus
-        insert = buffer.text.index(:insert)
-        buffer.text.mark_set(:insert, "#{line || insert.y}.#{column || insert.x}")
-        yield(buffer) if block_given?
-        buffer
+    def self.find_or_create(name, line = nil, column = nil, &block)
+      case name
+      when Pathname, Symbol
+        if buffer = VER.buffers[name]
+          buffer.after_found(line, column)
+        else
+          create(name, line, column, &block)
+        end
+      when String
+        path = Pathname(name.to_str).expand_path
+        find_or_create(path, line, column, &block)
       else
-        create(needle, line, column, &block)
+        raise ArgumentError, "Invalid path: %p" % [path]
       end
     end
 
@@ -47,7 +58,7 @@ module VER
 
     # this should be customized when neccesary
     def name
-      filename
+      text.filename || text.name
     end
 
     # +-------+---+
@@ -140,12 +151,29 @@ module VER
       Methods::Open.open_path(text, path, line, column)
     end
 
+    def open_symbolic(name, line = 1, column = 0)
+      Methods::Open.open_symbolic(text, name, line, column)
+    end
+
     def open_empty
       Methods::Open.open_empty(text)
     end
 
     def focus
       text.focus
+    end
+
+    def after_found(line, column, &block)
+      layout.push_top(self)
+      focus
+      go_line_column(line, column)
+      yield(self) if block_given?
+      self
+    end
+
+    def go_line_column(line, column)
+      insert = text.index(:insert)
+      text.mark_set(:insert, "#{line || insert.y}.#{column || insert.x}")
     end
 
     def create_peer

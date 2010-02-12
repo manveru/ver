@@ -14,7 +14,7 @@ module VER
     attr_accessor(:buffer, :status, :project_root, :project_repo,
                   :undoer, :pristine, :prefix_arg, :readonly)
     attr_reader(:filename, :options, :snippets, :preferences, :store_hash,
-                :default_theme_config, :encoding, :syntax)
+                :default_theme_config, :encoding, :syntax, :name)
 
     def initialize(buffer, options = {})
       @project_repo = @project_root = @highlighter = nil
@@ -178,13 +178,20 @@ module VER
     end
 
     def short_filename
-      return unless filename
-
-      if root = @project_root
-        filename.relative_path_from(root).to_s
-      else
-        filename.sub(Dir.pwd + '/', '').to_s
+      if filename
+        if root = @project_root
+          filename.relative_path_from(root).to_s
+        else
+          filename.sub(Dir.pwd + '/', '').to_s
+        end
+      elsif name
+        name.to_s
       end
+    end
+
+    def name=(name)
+      @name = name
+      status.event :filename if status
     end
 
     def filename=(path)
@@ -359,6 +366,8 @@ module VER
         else
           title = "#{file} (#{dir_relative_to_home}) - VER"
         end
+      elsif name
+        title = "[#{name}] - VER"
       else
         title = "[No Name] - VER"
       end
@@ -367,21 +376,24 @@ module VER
     end
 
     def setup_highlight
-      return unless filename
-      return if @encoding == Encoding::BINARY
+      setup_highlight_for(Syntax.from_filename(filename)) if filename
+    end
 
-      if self.syntax = Syntax.from_filename(filename)
-        VER.cancel_block(@highlighter)
+    def setup_highlight_for(syntax)
+      return if encoding == Encoding::BINARY
+      return unless syntax
 
-        interval = options.syntax_highlight_interval.to_int
-        @highlighter = VER.when_inactive_for(interval){
-          handle_pending_syntax_highlights
-        }
+      self.syntax = syntax
+      VER.cancel_block(@highlighter)
 
-        touch!('1.0', 'end')
+      interval = options.syntax_highlight_interval.to_int
+      @highlighter = VER.when_inactive_for(interval){
+        handle_pending_syntax_highlights
+      }
 
-        sync_mode_status
-      end
+      touch!('1.0', 'end')
+
+      sync_mode_status
     end
 
     # TODO: maybe we can make this one faster when many lines are going to be
