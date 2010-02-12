@@ -74,10 +74,10 @@ module VER
       forget_buffer(buffer)
       buffer.destroy
 
-      if previous = stack.first
+      if previous = visible.first
         previous.focus
       else
-        VER.exit
+        Methods::Save.quit(nil)
       end
     end
 
