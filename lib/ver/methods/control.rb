@@ -359,17 +359,17 @@ module VER
 
       def line_evaluate(text)
         content = text.get('insert linestart', 'insert lineend')
-        stdout_capture_evaluate(content, text.filename) do |res,out|
+        stdout_capture_evaluate(content, text.filename, binding) do |res,out|
           text.insert("insert lineend", "\n%s%p" % [out, res] )
         end
       end
 
-      def stdout_capture_evaluate(code, file)
+      def stdout_capture_evaluate(code, file, binding = binding)
         begin
           old_stdout = $stdout.dup
           rd, wr = IO.pipe
           $stdout.reopen(wr)
-          result = eval(code, nil, file.to_s)
+          result = eval(code, binding, file.to_s)
           $stdout.reopen old_stdout; wr.close
           stdout = rd.read
 
