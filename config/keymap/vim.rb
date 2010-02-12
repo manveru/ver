@@ -17,7 +17,7 @@ module VER
     map :save,     %w[Control-s], %w[colon w Return]
     map :save_as,  %w[Control-S], %w[colon w space]
     map :save_all, %w[colon w a]
-    map :quit,     %w[colon q a], %w[colon q exclam], %w[colon q Return], %w[Z Z], %w[colon x]
+    map :quit,     %w[colon q a], %w[Z Z]
   end
 
   minor_mode :preview do
@@ -76,7 +76,7 @@ module VER
     map :focus_prev, %w[Control-Shift-Tab], %w[Control-ISO_Left_Tab]
     map :cycle_next, %w[Alt-Tab], %w[colon b n]
     map :cycle_prev, %w[Alt-Shift-Tab], %w[Alt-ISO_Left_Tab], %w[colon b p]
-    map :close,      %w[colon w q], %w[colon q w]
+    map :close,      %w[colon q Return], %w[colon x]
   end
 
   minor_mode :move do
