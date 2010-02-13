@@ -34,7 +34,7 @@ module VER
 
       def may_save(text, as = nil)
         last = text.store(:stat, :mtime)
-        current = text.filename.mtime if text.filename
+        current = text.filename.mtime rescue nil
 
         if last && current
           if last == current
