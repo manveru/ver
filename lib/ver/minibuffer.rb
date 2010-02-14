@@ -19,7 +19,8 @@ module VER
         autoseparators: true,
         blockcursor: false,
         background: '#000',
-        foreground: '#fff'
+        foreground: '#fff',
+        insertbackground: '#fff'
       )
 
       self.major_mode = :MiniBuffer
