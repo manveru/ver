@@ -145,45 +145,47 @@ module VER
       self.prompt = ''
       bind('<FocusOut>'){ }
       self.messages_expire = false
-      VER::Buffer[:Completions].hide
+      Buffer[:Completions].hide
       @caller.focus
     end
 
-    def attempt(event)
+    def attempt(event = nil)
       invoke(:attempt)
     end
 
+    def self.answer_from(text)
+      line = text.get('current linestart', 'current lineend')
+      minibuf = VER.minibuf
+      minibuf.answer = line
+      minibuf.complete_small
+    end
+
     def show_completions(completions)
-      buffer = VER::Buffer[:Completions]
-      buffer.text.value = completions.join("\n")
+      buffer = Buffer[:Completions]
+      text = buffer.text
+      text.delete('1.0', 'end')
+      completions.each do |completion|
+        text.insert('end', completion, 'ver.minibuf.completion')
+        text.insert('end', "\n")
+      end
       buffer.show
     end
 
-    def hide_completions
-      VER::Buffer[:Completions].hide
-    end
-
-    def complete_small(event)
+    def complete_small(event = nil)
       if choices = invoke(:complete)
         if choices.size == 1
           self.answer = choices.first
-          hide_completions
         end
-      else
-        hide_completions
       end
     end
 
-    def complete_large(event)
+    def complete_large(event = nil)
       if choices = invoke(:complete)
         if choices.size == 1
           self.answer = choices.first
-          hide_completions
         elsif choices.size > 1
           show_completions(choices)
         end
-      else
-        hide_completions
       end
     end
 

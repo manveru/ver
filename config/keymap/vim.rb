@@ -10,6 +10,7 @@ module VER
 
     map :file_open_popup, %w[Control-o]
     map :file_open_fuzzy, %w[Alt-o], %w[Control-m o]
+    map :file_open_ask,   %w[colon o space]
   end
 
   minor_mode :save do
@@ -225,7 +226,7 @@ module VER
     map [:ex, :grep_buffers], %w[colon G]
     map [:ex, :locate],       %w[colon l]
     map [:ex, :method],       %w[colon m]
-    map [:ex, :open],         %w[colon o space]
+    map [:ex, :open],         %w[colon o Return]
     map [:ex, :syntax],       %w[colon s]
     map [:ex, :theme],        %w[colon t]
     # map [:ex, :write],        %w[colon w]
@@ -431,6 +432,11 @@ module VER
     map :attempt,  %w[Return]
     map :complete_large, %w[Double-Tab]
     map :complete_small, %w[Tab]
+  end
+
+  major_mode :Completions do
+    handler MiniBuffer
+    map :answer_from, %w[Button-1]
   end
 
   major_mode :Executor do

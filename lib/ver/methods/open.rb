@@ -140,6 +140,10 @@ module VER
           text.tag_configure(:info, foreground: '#aaf')
           text.tag_configure(:warn, foreground: '#faa')
           after_open(text, 1, 0, Syntax.new('Plain Text'))
+        when :Completions
+          text.major_mode = :Completions
+          text.tag_configure('ver.minibuf.completion', foreground: '#00f')
+          after_open(text, 1, 0, Syntax.new('Plain Text'))
         else
           after_open(text, 1, 0, Syntax.new('Plain Text'))
         end
@@ -164,6 +168,63 @@ module VER
         return unless fpath
 
         VER.find_or_create_buffer(fpath)
+      end
+
+      def file_open_ask(text)
+        text.ask 'Filename: ', value: Dir.pwd do |answer, action|
+          case action
+          when :complete
+            file_complete(answer)
+          when :attempt
+            p answer
+            :abort
+          end
+        end
+      end
+
+      def file_complete(answer)
+        rel = answer.sub(/^.*\/\//, '/')
+        rel = rel.sub(/^.*\/~\//, '~/')
+        rel = File.expand_path(rel) unless File.directory?(rel)
+        rel_size = rel.size
+
+        choices = Dir.glob("#{rel}*").map{|path|
+          if File.directory?(path)
+            path[rel_size..-1] << '/'
+          else
+            path[rel_size..-1]
+          end
+        }
+
+        common = nil
+        choices.each do |path|
+          path.size.times do |index|
+            next if index == 0
+            slice = path[0, index]
+
+            if choices.all?{|choice| choice.start_with?(slice) }
+              common = slice
+            end
+          end
+        end
+
+        if common
+          only = answer + common
+
+          if choices.size == 1
+            choices.map{|choice| (answer + choice).sub(/\/+$/, '/') }
+          elsif choices.size > 1
+            [only]
+          else
+            if File.directory?(File.expand_path(only))
+              [only]
+            else
+              [only]
+            end
+          end
+        else
+          choices.map{|choice| (answer + choice).sub(/\/+$/, '/') }
+        end
       end
 
       # Read given file into memory and convert to @encoding
