@@ -245,7 +245,7 @@ module VER
 
       search_all(regexp, from, to) do |match, match_from, match_to|
         name = yield(match, match_from, match_to) if block_given?
-        fast_tag_add name, match_from, match_to
+        tag_add name, match_from, match_to
       end
     end
 
@@ -346,13 +346,6 @@ module VER
 
     def delete(*indices)
       Methods::Delete.delete(self, *indices)
-    end
-
-    def fast_tag_add(tag, *indices)
-      execute('tag', 'add', tag, *indices)
-      self
-    rescue RuntimeError => ex
-      VER.error(ex)
     end
 
     def set_window_title

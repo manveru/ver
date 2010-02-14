@@ -10,7 +10,7 @@ module VER
       def end_parsing(syntax_name)
         tags.each do |name, indices|
           tag_name = theme.get(name) || name
-          textarea.fast_tag_add(tag_name, *indices)
+          textarea.tag_add(tag_name, *indices)
         end
 
         @tag_stack.uniq!
