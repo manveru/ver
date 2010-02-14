@@ -132,6 +132,7 @@ module VER
       bind '<<Movement>>' do |event|
         see :insert
         Methods::Selection.refresh(self)
+        show_matching_brace
         sync_position_status
       end
 
@@ -538,6 +539,16 @@ module VER
 
     def tag_all_trailing_whitespace(given_options = {})
       tag_all_matching('invalid.trailing-whitespace', /[ \t]+$/, given_options)
+    end
+
+    def show_matching_brace(index = :insert)
+      tag = 'ver.highlight.brace'
+      tag_remove(tag, '1.0', 'end')
+
+      if pos = Methods::Move.matching_brace_pos(self, index)
+        tag_configure(tag, background: '#ff0', foreground: '#00f')
+        tag_add(tag, 'insert', 'insert + 1 chars', pos, "#{pos} + 1 chars")
+      end
     end
 
     def font(given_options = nil)

@@ -1,28 +1,40 @@
-module VER::Methods
-  module Move
-    GO_MATCHING_RIGHT = {
-      '(' => ')',
-      '{' => '}',
-      '[' => ']',
-      '<' => '>',
-    }
-    GO_MATCHING_LEFT = GO_MATCHING_RIGHT.invert
+module VER
+  module Methods
+    module Move
+      GO_MATCHING_RIGHT = {
+        '(' => ')',
+        '{' => '}',
+        '[' => ']',
+        '<' => '>',
+      }
+      GO_MATCHING_LEFT = GO_MATCHING_RIGHT.invert
 
-    class << self
+      module_function
+
       def prefix_arg_sol(text)
         return if text.update_prefix_arg(text)
         start_of_line(text)
       end
 
-      def matching_brace(text, count = text.prefix_count)
-        opening = text.get(:insert)
+      def matching_brace(text)
+        if pos = matching_brace_pos(text, :insert)
+          text.mark_set(:insert, pos)
+        else
+          VER.warn "No matching brace"
+        end
+      end
+
+      def matching_brace_pos(text, index = :insert)
+        opening = text.get(index)
 
         if closing = GO_MATCHING_RIGHT[opening]
-          start = 'insert + 1 chars'
+          start = "#{index} + 1 chars"
           search = text.method(:search_all)
         elsif closing = GO_MATCHING_LEFT[opening]
-          start = 'insert'
+          start = index
           search = text.method(:rsearch_all)
+        else
+          return
         end
 
         balance = 1
@@ -36,8 +48,7 @@ module VER::Methods
           end
 
           if balance == 0
-            text.mark_set(:insert, from)
-            return
+            return from
           end
         end
       end
