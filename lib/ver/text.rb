@@ -86,7 +86,8 @@ module VER
 
     def inspect
       details = {
-        mode: major_mode
+        name: name,
+        mode: major_mode.name,
       }.map{|key, value| "%s=%p" % [key, value ] }.join(' ')
       "#<VER::Text #{details}>"
     end
