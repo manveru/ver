@@ -2,7 +2,7 @@ module VER
   class MiniBuffer < Tk::Text
     include Keymapped
 
-    attr_accessor :messages_expire, :messages_pending, :char_width
+    attr_accessor :messages_expire, :messages_pending, :char_width, :ask_stack
 
     def initialize(*args)
       super
@@ -27,6 +27,7 @@ module VER
       self.messages_expire = false
       self.messages_pending = 0
       self.char_width = font.measure('0')
+      self.ask_stack = []
 
       tag_configure 'info', foreground: '#fff'
       tag_configure 'warn', foreground: '#f00'
@@ -57,9 +58,11 @@ module VER
     def answer=(answer)
       replace 'answer.first', 'answer.last', answer, 'answer'
     rescue
-      insert 'prompt.last', answer, 'answer'
-    rescue
-      insert 'end', answer, 'answer'
+      begin
+        insert 'prompt.last', answer, 'answer'
+      rescue
+        insert 'end', answer, 'answer'
+      end
     end
 
     def answer
@@ -127,27 +130,42 @@ module VER
       end
     end
 
-    def ask(prompt, options = {}, &action)
-      @action = action || options[:action]
-      @caller = options.fetch(:caller)
+    def ask(prompt, options = {}, action = nil, &block)
+      action ||= block
 
-      self.prompt = prompt
-      self.answer = options[:value].to_s
+      p ask: [prompt, options, action]
 
-      message ''
-      warn ''
-      self.messages_expire = true
-      bind('<FocusOut>'){ focus }
-      focus
+      if @asking
+        ask_stack << [prompt, options, action]
+      else
+        @asking = true
+        @action = action || options[:action]
+        @caller = options.fetch(:caller)
+
+        self.prompt = prompt
+        self.answer = options[:value].to_s
+
+        message ''
+        warn ''
+        self.messages_expire = true
+        bind('<FocusOut>'){ focus }
+        focus
+      end
     end
 
     def abort(event = nil)
       self.answer = ''
       self.prompt = ''
-      bind('<FocusOut>'){ }
-      self.messages_expire = false
       Buffer[:Completions].hide
-      @caller.focus
+      @asking = false
+
+      if ask_stack.empty?
+        bind('<FocusOut>'){ }
+        self.messages_expire = false
+        @caller.focus
+      else
+        ask(*ask_stack.shift)
+      end
     end
 
     def attempt(event = nil)
