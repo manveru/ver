@@ -16,7 +16,7 @@ VER.startup_hook do
 
       next if !text.filename || text.pristine? || text.persisted?
 
-      VER::Methods::Save.file_save(text)
+      VER::Methods::Save.save(text)
     end
   end
 end
