@@ -176,7 +176,7 @@ module VER
           when :complete
             file_complete(answer)
           when :attempt
-            p answer
+            VER.find_or_create_buffer(answer)
             :abort
           end
         end

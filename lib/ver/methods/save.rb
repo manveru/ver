@@ -78,18 +78,31 @@ module VER
 
       def save_all(text)
         VER.buffers.each do |name, buffer|
+          next if buffer.symbolic?
+          buffer.show
+          buffer.focus
           save(buffer.text)
         end
       end
 
-      def save(text)
-        save_to(text, text.filename)
+      def save(text, filename = text.filename)
+        if filename
+          save_to(text, filename)
+        else
+          save_as(text)
+        end
       end
 
       def save_as(text)
-        dir = text.filename.dirname.to_s + '/'
+        if filename = text.filename
+          dir = filename.dirname.to_s + '/'
+        else
+          dir = Dir.pwd + '/'
+        end
 
-        text.ask 'Filename: ', value: dir do |answer, action|
+        message = "Save #{text.name} as: "
+
+        text.ask message, value: dir do |answer, action|
           case action
           when :complete
             Pathname(answer + '*').expand_path.glob.map{|f|
@@ -104,10 +117,6 @@ module VER
             end
           end
         end
-      end
-
-      def file_save(text, filename = text.filename)
-        save_to(text, filename)
       end
 
       def file_save_popup(text, options = {})
