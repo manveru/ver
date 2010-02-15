@@ -14,7 +14,7 @@ VER.startup_hook do
     VER.buffers.each do |name, buffer|
       text = buffer.text
 
-      next if text.pristine? || text.persisted?
+      next if !text.filename || text.pristine? || text.persisted?
 
       VER::Methods::Save.file_save(text)
     end
