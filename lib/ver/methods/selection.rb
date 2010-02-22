@@ -5,22 +5,22 @@ module VER
 
       def enter(text, old_mode, new_mode)
         unless old_mode.name =~ /^select/
-          text.store(self, :start, text.index(:insert))
+          text.mark_set(:sel_anchor, :insert)
         end
 
-        text.store(self, :mode, new_mode)
-        text.store(self, :refresh, true)
-        Undo.separator(text)
-        refresh(text)
+        # text.store(self, :mode, new_mode)
+        # text.store(self, :refresh, true)
+        # Undo.separator(text)
+        # refresh(text)
       end
 
       def leave(text, old_mode, new_mode)
         return if new_mode.name =~ /^select/
 
-        text.store(self, :mode, new_mode)
-        text.store(self, :refresh, false)
-        Undo.separator(text)
-        clear(text)
+        # text.store(self, :mode, new_mode)
+        # text.store(self, :refresh, false)
+        # Undo.separator(text)
+        # clear(text)
       end
 
       def select_mode(text)
@@ -28,6 +28,11 @@ module VER
           mode.to_sym
         end
       end
+    end
+  end
+end
+
+__END__
 
       def refresh(text)
         return unless text.store(self, :refresh)
@@ -413,14 +418,6 @@ module VER
 
         from_y, to_y = [ly, ry].sort
         from_x, to_x = [lx, rx].sort
-
-        code = [%(set win "#{text.tk_pathname}")]
-
-        from_y.upto to_y do |y|
-          code << "$win tag add sel #{y}.#{from_x} #{y}.#{to_x + 1}"
-        end
-
-        Tk.execute_only(Tk::TclString.new(code.join("\n")))
       end
 
       def refresh_char(text, start)

@@ -88,23 +88,17 @@ module VER
     end
 
     def become(other, *sequences)
-      action = Action.new(receiver, :minor_mode, [self, other])
-
-      sequences.each do |sequence|
-        keymap[sequence] = action
-      end
+      action = Action.new([:minor_mode, self, other], receiver)
+      sequences.each{|sequence| keymap[sequence] = action }
     end
 
-    def map(invocation, *sequences, &block)
-      action = Action.new(receiver, *invocation, &block)
-
-      sequences.each do |sequence|
-        keymap[sequence] = action
-      end
+    def map(invocation, *sequences)
+      action = Action.new(invocation, receiver)
+      sequences.each{|sequence| keymap[sequence] = action }
     end
 
     def missing(invocation, &block)
-      action = Action.new(receiver, *invocation, &block)
+      action = Action.new(invocation, receiver)
       self.fallback_action = action
       (KEYSYMS.values - keymap.keys.to_a).each do |name|
         keymap[name] = action
@@ -112,12 +106,12 @@ module VER
     end
 
     def enter(invocation, &block)
-      action = Action.new(receiver, *invocation, &block)
+      action = Action.new(invocation, receiver)
       self.enter_action = action
     end
 
     def leave(invocation, &block)
-      action = Action.new(receiver, *invocation, &block)
+      action = Action.new(invocation, receiver)
       self.leave_action = action
     end
 

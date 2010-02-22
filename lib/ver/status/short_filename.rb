@@ -6,7 +6,7 @@ module VER
       end
 
       def to_s
-        text.short_filename
+        buffer.short_filename
       end
     end
   end

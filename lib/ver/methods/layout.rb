@@ -3,119 +3,117 @@ module VER
     module Layout
       module_function
 
-      def change(text, action, *count)
-        action.call(text, *count)
+      def change(buffer, action, *count)
+        action.call(buffer, *count)
       end
 
-      def peer(text)
-        text.layout.create_buffer(peer: text) do |buffer|
+      def peer(buffer)
+        buffer.layout.create_buffer(peer: buffer) do |buffer|
           yield(buffer) if block_given?
         end
       end
 
-      def focus(text, index = 0)
-        return unless found = VER.buffers.values[index - 1]
-        text.layout.push_top(found)
+      def focus(buffer, index = 0)
+        return unless found = VER.buffers.to_a[index - 1]
+        buffer.layout.push_top(found)
         found.focus
       end
 
-      def find_or_create(text, file, &block)
-        VER::Buffer.find_or_create(file, &block)
+      # Close the given +buffer+
+      def close(buffer)
+        buffer.layout.close_buffer(buffer)
       end
 
-      def create(text)
-        VER::Buffer.create
+      # Hide the given +buffer+
+      def hide(buffer)
+        buffer.layout.hide_buffer(buffer)
       end
 
-      def close(text)
-        text.buffer.close
+      def focus_next(buffer)
+        buffer.layout.focus_next(buffer)
       end
 
-      def focus_next(text)
-        text.layout.focus_next(text.buffer)
+      def focus_prev(buffer)
+        buffer.layout.focus_prev(buffer)
       end
 
-      def focus_prev(text)
-        text.layout.focus_prev(text.buffer)
+      def push_up(buffer)
+        buffer.layout.push_up(buffer)
       end
 
-      def push_up(text)
-        text.layout.push_up(text.buffer)
+      def push_down(buffer)
+        buffer.layout.push_down(buffer)
       end
 
-      def push_down(text)
-        text.layout.push_down(text.buffer)
+      def push_top(buffer)
+        buffer.layout.push_top(buffer)
       end
 
-      def push_top(text)
-        text.layout.push_top(text.buffer)
+      def push_bottom(buffer)
+        buffer.layout.push_bottom(buffer)
       end
 
-      def push_bottom(text)
-        text.layout.push_bottom(text.buffer)
+      def one(buffer)
+        buffer.layout.options.merge! master: 1, slaves: 0
+        push_top(buffer)
       end
 
-      def one(text)
-        text.layout.options.merge! master: 1, slaves: 0
-        push_top(text)
+      def two(buffer)
+        buffer.layout.options.merge! master: 1, slaves: 1
+        push_top(buffer)
       end
 
-      def two(text)
-        text.layout.options.merge! master: 1, slaves: 1
-        push_top(text)
-      end
-
-      def slave_inc(text)
-        slaves = text.layout.options[:slaves]
-        unless slaves >= text.layout.stack.size
-          text.layout.options[:slaves] += 1
-          text.layout.apply
+      def slave_inc(buffer)
+        slaves = buffer.layout.options[:slaves]
+        unless slaves >= buffer.layout.frames.size
+          buffer.layout.options[:slaves] += 1
+          buffer.layout.apply
         end
       end
 
-      def slave_dec(text)
-        slaves = text.layout.options[:slaves]
-        text.layout.options[:slaves] -= 1 if slaves > 0
-        text.layout.apply
+      def slave_dec(buffer)
+        slaves = buffer.layout.options[:slaves]
+        buffer.layout.options[:slaves] -= 1 if slaves > 0
+        buffer.layout.apply
       end
 
-      def master_inc(text)
-        text.layout.options[:master] += 1
-        text.layout.apply
+      def master_inc(buffer)
+        buffer.layout.options[:master] += 1
+        buffer.layout.apply
       end
 
-      def master_dec(text)
-        master = text.layout.options[:master]
-        text.layout.options[:master] -= 1 if master > 0
-        text.layout.apply
+      def master_dec(buffer)
+        master = buffer.layout.options[:master]
+        buffer.layout.options[:master] -= 1 if master > 0
+        buffer.layout.apply
       end
 
       # Shrink the master pane by 10%
-      def master_shrink(text)
-        center = text.layout.options[:center]
-        text.layout.options[:center] -= 0.1 if center > 0.1
-        text.layout.apply
+      def master_shrink(buffer)
+        center = buffer.layout.options[:center]
+        buffer.layout.options[:center] -= 0.1 if center > 0.1
+        buffer.layout.apply
       end
 
       # Grow the master pane by 10%
-      def master_grow(text)
-        center = text.layout.options[:center]
-        text.layout.options[:center] += 0.1 if center < 0.9
-        text.layout.apply
+      def master_grow(buffer)
+        center = buffer.layout.options[:center]
+        buffer.layout.options[:center] += 0.1 if center < 0.9
+        buffer.layout.apply
       end
 
       # Center the split between masters and slaves
-      def master_equal(text)
-        text.layout.options[:center] = 0.5
-        text.layout.apply
+      def master_equal(buffer)
+        buffer.layout.options[:center] = 0.5
+        buffer.layout.apply
       end
 
-      def cycle_next(text)
-        text.layout.cycle_next(text.buffer)
+      def cycle_next(buffer)
+        buffer.layout.cycle_next(buffer)
       end
 
-      def cycle_prev(text)
-        text.layout.cycle_prev(text.buffer)
+      def cycle_prev(buffer)
+        buffer.layout.cycle_prev(buffer)
       end
     end
   end

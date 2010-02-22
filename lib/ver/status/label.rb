@@ -10,7 +10,7 @@ module VER
         @column = options.delete(:column)
         @sticky = options.delete(:sticky)
         @format = options.delete(:format) || '%s'
-        options[:font] ||= options.delete(:font) || text.options.font
+        options[:font] ||= options.delete(:font) || buffer.options.font
 
         super
 
@@ -25,6 +25,10 @@ module VER
       def setup
       end
 
+      def buffer
+        status.buffer
+      end
+
       def update(event)
         variable.set(to_s)
       end
@@ -35,10 +39,6 @@ module VER
 
       def style=(config)
         configure(config)
-      end
-
-      def text
-        status.text
       end
 
       def to_s

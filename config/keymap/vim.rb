@@ -39,18 +39,35 @@ module VER
     map :open_console,        %w[Control-exclam] if defined?(::EM)
   end
 
+  minor_mode :vim_layout do
+    handler :window
+    map :split_horizontal, %w[Control-w s], %w[Control-w Control-s], %w[colon s h]
+    map :split_vertical,   %w[Control-w v], %w[Control-w Control-v], %w[colon s v]
+    map :new_horizontal,   %w[Control-w n], %w[Control-w Control-n], %w[colon n]
+    map :quit,             %w[Control-w q], %w[Control-w Control-q], %w[colon q Return]
+    map :quit!,            %w[colon q exclam]
+    map :close,            %w[Control-w c], %w[colon c l o Return]
+    map :close!,           %w[colon c l o exclam]
+    map :only,             %w[Control-w o], %w[Control-w Control-o], %w[colon o n Return]
+    map :go_below, %w[Control-w Down], %w[Control-w Control-j], %w[Control-w j]
+    map :go_above, %w[Control-w Up], %w[Control-w Control-k], %w[Control-w k]
+    map :go_left,  %w[Control-w Left], %w[Control-w BackSpace], %w[Control-w Control-h], %w[Control-w h]
+    map :go_right, %w[Control-w Right], %w[Control-w Control-l], %w[Control-w l]
+  end
+
   minor_mode :layout do
     inherits :basic
     handler Methods::Layout
 
+    map :hide,          %w[0]
     map :one,           %w[1]
     map :two,           %w[2]
 
     map :slave_inc,     %w[plus]
     map :slave_dec,     %w[minus]
 
-    map :master_inc,    %w[H]
-    map :master_dec,    %w[L]
+    map :master_inc,    %w[less]
+    map :master_dec,    %w[greater]
 
     map :create,        %w[c]
     map :focus_next,    %w[j], %w[Right]
@@ -85,23 +102,26 @@ module VER
 
     handler Methods::Move
     (0..9).each{|n| map :ask_go_line, ['colon', n.to_s] }
+    map :prefix_arg_sol,  %w[0]
+    map :matching_brace,  %w[percent]
+    map :next_page,       %w[Control-f], %w[Next]
+    map :prev_page,       %w[Control-b], %w[Prior]
+
+    handler :at_insert
     map :prev_char,       %w[h], %w[Left]
     map :prev_chunk,      %w[B]
     map :prev_word,       %w[b], %w[Shift-Left]
     map :start_of_line,   %w[Home]
-    map :prefix_arg_sol,  %w[0]
-    map :end_of_text,     %w[G]
+    map :end_of_buffer,   %w[G]
     map :end_of_line,     %w[dollar], %w[End]
     map :next_char,       %w[l], %w[Right]
     map :next_chunk,      %w[W]
     map :next_word,       %w[w], %w[Shift-Right]
     map :go_line,         %w[g g]
-    map :matching_brace,  %w[percent]
     map :next_line,       %w[j], %w[Down], %w[Control-n]
-    map :next_page,       %w[Control-f], %w[Next]
-    map :prev_page,       %w[Control-b], %w[Prior]
     map :prev_line,       %w[k], %w[Up], %w[Control-p]
     map :next_word_end,   %w[e]
+    map :prev_word_end,   %w[E]
   end
 
   minor_mode :prefix do
@@ -153,15 +173,15 @@ module VER
   minor_mode :delete do
     handler Methods::Delete
 
-    map :change_line,                    %w[c c]
-    map :kill_line,                      %w[d d]
-    map :kill_motion,                    ['d', :move]
-    map :change_motion,                  ['c', :move]
-    map [:change_motion, :end_of_line],  %w[C]
-    map [:change_word_right_end],        %w[c w]
-    map [:kill_motion, :prev_char],      %w[X]
-    map [:kill_motion, :end_of_line],    %w[D]
-    map [:kill_motion, :next_char],      %w[x]
+    map :change_line,               %w[c c]
+    map :change_motion,             ['c', :move]
+    map :change_word_right_end,     %w[c w]
+    map :kill_line,                 %w[d d]
+    map :killing,                   ['d', :move]
+    map [:changing, :end_of_line],  %w[C]
+    map [:killing, :end_of_line],   %w[D]
+    map [:killing, :next_char],     %w[x]
+    map [:killing, :prev_char],     %w[X]
   end
 
   minor_mode :clipboard do
@@ -278,9 +298,9 @@ module VER
     map :auto_fill_space,          %w[space]
 
     handler Methods::Delete
-    map [:kill_motion, :next_char],  %w[Delete], %w[Control-d]
-    map [:kill_motion, :prev_char],  %w[BackSpace]
-    map [:kill_motion, :prev_word],  %w[Control-w]
+    map [:killing, :next_char],  %w[Delete], %w[Control-d]
+    map [:killing, :prev_char],  %w[BackSpace]
+    map [:killing, :prev_word],  %w[Control-w]
 
     handler Methods::Move
     map :next_line,      %w[Down], %w[Control-n]
@@ -336,7 +356,7 @@ module VER
   minor_mode :select do
     inherits :basic, :move, :search
 
-    handler Methods::Selection
+    handler :at_sel
     map :comment,         %w[comma c]
     map :copy,            %w[y], %w[Y]
     map :indent,          %w[greater]
@@ -357,12 +377,12 @@ module VER
   minor_mode :select_char do
     inherits :select
 
-    become :control,      %w[Escape], %w[Control-c]
-    become :select_line,  %w[V]
-    become :select_block, %w[Control-v]
+    become :control,             %w[Escape], %w[Control-c]
+    become :select_line,         %w[V]
+    become :select_block,        %w[Control-v]
     become :select_replace_char, %w[r]
 
-    handler Methods::Selection
+    handler :at_sel
     enter :enter
     leave :leave
   end
@@ -370,12 +390,12 @@ module VER
   minor_mode :select_line do
     inherits :select
 
-    become :control,      %w[Escape], %w[Control-c]
-    become :select_char,  %w[v]
-    become :select_block, %w[Control-v]
+    become :control,             %w[Escape], %w[Control-c]
+    become :select_char,         %w[v]
+    become :select_block,        %w[Control-v]
     become :select_replace_char, %w[r]
 
-    handler Methods::Selection
+    handler :at_sel
     enter :enter
     leave :leave
   end
@@ -383,12 +403,12 @@ module VER
   minor_mode :select_block do
     inherits :select
 
-    become :control,     %w[Escape], %w[Control-c]
-    become :select_char, %w[v]
-    become :select_line, %w[V]
+    become :control,             %w[Escape], %w[Control-c]
+    become :select_char,         %w[v]
+    become :select_line,         %w[V]
     become :select_replace_char, %w[r]
 
-    handler Methods::Selection
+    handler :at_sel
     enter :enter
     leave :leave
   end
@@ -396,7 +416,7 @@ module VER
   minor_mode :select_replace_char do
     become :control, %w[Escape], %w[Control-c]
 
-    handler Methods::Selection
+    handler :at_sel
     map [:replace_char, "\n"], %w[Return]
     missing :replace_char
   end

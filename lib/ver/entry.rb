@@ -59,21 +59,22 @@ module VER
 
     ## Insert
 
-    def insert_string(event)
-      insert(cursor, event.unicode)
+    def insert_string
+      p major_mode.event_history
+      # insert(cursor, event.unicode)
     end
 
     # Insert X selection at cursor position
-    def insert_selection(event)
+    def insert_selection
       insert(cursor, Tk::Selection.get)
     end
 
     # Insert a literal tab character at cursor position
-    def insert_tab(event)
+    def insert_tab
       insert(cursor, "\t")
     end
 
-    def transpose_chars(event)
+    def transpose_chars
       char = get[cursor]
       delete(cursor)
       insert(cursor - 1, char)
@@ -89,54 +90,54 @@ module VER
       kill(*virtual_movement(motion))
     end
 
-    def kill_prev_char(event)
+    def kill_prev_char
       kill_motion :prev_char
     end
 
-    def kill_next_char(event)
+    def kill_next_char
       kill_motion :next_char
     end
 
-    def kill_prev_word(event)
+    def kill_prev_word
       kill_motion :prev_word
     end
 
-    def kill_next_word(event)
+    def kill_next_word
       kill_motion :next_word
     end
 
-    def kill_end_of_line(event)
+    def kill_end_of_line
       kill_motion :end_of_line
     end
 
     ## Selection
 
-    def sel_prev_char(event)
+    def sel_prev_char
       # bind TEntry <Shift-Key-Left> 		{ ttk::entry::Extend %W prevchar }
       Tk.execute_only('ttk::entry::Extend', self, :prevchar)
     end
 
-    def sel_next_char(event)
+    def sel_next_char
       # bind TEntry <Shift-Key-Right>		{ ttk::entry::Extend %W nextchar }
       Tk.execute_only('ttk::entry::Extend', self, :nextchar)
     end
 
-    def sel_prev_word(event)
+    def sel_prev_word
       # bind TEntry <Shift-Control-Key-Left>	{ ttk::entry::Extend %W prevword }
       Tk.excute_only('ttk::entry::Extend', self, :prevword)
     end
 
-    def sel_next_word(event)
+    def sel_next_word
       # bind TEntry <Shift-Control-Key-Right>	{ ttk::entry::Extend %W nextword }
       Tk.execute_only('ttk::entry::Extend', self, :nextword)
     end
 
-    def sel_start_of_line(event)
+    def sel_start_of_line
       # bind TEntry <Shift-Key-Home>		{ ttk::entry::Extend %W home }
       Tk.execute_only('ttk::entry::Extend', self, :home)
     end
 
-    def sel_end_of_line(event)
+    def sel_end_of_line
       # bind TEntry <Shift-Key-End>		{ ttk::entry::Extend %W end }
       Tk.execute_only('ttk::entry::Extend', self, :end)
     end
@@ -144,35 +145,35 @@ module VER
     ## Movement
 
     # Move to the start of the current line.
-    def start_of_line(event)
+    def start_of_line
       self.cursor = 0
     end
 
     # Move to the end of the entry line.
-    def end_of_line(event)
+    def end_of_line
       self.cursor = :end
     end
 
     # Move forward a character.
-    def next_char(event)
+    def next_char
       self.cursor += 1
     end
 
     # Move back a character.
-    def prev_char(event)
+    def prev_char
       self.cursor -= 1
     end
 
     # Move forward to the end of the next word.
     # Words are composed of alphanumeric characters (letters and digits).
-    def next_word(event)
+    def next_word
       return unless md = get.match(FORWARD_WORD, cursor)
       self.cursor = md.offset(0).last
     end
 
     # Move back to the start of the current or previous word.
     # Words are composed of alphanumeric characters (letters and digits).
-    def prev_word(event)
+    def prev_word
       line = get.reverse
       pos = get.size - cursor
 
@@ -222,7 +223,7 @@ module VER
     # If this line is non-empty, it will be added to the history list.
     # If the line is a modified history line, the history line is restored to
     # its original state.
-    def accept_line(event)
+    def accept_line
       line = get
       Tk::Event.generate(self, '<<AcceptLine>>')
       delete(0, :end)

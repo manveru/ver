@@ -4,16 +4,16 @@ module VER
     autoload :ExLabel, 'ver/executor/label'
 
     class Frame < Tk::Tile::Frame
-      def shown?
-        true
-      end
+      attr_accessor :shown
+      alias shown? shown
 
-      def hidden?
-        false
+      def initialize(parent, options = {})
+        super
+        @shown = true
       end
     end
 
-    attr_reader :caller, :tree, :label, :entry, :ybar
+    attr_reader :caller, :tree, :label, :entry, :ybar, :frame
     attr_accessor :update_on_change
 
     def initialize(caller, options = {})
@@ -75,7 +75,7 @@ module VER
     def destroy(caller_focus = true)
       [@entry, @label, @tree, @ybar, @top, @bottom].compact.each(&:destroy)
 
-      caller.layout.close_buffer(@frame)
+      # caller.layout.close_buffer(self)
       @frame.destroy
       @caller.focus if caller_focus
     end

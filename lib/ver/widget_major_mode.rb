@@ -58,12 +58,32 @@ module VER
       self.minors -= minors.map{|name| MinorMode[name] }
     end
 
+    class FakeEvent < Struct.new(:sequence, :keysym, :unicode)
+      def initialize(name)
+        self.sequence = name
+        self.keysym = name2keysym(name)
+        self.unicode = name2unicode(name)
+      end
+
+      def name2keysym(name)
+      end
+
+      def name2unicode(name)
+      end
+    end
+
+    def fake(input)
+      input.scan(/<[\w-]+>|[[:word:]]/) do |name|
+        on_event(FakeEvent.new(name))
+      end
+    end
+
     def on_event(event)
       stack << event.sequence
       event_history << {
         sequence: event.sequence,
-        keysym: event.keysym,
-        unicode: event.unicode
+        keysym:   event.keysym,
+        unicode:  event.unicode
       }
 
       return handle_reader(event) if reader && read_amount

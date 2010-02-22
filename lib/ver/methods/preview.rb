@@ -16,9 +16,27 @@ module VER
       def preview(text)
         return unless syntax = text.syntax
 
-        case syntax.name
-        when 'Ruby'; preview_ruby(text)
+        method = "preview_#{syntax.name}".downcase
+
+        if respond_to?(method)
+          send(method, text)
         end
+      end
+
+      def compile(text)
+        return unless syntax = text.syntax
+
+        method = "compile_#{syntax.name}".downcase
+
+        if respond_to?(method)
+          send(method, text)
+        end
+      end
+
+      def compile_haml(text)
+      end
+
+      def compile_sass(text)
       end
 
       def preview_ruby(text)

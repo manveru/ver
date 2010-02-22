@@ -23,7 +23,8 @@ VER.spec do
       wmm.major.should == major
       action_mode, action = wmm.resolve(['g'])
       action_mode.should == major
-      action.method.should == :get
+      action.invocation.should == :get
+      action.handler.should == nil
 
       entry.destroy
     end

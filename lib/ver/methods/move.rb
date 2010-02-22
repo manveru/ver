@@ -1,92 +1,64 @@
 module VER
+  Buffer.def_delegators(:@at_insert,
+    :end_of_buffer, :end_of_line, :go_line, :home_of_line, :next_char,
+    :next_char, :next_chunk, :next_line, :next_page, :next_word, :next_word_end,
+    :prev_char, :prev_char, :prev_chunk, :prev_line, :prev_page, :prev_word,
+    :prev_word_end, :start_of_line
+  )
+
   module Methods
     module Move
-      GO_MATCHING_RIGHT = {
-        '(' => ')',
-        '{' => '}',
-        '[' => ']',
-        '<' => '>',
-      }
-      GO_MATCHING_LEFT = GO_MATCHING_RIGHT.invert
-
       module_function
 
-      def prefix_arg_sol(text)
-        return if text.update_prefix_arg(text)
-        start_of_line(text)
+      # Move cursor left.
+      def prev_char(buffer)
+        buffer.prev_char
       end
 
-      def matching_brace(text)
-        if pos = matching_brace_pos(text, :insert)
-          text.mark_set(:insert, pos)
-        else
-          VER.warn "No matching brace"
-        end
+      # Move cursor right.
+      def next_char(buffer)
+        buffer.next_char
       end
 
-      def matching_brace_pos(text, index = :insert)
-        opening = text.get(index)
-
-        if closing = GO_MATCHING_RIGHT[opening]
-          start = "#{index} + 1 chars"
-          search = text.method(:search_all)
-        elsif closing = GO_MATCHING_LEFT[opening]
-          start = index
-          search = text.method(:rsearch_all)
-        else
-          return
-        end
-
-        balance = 1
-        needle = Regexp.union(opening, closing)
-        search.call needle, start do |match, from, to|
-          case match
-          when opening
-            balance += 1
-          when closing
-            balance -= 1
-          end
-
-          if balance == 0
-            return from
-          end
-        end
+      def next_word(buffer)
+        buffer.next_word
       end
 
-      # Move cursor +count+ characters left.
-      def prev_char(text, count = text.prefix_count)
-        text.mark_set(:insert, "insert - #{count} displaychars")
+      def next_chunk(buffer)
+        buffer.next_chunk
       end
 
-      # Move cursor +count+ characters right.
-      def next_char(text, count = text.prefix_count)
-        text.mark_set(:insert, "insert + #{count} displaychars")
+      # Jump to the last character of the word the insert cursor is over currently.
+      def next_word_end(buffer)
+        buffer.next_word_end
+      end
+
+      def prev_word(buffer)
+        buffer.prev_word
+      end
+
+      def prev_chunk(buffer)
+        buffer.prev_chunk
+      end
+
+      def prev_word_end(buffer)
+        buffer.prev_word_end
       end
 
       # Move to the beginning of the line in which insert mark is located.
       #
       # With +count+ it will move to the beginning of the display line, which
       # takes line wraps into account.
-      def start_of_line(text, count = text.prefix_count)
-        if count
-          text.mark_set(:insert, 'insert display linestart')
-        else
-          text.mark_set(:insert, 'insert linestart')
-        end
+      def start_of_line(buffer)
+        buffer.start_of_line
       end
 
       # Move to the first character of the line in which insert mark is located.
       #
       # With +count+ it will move to the linestart of the displayed, taking
       # linewraps into account.
-      def home_of_line(text, count = text.prefix_arg)
-        if count
-          start_of_line(text, true)
-        else
-          x = text.get('insert linestart', 'insert lineend').index(/\S/) || 0
-          y = text.index('insert').y
-          text.mark_set(:insert, "#{y}.#{x}")
-        end
+      def home_of_line(buffer)
+        buffer.home_of_line
       end
 
       # Move to the end of the line where insert mark is located.
@@ -94,278 +66,108 @@ module VER
       # With +count+ it moves to the end of the display line, so when there is
       # a line wrap it will move to the place where the line wraps instead of the
       # real end of the line.
-      def end_of_line(text, count_or_mode = nil)
-        case count_or_mode
-        when Symbol
-          text.mark_set(:insert, 'insert display lineend')
-          text.minor_mode(:control, count_or_mode)
-        when nil
-          text.mark_set(:insert, 'insert lineend')
+      def end_of_line(buffer)
+        buffer.end_of_line
+      end
+
+      def go_line(buffer)
+        buffer.go_line
+      end
+
+      def go_column(buffer)
+        buffer.go_char
+      end
+
+      # Basically like [go_line] without arguments, but much nicer name.
+      def start_of_buffer(buffer)
+        buffer.start_of_buffer
+      end
+
+      def end_of_buffer(buffer)
+        buffer.end_of_buffer
+      end
+
+      def end_of_sentence(buffer)
+        buffer.end_of_sentence
+      end
+
+      def prev_line(buffer)
+        buffer.prev_line
+      end
+
+      def next_line(buffer)
+        buffer.next_line
+      end
+
+      def prefix_arg_sol(text)
+        return if text.update_prefix_arg(text)
+        start_of_line(text)
+      end
+
+      def matching_brace(buffer)
+        if pos = buffer.matching_brace.counterpart_position
+          buffer.at_insert.index = pos
         else
-          text.mark_set(:insert, 'insert display lineend')
+          VER.warn "No matching brace"
         end
       end
 
-      def go_line(text, number = text.prefix_count)
-        text.mark_set(:insert, "#{number}.0")
-      end
-
-      def ask_go_line(text)
-        initial = $1 if text.event.unicode =~ /^(\d+)$/
+      def ask_go_line(buffer)
+        initial = $1 if buffer.event.unicode =~ /^(\d+)$/
         question = 'Go to [line number|+lines][,column number]: '
-        text.ask question, value: initial do |answer, action|
+        buffer.ask question, value: initial do |answer, action|
           case action
           when :attempt
-            parse_go_line text, answer do |index|
-              text.mark_set(:insert, index)
+            parse_go_line buffer, answer do |index|
+              buffer.insert = index
               :abort
             end
           when :modified
-            parse_go_line text, answer do |index|
-              text.tag_configure(Search::TAG, Search::HIGHLIGHT)
-              text.tag_add(Search::TAG, index, index.lineend)
-              text.see(index)
+            parse_go_line buffer, answer do |index|
+              buffer.tag_configure(Search::TAG, Search::HIGHLIGHT)
+              buffer.tag_add(Search::TAG, index, index.lineend)
+              buffer.see(index)
               Tk::After.ms(3000){
-                text.tag_remove(Search::TAG, index, index.lineend)
-                text.see(:insert)
+                buffer.tag_remove(Search::TAG, index, index.lineend)
+                buffer.at_insert.see
               }
             end
           end
         end
       end
 
-      def parse_go_line(text, input)
+      def parse_go_line(buffer, input)
         case input.to_s.strip
         when /^\+(\d+)(?:,(\d+))?$/
-          line, column = $1.to_i, $2.to_i
-          current = text.index(:insert)
-          yield text.index("#{current.line + line}.#{column}")
+          line, char = $1.to_i, $2.to_i
+          current = buffer.at_insert
+          yield buffer.index("#{current.line + line}.#{char}")
         when /^(\d+)(?:,(\d+))?$/
-          line, column = $1.to_i, $2.to_i
-          yield text.index("#{line}.#{column}")
+          line, char = $1.to_i, $2.to_i
+          yield buffer.index("#{line}.#{char}")
         end
       end
 
-      def go_column(text, number = text.prefix_count)
-        text.mark_set(:insert, "insert linestart + #{number} chars")
-      end
-
-      # Basically like [go_line] without arguments, but much nicer name.
-      def start_of_text(text)
-        text.mark_set(:insert, "1.0")
-      end
-
-      def end_of_text(text, count = text.prefix_arg)
-        if count
-          text.mark_set(:insert, "#{count}.0")
-        else
-          text.mark_set(:insert, :end)
-        end
-      end
-
-      def end_of_sentence(text, count = text.prefix_count)
-        text.search_all(/\.\s/, 'insert') do |match, from, to|
-          p match: match, from: from, to: to
-          text.mark_set(:insert, "#{to} - 1 chars")
-          count -= 1
-          return if count <= 0
-        end
-      end
-
-      def virtual(text, action, count = text.prefix_count)
-        pos = text.index(:insert)
-
-        if action.respond_to?(:call)
-          action.call(text, count)
-        else
-          send(action, text, count)
-        end
-
-        mark = text.index(:insert)
-        text.mark_set(:insert, pos)
-        return [pos, mark].sort
-      rescue => ex
-        VER.error(ex)
-      end
-
-      def prev_line(text, count = text.prefix_count)
-        up_down_line(text, -count.abs)
-      end
-
-      def next_line(text, count = text.prefix_count)
-        up_down_line(text, count.abs)
-      end
-
-      def forward_scroll(text, count = text.prefix_count)
+      def forward_scroll(buffer, count = buffer.prefix_count)
         count_abs = count.abs
-        text.yview_scroll(count_abs, :units)
-        next_line(text, count_abs)
+        buffer.yview_scroll(count_abs, :units)
+        next_line(buffer, count_abs)
       end
 
-      def backward_scroll(text, count = text.prefix_count)
+      def backward_scroll(buffer, count = buffer.prefix_count)
         count_abs = count.abs
-        text.yview_scroll(-count_abs, :units)
-        prev_line(text, count_abs)
-      end
-
-      def next_word(text, count = text.prefix_count)
-        forward_jump(text, count, &method(:word_char_type))
-      end
-
-      def next_chunk(text, count = text.prefix_count)
-        forward_jump(text, count, &method(:chunk_char_type))
-      end
-
-      # Jump to the last character of the word the insert cursor is over currently.
-      def next_word_end(text, count = text.prefix_count)
-        text.mark_set(:insert, index_at_word_right_end(text, count))
-      end
-
-      def prev_word(text, count = text.prefix_count)
-        backward_jump(text, count, &method(:word_char_type))
-      end
-
-      def prev_chunk(text, count = text.prefix_count)
-        backward_jump(text, count, &method(:chunk_char_type))
+        buffer.yview_scroll(-count_abs, :units)
+        prev_line(buffer, count_abs)
       end
 
       # HACK: but it's just too good to do it manually
 
-      def prev_page(text, count = text.prefix_count)
-        text.mark_set(:insert, text.tk_prev_page_pos(count))
+      def prev_page(buffer, count = buffer.prefix_count)
+        buffer.insert = buffer.tk_prev_page_pos(count)
       end
 
-      def next_page(text, count = text.prefix_count)
-        text.mark_set(:insert, text.tk_next_page_pos(count))
-      end
-
-      def index_at_word_right_end(text, count = text.prefix_count)
-        offset = 1
-        last = text.index('end')
-
-        count.times do
-          pos  = text.index("insert + #{offset} chars")
-
-          return if pos == last
-
-          type = word_char_type(text.get(pos))
-
-          while type == :space
-            offset += 1
-            pos = text.index("insert + #{offset} chars")
-            break if pos == last
-            type = word_char_type(text.get(pos))
-          end
-
-          lock = type
-
-          while type == lock && type != :space
-            offset += 1
-            pos = text.index("insert + #{offset} chars")
-            break if pos == last
-            type = word_char_type(text.get(pos))
-          end
-        end
-
-        text.index("insert + #{offset - 1} chars")
-      rescue => ex
-        VER.error(ex)
-      end
-
-      def word_char_type(char)
-        case char
-        when /\w/; :word
-        when /\S/; :special
-        when /\s/; :space
-        else
-          Kernel.raise "No matching char type for: %p" % [char]
-        end
-      end
-
-      def chunk_char_type(char)
-        case char
-        when /\S/; :nonspace
-        when /\s/; :space
-        else
-          Kernel.raise "No matching chunk type for: %p " % [char]
-        end
-      end
-
-      def forward_jump(text, count)
-        count.times do
-          original_type = type = yield(text.get(:insert))
-          changed = 0
-
-          begin
-            original_pos = text.index(:insert)
-            text.execute_only(:mark, :set, :insert, 'insert + 1 chars')
-            break if original_pos == text.index(:insert)
-
-            type = yield(text.get(:insert))
-            changed += 1 if type != original_type
-            original_type = type
-          end until changed > 0 && type != :space
-        end
-
-        Tk::Event.generate(text, '<<Movement>>')
-      rescue => ex
-        VER.error(ex)
-      end
-
-      def backward_jump(text, count)
-        count.times do
-          original_type = type = yield(text.get(:insert))
-          changed = 0
-
-          begin
-            original_pos = text.index(:insert)
-            text.execute_only(:mark, :set, :insert, 'insert - 1 chars')
-            break if text.index(:insert) == original_pos
-
-            type = yield(text.get(:insert))
-            changed += 1 if type != original_type
-            original_type = type
-          end until changed > 0 && type != :space
-
-          type = yield(text.get('insert - 1 chars'))
-
-          while type == original_type
-            original_pos = text.index(:insert)
-            text.execute_only(:mark, :set, :insert, 'insert - 1 chars')
-            break if text.index(:insert) == original_pos
-
-            type = yield(text.get('insert - 1 chars'))
-          end
-        end
-
-        Tk::Event.generate(text, '<<Movement>>')
-      rescue => ex
-        VER.error(ex)
-      end
-
-      # OK, finally found the issue.
-      #
-      # the implementation of tk::TextUpDownLine is smart, but not smart enough.
-      # It doesn't assume large deltas between the start of up/down movement and
-      # the last other modification of the insert mark.
-      #
-      # This means that, after scrolling with up/down for a few hundred lines,
-      # it has to calculate the amount of display lines in between, which is a
-      # very expensive calculation and time increases O(delta_lines).
-      #
-      # We'll try to solve this another way, by assuming that there are at least
-      # a few other lines of same or greater length in between, we simply
-      # compare against a closer position and make delta_lines as small as
-      # possible.
-      #
-      # Now, if you go to, like column 100 of a line, and there is never a line
-      # as long for the rest of the file, the scrolling will still slow down a
-      # lot. This is an issue we can fix if we "forget" the @udl_pos_orig after
-      # a user-defined maximum delta (something around 200 should do), will
-      # implement that on demand.
-      def up_down_line(text, count)
-        target = text.up_down_line(count)
-        text.mark_set(:insert, target)
+      def next_page(buffer, count = buffer.prefix_count)
+        buffer.insert = buffer.tk_next_page_pos(count)
       end
     end
   end

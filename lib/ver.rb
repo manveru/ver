@@ -8,6 +8,7 @@ autoload :Tempfile,  'tempfile'
 
 # eager stdlib
 require 'digest/sha1'
+require 'forwardable'
 require 'securerandom'
 require 'set'
 require 'ver/vendor/better_pp_hash'
@@ -155,7 +156,7 @@ module VER
     @ctag_stack = []
     @style_name_register = []
     @style_name_pools = {}
-    @buffers = {}
+    @buffers = Set.new
 
     load 'rc'
     @options.merge!(given_options)
@@ -409,11 +410,11 @@ module VER
     session_path = loadpath.first/basename
 
     session = {buffers: [], bookmarks: []}
-    buffers.each do |name, buffer|
+    buffers.each do |buffer|
       session[:buffers] << {
-        name: name.to_s,
+        name:     buffer.name.to_s,
         filename: buffer.filename.to_s,
-        insert: buffer.text.index(:insert).split,
+        insert:   buffer.at_insert.to_a,
       }
     end
 
@@ -468,6 +469,7 @@ module VER
   end
 
   def return_style_name(style_name)
+    return unless style_name
     id, widget_name, widget_class = style_name.split('.')
     suffix = "#{widget_name}.#{widget_class}"
     style_name_pools[suffix] << style_name

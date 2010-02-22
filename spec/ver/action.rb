@@ -1,65 +1,59 @@
-require 'bacon'
-Bacon.summary_on_exit
+require_relative '../helper'
 
-class Dummy < BasicObject
-  def initialize(name)
-    @name = name
-    @store = []
-  end
+VER.spec do
+  describe 'VER::Action' do
+    describe 'given Symbol handler' do
+      it 'sends handler to widget, then sends method without default args on result' do
+        buffer = VER::Buffer.new(VER.layout)
+        buffer.value = 'some line'
+        action = VER::Action.new(:next_char, :at_insert)
+        buffer.insert = '1.0'
+        action.call(buffer)
+        buffer.at_insert.index.should == '1.1'
+        buffer.destroy
+      end
 
-  def method_missing(method, *args)
-    @store << [method, *args]
-    self
-  end
+      it 'sends handler to widget, then sends method with default args on result' do
+        buffer = VER::Buffer.new(VER.layout)
+        buffer.value = 'some line'
+        action = VER::Action.new([:next_char, 2], :at_insert)
+        buffer.insert = '1.0'
+        action.call(buffer)
+        buffer.at_insert.index.should == '1.2'
+        buffer.destroy
+      end
 
-  def ==(other)
-    self.__name__ == other.__name__
-  end
+      it 'sends handler to widget, then sends method with given args on result' do
+        buffer = VER::Buffer.new(VER.layout)
+        buffer.value = 'some line'
+        action = VER::Action.new(:next_char, :at_insert)
+        buffer.insert = '1.0'
+        action.call(buffer, 2)
+        buffer.at_insert.index.should == '1.2'
+        buffer.destroy
+      end
+    end
 
-  def __name__
-    @name
-  end
+    describe 'given Module handler' do
+      it 'sends method on handler with widget as argument' do
+        buffer = VER::Buffer.new(VER.layout)
+        buffer.value = 'some line'
+        action = VER::Action.new(:next_char, VER::Methods::Move)
+        buffer.insert = '1.0'
+        action.call(buffer)
+        buffer.at_insert.index.should == '1.1'
+      end
+    end
 
-  def __store__
-    @store
-  end
-end
-
-require_relative '../../lib/ver/action'
-Action = VER::Action
-
-describe 'Action' do
-  it 'can have a receiver' do
-    action = Action.new(Bacon, :summary_on_exit)
-    action.receiver.should == Bacon
-  end
-
-  should 'call #send to the widget by default' do
-    widget = Dummy.new('widget')
-    action = Action.new(nil)
-    action.call(widget, 1)
-    action.last.should == [widget, :call, widget, [1]]
-  end
-
-  should 'call #call on the receiver if one exists' do
-    receiver = Dummy.new('receiver')
-    widget = Dummy.new('widget')
-    action = Action.new(receiver)
-    action.call(widget, 1)
-    action.last.should == [receiver, :call, widget, [1]]
-  end
-
-  it 'can have a callback block' do
-    out = nil
-    block = lambda{|event| out = event }
-    action = Action.new(&block)
-    action.block.should == block
-    action.method.should == :call
-    action.args.should == []
-  end
-
-  it 'can have arguments' do
-    action = Action.new(Bacon, :summary_on_exit, [1,2,3])
-    action.args.should == [1,2,3]
+    describe 'given no handler' do
+      it 'sends method on widget with given args' do
+        buffer = VER::Buffer.new(VER.layout)
+        buffer.value = 'some line'
+        action = VER::Action.new(:next_char)
+        buffer.insert = '1.0'
+        action.call(buffer)
+        buffer.at_insert.index.should == '1.1'
+      end
+    end
   end
 end

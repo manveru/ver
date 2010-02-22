@@ -50,8 +50,8 @@ module VER
 
     attr_accessor :buffer, :widgets, :notify
 
-    def initialize(buffer, options = {})
-      super
+    def initialize(parent, buffer, options = {})
+      super(parent, options)
       self.buffer = buffer
       self.notify = Hash.new{|hash, key| hash[key] = Set.new }
 
@@ -80,10 +80,6 @@ module VER
 
     def register(widget, *events)
       events.each{|event| notify[event] << widget }
-    end
-
-    def text
-      buffer.text
     end
 
     def style=(config)

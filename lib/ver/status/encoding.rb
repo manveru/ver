@@ -6,7 +6,7 @@ module VER
       end
 
       def to_s
-        text.encoding.name
+        buffer.encoding.name
       end
     end
   end

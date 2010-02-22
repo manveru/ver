@@ -58,29 +58,26 @@ module VER
       self.receiver = object
     end
 
-    def map(invocation, *sequences, &block)
-      action = Action.new(receiver, *invocation, &block)
-
-      sequences.each do |sequence|
-        keymap[sequence] = action
-      end
+    def map(invocation, *sequences)
+      action = Action.new(invocation, receiver)
+      sequences.each{|sequence| keymap[sequence] = action }
     end
 
-    def missing(invocation, &block)
-      action = Action.new(receiver, *invocation, &block)
+    def missing(invocation)
+      action = Action.new(invocation, receiver)
       self.fallback_action = action
       keymap['<Key>'] = action
     end
 
-    def enter(invocation, &block)
-      action = Action.new(receiver, *invocation, &block)
+    def enter(invocation)
+      action = Action.new(invocation, receiver)
       tag.bind "<<EnterMajorMode#{to_camel_case}>>" do |event|
         action.call(WidgetEvent.new(event.widget, event))
       end
     end
 
-    def leave(invocation, &block)
-      action = Action.new(receiver, *invocation, &block)
+    def leave(invocation)
+      action = Action.new(invocation, receiver)
       tag.bind "<<LeaveMajorMode#{to_camel_case}>>" do |event|
         action.call(WidgetEvent.new(event.widget, event))
       end

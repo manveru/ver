@@ -1,5 +1,5 @@
 module VER
-  class MiniBuffer < Tk::Text
+  class MiniBuffer < Text
     include Keymapped
 
     attr_accessor :messages_expire, :messages_pending, :char_width, :ask_stack
@@ -29,9 +29,18 @@ module VER
       self.char_width = font.measure('0')
       self.ask_stack = []
 
-      tag_configure 'info', foreground: '#fff'
-      tag_configure 'warn', foreground: '#f00'
-      tag_configure 'highlight', background: '#330'
+      @info, @warn, @highlight, @prompt, @answer =
+        tag(:info), tag(:warn), tag(:highlight), tag(:prompt), tag(:answer)
+
+      @info.configure(foreground: '#fff')
+      @warn.configure(foreground: '#f00')
+      @highlight.configure(background: '#330')
+
+      insert :end, 'prompt', :prompt
+      @prompt.configure elide: true
+
+      insert :end, 'answer', :answer
+      @answer.configure elide: true
 
       bind('<Configure>'){ adjust_size }
     end
@@ -44,31 +53,29 @@ module VER
     end
 
     def prompt=(prompt)
-      replace 'prompt.first', 'prompt.last', prompt, 'prompt'
-    rescue
-      insert '1.0 linestart', prompt, 'prompt'
+      if !prompt || prompt.empty?
+        @prompt.configure elide: true
+      else
+        @prompt.replace(prompt)
+        @prompt.configure elide: false
+      end
     end
 
     def prompt
-      get('prompt.first', 'prompt.last')
-    rescue
-      ''
+      @prompt.get
     end
 
     def answer=(answer)
-      replace 'answer.first', 'answer.last', answer, 'answer'
-    rescue
-      begin
-        insert 'prompt.last', answer, 'answer'
-      rescue
-        insert 'end', answer, 'answer'
+      if !answer || answer.empty?
+        @answer.configure elide: true
+      else
+        @answer.replace(answer)
+        @answer.configure elide: false
       end
     end
 
     def answer
-      get('answer.first', 'answer.last')
-    rescue
-      ''
+      @answer.get
     end
 
     def message(string, tag = 'info')
@@ -86,17 +93,18 @@ module VER
 
         message_expire(tag) #  if messages_expire
         message_notify(tag)
-        message_buffer_insert(string, tag)
+        # message_buffer_insert(string, tag)
       end
     end
 
     def message_buffer_insert(string, tag)
       string = "#{string}\n" unless string.end_with?("\n")
       buffer = Buffer[:Messages]
-      buffer.text.execute(:insert, :end, string, tag)
+      mark = buffer.at_end
+      mark.insert(string, tag)
 
       last_focus = Tk::Focus.focus # for some reason
-      buffer.text.see(:end)        # this changes focus to the text
+      mark.see                     # this changes focus to the text
       Tk::Focus.focus(last_focus)  # so we restore it here
     end
 

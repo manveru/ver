@@ -36,11 +36,11 @@ VER.spec do
 
       action_mode, action = control.resolve(['q'])
       action_mode.should == control
-      action.method.should == :quit
+      action.invocation.should == :quit
 
       action_mode, action = control.resolve(['j'])
       action_mode.should == movement
-      action.method.should == :next_line
+      action.invocation.should == :next_line
     end
 
     it 'indicates whether a sequence can be found' do
@@ -49,7 +49,7 @@ VER.spec do
 
       action_mode, action = control.resolve(['Z', 'Z'])
       action_mode.should == control
-      action.method.should == :quit
+      action.invocation.should == :quit
 
       control.resolve(['Z']).should.be.kind_of Keymap::Results::Incomplete
       control.resolve(['X']).should.be.kind_of Keymap::Results::Impossible
@@ -61,10 +61,10 @@ VER.spec do
       mode.missing(:insert)
 
       action_mode, action = mode.resolve(['d', 'w'])
-      action.method.should == :kill_word
+      action.invocation.should == :kill_word
 
       action_mode, action = mode.resolve(['y'])
-      action.method.should == :insert
+      action.invocation.should == :insert
     end
 
     it "can do lookup spanning multiple minor modes" do
@@ -79,12 +79,13 @@ VER.spec do
 
       action_mode, action = control.resolve(['d', 'd'])
       action_mode.should == kill
-      action.method.should == :kill_line
+      action.invocation.should == :kill_line
 
       action_mode, action = control.resolve(['d', 'j'])
       action_mode.should == kill
-      action.method.should == :kill_motion
-      action.args.first.method.should == :next_line
+      action.invocation.size.should == 2
+      action.invocation.first.should == :kill_motion
+      action.invocation.last.invocation.should == :next_line
     end
   end
 end
