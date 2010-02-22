@@ -258,16 +258,28 @@ module VER
           value.gsub!(pattern, replacement)
         end
 
-        Regexp.new(value)
+        value2 = ''
+        group_index = 0
+        value.scan(/((?:[^\\(]+|\\[^\d])+)|(\\\d+)|(\(\??)/m) do |content, backref, capture|
+          if capture == '('
+            value2 << "(?<_#{group_index += 1}>"
+          elsif backref
+            value2 << "\\k<_#{backref[/\d+/]}>"
+          else
+            value2 << (content || capture)
+          end
+        end
+
+        Regexp.new(value2)
       rescue RegexpError => ex
         if ex.message =~ /^invalid multibyte escape:/
           begin
-            /#{value.force_encoding(Encoding::BINARY)}/n
+            /#{value2.force_encoding(Encoding::BINARY)}/n
           rescue RegexpError => ex
-            error(ex, original, value)
+            error(ex, original, value2)
           end
         else
-          error(ex, original, value)
+          error(ex, original, value2)
         end
       end
 
