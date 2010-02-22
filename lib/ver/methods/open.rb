@@ -171,7 +171,8 @@ module VER
       end
 
       def file_open_ask(text)
-        text.ask 'Filename: ', value: Dir.pwd do |answer, action|
+        path = Dir.pwd + '/'
+        text.ask 'Filename: ', value: path do |answer, action|
           case action
           when :complete
             file_complete(answer)
