@@ -107,6 +107,7 @@ module VER::Syntax::Detector
   head "Mail", /^From: .*(?=\w+@[\w-]+\.\w+)/
   exts "Makefile", ["GNUmakefile", "makefile", "Makefile", "OCamlMakefile"]
   exts "Man", ["man"]
+  exts "Markdown", ["mdown", "markdown", "markdn", "md"]
   exts "Maven POM", ["pom.xml"]
   exts "Mediawiki", ["mediawiki", "wikipedia", "wiki"]
   exts "MEL", ["as"]
@@ -117,6 +118,7 @@ module VER::Syntax::Detector
   head "Movable Type", /<\$?[Mm][Tt]/
   exts "Movable Type (MT only)", ["mtml"]
   head "Movable Type (MT only)", /<\$?[Mm][Tt]/
+  head "MultiMarkdown", /^Format:\s*(?i:complete)\s*$/
   exts "Nemerle", ["n"]
   exts "newLisp", ["lsp", "qwerty"]
   exts "Objective-C", ["m", "h"]
@@ -130,6 +132,7 @@ module VER::Syntax::Detector
   head "Perl", /^#!.*\bperl\b/
   exts "Perl HTML-Template", ["tmpl"]
   head "Perl HTML-Template", /<(?i:TMPL)_.+?>/
+  head "PHP", /^#!.*(?<!-)php[0-9]{0,1}\b/
   exts "Plain Text", ["txt"]
   exts "Postscript", ["ps", "eps"]
   head "Postscript", /^%!PS/
