@@ -2,6 +2,7 @@ module VER
   def self.minor_mode(name, &block)
     minor = MinorMode[name]
     minor.instance_eval(&block)
+    minor.handler nil
     minor
   end
 

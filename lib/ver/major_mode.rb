@@ -2,6 +2,7 @@ module VER
   def self.major_mode(name, &block)
     major = MajorMode[name]
     major.instance_eval(&block)
+    major.handler nil
     major
   end
 
