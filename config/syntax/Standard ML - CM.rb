@@ -11,9 +11,9 @@
     captures: {0 => {name: "punctuation.definition.comment.cm"}},
     end: "\\*\\)",
     name: "comment.block.cm"},
-   {match: /\b(Library|is|Group|structure|signature|functor)\b/,
+   {match: /\b(?<_1>Library|is|Group|structure|signature|functor)\b/,
     name: "keyword.other.cm"},
-   {begin: /^\s*(#(if).*)/,
+   {begin: /^\s*(?<_1>#(?<_2>if).*)/,
     captures: 
      {1 => {name: "meta.preprocessor.cm"},
       2 => {name: "keyword.control.import.if.cm"}},

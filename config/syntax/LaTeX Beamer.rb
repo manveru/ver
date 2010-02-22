@@ -4,10 +4,10 @@
  firstLineMatch: "^\\\\documentclass(\\[.*\\])?\\{beamer\\}",
  foldingStartMarker: /\\begin\{.*\}|%.*\(fold\)\s*$/,
  foldingStopMarker: /\\end\{.*\}|%.*\(end\)\s*$/,
- keyEquivalent: /^~B/,
+ keyEquivalent: "^~B",
  name: "LaTeX Beamer",
  patterns: 
-  [{begin: /(?:\s*)((\\)begin)(\{)(frame)(\})/,
+  [{begin: /(?:\s*)(?<_1>(?<_2>\\)begin)(?<_3>\{)(?<_4>frame)(?<_5>\})/,
     captures: 
      {1 => {name: "support.function.be.latex"},
       2 => {name: "punctuation.definition.function.latex"},
@@ -23,7 +23,7 @@
       3 => {name: "punctuation.definition.arguments.begin.latex"},
       4 => {name: "entity.name.function.frame.latex"},
       5 => {name: "punctuation.definition.arguments.end.latex"}},
-    match: /((\\)frametitle)(\{)(.*)(\})/,
+    match: /(?<_1>(?<_2>\\)frametitle)(?<_3>\{)(?<_4>.*)(?<_5>\})/,
     name: "meta.function.frametitle.latex"},
    {include: "text.tex.latex"}],
  scopeName: "text.tex.latex.beamer",

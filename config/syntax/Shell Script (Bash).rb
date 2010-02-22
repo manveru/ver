@@ -10,8 +10,8 @@
    "bash_logout",
    ".textmate_init"],
  firstLineMatch: "^#!.*\\b(bash|zsh|sh|tcsh)",
- foldingStartMarker: /\b(if|case)\b|(\{|\b(do)\b)$/,
- foldingStopMarker: /^\s*(\}|(done|fi|esac)\b)/,
+ foldingStartMarker: /\b(?<_1>if|case)\b|(?<_2>\{|\b(?<_3>do)\b)$/,
+ foldingStopMarker: /^\s*(?<_1>\}|(?<_2>done|fi|esac)\b)/,
  keyEquivalent: "^~S",
  name: "Shell Script (Bash)",
  patterns: 
@@ -38,7 +38,7 @@
         endCaptures: {0 => {name: "punctuation.terminator.case-clause.shell"}},
         name: "meta.scope.case-clause.shell",
         patterns: 
-         [{begin: /(\(|(?=\S))/,
+         [{begin: /(?<_1>\(|(?=\S))/,
            captures: 
             {0 => {name: "punctuation.definition.case-pattern.shell"}},
            end: "\\)",
@@ -56,36 +56,36 @@
    comment: 
     {patterns: 
       [{captures: {1 => {name: "punctuation.definition.comment.shell"}},
-        match: /(?<!\$)(#)(?!\{).*$\n?/,
+        match: /(?<!\$)(?<_1>#)(?!\{).*$\n?/,
         name: "comment.line.number-sign.shell"}]},
    :"compound-command" => 
     {patterns: 
-      [{begin: /(\[{2})/,
+      [{begin: /(?<_1>\[{2})/,
         captures: 
          {1 => {name: "punctuation.definition.logical-expression.shell"}},
         end: "(\\]{2})",
         name: "meta.scope.logical-expression.shell",
         patterns: [{include: "#logical-expression"}, {include: "$self"}]},
-       {begin: /(\({2})/,
+       {begin: /(?<_1>\({2})/,
         beginCaptures: 
          {0 => {name: "punctuation.definition.string.begin.shell"}},
         end: "(\\){2})",
         endCaptures: {0 => {name: "punctuation.definition.string.end.shell"}},
         name: "string.other.math.shell",
         patterns: [{include: "#math"}]},
-       {begin: /(\()/,
+       {begin: /(?<_1>\()/,
         captures: {1 => {name: "punctuation.definition.subshell.shell"}},
         end: "(\\))",
         name: "meta.scope.subshell.shell",
         patterns: [{include: "$self"}]},
-       {begin: /(?<=\s|^)(\{)(?=\s|$)/,
+       {begin: /(?<=\s|^)(?<_1>\{)(?=\s|$)/,
         captures: {1 => {name: "punctuation.definition.group.shell"}},
         end: "(?<=^|;)\\s*(\\})",
         name: "meta.scope.group.shell",
         patterns: [{include: "$self"}]}]},
    :"function-definition" => 
     {patterns: 
-      [{begin: /\b(function)\s+([^\s\\]+)(?:\s*(\(\)))?/,
+      [{begin: /\b(?<_1>function)\s+(?<_2>[^\s\\]+)(?:\s*(?<_3>\(\)))?/,
         beginCaptures: 
          {1 => {name: "storage.type.function.shell"},
           2 => {name: "entity.name.function.shell"},
@@ -94,7 +94,7 @@
         endCaptures: {0 => {name: "punctuation.definition.function.shell"}},
         name: "meta.function.shell",
         patterns: [{include: "$self"}]},
-       {begin: /\b([^\s\\=]+)\s*(\(\))/,
+       {begin: /\b(?<_1>[^\s\\=]+)\s*(?<_2>\(\))/,
         beginCaptures: 
          {1 => {name: "entity.name.function.shell"},
           2 => {name: "punctuation.definition.arguments.shell"}},
@@ -104,7 +104,7 @@
         patterns: [{include: "$self"}]}]},
    heredoc: 
     {patterns: 
-      [{begin: /(<<)-("|'|)(RUBY)\2/,
+      [{begin: /(?<_1><<)-(?<_2>"|'|)(?<_3>RUBY)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -114,7 +114,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.no-indent.ruby.shell",
         patterns: [{include: "source.ruby"}]},
-       {begin: /(<<)("|'|)(RUBY)\2/,
+       {begin: /(?<_1><<)(?<_2>"|'|)(?<_3>RUBY)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -124,7 +124,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.ruby.shell",
         patterns: [{include: "source.ruby"}]},
-       {begin: /(<<)-("|'|)(PYTHON)\2/,
+       {begin: /(?<_1><<)-(?<_2>"|'|)(?<_3>PYTHON)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -134,7 +134,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.no-indent.python.shell",
         patterns: [{include: "source.python"}]},
-       {begin: /(<<)("|'|)(PYTHON)\2/,
+       {begin: /(?<_1><<)(?<_2>"|'|)(?<_3>PYTHON)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -144,7 +144,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.python.shell",
         patterns: [{include: "source.python"}]},
-       {begin: /(<<)-("|'|)(APPLESCRIPT)\2/,
+       {begin: /(?<_1><<)-(?<_2>"|'|)(?<_3>APPLESCRIPT)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -154,7 +154,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.no-indent.applescript.shell",
         patterns: [{include: "source.applescript"}]},
-       {begin: /(<<)("|'|)(APPLESCRIPT)\2/,
+       {begin: /(?<_1><<)(?<_2>"|'|)(?<_3>APPLESCRIPT)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -164,7 +164,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.applescript.shell",
         patterns: [{include: "source.applescript"}]},
-       {begin: /(<<)-("|'|)(HTML)\2/,
+       {begin: /(?<_1><<)-(?<_2>"|'|)(?<_3>HTML)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -174,7 +174,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.no-indent.html.shell",
         patterns: [{include: "text.html.basic"}]},
-       {begin: /(<<)("|'|)(HTML)\2/,
+       {begin: /(?<_1><<)(?<_2>"|'|)(?<_3>HTML)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -184,7 +184,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.html.shell",
         patterns: [{include: "text.html.basic"}]},
-       {begin: /(<<)-("|'|)(MARKDOWN)\2/,
+       {begin: /(?<_1><<)-(?<_2>"|'|)(?<_3>MARKDOWN)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -194,7 +194,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.no-indent.markdown.shell",
         patterns: [{include: "text.html.markdown"}]},
-       {begin: /(<<)("|'|)(MARKDOWN)\2/,
+       {begin: /(?<_1><<)(?<_2>"|'|)(?<_3>MARKDOWN)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -204,7 +204,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.markdown.shell",
         patterns: [{include: "text.html.markdown"}]},
-       {begin: /(<<)-("|'|)(TEXTILE)\2/,
+       {begin: /(?<_1><<)-(?<_2>"|'|)(?<_3>TEXTILE)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -214,7 +214,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.no-indent.textile.shell",
         patterns: [{include: "text.html.textile"}]},
-       {begin: /(<<)("|'|)(TEXTILE)\2/,
+       {begin: /(?<_1><<)(?<_2>"|'|)(?<_3>TEXTILE)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -224,7 +224,7 @@
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.textile.shell",
         patterns: [{include: "text.html.textile"}]},
-       {begin: /(<<)-("|'|)\\?(\w+)\2/,
+       {begin: /(?<_1><<)-(?<_2>"|'|)\\?(?<_3>\w+)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -232,7 +232,7 @@
         end: "^\\t*(\\3)$",
         endCaptures: {1 => {name: "keyword.control.heredoc-token.shell"}},
         name: "string.unquoted.heredoc.no-indent.shell"},
-       {begin: /(<<)("|'|)\\?(\w+)\2/,
+       {begin: /(?<_1><<)(?<_2>"|'|)\\?(?<_3>\w+)\k<_2>/,
         beginCaptures: 
          {1 => {name: "keyword.operator.heredoc.shell"},
           3 => {name: "keyword.control.heredoc-token.shell"}},
@@ -247,19 +247,19 @@
           2 => {name: "string.quoted.single.herestring.shell"},
           3 => {name: "punctuation.definition.string.begin.shell"},
           4 => {name: "punctuation.definition.string.end.shell"}},
-        match: /(<<<)((')[^']*('))/,
+        match: /(?<_1><<<)(?<_2>(?<_3>')[^']*(?<_4>'))/,
         name: "meta.herestring.shell"},
        {captures: 
          {1 => {name: "keyword.operator.herestring.shell"},
           2 => {name: "string.quoted.double.herestring.shell"},
           3 => {name: "punctuation.definition.string.begin.shell"},
           6 => {name: "punctuation.definition.string.end.shell"}},
-        match: /(<<<)((")(\\("|\\)|[^"])*("))/,
+        match: /(?<_1><<<)(?<_2>(?<_3>")(?<_4>\\(?<_5>"|\\)|[^"])*(?<_6>"))/,
         name: "meta.herestring.shell"},
        {captures: 
          {1 => {name: "keyword.operator.herestring.shell"},
           2 => {name: "string.unquoted.herestring.shell"}},
-        match: /(<<<)(([^\s\\]|\\.)+)/,
+        match: /(?<_1><<<)(?<_2>(?<_3>[^\s\\]|\\.)+)/,
         name: "meta.herestring.shell"}]},
    interpolation: 
     {patterns: 
@@ -300,16 +300,16 @@
       [{comment: "do we want a special rule for ( expr )?",
         match: /=[=~]?|!=?|<|>|&&|\|\|/,
         name: "keyword.operator.logical.shell"},
-       {match: /-(nt|ot|ef|eq|ne|l[te]|g[te]|[a-hknoprstuwxzOGLSN])/,
+       {match: /-(?<_1>nt|ot|ef|eq|ne|l[te]|g[te]|[a-hknoprstuwxzOGLSN])/,
         name: "keyword.operator.logical.shell"}]},
    loop: 
     {patterns: 
-      [{begin: /\b(for)\s+(?=\({2})/,
+      [{begin: /\b(?<_1>for)\s+(?=\({2})/,
         captures: {1 => {name: "keyword.control.shell"}},
         end: "\\b(done)\\b",
         name: "meta.scope.for-loop.shell",
         patterns: [{include: "$self"}]},
-       {begin: /\b(for)\s+((?:[^\s\\]|\\.)+)\b/,
+       {begin: /\b(?<_1>for)\s+(?<_2>(?:[^\s\\]|\\.)+)\b/,
         beginCaptures: 
          {1 => {name: "keyword.control.shell"},
           2 => {name: "variable.other.loop.shell"}},
@@ -317,12 +317,12 @@
         endCaptures: {1 => {name: "keyword.control.shell"}},
         name: "meta.scope.for-in-loop.shell",
         patterns: [{include: "$self"}]},
-       {begin: /\b(while|until)\b/,
+       {begin: /\b(?<_1>while|until)\b/,
         captures: {1 => {name: "keyword.control.shell"}},
         end: "\\b(done)\\b",
         name: "meta.scope.while-loop.shell",
         patterns: [{include: "$self"}]},
-       {begin: /\b(select)\s+((?:[^\s\\]|\\.)+)\b/,
+       {begin: /\b(?<_1>select)\s+(?<_2>(?:[^\s\\]|\\.)+)\b/,
         beginCaptures: 
          {1 => {name: "keyword.control.shell"},
           2 => {name: "variable.other.loop.shell"}},
@@ -330,7 +330,7 @@
         endCaptures: {1 => {name: "keyword.control.shell"}},
         name: "meta.scope.select-block.shell",
         patterns: [{include: "$self"}]},
-       {begin: /\b(case)\b/,
+       {begin: /\b(?<_1>case)\b/,
         captures: {1 => {name: "keyword.control.shell"}},
         end: "\\b(esac)\\b",
         name: "meta.scope.case-block.shell",
@@ -344,7 +344,7 @@
              {include: "#case-clause"},
              {include: "$self"}]},
           {include: "$self"}]},
-       {begin: /\b(if)\b/,
+       {begin: /\b(?<_1>if)\b/,
         captures: {1 => {name: "keyword.control.shell"}},
         end: "\\b(fi)\\b",
         name: "meta.scope.if-block.shell",
@@ -363,7 +363,7 @@
     {patterns: 
       [{match: /(?<=\s|:|=|^)~/, name: "keyword.operator.tilde.shell"},
        {match: /\*|\?/, name: "keyword.operator.glob.shell"},
-       {begin: /([?*+@!])(\()/,
+       {begin: /(?<_1>[?*+@!])(?<_2>\()/,
         beginCaptures: 
          {1 => {name: "keyword.operator.extglob.shell"},
           2 => {name: "punctuation.definition.extglob.shell"}},
@@ -373,7 +373,7 @@
         patterns: [{include: "$self"}]}]},
    pipeline: 
     {patterns: 
-      [{match: /\b(time)\b/, name: "keyword.other.shell"},
+      [{match: /\b(?<_1>time)\b/, name: "keyword.other.shell"},
        {match: /[|!]/, name: "keyword.operator.pipe.shell"}]},
    redirection: 
     {patterns: 
@@ -386,7 +386,7 @@
         patterns: [{include: "$self"}]},
        {comment: 
          "valid: &>word >&word >word [n]>&[n] [n]<word [n]>word [n]>>word [n]<&word (last one is duplicate)",
-        match: /&>|\d*>&\d*|\d*(>>|>|<)|\d*<&|\d*<>/,
+        match: /&>|\d*>&\d*|\d*(?<_1>>>|>|<)|\d*<&|\d*<>/,
         name: "keyword.operator.redirect.shell"}]},
    string: 
     {patterns: 
@@ -414,7 +414,7 @@
         endCaptures: {0 => {name: "punctuation.definition.string.end.shell"}},
         name: "string.quoted.single.dollar.shell",
         patterns: 
-         [{match: /\\(a|b|e|f|n|r|t|v|\\|')/,
+         [{match: /\\(?<_1>a|b|e|f|n|r|t|v|\\|')/,
            name: "constant.character.escape.ansi-c.shell"},
           {match: /\\[0-9]{3}/, name: "constant.character.escape.octal.shell"},
           {match: /\\x[0-9a-fA-F]{2}/,
@@ -431,13 +431,13 @@
    variable: 
     {patterns: 
       [{captures: {1 => {name: "punctuation.definition.variable.shell"}},
-        match: /(\$)[-*@#?$!0_]/,
+        match: /(?<_1>\$)[-*@#?$!0_]/,
         name: "variable.other.special.shell"},
        {captures: {1 => {name: "punctuation.definition.variable.shell"}},
-        match: /(\$)[1-9]/,
+        match: /(?<_1>\$)[1-9]/,
         name: "variable.other.positional.shell"},
        {captures: {1 => {name: "punctuation.definition.variable.shell"}},
-        match: /(\$)[a-zA-Z_][a-zA-Z0-9_]*/,
+        match: /(?<_1>\$)[a-zA-Z_][a-zA-Z0-9_]*/,
         name: "variable.other.normal.shell"},
        {begin: /\$\{/,
         captures: {0 => {name: "punctuation.definition.variable.shell"}},
@@ -449,6 +449,6 @@
           {captures: 
             {1 => {name: "punctuation.section.array.shell"},
              3 => {name: "punctuation.section.array.shell"}},
-           match: /(\[)([^\]]+)(\])/}]}]}},
+           match: /(?<_1>\[)(?<_2>[^\]]+)(?<_3>\])/}]}]}},
  scopeName: "source.shell",
  uuid: "DDEEA3ED-6B1C-11D9-8B10-000D93589AF6"}

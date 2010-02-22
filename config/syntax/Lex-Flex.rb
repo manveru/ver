@@ -13,12 +13,12 @@
     patterns: 
      [{include: "#includes"},
       {begin: /\/\*/, end: "\\*/|$", name: "comment.block.c.lex"},
-      {begin: /^(?i)([a-z_][a-z0-9_-]*)(?=\s|$)/,
+      {begin: /^(?i)(?<_1>[a-z_][a-z0-9_-]*)(?=\s|$)/,
        beginCaptures: {1 => {name: "entity.name.function.lex"}},
        end: "$",
        name: "meta.definition.lex",
        patterns: [{include: "#regexp"}]},
-      {begin: /^(%[sx])(?=\s|$)/,
+      {begin: /^(?<_1>%[sx])(?=\s|$)/,
        beginCaptures: 
         {1 => {name: "punctuation.definition.start-condition.lex"}},
        end: "$",
@@ -26,7 +26,7 @@
        patterns: 
         [{match: /(?i)[a-z_][a-z0-9_-]*/},
          {match: /\S/, name: "invalid.illegal.lex"}]},
-      {begin: /^(%option)\s(?=\S)/,
+      {begin: /^(?<_1>%option)\s(?=\S)/,
        beginCaptures: {1 => {name: "keyword.other.option.lex"}},
        end: "$",
        name: "meta.options.lex",
@@ -38,7 +38,7 @@
        end: "$",
        name: "keyword.other.option.lex",
        patterns: [{match: /\S/, name: "invalid.illegal.lex"}]}]},
-   {begin: /^(%%)$/,
+   {begin: /^(?<_1>%%)$/,
     beginCaptures: {1 => {name: "punctuation.separator.sections.lex"}},
     end: "\\Z.\\A(?# never end)",
     patterns: 
@@ -53,7 +53,7 @@
           patterns: 
            [{include: "#includes"},
             {begin: 
-              /(?i)^(<(?:(?:[a-z_][a-z0-9_-]*,)*[a-z_][a-z0-9_-]|\*)>)?(?:(<<EOF>>)(\s*))?(?=\S)/,
+              /(?i)^(?<_1><(?:(?:[a-z_][a-z0-9_-]*,)*[a-z_][a-z0-9_-]|\*)>)?(?:(?<_2><<EOF>>)(?<_3>\s*))?(?=\S)/,
              beginCaptures: 
               {1 => {name: "keyword.other.start-condition.lex"},
                2 => {name: "keyword.operator.eof.lex"},
@@ -61,7 +61,7 @@
              comment: "rule pattern",
              end: "(?=\\s)|$",
              patterns: [{include: "#regexp"}]},
-            {begin: /(%\{)/,
+            {begin: /(?<_1>%\{)/,
              beginCaptures: {1 => {name: "punctuation.definition.code.lex"}},
              comment: "TODO: %} should override embedded scopes",
              end: "(%\\})(.*)",
@@ -74,7 +74,7 @@
              end: "$",
              name: "meta.rule.action.lex",
              patterns: [{include: "#csource"}]}]}]},
-      {begin: /^(%%)$/,
+      {begin: /^(?<_1>%%)$/,
        beginCaptures: {1 => {name: "punctuation.separator.sections.lex"}},
        comment: "third section of the file - user code",
        contentName: "meta.section.user-code.lex",
@@ -107,7 +107,7 @@
      end: "\\}",
      patterns: [{include: "source.c"}, {include: "#csource"}]},
    regexp: 
-    {begin: /\G(?=\S)(\^)?/,
+    {begin: /\G(?=\S)(?<_1>\^)?/,
      captures: {1 => {name: "keyword.control.anchor.regexp.lex"}},
      end: "(\\$)?(?:(?=\\s)|$)",
      name: "string.regexp.lex",
@@ -115,7 +115,7 @@
    subregexp: 
     {patterns: 
       [{include: "#re_escape"},
-       {begin: /(\[)(\^)?-?/,
+       {begin: /(?<_1>\[)(?<_2>\^)?-?/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.character-class.set.lex"},
           2 => {name: "keyword.operator.negation.regexp.lex"}},
@@ -127,7 +127,7 @@
          [{include: "#re_escape"},
           {captures: {1 => {name: "invalid.illegal.regexp.lex"}},
            match: 
-            /\[:(?:(?:alnum|alpha|blank|cntrl|x?digit|graph|lower|print|punct|space|upper)|(.*?)):\]/,
+            /\[:(?:(?:alnum|alpha|blank|cntrl|x?digit|graph|lower|print|punct|space|upper)|(?<_1>.*?)):\]/,
            name: "constant.other.character-class.set.lex"}]},
        {match: /(?i){[a-z_][a-z0-9_-]*}/, name: "variable.other.lex"},
        {begin: /\{/,
@@ -142,7 +142,7 @@
         end: "\"",
         name: "string.quoted.double.regexp.lex",
         patterns: [{include: "#re_escape"}]},
-       {begin: /([*+?])(?=[*+?])/,
+       {begin: /(?<_1>[*+?])(?=[*+?])/,
         beginCaptures: {1 => {name: "keyword.operator.quantifier.regexp.lex"}},
         comment: "make ** or +? or other combinations illegal",
         end: "(?=[^*+?])",
@@ -151,7 +151,7 @@
        {comment: "<<EOF>> is handled in the rule pattern",
         match: /<<EOF>>/,
         name: "invalid.illegal.regexp.lex"},
-       {begin: /(\()/,
+       {begin: /(?<_1>\()/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.group.regexp.lex"}},
         end: "(\\))|(?=\\s)|$(?#end on whitespace because regex does)",
@@ -160,7 +160,7 @@
         patterns: 
          [{match: /\//, name: "invalid.illegal.regexp.lex"},
           {include: "#subregexp"}]},
-       {begin: /(\/)/,
+       {begin: /(?<_1>\/)/,
         beginCaptures: 
          {1 => {name: "keyword.operator.trailing-match.regexp.lex"}},
         comment: "detection of multiple trailing contexts",

@@ -1,18 +1,18 @@
 # Encoding: UTF-8
 
-{"df" => 
+{"idf" => 
   {scope: "source.ssh-config",
-   name: "DynamicForward",
-   content: "DynamicForward ${1:0000}"},
+   name: "IdentityFile",
+   content: "IdentityFile ${1:~/.ssh/filename}"},
  "host" => 
   {scope: "source.ssh-config",
    name: "Host",
    content: 
     "Host ${1:AliasName}\n\tUser ${2:UserName}\n\tPort ${3:22}\n\tHostName ${4:hostname.com}\n"},
- "idf" => 
+ "df" => 
   {scope: "source.ssh-config",
-   name: "IdentityFile",
-   content: "IdentityFile ${1:~/.ssh/filename}"},
+   name: "DynamicForward",
+   content: "DynamicForward ${1:0000}"},
  "lf" => 
   {scope: "source.ssh-config",
    name: "LocalForward",

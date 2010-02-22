@@ -1,12 +1,12 @@
 # Encoding: UTF-8
 
 {comment: "jQuery Javascript Framework. By Jonathan Chaffer & Karl Swedberg.",
- foldingStartMarker: /(^.*{[^}]*$|^.*\([^\)]*$|^.*\/\*(?!.*\*\/).*$)/,
- foldingStopMarker: /(^\s*\}|^\s*\)|^(?!.*\/\*).*\*\/)/,
+ foldingStartMarker: /(?<_1>^.*{[^}]*$|^.*\([^\)]*$|^.*\/\*(?!.*\*\/).*$)/,
+ foldingStopMarker: /(?<_1>^\s*\}|^\s*\)|^(?!.*\/\*).*\*\/)/,
  keyEquivalent: "^~J",
  name: "jQuery (JavaScript)",
  patterns: 
-  [{begin: /(\$)(\()/,
+  [{begin: /(?<_1>\$)(?<_2>\()/,
     beginCaptures: 
      {1 => {name: "support.class.js.jquery"},
       2 => {name: "punctuation.section.class.js"}},
@@ -41,7 +41,7 @@
        patterns: [{include: "text.html.basic"}]},
       {include: "source.js"}]},
    {begin: 
-     /\b(filter|is|not|add|children|find|next|nextAll|parent|parents|prev|prevAll|siblings|appendTo|prependTo|insertAfter|insertBefore|replaceAll|remove)\s*(\()/,
+     /\b(?<_1>filter|is|not|add|children|find|next|nextAll|parent|parents|prev|prevAll|siblings|appendTo|prependTo|insertAfter|insertBefore|replaceAll|remove)\s*(?<_2>\()/,
     beginCaptures: 
      {1 => {name: "support.function.js.jquery"},
       2 => {name: "punctuation.section.function.js"}},
@@ -76,7 +76,7 @@
        patterns: [{include: "text.html.basic"}]},
       {include: "source.js"}]},
    {match: 
-     /\.(each|size|length|get|index|extend|noConflict|attr|removeAttr|addClass|removeClass|toggleClass|html|text|val|eq|hasClass|map|slice|contents|andSelf|end|append|prepend|after|before|wrap|wrapAll|wrapInner|replaceWith|empty|clone|css|offset|height|width|ready|bind|one|trigger|triggerHandler|unbind|hover|toggle|blur|change|click|dblclick|error|focus|keydown|keypress|keyup|load|mousedown|mousemove|mouseout|mouseover|mouseup|resize|scroll|select|submit|unload|show|hide|toggle|slideDown|slideUp|slideToggle|fadeIn|fadeOut|fadeTo|animate|stop|queue|dequeue|load|ajaxComplete|ajaxError|ajaxSend|ajaxStart|ajaxStop|ajaxSuccess|serialize|serializeArray|ajax|get|getJSON|getScript|post|ajaxSetup|css|offset|height|width)\b/,
+     /\.(?<_1>each|size|length|get|index|extend|noConflict|attr|removeAttr|addClass|removeClass|toggleClass|html|text|val|eq|hasClass|map|slice|contents|andSelf|end|append|prepend|after|before|wrap|wrapAll|wrapInner|replaceWith|empty|clone|css|offset|height|width|ready|bind|one|trigger|triggerHandler|unbind|hover|toggle|blur|change|click|dblclick|error|focus|keydown|keypress|keyup|load|mousedown|mousemove|mouseout|mouseover|mouseup|resize|scroll|select|submit|unload|show|hide|toggle|slideDown|slideUp|slideToggle|fadeIn|fadeOut|fadeTo|animate|stop|queue|dequeue|load|ajaxComplete|ajaxError|ajaxSend|ajaxStart|ajaxStop|ajaxSuccess|serialize|serializeArray|ajax|get|getJSON|getScript|post|ajaxSetup|css|offset|height|width)\b/,
     name: "support.function.js.jquery"},
    {include: "source.js"}],
  repository: 
@@ -86,18 +86,18 @@
      name: "meta.selector.css",
      patterns: 
       [{match: 
-         /\b(a|abbr|acronym|address|area|b|base|big|blockquote|body|br|button|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|dt|em|fieldset|form|frame|frameset|(h[1-6])|head|hr|html|i|iframe|img|input|ins|kbd|label|legend|li|link|map|meta|noframes|noscript|object|ol|optgroup|option|p|param|pre|q|samp|script|select|small|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|ul|var)\b/,
+         /\b(?<_1>a|abbr|acronym|address|area|b|base|big|blockquote|body|br|button|caption|cite|code|col|colgroup|dd|del|dfn|div|dl|dt|em|fieldset|form|frame|frameset|(?<_2>h[1-6])|head|hr|html|i|iframe|img|input|ins|kbd|label|legend|li|link|map|meta|noframes|noscript|object|ol|optgroup|option|p|param|pre|q|samp|script|select|small|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|ul|var)\b/,
         name: "entity.name.tag.css"},
        {captures: {1 => {name: "punctuation.definition.attribute-name.css"}},
-        match: /(\.)[a-zA-Z0-9_-]+/,
+        match: /(?<_1>\.)[a-zA-Z0-9_-]+/,
         name: "entity.other.attribute-name.class.css"},
        {captures: {1 => {name: "punctuation.definition.attribute-name.css"}},
-        match: /(#)[a-zA-Z0-9_-]+/,
+        match: /(?<_1>#)[a-zA-Z0-9_-]+/,
         name: "entity.other.attribute-name.id.css"},
        {match: /\*/, name: "entity.name.tag.wildcard.css"},
        {captures: {1 => {name: "punctuation.definition.attribute-name.css"}},
         match: 
-         /(:)\b(active|after|before|first-letter|first-line|hover|link|visited)\b/,
+         /(?<_1>:)\b(?<_2>active|after|before|first-letter|first-line|hover|link|visited)\b/,
         name: "entity.other.attribute-name.pseudo-class.css"}]},
    :"nested-parens" => 
     {begin: /\(/,

@@ -3,15 +3,15 @@
 {fileTypes: ["yaws"],
  foldingStartMarker: 
   /(?x)
-	(<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl|erl)\b.*?>
+	(?<_1><(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl|erl)\b.*?>
 	|<!--(?!.*-->)
-	|\{\s*($|\?>\s*$|\/\/|\/\*(.*\*\/\s*$|(?!.*?\*\/)))
+	|\{\s*(?<_2>$|\?>\s*$|\/\/|\/\*(?<_3>.*\*\/\s*$|(?!.*?\*\/)))
 	)/,
  foldingStopMarker: 
   /(?x)
-	(<\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl|erl)>
+	(?<_1><\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl|erl)>
 	|^\s*-->
-	|(^|\s)\}
+	|(?<_2>^|\s)\}
 	)/,
  keyEquivalent: "^~E",
  name: "HTML (Erlang)",

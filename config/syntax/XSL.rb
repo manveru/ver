@@ -2,12 +2,12 @@
 
 {fileTypes: ["xsl", "xslt"],
  foldingStartMarker: 
-  /^\s*(<[^!?%\/](?!.+?(\/>|<\/.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))/,
- foldingStopMarker: /^\s*(<\/[^>]+>|[\/%]>|-->)\s*$/,
- keyEquivalent: /^~X/,
+  /^\s*(?<_1><[^!?%\/](?!.+?(?<_2>\/>|<\/.+?>))|<[!%]--(?!.+?--%?>)|<%[!]?(?!.+?%>))/,
+ foldingStopMarker: /^\s*(?<_1><\/[^>]+>|[\/%]>|-->)\s*$/,
+ keyEquivalent: "^~X",
  name: "XSL",
  patterns: 
-  [{begin: /(<)(xsl)((:))(template)/,
+  [{begin: /(?<_1><)(?<_2>xsl)(?<_3>(?<_4>:))(?<_5>template)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.xml"},
       2 => {name: "entity.name.tag.namespace.xml"},
@@ -22,7 +22,7 @@
          2 => {name: "entity.other.attribute-name.xml"},
          3 => {name: "punctuation.separator.namespace.xml"},
          4 => {name: "entity.other.attribute-name.localname.xml"}},
-       match: / (?:([-_a-zA-Z0-9]+)((:)))?([a-zA-Z-]+)/},
+       match: / (?:(?<_1>[-_a-zA-Z0-9]+)(?<_2>(?<_3>:)))?(?<_4>[a-zA-Z-]+)/},
       {include: "#doublequotedString"},
       {include: "#singlequotedString"}]},
    {include: "text.xml"}],

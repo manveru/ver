@@ -1,11 +1,6 @@
 # Encoding: UTF-8
 
-[{name: "Spell Checking: Disable",
-  scope: 
-   "text.moinmoin markup.raw, meta.macro.moimoin, meta.pragma.moimoin, comment.line.moinmoin",
-  settings: {spellChecking: "0"},
-  uuid: "B55CE47F-D621-4D84-8C56-61FFDDD7E710"},
- {name: "Symbol List",
+[{name: "Symbol List",
   scope: "text.moinmoin markup.heading",
   settings: 
    {showInSymbolList: 1,
@@ -22,4 +17,9 @@
       ["[", "]"],
       ["“", "”"],
       ["`", "`"]]},
-  uuid: "ECAD7950-590C-4D8F-B17A-BF64DD5975A3"}]
+  uuid: "ECAD7950-590C-4D8F-B17A-BF64DD5975A3"},
+ {name: "Spell Checking: Disable",
+  scope: 
+   "text.moinmoin markup.raw, meta.macro.moimoin, meta.pragma.moimoin, comment.line.moinmoin",
+  settings: {spellChecking: "0"},
+  uuid: "B55CE47F-D621-4D84-8C56-61FFDDD7E710"}]

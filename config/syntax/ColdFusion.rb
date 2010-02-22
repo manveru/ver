@@ -3,18 +3,18 @@
 {fileTypes: ["cfm", "cfml", "cfc"],
  foldingStartMarker: 
   /(?x)
-	(<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl|cfloop|cfif|cfswitch|cfcomponent)\b.*?>
+	(?<_1><(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl|cfloop|cfif|cfswitch|cfcomponent)\b.*?>
 	|<!---(?!.*---\s*>)
 	)/,
  foldingStopMarker: 
   /(?x)
-	(<\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl|cfloop|cfif|cfswitch|cfcomponent)>
+	(?<_1><\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl|cfloop|cfif|cfswitch|cfcomponent)>
 	|^(?!.*?<!---).*?---\s*>
 	)/,
  keyEquivalent: "^~C",
  name: "ColdFusion",
  patterns: 
-  [{begin: /(?:^\s+)?<((?i:cfoutput))\b(?![^>]*\/>)/,
+  [{begin: /(?:^\s+)?<(?<_1>(?i:cfoutput))\b(?![^>]*\/>)/,
     captures: {1 => {name: "entity.name.tag.cfoutput.cfm"}},
     end: "</((?i:cfoutput))>(?:\\s*\\n)?",
     name: "meta.tag.cfoutput.cfm",
@@ -24,7 +24,7 @@
        contentName: "meta.scope.output.cfm",
        end: "(?=</(?i:cfoutput))",
        patterns: [{include: "$self"}]}]},
-   {begin: /(?:^\s+)?<((?i:cfquery))\b(?![^>]*\/>)/,
+   {begin: /(?:^\s+)?<(?<_1>(?i:cfquery))\b(?![^>]*\/>)/,
     captures: {1 => {name: "entity.name.tag.cfquery.cfm"}},
     end: "</((?i:cfquery))>(?:\\s*\\n)?",
     name: "meta.tag.cfquery.cfm",
@@ -34,7 +34,7 @@
        end: "(?=</(?i:cfquery))",
        name: "source.sql.embedded",
        patterns: [{include: "source.sql"}]}]},
-   {begin: /<\/?((?i:cf)([a-zA-Z0-9]+))(?=[^>]*>)/,
+   {begin: /<\/?(?<_1>(?i:cf)(?<_2>[a-zA-Z0-9]+))(?=[^>]*>)/,
     beginCaptures: {1 => {name: "entity.name.tag.cfm"}},
     end: ">",
     name: "meta.tag.any.cfm",
@@ -50,7 +50,7 @@
    :"embedded-code" => {patterns: []},
    entities: 
     {patterns: 
-      [{match: /&([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+);/,
+      [{match: /&(?<_1>[a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+);/,
         name: "constant.character.entity.html"},
        {match: /&/, name: "invalid.illegal.bad-ampersand.html"}]},
    :"string-double-quoted" => 
@@ -64,9 +64,9 @@
      name: "string.quoted.single.cfm",
      patterns: [{include: "#embedded-code"}, {include: "#entities"}]},
    :"tag-generic-attribute" => 
-    {match: /\b([a-zA-Z\-:]+)/, name: "entity.other.attribute-name.cfm"},
+    {match: /\b(?<_1>[a-zA-Z\-:]+)/, name: "entity.other.attribute-name.cfm"},
    :"tag-id-attribute" => 
-    {begin: /\b(id)\b\s*=/,
+    {begin: /\b(?<_1>id)\b\s*=/,
      captures: {1 => {name: "entity.other.attribute-name.id.html"}},
      end: "(?<='|\")",
      name: "meta.attribute-with-value.id.cfm",

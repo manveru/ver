@@ -10,9 +10,9 @@
       2 => {name: "punctuation.separator.key-value.blog"},
       3 => {name: "string.unquoted.blog"}},
     match: 
-     /^([Tt]itle|[Dd]ate|[Bb]asename|[Ss]lug|[Kk]eywords|[Bb]log|[Tt]ype|[Ll]ink|[Pp]ost|[Tt]ags|[Cc]omments|[Pp]ings?|[Cc]ategory|[Ss]tatus|[Ff]ormat)(:)\s*(.*)$\n?/,
+     /^(?<_1>[Tt]itle|[Dd]ate|[Bb]asename|[Ss]lug|[Kk]eywords|[Bb]log|[Tt]ype|[Ll]ink|[Pp]ost|[Tt]ags|[Cc]omments|[Pp]ings?|[Cc]ategory|[Ss]tatus|[Ff]ormat)(?<_2>:)\s*(?<_3>.*)$\n?/,
     name: "meta.header.blog"},
-   {match: /^([A-Za-z0-9]+):\s*(.*)$\n?/,
+   {match: /^(?<_1>[A-Za-z0-9]+):\s*(?<_2>.*)$\n?/,
     name: "invalid.illegal.meta.header.blog"},
    {begin: /^(?![A-Za-z0-9]+:)/,
     end: "^(?=not)possible$",

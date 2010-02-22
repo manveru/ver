@@ -1,12 +1,12 @@
 # Encoding: UTF-8
 
 {fileTypes: ["Snw", "Rnw", "snw", "rnw"],
- foldingStartMarker: /^<<(.*)>>=|\\begin\{.*\}/,
- foldingStopMarker: /^@(.*)$|\\end\{.*\}/,
+ foldingStartMarker: /^<<(?<_1>.*)>>=|\\begin\{.*\}/,
+ foldingStopMarker: /^@(?<_1>.*)$|\\end\{.*\}/,
  keyEquivalent: "^~S",
  name: "SWeave",
  patterns: 
-  [{begin: /^(<<)/,
+  [{begin: /^(?<_1><<)/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.parameters.begin.sweave"}},
     end: "(>>)(?==)",
@@ -19,11 +19,12 @@
          3 => {name: "constant.language.boolean.sweave"},
          4 => {name: "constant.language.results.sweave"},
          5 => {name: "string.unquoted.label.sweave"}},
-       match: /(\w+)(=)(?:(true|false)|(verbatim|tex|hide)|([\w.]+))/,
+       match: 
+        /(?<_1>\w+)(?<_2>=)(?:(?<_3>true|false)|(?<_4>verbatim|tex|hide)|(?<_5>[\w.]+))/,
        name: "meta.parameter.sweave"},
       {match: /[\w.]+/, name: "string.unquoted.label.sweave"},
       {match: /,/, name: "punctuation.separator.parameters.sweave"}]},
-   {begin: /(?<=>>)(=)(.*)\n/,
+   {begin: /(?<=>>)(?<_1>=)(?<_2>.*)\n/,
     beginCaptures: 
      {1 => {name: "punctuation.section.embedded.begin.sweave"},
       2 => {name: "comment.line.other.sweave"}},
@@ -37,7 +38,7 @@
      [{match: /^\s+@.*\n?/, name: "invalid.illegal.sweave"},
       {include: "source.r"}]},
    {match: /^\s+<<.*\n?/, name: "invalid.illegal.sweave"},
-   {begin: /^\\begin(\{)Scode(\})/,
+   {begin: /^\\begin(?<_1>\{)Scode(?<_2>\})/,
     captures: 
      {1 => {name: "punctuation.definition.arguments.begin.latex"},
       2 => {name: "punctuation.definition.arguments.end.latex"}},
@@ -45,7 +46,7 @@
     end: "^\\\\end(\\{)Scode(\\})",
     name: "meta.block.source.r",
     patterns: [{include: "source.r"}]},
-   {begin: /\\Sexpr(\{)/,
+   {begin: /\\Sexpr(?<_1>\{)/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.arguments.begin.latex"}},
     end: "(\\})",

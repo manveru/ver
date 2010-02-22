@@ -1,18 +1,29 @@
 # Encoding: UTF-8
 
-{"!env" => 
-  {scope: "",
-   name: "#!/usr/bin/env",
-   content: 
-    "#!/usr/bin/env ${1:${TM_SCOPE/(?:source|.*)\\.(?:(shell)|(\\w+)).*/(?1:bash:$2)/}}\n"},
- "case" => 
+{"case" => 
   {scope: "source.shell",
    name: "case … esac",
    content: "case ${1:word} in\n\t${2:pattern} )\n\t\t$0;;\nesac"},
+ "until" => 
+  {scope: "source.shell",
+   name: "until … done",
+   content: "until ${2:[[ ${1:condition} ]]}; do\n\t${0:#statements}\ndone"},
  "elif" => 
   {scope: "source.shell",
    name: "elif …",
    content: "elif ${2:[[ ${1:condition} ]]}; then\n\t${0:#statements}"},
+ "while" => 
+  {scope: "source.shell",
+   name: "while … done",
+   content: "while ${2:[[ ${1:condition} ]]}; do\n\t${0:#statements}\ndone"},
+ "if" => 
+  {scope: "source.shell",
+   name: "if … fi",
+   content: "if ${2:[[ ${1:condition} ]]}; then\n\t${0:#statements}\nfi"},
+ "here" => 
+  {scope: "source.shell",
+   name: "Here Document",
+   content: "<<-${2:'${1:TOKEN}'}\n\t$0\n${1/['\"`](.+)['\"`]/$1/}"},
  "for" => 
   {scope: "source.shell",
    name: "for … done",
@@ -21,22 +32,11 @@
   {scope: "source.shell",
    name: "for … in … done",
    content: "for ${1:i}${2/.+/ in /}${2:words}; do\n\t${0:#statements}\ndone"},
- "here" => 
-  {scope: "source.shell",
-   name: "Here Document",
-   content: "<<-${2:'${1:TOKEN}'}\n\t$0\n${1/['\"`](.+)['\"`]/$1/}"},
- "if" => 
-  {scope: "source.shell",
-   name: "if … fi",
-   content: "if ${2:[[ ${1:condition} ]]}; then\n\t${0:#statements}\nfi"},
- "until" => 
-  {scope: "source.shell",
-   name: "until … done",
-   content: "until ${2:[[ ${1:condition} ]]}; do\n\t${0:#statements}\ndone"},
- "while" => 
-  {scope: "source.shell",
-   name: "while … done",
-   content: "while ${2:[[ ${1:condition} ]]}; do\n\t${0:#statements}\ndone"},
+ "!env" => 
+  {scope: "",
+   name: "#!/usr/bin/env",
+   content: 
+    "#!/usr/bin/env ${1:${TM_SCOPE/(?:source|.*)\\.(?:(shell)|(\\w+)).*/(?1:bash:$2)/}}\n"},
  "temp" => 
   {scope: "source.shell",
    name: "Tempfile",

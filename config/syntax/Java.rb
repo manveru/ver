@@ -1,22 +1,28 @@
 # Encoding: UTF-8
 
 {fileTypes: ["java", "bsh"],
- foldingStartMarker: /(\{\s*(\/\/.*)?$|^\s*\/\/ \{\{\{)/,
- foldingStopMarker: /^\s*(\}|\/\/ \}\}\}$)/,
- keyEquivalent: /^~J/,
+ foldingStartMarker: /(?<_1>\{\s*(?<_2>\/\/.*)?$|^\s*\/\/ \{\{\{)/,
+ foldingStopMarker: /^\s*(?<_1>\}|\/\/ \}\}\}$)/,
+ keyEquivalent: "^~J",
  name: "Java",
  patterns: 
   [{captures: 
      {1 => {name: "keyword.other.package.java"},
       2 => {name: "storage.modifier.package.java"},
       3 => {name: "punctuation.terminator.java"}},
-    match: /^\s*(package)\b(?:\s*([^ ;$]+)\s*(;)?)?/,
+    match: /^\s*(?<_1>package)\b(?:\s*(?<_2>[^ ;$]+)\s*(?<_3>;)?)?/,
     name: "meta.package.java"},
+   {captures: 
+     {1 => {name: "keyword.other.import.static.java"},
+      2 => {name: "storage.modifier.import.java"},
+      3 => {name: "punctuation.terminator.java"}},
+    match: /^\s*(?<_1>import static)\b(?:\s*(?<_2>[^ ;$]+)\s*(?<_3>;)?)?/,
+    name: "meta.import.static.java"},
    {captures: 
      {1 => {name: "keyword.other.import.java"},
       2 => {name: "storage.modifier.import.java"},
       3 => {name: "punctuation.terminator.java"}},
-    match: /^\s*(import)\b(?:\s*([^ ;$]+)\s*(;)?)?/,
+    match: /^\s*(?<_1>import)\b(?:\s*(?<_2>[^ ;$]+)\s*(?<_3>;)?)?/,
     name: "meta.import.java"},
    {include: "#code"}],
  repository: 
@@ -27,7 +33,7 @@
        {include: "#object-types"}]},
    annotations: 
     {patterns: 
-      [{begin: /(@[^ (]+)(\()/,
+      [{begin: /(?<_1>@[^ (?<_2>]+)(?<_3>\()/,
         beginCaptures: 
          {1 => {name: "storage.type.annotation.java"},
           2 => 
@@ -40,7 +46,7 @@
          [{captures: 
             {1 => {name: "constant.other.key.java"},
              2 => {name: "keyword.operator.assignment.java"}},
-           match: /(\w*)\s*(=)/},
+           match: /(?<_1>\w*)\s*(?<_2>=)/},
           {include: "#code"},
           {match: /,/, name: "punctuation.seperator.property.java"}]},
        {match: /@\w*/, name: "storage.type.annotation.java"}]},
@@ -49,7 +55,7 @@
      beginCaptures: {0 => {name: "keyword.control.new.java"}},
      end: "(?<=\\)|\\])(?!\\s*{)|(?<=})|(?=;)",
      patterns: 
-      [{begin: /(\w+)\s*(?=\[)/,
+      [{begin: /(?<_1>\w+)\s*(?=\[)/,
         beginCaptures: {1 => {name: "storage.type.java"}},
         end: "}|(?=;|\\))",
         patterns: 
@@ -69,7 +75,7 @@
         patterns: [{include: "#class-body"}]}]},
    assertions: 
     {patterns: 
-      [{begin: /\b(assert)\s/,
+      [{begin: /\b(?<_1>assert)\s/,
         beginCaptures: {1 => {name: "keyword.control.assert.java"}},
         end: "$",
         name: "meta.declaration.assertion.java",
@@ -88,7 +94,7 @@
        {captures: 
          {1 => {name: "storage.modifier.java"},
           2 => {name: "entity.name.type.class.java"}},
-        match: /(class|(?:@)?interface|enum)\s+(\w+)/,
+        match: /(?<_1>class|(?:@)?interface|enum)\s+(?<_2>\w+)/,
         name: "meta.class.identifier.java"},
        {begin: /extends/,
         beginCaptures: {0 => {name: "storage.modifier.extends.java"}},
@@ -96,7 +102,7 @@
         name: "meta.definition.class.inherited.classes.java",
         patterns: 
          [{include: "#object-types-inherited"}, {include: "#comments"}]},
-       {begin: /(implements)\s/,
+       {begin: /(?<_1>implements)\s/,
         beginCaptures: {1 => {name: "storage.modifier.implements.java"}},
         end: "(?=\\s*extends|\\{)",
         name: "meta.definition.class.implemented.interfaces.java",
@@ -144,19 +150,19 @@
        {captures: 
          {1 => {name: "comment.line.double-slash.java"},
           2 => {name: "punctuation.definition.comment.java"}},
-        match: /\s*((\/\/).*$\n?)/}]},
+        match: /\s*(?<_1>(?<_2>\/\/).*$\n?)/}]},
    :"constants-and-special-vars" => 
     {patterns: 
-      [{match: /\b(true|false|null)\b/, name: "constant.language.java"},
-       {match: /\b(this|super)\b/, name: "variable.language.java"},
+      [{match: /\b(?<_1>true|false|null)\b/, name: "constant.language.java"},
+       {match: /\b(?<_1>this|super)\b/, name: "variable.language.java"},
        {match: 
-         /\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)([LlFfUuDd]|UL|ul)?\b/,
+         /\b(?<_1>(?<_2>0(?<_3>x|X)[0-9a-fA-F]*)|(?<_4>(?<_5>[0-9]+\.?[0-9]*)|(?<_6>\.[0-9]+))(?<_7>(?<_8>e|E)(?<_9>\+|-)?[0-9]+)?)(?<_10>[LlFfUuDd]|UL|ul)?\b/,
         name: "constant.numeric.java"},
        {captures: {1 => {name: "keyword.operator.dereference.java"}},
-        match: /(\.)?\b([A-Z][A-Z0-9_]+)(?!<|\.class|\s*\w+\s*=)\b/,
+        match: /(?<_1>\.)?\b(?<_2>[A-Z][A-Z0-9_]+)(?!<|\.class|\s*\w+\s*=)\b/,
         name: "constant.other.java"}]},
    enums: 
-    {begin: /^(?=\s*[A-Z0-9_]+\s*({|\(|,))/,
+    {begin: /^(?=\s*[A-Z0-9_]+\s*(?<_1>{|\(|,))/,
      end: "(?=;|})",
      patterns: 
       [{begin: /\w+/,
@@ -168,20 +174,21 @@
           {begin: /{/, end: "}", patterns: [{include: "#class-body"}]}]}]},
    keywords: 
     {patterns: 
-      [{match: /\b(try|catch|finally|throw)\b/,
+      [{match: /\b(?<_1>try|catch|finally|throw)\b/,
         name: "keyword.control.catch-exception.java"},
        {match: /\?|:/, name: "keyword.control.java"},
        {match: 
-         /\b(return|break|case|continue|default|do|while|for|switch|if|else)\b/,
+         /\b(?<_1>return|break|case|continue|default|do|while|for|switch|if|else)\b/,
         name: "keyword.control.java"},
-       {match: /\b(instanceof)\b/, name: "keyword.operator.java"},
-       {match: /(==|!=|<=|>=|<>|<|>)/,
+       {match: /\b(?<_1>instanceof)\b/, name: "keyword.operator.java"},
+       {match: /(?<_1>==|!=|<=|>=|<>|<|>)/,
         name: "keyword.operator.comparison.java"},
-       {match: /(=)/, name: "keyword.operator.assignment.java"},
-       {match: /(\-\-|\+\+)/,
+       {match: /(?<_1>=)/, name: "keyword.operator.assignment.java"},
+       {match: /(?<_1>\-\-|\+\+)/,
         name: "keyword.operator.increment-decrement.java"},
-       {match: /(\-|\+|\*|\/|%)/, name: "keyword.operator.arithmetic.java"},
-       {match: /(!|&&|\|\|)/, name: "keyword.operator.logical.java"},
+       {match: /(?<_1>\-|\+|\*|\/|%)/,
+        name: "keyword.operator.arithmetic.java"},
+       {match: /(?<_1>!|&&|\|\|)/, name: "keyword.operator.logical.java"},
        {match: /(?<=\S)\.(?=\S)/, name: "keyword.operator.dereference.java"},
        {match: /;/, name: "punctuation.terminator.java"}]},
    methods: 
@@ -190,7 +197,7 @@
      name: "meta.method.java",
      patterns: 
       [{include: "#storage-modifiers"},
-       {begin: /(\w+)\s*\(/,
+       {begin: /(?<_1>\w+)\s*\(/,
         beginCaptures: {1 => {name: "entity.name.function.java"}},
         end: "\\)",
         name: "meta.method.identifier.java",
@@ -206,7 +213,7 @@
         patterns: [{include: "#code"}]}]},
    :"object-types" => 
     {patterns: 
-      [{begin: /\b((?:[a-z]\w*\.)*[A-Z]+\w*)</,
+      [{begin: /\b(?<_1>(?:[a-z]\w*\.)*[A-Z]+\w*)</,
         end: ">|[^\\w\\s,\\?<\\[\\]]",
         name: "storage.type.generic.java",
         patterns: 
@@ -215,16 +222,16 @@
            comment: "This is just to support <>'s with no actual type prefix",
            end: ">|[^\\w\\s,\\[\\]<]",
            name: "storage.type.generic.java"}]},
-       {begin: /\b((?:[a-z]\w*\.)*[A-Z]+\w*)(?=\[)/,
+       {begin: /\b(?<_1>(?:[a-z]\w*\.)*[A-Z]+\w*)(?=\[)/,
         end: "(?=[^\\]\\s])",
         name: "storage.type.object.array.java",
         patterns: [{begin: /\[/, end: "\\]", patterns: [{include: "#code"}]}]},
        {captures: {1 => {name: "keyword.operator.dereference.java"}},
-        match: /\b(?:[a-z]\w*(\.))*[A-Z]+\w*\b/,
+        match: /\b(?:[a-z]\w*(?<_1>\.))*[A-Z]+\w*\b/,
         name: "storage.type.java"}]},
    :"object-types-inherited" => 
     {patterns: 
-      [{begin: /\b((?:[a-z]\w*\.)*[A-Z]+\w*)</,
+      [{begin: /\b(?<_1>(?:[a-z]\w*\.)*[A-Z]+\w*)</,
         end: ">|[^\\w\\s,<]",
         name: "entity.other.inherited-class.java",
         patterns: 
@@ -234,7 +241,7 @@
            end: ">|[^\\w\\s,<]",
            name: "storage.type.generic.java"}]},
        {captures: {1 => {name: "keyword.operator.dereference.java"}},
-        match: /\b(?:[a-z]\w*(\.))*[A-Z]+\w*/,
+        match: /\b(?:[a-z]\w*(?<_1>\.))*[A-Z]+\w*/,
         name: "entity.other.inherited-class.java"}]},
    parameters: 
     {patterns: 
@@ -247,7 +254,7 @@
    :"primitive-arrays" => 
     {patterns: 
       [{match: 
-         /\b(?:void|boolean|byte|char|short|int|float|long|double)(\[\])*\b/,
+         /\b(?:void|boolean|byte|char|short|int|float|long|double)(?<_1>\[\])*\b/,
         name: "storage.type.primitive.array.java"}]},
    :"primitive-types" => 
     {patterns: 
@@ -256,7 +263,7 @@
    :"storage-modifiers" => 
     {captures: {1 => {name: "storage.modifier.java"}},
      match: 
-      /\b(public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient)\b/},
+      /\b(?<_1>public|private|protected|static|final|native|synchronized|abstract|threadsafe|transient)\b/},
    strings: 
     {patterns: 
       [{begin: /"/,

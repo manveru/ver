@@ -179,10 +179,6 @@
       "sqrt",
       "truncate"]},
   uuid: "73BD67B7-8673-4022-BF87-06C69F013847"},
- {name: "Symbol list: entities",
-  scope: "source.logtalk entity.name",
-  settings: {showInSymbolList: 1, symbolTransformation: ""},
-  uuid: "F7EA22E4-A54C-4BAB-8E65-F411A8B1107A"},
  {name: "Miscellaneous",
   scope: "source.logtalk",
   settings: 
@@ -190,4 +186,8 @@
     increaseIndentPattern: ":-$",
     smartTypingPairs: 
      [["\"", "\""], ["(", ")"], ["{", "}"], ["[", "]"], ["'", "'"]]},
-  uuid: "B25054C4-CAA1-4F80-9864-0F5E12B5E741"}]
+  uuid: "B25054C4-CAA1-4F80-9864-0F5E12B5E741"},
+ {name: "Symbol list: entities",
+  scope: "source.logtalk entity.name",
+  settings: {showInSymbolList: 1, symbolTransformation: ""},
+  uuid: "F7EA22E4-A54C-4BAB-8E65-F411A8B1107A"}]

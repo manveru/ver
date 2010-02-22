@@ -6,7 +6,7 @@
  foldingStartMarker: 
   /(?x)^ [ \t]* \(
 	  (?<par>
-	    ( [^()\n]++ | \( \g<par> \)? )*+
+	    (?<_1> [^(?<_2>)\n]++ | \( \g<par> \)? )*+
 	  )
 	$/,
  foldingStopMarker: /^\s*$/,
@@ -22,31 +22,32 @@
  repository: 
   {comment: 
     {captures: {1 => {name: "punctuation.definition.comment.scheme"}},
-     match: /(;).*$\n?/,
+     match: /(?<_1>;).*$\n?/,
      name: "comment.line.semicolon.scheme"},
    constants: 
     {patterns: 
       [{match: /#[t|f]/, name: "constant.language.boolean.scheme"},
        {match: 
-         /(?<=[\(\s])((#e|#i)?[0-9]+(\.[0-9]+)?|(#x)[0-9a-fA-F]+|(#o)[0-7]+|(#b)[01]+)(?=[\s;()'",\[\]])/,
+         /(?<=[\(\s])(?<_1>(?<_2>#e|#i)?[0-9]+(?<_3>\.[0-9]+)?|(?<_4>#x)[0-9a-fA-F]+|(?<_5>#o)[0-7]+|(?<_6>#b)[01]+)(?=[\s;(?<_7>)'",\[\]])/,
         name: "constant.numeric.scheme"}]},
-   illegal: {match: /[()\[\]]/, name: "invalid.illegal.parenthesis.scheme"},
+   illegal: 
+    {match: /[(?<_1>)\[\]]/, name: "invalid.illegal.parenthesis.scheme"},
    :"language-functions" => 
     {patterns: 
       [{match: 
          /(?x)
-	(?<=(\s|\(|\[)) # preceded by space or ( 
-	( do|or|and|else|quasiquote|begin|if|case|set!|
+	(?<=(?<_1>\s|\(|\[)) # preceded by space or (?<_2> 
+	(?<_3> do|or|and|else|quasiquote|begin|if|case|set!|
 	  cond|let|unquote|define|let\*|unquote-splicing|delay|
 	  letrec)
-	(?=(\s|\())/,
+	(?=(?<_4>\s|\())/,
         name: "keyword.control.scheme"},
        {comment: 
          "\n\t\t\t\t\t\tThese functions run a test, and return a boolean\n\t\t\t\t\t\tanswer.\n\t\t\t\t\t",
         match: 
          /(?x)
-	(?<=(\s|\()) # preceded by space or (
-	( char-alphabetic|char-lower-case|char-numeric|
+	(?<=(?<_1>\s|\()) # preceded by space or (?<_2>
+	(?<_3> char-alphabetic|char-lower-case|char-numeric|
 	  char-ready|char-upper-case|char-whitespace|
 	  (?:char|string)(?:-ci)?(?:=|<=?|>=?)|
 	  atom|boolean|bound-identifier=|char|complex|
@@ -55,48 +56,48 @@
 	  real|rational|zero|vector|negative|odd|null|string|
 	  eq|equal|eqv|even|number|positive|procedure
 	)
-	(\?)		# name ends with ? sign
-	(?=(\s|\()) # followed by space or (
+	(?<_4>\?)		# name ends with ? sign
+	(?=(?<_5>\s|\()) # followed by space or (?<_6>
 	/,
         name: "support.function.boolean-test.scheme"},
        {comment: 
          "\n\t\t\t\t\t\tThese functions change one type into another.\n\t\t\t\t\t",
         match: 
          /(?x)
-	(?<=(\s|\()) # preceded by space or (
-	( char->integer|exact->inexact|inexact->exact|
+	(?<=(?<_1>\s|\()) # preceded by space or (?<_2>
+	(?<_3> char->integer|exact->inexact|inexact->exact|
 	  integer->char|symbol->string|list->vector|
 	  list->string|identifier->symbol|vector->list|
 	  string->list|string->number|string->symbol|
 	  number->string
 	)
-	(?=(\s|\()) # followed by space or (					
+	(?=(?<_4>\s|\()) # followed by space or (?<_5>					
 	/,
         name: "support.function.convert-type.scheme"},
        {comment: 
          "\n\t\t\t\t\t\tThese functions are potentially dangerous because\n\t\t\t\t\t\tthey have side-effects which could affect other\n\t\t\t\t\t\tparts of the program.\n\t\t\t\t\t",
         match: 
          /(?x)
-	(?<=(\s|\()) # preceded by space or (
-	( set-(?:car|cdr)|				 # set car\/cdr
+	(?<=(?<_1>\s|\()) # preceded by space or (?<_2>
+	(?<_3> set-(?:car|cdr)|				 # set car\/cdr
 	  (?:vector|string)-(?:fill|set) # fill\/set string\/vector
 	)
-	(!)			# name ends with ! sign
-	(?=(\s|\()) # followed by space or (
+	(?<_4>!)			# name ends with ! sign
+	(?=(?<_5>\s|\()) # followed by space or (?<_6>
 	/,
         name: "support.function.with-side-effects.scheme"},
        {comment: "\n\t\t\t\t\t\t+, -, *, /, =, >, etc. \n\t\t\t\t\t",
         match: 
          /(?x)
-	(?<=(\s|\()) # preceded by space or (
-	( >=?|<=?|=|[*\/+-])
-	(?=(\s|\()) # followed by space or (
+	(?<=(?<_1>\s|\()) # preceded by space or (?<_2>
+	(?<_3> >=?|<=?|=|[*\/+-])
+	(?=(?<_4>\s|\()) # followed by space or (?<_5>
 	/,
         name: "keyword.operator.arithmetic.scheme"},
        {match: 
          /(?x)
-	(?<=(\s|\()) # preceded by space or (
-	( append|apply|approximate|
+	(?<=(?<_1>\s|\()) # preceded by space or (?<_2>
+	(?<_3> append|apply|approximate|
 	  call-with-current-continuation|call\/cc|catch|
 	  construct-identifier|define-syntax|display|foo|
 	  for-each|force|cd|gen-counter|gen-loser|
@@ -109,7 +110,7 @@
 	  truncate|unwrap-syntax|values-list|write|write-char|
 	  
 	  # cons, car, cdr, etc
-	  cons|c(a|d){1,4}r| 
+	  cons|c(?<_4>a|d){1,4}r| 
                           
 	  # unary math operators
 	  abs|acos|angle|asin|assoc|assq|assv|atan|ceiling|
@@ -135,7 +136,7 @@
 	  string(?:-(?:append|copy|length|ref))?|
 	  vector(?:-length|-ref)
 	)
-	(?=(\s|\()) # followed by space or (
+	(?=(?<_5>\s|\()) # followed by space or (?<_6>
 	/,
         name: "support.function.general.scheme"}]},
    quote: 
@@ -143,9 +144,10 @@
       "\n\t\t\t\tWe need to be able to quote any kind of item, which creates\n\t\t\t\ta tiny bit of complexity in our grammar.  It is hopefully\n\t\t\t\tnot overwhelming complexity.\n\t\t\t\t\n\t\t\t\tNote: the first two matches are special cases.  quoted\n\t\t\t\tsymbols, and quoted empty lists are considered constant.other\n\t\t\t\t\n\t\t\t",
      patterns: 
       [{captures: {1 => {name: "punctuation.section.quoted.symbol.scheme"}},
-        match: /(?x)
-	(')\s*
-	([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*)
+        match: 
+         /(?x)
+	(?<_1>')\s*
+	(?<_2>[[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*)
 	/,
         name: "constant.other.symbol.scheme"},
        {captures: 
@@ -154,18 +156,18 @@
           3 => {name: "punctuation.section.expression.begin.scheme"},
           4 => {name: "punctuation.section.expression.end.scheme"}},
         match: /(?x)
-	(')\s*
-	((\()\s*(\)))
+	(?<_1>')\s*
+	(?<_2>(?<_3>\()\s*(?<_4>\)))
 	/,
         name: "constant.other.empty-list.schem"},
-       {begin: /(')\s*/,
+       {begin: /(?<_1>')\s*/,
         beginCaptures: {1 => {name: "punctuation.section.quoted.scheme"}},
         comment: "quoted double-quoted string or s-expression",
         end: "(?=[\\s()])|(?<=\\n)",
         name: "string.other.quoted-object.scheme",
         patterns: [{include: "#quoted"}]}]},
    :"quote-sexp" => 
-    {begin: /(?<=\()\s*(quote)\b\s*/,
+    {begin: /(?<=\()\s*(?<_1>quote)\b\s*/,
      beginCaptures: {1 => {name: "keyword.control.quote.scheme"}},
      comment: 
       "\n\t\t\t\tSomething quoted with (quote «thing»).  In this case «thing»\n\t\t\t\twill not be evaluated, so we are considering it a string.\n\t\t\t",
@@ -175,7 +177,7 @@
    quoted: 
     {patterns: 
       [{include: "#string"},
-       {begin: /(\()/,
+       {begin: /(?<_1>\()/,
         beginCaptures: 
          {1 => {name: "punctuation.section.expression.begin.scheme"}},
         end: "(\\))",
@@ -186,7 +188,7 @@
        {include: "#quote"},
        {include: "#illegal"}]},
    sexp: 
-    {begin: /(\()/,
+    {begin: /(?<_1>\()/,
      beginCaptures: 
       {1 => {name: "punctuation.section.expression.begin.scheme"}},
      end: "(\\))(\\n)?",
@@ -198,15 +200,15 @@
       [{include: "#comment"},
        {begin: 
          /(?x)
-	(?<=\()       # preceded by (
-	(define)\s+   # define
-	(\()          # list of parameters
-	  ([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*)
-	  ((\s+
-	    ([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*|[._])
+	(?<=\()       # preceded by (?<_1>
+	(?<_2>define)\s+   # define
+	(?<_3>\()          # list of parameters
+	  (?<_4>[[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*)
+	  (?<_5>(?<_6>\s+
+	    (?<_7>[[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*|[._])
 	   )*
 	  )\s*
-	(\))
+	(?<_8>\))
 	/,
         captures: 
          {1 => {name: "keyword.control.scheme"},
@@ -220,16 +222,16 @@
          [{include: "#comment"}, {include: "#sexp"}, {include: "#illegal"}]},
        {begin: 
          /(?x)
-	(?<=\() # preceded by (
-	(lambda)\s+
-	(\() # opening paren
-	((?:
-	  ([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*|[._])
+	(?<=\() # preceded by (?<_1>
+	(?<_2>lambda)\s+
+	(?<_3>\() # opening paren
+	(?<_4>(?:
+	  (?<_5>[[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*|[._])
 	  \s+
 	)*(?:
-	  ([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*|[._])
+	  (?<_6>[[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*|[._])
 	)?)
-	(\)) # closing paren
+	(?<_7>\)) # closing paren
 	/,
         captures: 
          {1 => {name: "keyword.control.scheme"},
@@ -243,7 +245,7 @@
         patterns: 
          [{include: "#comment"}, {include: "#sexp"}, {include: "#illegal"}]},
        {begin: 
-         /(?<=\()(define)\s([[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*)\s*.*?/,
+         /(?<=\()(?<_1>define)\s(?<_2>[[:alnum:]][[:alnum:]!$%&*+-.\/:<=>?@^_~]*)\s*.*?/,
         captures: 
          {1 => {name: "keyword.control.scheme"},
           2 => {name: "variable.other.scheme"}},
@@ -256,20 +258,20 @@
        {include: "#language-functions"},
        {include: "#string"},
        {include: "#constants"},
-       {match: /(?<=[\(\s])(#\\)(space|newline|tab)(?=[\s\)])/,
+       {match: /(?<=[\(\s])(?<_1>#\\)(?<_2>space|newline|tab)(?=[\s\)])/,
         name: "constant.character.named.scheme"},
-       {match: /(?<=[\(\s])(#\\)x[0-9A-F]{2,4}(?=[\s\)])/,
+       {match: /(?<=[\(\s])(?<_1>#\\)x[0-9A-F]{2,4}(?=[\s\)])/,
         name: "constant.character.hex-literal.scheme"},
-       {match: /(?<=[\(\s])(#\\).(?=[\s\)])/,
+       {match: /(?<=[\(\s])(?<_1>#\\).(?=[\s\)])/,
         name: "constant.character.escape.scheme"},
        {comment: 
          "\n\t\t\t\t\t\tthe . in (a . b) which conses together two elements\n\t\t\t\t\t\ta and b. (a b c) == (a . (b . (c . nil)))\n\t\t\t\t\t",
-        match: /(?<=[ ()])\.(?=[ ()])/,
+        match: /(?<=[ (?<_1>)])\.(?=[ (?<_2>)])/,
         name: "punctuation.separator.cons.scheme"},
        {include: "#sexp"},
        {include: "#illegal"}]},
    string: 
-    {begin: /(")/,
+    {begin: /(?<_1>")/,
      beginCaptures: 
       {1 => {name: "punctuation.definition.string.begin.scheme"}},
      end: "(\")",

@@ -3,22 +3,22 @@
 {fileTypes: ["a4d", "a4p"],
  foldingStartMarker: 
   /(?x)
-	(<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)\b.*?>
+	(?<_1><(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)\b.*?>
 	|<!--(?!.*-->)
 	|^\s*<%(?!.*%>)
-	|(^\s*|<%\s*)(?i:if|while|for\ each|for|case\ of|repeat|method|save\ output)\b
+	|(?<_2>^\s*|<%\s*)(?i:if|while|for\ each|for|case\ of|repeat|method|save\ output)\b
 	)/,
  foldingStopMarker: 
   /(?x)
-	(<\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)>
+	(?<_1><\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)>
 	|^(?!.*?<!--).*?-->
 	|^\s*%>
-	|(^\s*|<%\s*)(?i:end\ (if|while|for\ each|for|case|method|save\ output)|until)\b
+	|(?<_2>^\s*|<%\s*)(?i:end\ (?<_3>if|while|for\ each|for|case|method|save\ output)|until)\b
 	)/,
  keyEquivalent: "^~A",
  name: "HTML (Active4D)",
  patterns: 
-  [{begin: /(<)([a-zA-Z0-9:]+)(?=[^>]*><\/\2>)/,
+  [{begin: /(?<_1><)(?<_2>[a-zA-Z0-9:]+)(?=[^>]*><\/\k<_2>>)/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.html"}},
@@ -30,7 +30,7 @@
       4 => {name: "punctuation.definition.tag.html"}},
     name: "meta.tag.any.html",
     patterns: [{include: "#tag-stuff"}]},
-   {begin: /(<\?)(xml)/,
+   {begin: /(?<_1><\?)(?<_2>xml)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.xml.html"},
       2 => {name: "entity.name.tag.xml.html"}},
@@ -51,7 +51,7 @@
     end: ">",
     name: "meta.tag.sgml.html",
     patterns: 
-     [{begin: /(DOCTYPE)/,
+     [{begin: /(?<_1>DOCTYPE)/,
        captures: {1 => {name: "entity.name.tag.doctype.html"}},
        end: "(?=>)",
        name: "meta.tag.sgml.doctype.html",
@@ -61,7 +61,7 @@
       {begin: /\[CDATA\[/,
        end: "]](?=>)",
        name: "constant.other.inline-data.html"},
-      {match: /(\s*)(?!--|>)\S(\s*)/,
+      {match: /(?<_1>\s*)(?!--|>)\S(?<_2>\s*)/,
        name: "invalid.illegal.bad-comments-or-CDATA.html"}]},
    {begin: /<%(?=%>)/,
     beginCaptures: {0 => {name: "punctuation.section.embedded.active4d"}},
@@ -72,7 +72,7 @@
     name: "meta.tag.processor.html",
     patterns: [{include: "#embedded-code"}]},
    {include: "#embedded-code"},
-   {begin: /(?:^\s+)?(<)((?i:style))\b(?![^>]*\/>)/,
+   {begin: /(?:^\s+)?(?<_1><)(?<_2>(?i:style))\b(?![^>]*\/>)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.style.html"},
@@ -81,11 +81,11 @@
     name: "source.css.embedded.html",
     patterns: 
      [{include: "#tag-stuff"},
-      {begin: /(>)/,
+      {begin: /(?<_1>>)/,
        beginCaptures: {1 => {name: "punctuation.definition.tag.html"}},
        end: "(?=</(?i:style))",
        patterns: [{include: "#embedded-code"}, {include: "source.css"}]}]},
-   {begin: /(?:^\s+)?(<)((?i:script))\b(?![^>]*\/>)/,
+   {begin: /(?:^\s+)?(?<_1><)(?<_2>(?i:script))\b(?![^>]*\/>)/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.script.html"}},
@@ -96,11 +96,11 @@
     name: "source.js.embedded.html",
     patterns: 
      [{include: "#tag-stuff"},
-      {begin: /(?<!<\/(?:script|SCRIPT))(>)/,
+      {begin: /(?<!<\/(?:script|SCRIPT))(?<_1>>)/,
        captures: {1 => {name: "punctuation.definition.tag.html"}},
        end: "(</)((?i:script))",
        patterns: [{include: "#embedded-js"}, {include: "source.js"}]}]},
-   {begin: /(<\/?)((?i:body|head|html)\b)/,
+   {begin: /(?<_1><\/?)(?<_2>(?i:body|head|html)\b)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.structure.any.html"}},
@@ -108,7 +108,7 @@
     name: "meta.tag.structure.any.html",
     patterns: [{include: "#tag-stuff"}]},
    {begin: 
-     /(<\/?)((?i:address|blockquote|dd|div|dl|dt|fieldset|form|frame|frameset|h1|h2|h3|h4|h5|h6|iframe|noframes|object|ol|p|ul|applet|center|dir|hr|menu|pre)\b)/,
+     /(?<_1><\/?)(?<_2>(?i:address|blockquote|dd|div|dl|dt|fieldset|form|frame|frameset|h1|h2|h3|h4|h5|h6|iframe|noframes|object|ol|p|ul|applet|center|dir|hr|menu|pre)\b)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.block.any.html"}},
@@ -116,14 +116,14 @@
     name: "meta.tag.block.any.html",
     patterns: [{include: "#tag-stuff"}]},
    {begin: 
-     /(<\/?)((?i:a|abbr|acronym|area|b|base|basefont|bdo|big|br|button|caption|cite|code|col|colgroup|del|dfn|em|font|head|html|i|img|input|ins|isindex|kbd|label|legend|li|link|map|meta|noscript|optgroup|option|param|q|s|samp|script|select|small|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var)\b)/,
+     /(?<_1><\/?)(?<_2>(?i:a|abbr|acronym|area|b|base|basefont|bdo|big|br|button|caption|cite|code|col|colgroup|del|dfn|em|font|head|html|i|img|input|ins|isindex|kbd|label|legend|li|link|map|meta|noscript|optgroup|option|param|q|s|samp|script|select|small|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var)\b)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.inline.any.html"}},
     end: "(>)",
     name: "meta.tag.inline.any.html",
     patterns: [{include: "#tag-stuff"}]},
-   {begin: /(<\/?)([a-zA-Z0-9:]+)/,
+   {begin: /(?<_1><\/?)(?<_2>[a-zA-Z0-9:]+)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.other.html"}},
@@ -151,7 +151,7 @@
       [{captures: 
          {1 => {name: "punctuation.definition.entity.html"},
           3 => {name: "punctuation.terminator.entity.html"}},
-        match: /(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)/,
+        match: /(?<_1>&)(?<_2>[a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(?<_3>;)/,
         name: "constant.character.entity.html"},
        {match: /&/, name: "invalid.illegal.bad-ampersand.html"}]},
    :"string-double-quoted" => 
@@ -183,9 +183,9 @@
      name: "string.quoted.single.js",
      patterns: [{include: "#embedded-code"}]},
    :"tag-generic-attribute" => 
-    {match: /\b([a-zA-Z:-]+)/, name: "entity.other.attribute-name.html"},
+    {match: /\b(?<_1>[a-zA-Z:-]+)/, name: "entity.other.attribute-name.html"},
    :"tag-id-attribute" => 
-    {begin: /\b(id)\b\s*(=)/,
+    {begin: /\b(?<_1>id)\b\s*(?<_2>=)/,
      captures: 
       {1 => {name: "entity.other.attribute-name.id.html"},
        2 => {name: "punctuation.separator.key-value.html"}},

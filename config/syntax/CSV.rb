@@ -7,7 +7,7 @@
  repository: 
   {field: 
     {patterns: 
-      [{begin: /(^|(?<=,))(")/,
+      [{begin: /(?<_1>^|(?<=,))(?<_2>")/,
         beginCaptures: {2 => {name: "punctuation.definition.field.csv"}},
         comment: 
          "\n\t\t\t\t\t\tthis field uses \"s and is thus able to enclose\n\t\t\t\t\t\tnewlines or commas\n\t\t\t\t\t",
@@ -19,7 +19,7 @@
         patterns: 
          [{match: /""/,
            name: "constant.character.escape.straight-quote.csv"}]},
-       {begin: /(:^|(?<=,))(?!$|,)/,
+       {begin: /(?<_1>:^|(?<=,))(?!$|,)/,
         contentName: "meta.tabular.field.csv",
         end: "$|(,)",
         endCaptures: {1 => {name: "punctuation.separator.tabular.field.csv"}}},
@@ -40,7 +40,7 @@
      name: "meta.tabular.table.csv",
      patterns: 
       [{include: "#header"},
-       {begin: /(\n)/,
+       {begin: /(?<_1>\n)/,
         beginCaptures: {1 => {name: "punctuation.separator.table.row.csv"}},
         comment: 
          "\n\t\t\t\t\t\teverything after the first row is not a header\n\t\t\t\t\t",

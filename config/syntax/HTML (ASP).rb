@@ -2,9 +2,9 @@
 
 {fileTypes: ["asp"],
  foldingStartMarker: 
-  /(<(?i:(head|table|div|style|script|ul|ol|form|dl))\b.*?>|\{)/,
+  /(?<_1><(?i:(?<_2>head|table|div|style|script|ul|ol|form|dl))\b.*?>|\{)/,
  foldingStopMarker: 
-  /(<\/(?i:(head|table|div|style|script|ul|ol|form|dl))>|\})/,
+  /(?<_1><\/(?i:(?<_2>head|table|div|style|script|ul|ol|form|dl))>|\})/,
  keyEquivalent: "^~A",
  name: "HTML (ASP)",
  patterns: 
@@ -15,7 +15,7 @@
     name: "source.asp.embedded.html",
     patterns: 
      [{captures: {1 => {name: "punctuation.definition.comment.asp"}},
-       match: /(').*?(?=%>)/,
+       match: /(?<_1>').*?(?=%>)/,
        name: "comment.line.apostrophe.asp"},
       {include: "source.asp"}]},
    {include: "text.html.basic"}],

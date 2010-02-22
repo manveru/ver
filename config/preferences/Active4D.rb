@@ -1,13 +1,6 @@
 # Encoding: UTF-8
 
-[{name: "Comments",
-  scope: "source.active4d",
-  settings: 
-   {shellVariables: 
-     [{name: "TM_COMMENT_START", value: "// "},
-      {name: "TM_COMMENT_MODE", value: "line"}]},
-  uuid: "942A77CF-CBDC-46BE-9C9C-CA475F60B97A"},
- {name: "Miscellaneous",
+[{name: "Miscellaneous",
   scope: "source.active4d",
   settings: 
    {decreaseIndentPattern: 
@@ -29,6 +22,13 @@
       ["'", "'"],
       ["`", "`"]]},
   uuid: "22573B7E-1CE8-41CA-BFB5-32B01CA52D5F"},
+ {name: "Comments",
+  scope: "source.active4d",
+  settings: 
+   {shellVariables: 
+     [{name: "TM_COMMENT_START", value: "// "},
+      {name: "TM_COMMENT_MODE", value: "line"}]},
+  uuid: "942A77CF-CBDC-46BE-9C9C-CA475F60B97A"},
  {name: "Symbol List: Method",
   scope: "entity.name.function.active4d",
   settings: {showInSymbolList: 1, symbolTransformation: "s/\"(.+?)\"/$1/"},

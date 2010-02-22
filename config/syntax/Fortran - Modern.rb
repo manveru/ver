@@ -7,15 +7,15 @@
   /(?x)				# extended mode
 	^\s*						# start of line and some space
 	(?i:						# case insensitive match
-	(
+	(?<_1>
 	if.*then				# if ... then
 	|for|do|select\s+case|where|interface	# some easy keywords
 	|module(?!\s*procedure)	# module not followed by procedure
-	|type(?!\s*\()		# type but not type(
+	|type(?!\s*\()		# type but not type(?<_2>
 	)
 	 		|					# ...or...
-	(
-	[a-z]*(?<!end)\s*(function|subroutine)	# possibly some letters, but not the word end, and a space, then function
+	(?<_3>
+	[a-z]*(?<!end)\s*(?<_4>function|subroutine)	# possibly some letters, but not the word end, and a space, then function
 	)
 	)
 	.*$						# anything until the end of the line
@@ -23,7 +23,7 @@
  foldingStopMarker: 
   /(?x)				# extended mode
 	^\s*						# start of line and some space
-	(?i:(end))				# the word end, was insensitive
+	(?i:(?<_1>end))				# the word end, was insensitive
 	.*$						# anything until the end of the line
 	/,
  keyEquivalent: "^~F",
@@ -39,11 +39,11 @@
      /(?x:					# extended mode
 	^
 	\s*					# start of line and possibly some space
-	(?i:(interface))		# 1: word interface
+	(?i:(?<_1>interface))		# 1: word interface
 	\s+					# some space
-	(?i:(operator|assignment))		# 2: the words operator or assignment
+	(?i:(?<_2>operator|assignment))		# 2: the words operator or assignment
 	\(					# opening parenthesis
-	((\.[a-zA-Z0-9_]+\.)|[\+\-\=\/\*]+)	# 3: an operator
+	(?<_3>(?<_4>\.[a-zA-Z0-9_]+\.)|[\+\-\=\/\*]+)	# 3: an operator
 	
 	\)					# closing parenthesis
 	)/,
@@ -63,9 +63,9 @@
      /(?x:					# extended mode
 	^
 	\s*					# start of line and possibly some space
-	(?i:(interface))		# 1: word interface
+	(?i:(?<_1>interface))		# 1: word interface
 	\s+					# some space
-	([A-Za-z_][A-Za-z0-9_]*)	# 1: name
+	(?<_2>[A-Za-z_][A-Za-z0-9_]*)	# 1: name
 	)/,
     beginCaptures: 
      {1 => {name: "storage.type.function.fortran"},
@@ -81,9 +81,9 @@
    {begin: 
      /(?x:			# extended mode
 	^\s*			# begining of line and some space
-	(?i:(type))	# 1: word type
+	(?i:(?<_1>type))	# 1: word type
 	\s+			# some space
-	([a-zA-Z_][a-zA-Z0-9_]*)	# 2: type name
+	(?<_2>[a-zA-Z_][a-zA-Z0-9_]*)	# 2: type name
 	)/,
     beginCaptures: 
      {1 => {name: "storage.type.fortran.modern"},
@@ -97,7 +97,7 @@
       3 => {name: "entity.name.type.end.fortran.modern"}},
     name: "meta.type-definition.fortran.modern",
     patterns: [{include: "$self"}]},
-   {begin: /(!-)/,
+   {begin: /(?<_1>!-)/,
     beginCaptures: {0 => {name: "punctuation.definition.comment.fortran"}},
     end: "$\\n?",
     name: "comment.line.exclamation.mark.fortran.modern",
@@ -109,39 +109,40 @@
     patterns: [{match: /\\\s*\n/}]},
    {comment: "statements controling the flow of the program",
     match: 
-     /\b(?i:(select\s+case|case(\s+default)?|end\s+select|use|(end\s+)?forall))\b/,
+     /\b(?i:(?<_1>select\s+case|case(?<_2>\s+default)?|end\s+select|use|(?<_3>end\s+)?forall))\b/,
     name: "keyword.control.fortran.modern"},
    {comment: "input/output instrinsics",
     match: 
-     /\b(?i:(access|action|advance|append|apostrophe|asis|blank|delete|delim|direct|end|eor|err|exist|file|fmt|form|formatted|iolength|iostat|keep|name|named|nextrec|new|nml|no|null|number|old|opened|pad|position|quote|read|readwrite|rec|recl|replace|scratch|sequential|size|status|undefined|unformatted|unit|unknown|write|yes|zero|namelist)(?=\())/,
+     /\b(?i:(?<_1>access|action|advance|append|apostrophe|asis|blank|delete|delim|direct|end|eor|err|exist|file|fmt|form|formatted|iolength|iostat|keep|name|named|nextrec|new|nml|no|null|number|old|opened|pad|position|quote|read|readwrite|rec|recl|replace|scratch|sequential|size|status|undefined|unformatted|unit|unknown|write|yes|zero|namelist)(?=\())/,
     name: "keyword.control.io.fortran.modern"},
    {comment: "logical operators in symbolic format",
-    match: /\b(\=\=|\/\=|\>\=|\>|\<|\<\=)\b/,
+    match: /\b(?<_1>\=\=|\/\=|\>\=|\>|\<|\<\=)\b/,
     name: "keyword.operator.logical.fortran.modern"},
    {comment: "operators",
-    match: /(\%|\=\>)/,
+    match: /(?<_1>\%|\=\>)/,
     name: "keyword.operator.fortran.modern"},
    {comment: "numeric instrinsics",
-    match: /\b(?i:(ceiling|floor|modulo)(?=\())/,
+    match: /\b(?i:(?<_1>ceiling|floor|modulo)(?=\())/,
     name: "keyword.other.instrinsic.numeric.fortran.modern"},
    {comment: "matrix/vector/array instrinsics",
-    match: /\b(?i:(allocate|allocated|deallocate)(?=\())/,
+    match: /\b(?i:(?<_1>allocate|allocated|deallocate)(?=\())/,
     name: "keyword.other.instrinsic.array.fortran.modern"},
    {comment: "pointer instrinsics",
-    match: /\b(?i:(associated)(?=\())/,
+    match: /\b(?i:(?<_1>associated)(?=\())/,
     name: "keyword.other.instrinsic.pointer.fortran.modern"},
    {comment: "programming units",
-    match: /\b(?i:((end\s*)?(interface|procedure|module)))\b/,
+    match: /\b(?i:(?<_1>(?<_2>end\s*)?(?<_3>interface|procedure|module)))\b/,
     name: "keyword.other.programming-units.fortran.modern"},
-   {begin: /\b(?i:(type(?=\s*\()))\b(?=.*::)/,
+   {begin: /\b(?i:(?<_1>type(?=\s*\()))\b(?=.*::)/,
     beginCaptures: {1 => {name: "storage.type.fortran.modern"}},
     comment: "Line of type specification",
     end: "(?=!)|$",
     name: "meta.specification.fortran.modern",
     patterns: [{include: "$base"}]},
-   {match: /\b(?i:(type(?=\s*\()))\b/, name: "storage.type.fortran.modern"},
+   {match: /\b(?i:(?<_1>type(?=\s*\()))\b/,
+    name: "storage.type.fortran.modern"},
    {match: 
-     /\b(?i:(optional|recursive|pointer|allocatable|target|private|public))\b/,
+     /\b(?i:(?<_1>optional|recursive|pointer|allocatable|target|private|public))\b/,
     name: "storage.modifier.fortran.modern"}],
  scopeName: "source.fortran.modern",
  uuid: "016CA1B6-8351-4B17-9215-29C275D5D973"}

@@ -7,38 +7,41 @@
  foldingStartMarker: 
   /(?x)
 	 \/\*\*(?!\*)
-	|^(?![^{]*?\/\/|[^{]*?\/\*(?!.*?\*\/.*?\{)).*?\{\s*($|\/\/|\/\*(?!.*?\*\/.*\S))
+	|^(?![^{]*?\/\/|[^{]*?\/\*(?!.*?\*\/.*?\{)).*?\{\s*(?<_1>$|\/\/|\/\*(?!.*?\*\/.*\S))
 	/,
  foldingStopMarker: /(?<!\*)\*\*\/|^\s*\}/,
- keyEquivalent: /^~C/,
+ keyEquivalent: "^~C",
  name: "C++",
  patterns: 
   [{include: "#special_block"},
    {include: "source.c"},
-   {match: /\b(friend|explicit|virtual)\b/, name: "storage.modifier.c++"},
-   {match: /\b(private:|protected:|public:)/, name: "storage.modifier.c++"},
-   {match: /\b(catch|operator|try|throw|using)\b/,
+   {match: /\b(?<_1>friend|explicit|virtual)\b/, name: "storage.modifier.c++"},
+   {match: /\b(?<_1>private:|protected:|public:)/,
+    name: "storage.modifier.c++"},
+   {match: /\b(?<_1>catch|operator|try|throw|using)\b/,
     name: "keyword.control.c++"},
-   {match: /\bdelete\b(\s*\[\])?|\bnew\b(?!\])/, name: "keyword.control.c++"},
+   {match: /\bdelete\b(?<_1>\s*\[\])?|\bnew\b(?!\])/,
+    name: "keyword.control.c++"},
    {comment: "common C++ instance var naming idiom -- fMemberName",
-    match: /\b(f|m)[A-Z]\w*\b/,
+    match: /\b(?<_1>f|m)[A-Z]\w*\b/,
     name: "variable.other.readwrite.member.c++"},
-   {match: /\b(this)\b/, name: "variable.language.c++"},
+   {match: /\b(?<_1>this)\b/, name: "variable.language.c++"},
    {match: /\btemplate\b\s*/, name: "storage.type.template.c++"},
-   {match: /\b(const_cast|dynamic_cast|reinterpret_cast|static_cast)\b\s*/,
+   {match: 
+     /\b(?<_1>const_cast|dynamic_cast|reinterpret_cast|static_cast)\b\s*/,
     name: "keyword.operator.cast.c++"},
    {match: 
-     /\b(and|and_eq|bitand|bitor|compl|not|not_eq|or|or_eq|typeid|xor|xor_eq)\b/,
+     /\b(?<_1>and|and_eq|bitand|bitor|compl|not|not_eq|or|or_eq|typeid|xor|xor_eq)\b/,
     name: "keyword.operator.c++"},
-   {match: /\b(class|wchar_t)\b/, name: "storage.type.c++"},
-   {match: /\b(export|mutable|typename)\b/, name: "storage.modifier.c++"},
+   {match: /\b(?<_1>class|wchar_t)\b/, name: "storage.type.c++"},
+   {match: /\b(?<_1>export|mutable|typename)\b/, name: "storage.modifier.c++"},
    {begin: 
      /(?x)
     				(?:  ^                                 # begin-of-line
     				  |  (?: (?<!else|new|=) )             #  or word + space before name
     				)
-    				((?:[A-Za-z_][A-Za-z0-9_]*::)*+~[A-Za-z_][A-Za-z0-9_]*) # actual name
-    				 \s*(\()                           # start bracket or end-of-line
+    				(?<_1>(?:[A-Za-z_][A-Za-z0-9_]*::)*+~[A-Za-z_][A-Za-z0-9_]*) # actual name
+    				 \s*(?<_2>\()                           # start bracket or end-of-line
     			/,
     beginCaptures: 
      {1 => {name: "entity.name.function.c++"},
@@ -52,8 +55,8 @@
     				(?:  ^                                 # begin-of-line
     				  |  (?: (?<!else|new|=) )             #  or word + space before name
     				)
-    				((?:[A-Za-z_][A-Za-z0-9_]*::)*+~[A-Za-z_][A-Za-z0-9_]*) # actual name
-    				 \s*(\()                           # terminating semi-colon
+    				(?<_1>(?:[A-Za-z_][A-Za-z0-9_]*::)*+~[A-Za-z_][A-Za-z0-9_]*) # actual name
+    				 \s*(?<_2>\()                           # terminating semi-colon
     			/,
     beginCaptures: 
      {1 => {name: "entity.name.function.c++"},
@@ -78,10 +81,10 @@
           2 => {name: "punctuation.definition.parameters.c"}},
         match: 
          /(?x)
-    				(
+    				(?<_1>
     					(?!while|for|do|if|else|switch|catch|enumerate|return|r?iterate)(?: \b[A-Za-z_][A-Za-z0-9_]*+\b | :: )*+                  # actual name
     				)
-    				 \s*(\()/,
+    				 \s*(?<_2>\()/,
         name: "meta.function-call.c"},
        {include: "$base"}]},
    constructor: 
@@ -89,8 +92,8 @@
       [{begin: 
          /(?x)
     				(?:  ^\s*)                             # begin-of-line
-    				((?!while|for|do|if|else|switch|catch|enumerate|r?iterate)[A-Za-z_][A-Za-z0-9_:]*) # actual name
-    				 \s*(\()                            # start bracket or end-of-line
+    				(?<_1>(?!while|for|do|if|else|switch|catch|enumerate|r?iterate)[A-Za-z_][A-Za-z0-9_:]*) # actual name
+    				 \s*(?<_2>\()                            # start bracket or end-of-line
     			/,
         beginCaptures: 
          {1 => {name: "entity.name.function.c++"},
@@ -101,9 +104,9 @@
         patterns: [{include: "$base"}]},
        {begin: 
          /(?x)
-    				(:)                            # begin-of-line
-    				((?=\s*[A-Za-z_][A-Za-z0-9_:]* # actual name
-    				 \s*(\()))                      # start bracket or end-of-line
+    				(?<_1>:)                            # begin-of-line
+    				(?<_2>(?=\s*[A-Za-z_][A-Za-z0-9_:]* # actual name
+    				 \s*(?<_3>\()))                      # start bracket or end-of-line
     			/,
         beginCaptures: {1 => {name: "punctuation.definition.parameters.c"}},
         end: "(?=\\{)",
@@ -111,14 +114,14 @@
         patterns: [{include: "$base"}]}]},
    special_block: 
     {patterns: 
-      [{begin: /\b(namespace)\b\s*([_A-Za-z][_A-Za-z0-9]*\b)?+/,
+      [{begin: /\b(?<_1>namespace)\b\s*(?<_2>[_A-Za-z][_A-Za-z0-9]*\b)?+/,
         beginCaptures: 
          {1 => {name: "storage.type.c++"},
           2 => {name: "entity.name.type.c++"}},
         end: "(?<=\\})|(?=(;|,|\\(|\\)|>|\\[|\\]|=))",
         name: "meta.namespace-block.c++",
         patterns: 
-         [{begin: /(\{)/,
+         [{begin: /(?<_1>\{)/,
            beginCaptures: {1 => {name: "punctuation.definition.scope.c++"}},
            end: "(\\})",
            endCaptures: {1 => {name: "punctuation.definition.invalid.c++"}},
@@ -127,7 +130,7 @@
              {include: "#constructor"},
              {include: "$base"}]},
           {include: "$base"}]},
-       {begin: /\b(class|struct)\b\s*([_A-Za-z][_A-Za-z0-9]*\b)?+/,
+       {begin: /\b(?<_1>class|struct)\b\s*(?<_2>[_A-Za-z][_A-Za-z0-9]*\b)?+/,
         beginCaptures: 
          {1 => {name: "storage.type.c++"},
           2 => {name: "entity.name.type.c++"}},
@@ -135,7 +138,7 @@
         name: "meta.class-struct-block.c++",
         patterns: 
          [{include: "#angle_brackets"},
-          {begin: /(\{)/,
+          {begin: /(?<_1>\{)/,
            beginCaptures: {1 => {name: "punctuation.definition.scope.c++"}},
            end: "(\\})(\\s*\\n)?",
            endCaptures: 
@@ -146,7 +149,7 @@
              {include: "#constructor"},
              {include: "$base"}]},
           {include: "$base"}]},
-       {begin: /\b(extern)(?=\s*")/,
+       {begin: /\b(?<_1>extern)(?=\s*")/,
         beginCaptures: {1 => {name: "storage.modifier.c++"}},
         end: "(?<=\\})|(?=\\w)",
         name: "meta.extern-block.c++",

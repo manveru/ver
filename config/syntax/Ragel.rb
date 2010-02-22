@@ -4,7 +4,7 @@
  foldingStartMarker: 
   /(?x)
 	 \/\*\*(?!\*)
-	|^(?![^{]*?\/\/|[^{]*?\/\*(?!.*?\*\/.*?\{)).*?\{\s*($|\/\/|\/\*(?!.*?\*\/.*\S))
+	|^(?![^{]*?\/\/|[^{]*?\/\*(?!.*?\*\/.*?\{)).*?\{\s*(?<_1>$|\/\/|\/\*(?!.*?\*\/.*\S))
 	/,
  foldingStopMarker: /(?<!\*)\*\*\/|^\s*\}/,
  keyEquivalent: "^~R",
@@ -30,7 +30,7 @@
   {action_name: 
     {patterns: 
       [{captures: {1 => {name: "punctuation.definition.entity.ragel"}},
-        match: /([@$>%])\s*([\w\d]+)/,
+        match: /(?<_1>[@$>%])\s*(?<_2>[\w\d]+)/,
         name: "entity.name.type.action-reference.ragel"}]},
    comments: 
     {patterns: 
@@ -48,11 +48,11 @@
    keywords: 
     {patterns: 
       [{match: 
-         /\b(machine|action|context|include|variable|access|write|contained)\b/,
+         /\b(?<_1>machine|action|context|include|variable|access|write|contained)\b/,
         name: "keyword.other.ragel"}]},
    operators: 
     {patterns: 
-      [{match: /(\:\>\>?|\<\:)/,
+      [{match: /(?<_1>\:\>\>?|\<\:)/,
         name: "keyword.operator.contatenation.ragel"}]},
    regexp: 
     {patterns: 
@@ -75,7 +75,7 @@
        {include: "#string"},
        {include: "#comments"},
        {include: "#embedded_code"},
-       {begin: /(action)\s+([\w\d]+)\s+({)/,
+       {begin: /(?<_1>action)\s+(?<_2>[\w\d]+)\s+(?<_3>{)/,
         beginCaptures: 
          {1 => {name: "keyword.other.action.ragel"},
           2 => {name: "entity.name.type.action.ragel"},
@@ -84,7 +84,7 @@
         endCaptures: {1 => {name: "punctuation.section.function.ragel"}},
         name: "meta.function.action.ragel",
         patterns: [{include: "source.c"}]},
-       {begin: /([\w\d]+)\s*(=)/,
+       {begin: /(?<_1>[\w\d]+)\s*(?<_2>=)/,
         beginCaptures: 
          {1 => {name: "entity.name.type.machine-definition.ragel"},
           2 => {name: "punctuation.separator.key-value.ragel"}},
@@ -99,7 +99,7 @@
           {include: "#embedded_code"},
           {include: "#operators"},
           {include: "#comments"}]},
-       {begin: /([\w\d]+)\s*(:=)/,
+       {begin: /(?<_1>[\w\d]+)\s*(?<_2>:=)/,
         beginCaptures: 
          {1 => {name: "entity.name.type.machine-instantiation.ragel"},
           2 => {name: "punctuation.separator.key-value.ragel"}},
@@ -138,19 +138,20 @@
         patterns: [{include: "#string_escaped_char"}]}]},
    string_escaped_char: 
     {patterns: 
-      [{match: /\\(\\|[abefnprtv'"?]|[0-3]\d{,2}|[4-7]\d?|x[a-fA-F0-9]{,2})/,
+      [{match: 
+         /\\(?<_1>\\|[abefnprtv'"?]|[0-3]\d{,2}|[4-7]\d?|x[a-fA-F0-9]{,2})/,
         name: "constant.character.escape.ragel"},
        {match: /\\./, name: "invalid.illegal.unknown-escape.ragel"}]},
    string_placeholder: 
     {patterns: 
       [{match: 
          /(?x)%
-	(\d+\$)?                             # field (argument #)
+	(?<_1>\d+\$)?                             # field (?<_2>argument #)
 	[#0\- +']*                           # flags
-	[,;:_]?                              # separator character (AltiVec)
-	((-?\d+)|\*(-?\d+\$)?)?              # minimum field width
-	(\.((-?\d+)|\*(-?\d+\$)?)?)?         # precision
-	(hh|h|ll|l|j|t|z|q|L|vh|vl|v|hv|hl)? # length modifier
+	[,;:_]?                              # separator character (?<_3>AltiVec)
+	(?<_4>(?<_5>-?\d+)|\*(?<_6>-?\d+\$)?)?              # minimum field width
+	(?<_7>\.(?<_8>(?<_9>-?\d+)|\*(?<_10>-?\d+\$)?)?)?         # precision
+	(?<_11>hh|h|ll|l|j|t|z|q|L|vh|vl|v|hv|hl)? # length modifier
 	[diouxXDOUeEfFgGaACcSspn%]           # conversion type
 	/,
         name: "constant.other.placeholder.ragel"},

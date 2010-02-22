@@ -14,65 +14,66 @@
    "SConscript"],
  firstLineMatch: "^#!/.*\\bpython\\b",
  foldingStartMarker: 
-  /^\s*(def|class)\s+([.a-zA-Z0-9_ <]+)\s*(\((.*)\))?\s*:|\{\s*$|\(\s*$|\[\s*$|^\s*"""(?=.)(?!.*""")/,
+  /^\s*(?<_1>def|class)\s+(?<_2>[.a-zA-Z0-9_ <]+)\s*(?<_3>\((?<_4>.*)\))?\s*:|\{\s*$|\(\s*$|\[\s*$|^\s*"""(?=.)(?!.*""")/,
  foldingStopMarker: /^\s*$|^\s*\}|^\s*\]|^\s*\)|^\s*"""\s*$/,
- keyEquivalent: /^~P/,
+ keyEquivalent: "^~P",
  name: "Python",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.python"}},
-    match: /(#).*$\n?/,
+    match: /(?<_1>#).*$\n?/,
     name: "comment.line.number-sign.python"},
-   {match: /\b(?i:(0x\h*)L)/,
+   {match: /\b(?i:(?<_1>0x\h*)L)/,
     name: "constant.numeric.integer.long.hexadecimal.python"},
-   {match: /\b(?i:(0x\h*))/,
+   {match: /\b(?i:(?<_1>0x\h*))/,
     name: "constant.numeric.integer.hexadecimal.python"},
-   {match: /\b(?i:(0[0-7]+)L)/,
+   {match: /\b(?i:(?<_1>0[0-7]+)L)/,
     name: "constant.numeric.integer.long.octal.python"},
-   {match: /\b(0[0-7]+)/, name: "constant.numeric.integer.octal.python"},
+   {match: /\b(?<_1>0[0-7]+)/, name: "constant.numeric.integer.octal.python"},
    {match: 
-     /\b(?i:(((\d+(\.(?=[^a-zA-Z_])\d*)?|(?<=[^0-9a-zA-Z_])\.\d+)(e[\-\+]?\d+)?))J)/,
+     /\b(?i:(?<_1>(?<_2>(?<_3>\d+(?<_4>\.(?=[^a-zA-Z_])\d*)?|(?<=[^0-9a-zA-Z_])\.\d+)(?<_5>e[\-\+]?\d+)?))J)/,
     name: "constant.numeric.complex.python"},
-   {match: /\b(?i:(\d+\.\d*(e[\-\+]?\d+)?))(?=[^a-zA-Z_])/,
+   {match: /\b(?i:(?<_1>\d+\.\d*(?<_2>e[\-\+]?\d+)?))(?=[^a-zA-Z_])/,
     name: "constant.numeric.float.python"},
-   {match: /(?<=[^0-9a-zA-Z_])(?i:(\.\d+(e[\-\+]?\d+)?))/,
+   {match: /(?<=[^0-9a-zA-Z_])(?i:(?<_1>\.\d+(?<_2>e[\-\+]?\d+)?))/,
     name: "constant.numeric.float.python"},
-   {match: /\b(?i:(\d+e[\-\+]?\d+))/, name: "constant.numeric.float.python"},
-   {match: /\b(?i:([1-9]+[0-9]*|0)L)/,
+   {match: /\b(?i:(?<_1>\d+e[\-\+]?\d+))/,
+    name: "constant.numeric.float.python"},
+   {match: /\b(?i:(?<_1>[1-9]+[0-9]*|0)L)/,
     name: "constant.numeric.integer.long.decimal.python"},
-   {match: /\b([1-9]+[0-9]*|0)/,
+   {match: /\b(?<_1>[1-9]+[0-9]*|0)/,
     name: "constant.numeric.integer.decimal.python"},
    {captures: {1 => {name: "storage.modifier.global.python"}},
-    match: /\b(global)\b/},
+    match: /\b(?<_1>global)\b/},
    {captures: 
      {1 => {name: "keyword.control.import.python"},
       2 => {name: "keyword.control.import.from.python"}},
-    match: /\b(?:(import)|(from))\b/},
+    match: /\b(?:(?<_1>import)|(?<_2>from))\b/},
    {comment: "keywords that delimit flow blocks",
-    match: /\b(elif|else|except|finally|for|if|try|while|with)\b/,
+    match: /\b(?<_1>elif|else|except|finally|for|if|try|while|with)\b/,
     name: "keyword.control.flow.python"},
    {comment: "keywords that alter flow from within a block",
-    match: /\b(break|continue|pass|raise|return|yield)\b/,
+    match: /\b(?<_1>break|continue|pass|raise|return|yield)\b/,
     name: "keyword.control.flow.python"},
    {comment: "keyword operators that evaluate to True or False",
-    match: /\b(and|in|is|not|or)\b/,
+    match: /\b(?<_1>and|in|is|not|or)\b/,
     name: "keyword.operator.logical.python"},
    {captures: {1 => {name: "keyword.other.python"}},
     comment: "keywords that haven't fit into other groups (yet).",
-    match: /\b(as|assert|del|exec|print)\b/},
+    match: /\b(?<_1>as|assert|del|exec|print)\b/},
    {match: /<\=|>\=|\=\=|<|>|<>/, name: "keyword.operator.comparison.python"},
    {match: /\+\=|-\=|\*\=|\/\=|\/\/\=|%\=|&\=|\|\=|\^\=|>>\=|<<\=|\*\*\=/,
     name: "keyword.operator.assignment.augmented.python"},
    {match: /\+|\-|\*|\*\*|\/|\/\/|%|<<|>>|&|\||\^|~/,
     name: "keyword.operator.arithmetic.python"},
    {match: /\=/, name: "keyword.operator.assignment.python"},
-   {begin: /^\s*(class)\s+(?=[a-zA-Z_][a-zA-Z_0-9]*\s*\:)/,
+   {begin: /^\s*(?<_1>class)\s+(?=[a-zA-Z_][a-zA-Z_0-9]*\s*\:)/,
     beginCaptures: {1 => {name: "storage.type.class.python"}},
     contentName: "entity.name.type.class.python",
     end: "\\s*(:)",
     endCaptures: {1 => {name: "punctuation.section.class.begin.python"}},
     name: "meta.class.old-style.python",
     patterns: [{include: "#entity_name_class"}]},
-   {begin: /^\s*(class)\s+(?=[a-zA-Z_][a-zA-Z_0-9]*\s*\()/,
+   {begin: /^\s*(?<_1>class)\s+(?=[a-zA-Z_][a-zA-Z_0-9]*\s*\()/,
     beginCaptures: {1 => {name: "storage.type.class.python"}},
     end: "(\\))\\s*(?:(\\:)|(.*$\\n?))",
     endCaptures: 
@@ -85,7 +86,7 @@
        contentName: "entity.name.type.class.python",
        end: "(?![A-Za-z0-9_])",
        patterns: [{include: "#entity_name_class"}]},
-      {begin: /(\()/,
+      {begin: /(?<_1>\()/,
        beginCaptures: 
         {1 => {name: "punctuation.definition.inheritance.begin.python"}},
        contentName: "meta.class.inheritance.python",
@@ -97,7 +98,7 @@
           endCaptures: 
            {1 => {name: "punctuation.separator.inheritance.python"}},
           patterns: [{include: "$self"}]}]}]},
-   {begin: /^\s*(class)\s+(?=[a-zA-Z_][a-zA-Z_0-9])/,
+   {begin: /^\s*(?<_1>class)\s+(?=[a-zA-Z_][a-zA-Z_0-9])/,
     beginCaptures: {1 => {name: "storage.type.class.python"}},
     end: "(\\()|\\s*($\\n?|#.*$\\n?)",
     endCaptures: 
@@ -109,7 +110,7 @@
        contentName: "entity.name.type.class.python",
        end: "(?![A-Za-z0-9_])",
        patterns: [{include: "#entity_name_function"}]}]},
-   {begin: /^\s*(def)\s+(?=[A-Za-z_][A-Za-z0-9_]*\s*\()/,
+   {begin: /^\s*(?<_1>def)\s+(?=[A-Za-z_][A-Za-z0-9_]*\s*\()/,
     beginCaptures: {1 => {name: "storage.type.function.python"}},
     end: "(\\))\\s*(?:(\\:)|(.*$\\n?))",
     endCaptures: 
@@ -122,7 +123,7 @@
        contentName: "entity.name.function.python",
        end: "(?![A-Za-z0-9_])",
        patterns: [{include: "#entity_name_function"}]},
-      {begin: /(\()/,
+      {begin: /(?<_1>\()/,
        beginCaptures: 
         {1 => {name: "punctuation.definition.parameters.begin.python"}},
        contentName: "meta.function.parameters.python",
@@ -132,8 +133,9 @@
          {captures: 
            {1 => {name: "variable.parameter.function.python"},
             2 => {name: "punctuation.separator.parameters.python"}},
-          match: /\b([a-zA-Z_][a-zA-Z_0-9]*)\s*(?:(,)|(?=[\n\)]))/}]}]},
-   {begin: /^\s*(def)\s+(?=[A-Za-z_][A-Za-z0-9_]*)/,
+          match: 
+           /\b(?<_1>[a-zA-Z_][a-zA-Z_0-9]*)\s*(?:(?<_2>,)|(?=[\n\)]))/}]}]},
+   {begin: /^\s*(?<_1>def)\s+(?=[A-Za-z_][A-Za-z0-9_]*)/,
     beginCaptures: {1 => {name: "storage.type.function.python"}},
     end: "(\\()|\\s*($\\n?|#.*$\\n?)",
     endCaptures: 
@@ -145,7 +147,7 @@
        contentName: "entity.name.function.python",
        end: "(?![A-Za-z0-9_])",
        patterns: [{include: "#entity_name_function"}]}]},
-   {begin: /(lambda)(?=\s+)/,
+   {begin: /(?<_1>lambda)(?=\s+)/,
     beginCaptures: {1 => {name: "storage.type.function.inline.python"}},
     end: "(\\:)",
     endCaptures: 
@@ -162,7 +164,8 @@
          {captures: 
            {1 => {name: "variable.parameter.function.python"},
             2 => {name: "punctuation.separator.parameters.python"}},
-          match: /\b([a-zA-Z_][a-zA-Z_0-9]*)\s*(?:(,)|(?=[\n\)\:]))/}]}]},
+          match: 
+           /\b(?<_1>[a-zA-Z_][a-zA-Z_0-9]*)\s*(?:(?<_2>,)|(?=[\n\)\:]))/}]}]},
    {begin: 
      /^\s*(?=@\s*[A-Za-z_][A-Za-z0-9_]*(?:\.[a-zA-Z_][a-zA-Z_0-9]*)*\s*\()/,
     comment: "a decorator may be a function call which returns a decorator.",
@@ -171,12 +174,12 @@
     name: "meta.function.decorator.python",
     patterns: 
      [{begin: 
-        /(?=(@)\s*[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*\s*\()/,
+        /(?=(?<_1>@)\s*[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*\s*\()/,
        beginCaptures: {1 => {name: "punctuation.definition.decorator.python"}},
        contentName: "entity.name.function.decorator.python",
        end: "(?=\\s*\\()",
        patterns: [{include: "#dotted_name"}]},
-      {begin: /(\()/,
+      {begin: /(?<_1>\()/,
        beginCaptures: 
         {1 => {name: "punctuation.definition.arguments.begin.python"}},
        contentName: "meta.function.decorator.arguments.python",
@@ -187,11 +190,12 @@
     end: "(?=\\s|$\\n?|#)",
     name: "meta.function.decorator.python",
     patterns: 
-     [{begin: /(?=(@)\s*[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*)/,
+     [{begin: 
+        /(?=(?<_1>@)\s*[A-Za-z_][A-Za-z0-9_]*(?<_2>\.[A-Za-z_][A-Za-z0-9_]*)*)/,
        beginCaptures: {1 => {name: "punctuation.definition.decorator.python"}},
        end: "(?=\\s|$\\n?|#)",
        patterns: [{include: "#dotted_name"}]}]},
-   {begin: /(?<=\)|\])\s*(\()/,
+   {begin: /(?<=\)|\])\s*(?<_1>\()/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.arguments.begin.python"}},
     contentName: "meta.function-call.arguments.python",
@@ -207,7 +211,7 @@
      [{begin: /(?=[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*\s*\()/,
        end: "(?=\\s*\\()",
        patterns: [{include: "#dotted_name"}]},
-      {begin: /(\()/,
+      {begin: /(?<_1>\()/,
        beginCaptures: 
         {1 => {name: "punctuation.definition.arguments.begin.python"}},
        contentName: "meta.function-call.arguments.python",
@@ -221,13 +225,13 @@
      [{begin: /(?=[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*\s*\[)/,
        end: "(?=\\s*\\[)",
        patterns: [{include: "#dotted_name"}]},
-      {begin: /(\[)/,
+      {begin: /(?<_1>\[)/,
        beginCaptures: 
         {1 => {name: "punctuation.definition.arguments.begin.python"}},
        contentName: "meta.item-access.arguments.python",
        end: "(?=\\])",
        patterns: [{include: "$self"}]}]},
-   {begin: /(?<=\)|\])\s*(\[)/,
+   {begin: /(?<=\)|\])\s*(?<_1>\[)/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.arguments.begin.python"}},
     contentName: "meta.item-access.arguments.python",
@@ -236,23 +240,23 @@
     name: "meta.item-access.python",
     patterns: [{include: "$self"}]},
    {captures: {1 => {name: "storage.type.function.python"}},
-    match: /\b(def|lambda)\b/},
+    match: /\b(?<_1>def|lambda)\b/},
    {captures: {1 => {name: "storage.type.class.python"}},
-    match: /\b(class)\b/},
+    match: /\b(?<_1>class)\b/},
    {include: "#line_continuation"},
    {include: "#language_variables"},
-   {match: /\b(None|True|False|Ellipsis|NotImplemented)\b/,
+   {match: /\b(?<_1>None|True|False|Ellipsis|NotImplemented)\b/,
     name: "constant.language.python"},
    {include: "#string_quoted_single"},
    {include: "#string_quoted_double"},
    {include: "#dotted_name"},
-   {begin: /(\()/, end: "(\\))", patterns: [{include: "$self"}]},
+   {begin: /(?<_1>\()/, end: "(\\))", patterns: [{include: "$self"}]},
    {captures: 
      {1 => {name: "punctuation.definition.list.begin.python"},
       2 => {name: "meta.empty-list.python"},
       3 => {name: "punctuation.definition.list.end.python"}},
-    match: /(\[)(\s*(\]))\b/},
-   {begin: /(\[)/,
+    match: /(?<_1>\[)(?<_2>\s*(?<_3>\]))\b/},
+   {begin: /(?<_1>\[)/,
     beginCaptures: {1 => {name: "punctuation.definition.list.begin.python"}},
     end: "(\\])",
     endCaptures: {1 => {name: "punctuation.definition.list.end.python"}},
@@ -267,15 +271,15 @@
      {1 => {name: "punctuation.definition.tuple.begin.python"},
       2 => {name: "meta.empty-tuple.python"},
       3 => {name: "punctuation.definition.tuple.end.python"}},
-    match: /(\()(\s*(\)))/,
+    match: /(?<_1>\()(?<_2>\s*(?<_3>\)))/,
     name: "meta.structure.tuple.python"},
    {captures: 
      {1 => {name: "punctuation.definition.dictionary.begin.python"},
       2 => {name: "meta.empty-dictionary.python"},
       3 => {name: "punctuation.definition.dictionary.end.python"}},
-    match: /(\{)(\s*(\}))/,
+    match: /(?<_1>\{)(?<_2>\s*(?<_3>\}))/,
     name: "meta.structure.dictionary.python"},
-   {begin: /(\{)/,
+   {begin: /(?<_1>\{)/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.dictionary.begin.python"}},
     end: "(\\})",
@@ -296,11 +300,11 @@
  repository: 
   {builtin_exceptions: 
     {match: 
-      /(?x)\b((Arithmetic|Assertion|Attribute|EOF|Environment|FloatingPoint|IO|Import|Indentation|Index|Key|Lookup|Memory|Name|OS|Overflow|NotImplemented|Reference|Runtime|Standard|Syntax|System|Tab|Type|UnboundLocal|Unicode(Translate|Encode|Decode)?|Value|ZeroDivision)Error|(Deprecation|Future|Overflow|PendingDeprecation|Runtime|Syntax|User)?Warning|KeyboardInterrupt|NotImplemented|StopIteration|SystemExit|(Base)?Exception)\b/,
+      /(?x)\b(?<_1>(?<_2>Arithmetic|Assertion|Attribute|EOF|Environment|FloatingPoint|IO|Import|Indentation|Index|Key|Lookup|Memory|Name|OS|Overflow|NotImplemented|Reference|Runtime|Standard|Syntax|System|Tab|Type|UnboundLocal|Unicode(?<_3>Translate|Encode|Decode)?|Value|ZeroDivision)Error|(?<_4>Deprecation|Future|Overflow|PendingDeprecation|Runtime|Syntax|User)?Warning|KeyboardInterrupt|NotImplemented|StopIteration|SystemExit|(?<_5>Base)?Exception)\b/,
      name: "support.type.exception.python"},
    builtin_functions: 
     {match: 
-      /(?x)\b(
+      /(?x)\b(?<_1>
                 __import__|all|abs|any|apply|callable|chr|cmp|coerce|compile|delattr|dir|
                 divmod|eval|execfile|filter|getattr|globals|hasattr|hash|hex|id|
                 input|intern|isinstance|issubclass|iter|len|locals|map|max|min|oct|
@@ -310,7 +314,7 @@
      name: "support.function.builtin.python"},
    builtin_types: 
     {match: 
-      /(?x)\b(
+      /(?x)\b(?<_1>
 	basestring|bool|buffer|classmethod|complex|dict|enumerate|file|
 	float|frozenset|int|list|long|object|open|property|reversed|set|
 	slice|staticmethod|str|super|tuple|type|unicode|xrange
@@ -318,7 +322,7 @@
      name: "support.type.python"},
    constant_placeholder: 
     {match: 
-      /(?i:%(\([a-z_]+\))?#?0?\-?[ ]?\+?([0-9]*|\*)(\.([0-9]*|\*))?[hL]?[a-z%])/,
+      /(?i:%(?<_1>\([a-z_]+\))?#?0?\-?[ ]?\+?(?<_2>[0-9]*|\*)(?<_3>\.(?<_4>[0-9]*|\*))?[hL]?[a-z%])/,
      name: "constant.other.placeholder.python"},
    docstrings: 
     {patterns: 
@@ -334,7 +338,7 @@
     {begin: /(?=[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*)/,
      end: "(?![A-Za-z0-9_\\.])",
      patterns: 
-      [{begin: /(\.)(?=[A-Za-z_][A-Za-z0-9_]*)/,
+      [{begin: /(?<_1>\.)(?=[A-Za-z_][A-Za-z0-9_]*)/,
         end: "(?![A-Za-z0-9_])",
         patterns: 
          [{include: "#magic_function_names"},
@@ -375,13 +379,14 @@
        8 => {name: "constant.character.escape.backspace.python"},
        9 => {name: "constant.character.escape.formfeed.python"}},
      match: 
-      /(\\x[0-9A-F]{2})|(\\[0-7]{3})|(\\\n)|(\\\\)|(\\\")|(\\')|(\\a)|(\\b)|(\\f)|(\\n)|(\\r)|(\\t)|(\\v)/},
+      /(?<_1>\\x[0-9A-F]{2})|(?<_2>\\[0-7]{3})|(?<_3>\\\n)|(?<_4>\\\\)|(?<_5>\\\")|(?<_6>\\')|(?<_7>\\a)|(?<_8>\\b)|(?<_9>\\f)|(?<_10>\\n)|(?<_11>\\r)|(?<_12>\\t)|(?<_13>\\v)/},
    escaped_unicode_char: 
     {captures: 
       {1 => {name: "constant.character.escape.unicode.16-bit-hex.python"},
        2 => {name: "constant.character.escape.unicode.32-bit-hex.python"},
        3 => {name: "constant.character.escape.unicode.name.python"}},
-     match: /(\\U[0-9A-Fa-f]{8})|(\\u[0-9A-Fa-f]{4})|(\\N\{[a-zA-Z ]+\})/},
+     match: 
+      /(?<_1>\\U[0-9A-Fa-f]{8})|(?<_2>\\u[0-9A-Fa-f]{4})|(?<_3>\\N\{[a-zA-Z ]+\})/},
    function_name: 
     {patterns: 
       [{include: "#magic_function_names"},
@@ -393,10 +398,10 @@
    generic_names: {match: /[A-Za-z_][A-Za-z0-9_]*/},
    illegal_names: 
     {match: 
-      /\b(and|as|assert|break|class|continue|def|del|elif|else|except|exec|finally|for|from|global|if|import|in|is|lambda|not|or|pass|print|raise|return|try|while|with|yield)\b/,
+      /\b(?<_1>and|as|assert|break|class|continue|def|del|elif|else|except|exec|finally|for|from|global|if|import|in|is|lambda|not|or|pass|print|raise|return|try|while|with|yield)\b/,
      name: "invalid.illegal.name.python"},
    keyword_arguments: 
-    {begin: /\b([a-zA-Z_][a-zA-Z_0-9]*)\s*(=)(?!=)/,
+    {begin: /\b(?<_1>[a-zA-Z_][a-zA-Z_0-9]*)\s*(?<_2>=)(?!=)/,
      beginCaptures: 
       {1 => {name: "variable.parameter.function.python"},
        2 => {name: "keyword.operator.assignment.python"}},
@@ -404,17 +409,17 @@
      endCaptures: {1 => {name: "punctuation.separator.parameters.python"}},
      patterns: [{include: "$self"}]},
    language_variables: 
-    {match: /\b(self|cls)\b/, name: "variable.language.python"},
+    {match: /\b(?<_1>self|cls)\b/, name: "variable.language.python"},
    line_continuation: 
     {captures: 
       {1 => {name: "punctuation.separator.continuation.line.python"},
        2 => {name: "invalid.illegal.unexpected-text.python"}},
-     match: /(\\)(.*)$\n?/},
+     match: /(?<_1>\\)(?<_2>.*)$\n?/},
    magic_function_names: 
     {comment: 
       "these methods have magic interpretation by python and are generally called indirectly through syntactic constructs",
      match: 
-      /(?x)\b(__(?:
+      /(?x)\b(?<_1>__(?:
 	abs|add|and|call|cmp|coerce|complex|contains|del|delattr|
 	delete|delitem|delslice|div|divmod|enter|eq|exit|float|
 	floordiv|ge|get|getattr|getattribute|getitem|getslice|gt|
@@ -429,7 +434,7 @@
    magic_variable_names: 
     {comment: "magic variables which a class/module may have.",
      match: 
-      /\b__(all|bases|class|debug|dict|doc|file|members|metaclass|methods|name|slots|weakref)__\b/,
+      /\b__(?<_1>all|bases|class|debug|dict|doc|file|members|metaclass|methods|name|slots|weakref)__\b/,
      name: "support.variable.magic.python"},
    regular_expressions: 
     {comment: 
@@ -438,7 +443,7 @@
      patterns: [{include: "source.regexp.python"}]},
    string_quoted_double: 
     {patterns: 
-      [{begin: /([uU]r)(""")/,
+      [{begin: /(?<_1>[uU]r)(?<_2>""")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -453,7 +458,7 @@
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"},
           {include: "#regular_expressions"}]},
-       {begin: /([uU]R)(""")/,
+       {begin: /(?<_1>[uU]R)(?<_2>""")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -468,7 +473,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"}]},
-       {begin: /(r)(""")/,
+       {begin: /(?<_1>r)(?<_2>""")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -482,7 +487,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_char"},
           {include: "#regular_expressions"}]},
-       {begin: /(R)(""")/,
+       {begin: /(?<_1>R)(?<_2>""")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -494,7 +499,7 @@
         name: "string.quoted.double.block.raw.python",
         patterns: 
          [{include: "#constant_placeholder"}, {include: "#escaped_char"}]},
-       {begin: /([uU])(""")/,
+       {begin: /(?<_1>[uU])(?<_2>""")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -508,7 +513,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"}]},
-       {begin: /([uU]r)(")/,
+       {begin: /(?<_1>[uU]r)(?<_2>")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -524,7 +529,7 @@
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"},
           {include: "#regular_expressions"}]},
-       {begin: /([uU]R)(")/,
+       {begin: /(?<_1>[uU]R)(?<_2>")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -539,7 +544,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"}]},
-       {begin: /(r)(")/,
+       {begin: /(?<_1>r)(?<_2>")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -554,7 +559,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_char"},
           {include: "#regular_expressions"}]},
-       {begin: /(R)(")/,
+       {begin: /(?<_1>R)(?<_2>")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -567,7 +572,7 @@
         name: "string.quoted.double.single-line.raw.python",
         patterns: 
          [{include: "#constant_placeholder"}, {include: "#escaped_char"}]},
-       {begin: /([uU])(")/,
+       {begin: /(?<_1>[uU])(?<_2>")/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -583,7 +588,7 @@
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"}]},
        {begin: 
-         /(""")(?=\s*(SELECT|INSERT|UPDATE|DELETE|CREATE|REPLACE|ALTER))/,
+         /(?<_1>""")(?=\s*(?<_2>SELECT|INSERT|UPDATE|DELETE|CREATE|REPLACE|ALTER))/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.python"}},
         comment: "double quoted string",
@@ -596,7 +601,8 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_char"},
           {include: "source.sql"}]},
-       {begin: /(")(?=\s*(SELECT|INSERT|UPDATE|DELETE|CREATE|REPLACE|ALTER))/,
+       {begin: 
+         /(?<_1>")(?=\s*(?<_2>SELECT|INSERT|UPDATE|DELETE|CREATE|REPLACE|ALTER))/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.python"}},
         comment: "double quoted string",
@@ -610,7 +616,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_char"},
           {include: "source.sql"}]},
-       {begin: /(""")/,
+       {begin: /(?<_1>""")/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.python"}},
         comment: "double quoted string",
@@ -621,7 +627,7 @@
         name: "string.quoted.double.block.python",
         patterns: 
          [{include: "#constant_placeholder"}, {include: "#escaped_char"}]},
-       {begin: /(")/,
+       {begin: /(?<_1>")/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.python"}},
         comment: "double quoted string",
@@ -639,9 +645,9 @@
          {1 => {name: "punctuation.definition.string.begin.python"},
           2 => {name: "punctuation.definition.string.end.python"},
           3 => {name: "meta.empty-string.single.python"}},
-        match: /(?<!')(')(('))(?!')/,
+        match: /(?<!')(?<_1>')(?<_2>(?<_3>'))(?!')/,
         name: "string.quoted.single.single-line.python"},
-       {begin: /([uU]r)(''')/,
+       {begin: /(?<_1>[uU]r)(?<_2>''')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -656,7 +662,7 @@
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"},
           {include: "#regular_expressions"}]},
-       {begin: /([uU]R)(''')/,
+       {begin: /(?<_1>[uU]R)(?<_2>''')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -670,7 +676,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"}]},
-       {begin: /(r)(''')/,
+       {begin: /(?<_1>r)(?<_2>''')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -684,7 +690,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_char"},
           {include: "#regular_expressions"}]},
-       {begin: /(R)(''')/,
+       {begin: /(?<_1>R)(?<_2>''')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -696,7 +702,7 @@
         name: "string.quoted.single.block.raw.python",
         patterns: 
          [{include: "#constant_placeholder"}, {include: "#escaped_char"}]},
-       {begin: /([uU])(''')/,
+       {begin: /(?<_1>[uU])(?<_2>''')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -710,7 +716,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"}]},
-       {begin: /([uU]r)(')/,
+       {begin: /(?<_1>[uU]r)(?<_2>')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -725,7 +731,7 @@
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"},
           {include: "#regular_expressions"}]},
-       {begin: /([uU]R)(')/,
+       {begin: /(?<_1>[uU]R)(?<_2>')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -739,7 +745,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"}]},
-       {begin: /(r)(')/,
+       {begin: /(?<_1>r)(?<_2>')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -753,7 +759,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_char"},
           {include: "#regular_expressions"}]},
-       {begin: /(R)(')/,
+       {begin: /(?<_1>R)(?<_2>')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -765,7 +771,7 @@
         name: "string.quoted.single.single-line.raw.python",
         patterns: 
          [{include: "#constant_placeholder"}, {include: "#escaped_char"}]},
-       {begin: /([uU])(')/,
+       {begin: /(?<_1>[uU])(?<_2>')/,
         beginCaptures: 
          {1 => {name: "storage.type.string.python"},
           2 => {name: "punctuation.definition.string.begin.python"}},
@@ -780,7 +786,7 @@
           {include: "#escaped_unicode_char"},
           {include: "#escaped_char"}]},
        {begin: 
-         /(''')(?=\s*(SELECT|INSERT|UPDATE|DELETE|CREATE|REPLACE|ALTER))/,
+         /(?<_1>''')(?=\s*(?<_2>SELECT|INSERT|UPDATE|DELETE|CREATE|REPLACE|ALTER))/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.python"}},
         comment: "single quoted string",
@@ -793,7 +799,8 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_char"},
           {include: "source.sql"}]},
-       {begin: /(')(?=\s*(SELECT|INSERT|UPDATE|DELETE|CREATE|REPLACE|ALTER))/,
+       {begin: 
+         /(?<_1>')(?=\s*(?<_2>SELECT|INSERT|UPDATE|DELETE|CREATE|REPLACE|ALTER))/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.python"}},
         comment: "single quoted string",
@@ -806,7 +813,7 @@
          [{include: "#constant_placeholder"},
           {include: "#escaped_char"},
           {include: "source.sql"}]},
-       {begin: /(''')/,
+       {begin: /(?<_1>''')/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.python"}},
         comment: "single quoted string",
@@ -817,7 +824,7 @@
         name: "string.quoted.single.block.python",
         patterns: 
          [{include: "#constant_placeholder"}, {include: "#escaped_char"}]},
-       {begin: /(')/,
+       {begin: /(?<_1>')/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.python"}},
         comment: "single quoted string",

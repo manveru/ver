@@ -3,7 +3,7 @@
 {fileTypes: ["GNUmakefile", "makefile", "Makefile", "OCamlMakefile"],
  name: "Makefile",
  patterns: 
-  [{begin: /^(\w|[-_])+\s*\??=/,
+  [{begin: /^(?<_1>\w|[-_])+\s*\??=/,
     end: "$",
     name: "variable.other.makefile",
     patterns: [{match: /\\\n/}]},
@@ -21,10 +21,10 @@
    {match: /^\t\s*$/,
     name: "invalid.deprecated.opaque-rule-continuation.makefile"},
    {match: 
-     /^(\s*)\b(\-??include|ifeq|ifneq|ifdef|ifndef|else|endif|vpath|export|unexport|define|endef|override)\b/,
+     /^(?<_1>\s*)\b(?<_2>\-??include|ifeq|ifneq|ifdef|ifndef|else|endif|vpath|export|unexport|define|endef|override)\b/,
     name: "keyword.control.makefile"},
    {captures: {1 => {name: "entity.name.function.makefile"}},
-    match: /^([^\t ]+:(?!\=))\s*.*/,
+    match: /^(?<_1>[^\t ]+:(?!\=))\s*.*/,
     name: "meta.function.makefile"}],
  scopeName: "source.makefile",
  uuid: "FF1825E8-6B1C-11D9-B883-000D93589AF6"}

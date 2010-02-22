@@ -7,7 +7,7 @@
  name: "Rd (R Documentation)",
  patterns: 
   [{begin: 
-     /((\\)(?:alias|docType|keyword|name|title|description|value|note|concept|keyword|details|format|references|source|arguments|seealso|author))(\{)/,
+     /(?<_1>(?<_2>\\)(?:alias|docType|keyword|name|title|description|value|note|concept|keyword|details|format|references|source|arguments|seealso|author))(?<_3>\{)/,
     beginCaptures: 
      {1 => {name: "keyword.other.section.rd"},
       2 => {name: "punctuation.definition.function.rd"},
@@ -17,7 +17,7 @@
     endCaptures: {1 => {name: "punctuation.definition.arguments.end.rd"}},
     name: "meta.section.rd",
     patterns: [{include: "$self"}]},
-   {begin: /((\\)(?:usage))(\{)(?:\n)?/,
+   {begin: /(?<_1>(?<_2>\\)(?:usage))(?<_3>\{)(?:\n)?/,
     beginCaptures: 
      {1 => {name: "keyword.other.usage.rd"},
       2 => {name: "punctuation.definition.function.rd"},
@@ -27,7 +27,7 @@
     endCaptures: {1 => {name: "punctuation.definition.arguments.end.rd"}},
     name: "meta.usage.rd",
     patterns: [{include: "source.r"}]},
-   {begin: /((\\)(?:examples))(\{)(?:\n)?/,
+   {begin: /(?<_1>(?<_2>\\)(?:examples))(?<_3>\{)(?:\n)?/,
     beginCaptures: 
      {1 => {name: "keyword.other.examples.rd"},
       2 => {name: "punctuation.definition.function.rd"},
@@ -37,7 +37,7 @@
     endCaptures: {1 => {name: "punctuation.definition.arguments.end.rd"}},
     name: "meta.examples.rd",
     patterns: [{include: "source.r"}]},
-   {begin: /((\\)(?:author))(\{)(?:\n)?/,
+   {begin: /(?<_1>(?<_2>\\)(?:author))(?<_3>\{)(?:\n)?/,
     beginCaptures: 
      {1 => {name: "keyword.other.author.rd"},
       2 => {name: "punctuation.definition.function.rd"},

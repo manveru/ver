@@ -5,6 +5,11 @@
    name: "Virtual Host",
    content: 
     "<VirtualHost ${1:example.org}>\n\tServerAdmin webmaster@$1\n\tDocumentRoot /www/vhosts/$1\n\tServerName $1\n\tErrorLog logs/$1-error_log\n\tCustomLog logs/$1-access_log common\n</VirtualHost>"},
+ "opt" => 
+  {scope: "source.apache-config",
+   name: "Options",
+   content: 
+    "Options ${1:${2:All }${3:ExecCGI }${4:FollowSymLinks }${5:Includes }${6:IncludesNOEXEC }${7:Indexes }${8:MultiViews }${9:SymLinksIfOwnerMatch}}"},
  "allow" => 
   {scope: "source.apache-config",
    name: "Allow Override",
@@ -14,9 +19,4 @@
   {scope: "source.apache-config",
    name: "Directory",
    content: 
-    "<Directory ${1:/Library/WebServer/${2:example/}}>\n\t$0\n</Directory>\n"},
- "opt" => 
-  {scope: "source.apache-config",
-   name: "Options",
-   content: 
-    "Options ${1:${2:All }${3:ExecCGI }${4:FollowSymLinks }${5:Includes }${6:IncludesNOEXEC }${7:Indexes }${8:MultiViews }${9:SymLinksIfOwnerMatch}}"}}
+    "<Directory ${1:/Library/WebServer/${2:example/}}>\n\t$0\n</Directory>\n"}}

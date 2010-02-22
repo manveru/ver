@@ -7,13 +7,13 @@
  name: "iCalendar",
  patterns: 
   [{captures: {1 => {name: "entity.name.section.icalendar"}},
-    match: /^BEGIN:(.*)/,
+    match: /^BEGIN:(?<_1>.*)/,
     name: "keyword.other.component-begin.icalendar"},
    {captures: {1 => {name: "entity.name.section.icalendar"}},
-    match: /^END:(.*)/,
+    match: /^END:(?<_1>.*)/,
     name: "keyword.other.component-end.icalendar"},
    {match: 
-     /\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\b/,
+     /\b(?<_1>(?<_2>0(?<_3>x|X)[0-9a-fA-F]*)|(?<_4>(?<_5>[0-9]+\.?[0-9]*)|(?<_6>\.[0-9]+))(?<_7>(?<_8>e|E)(?<_9>\+|-)?[0-9]+)?)(?<_10>L|l|UL|ul|u|U|F|f)?\b/,
     name: "constant.numeric.icalendar"},
    {begin: /"/,
     beginCaptures: 

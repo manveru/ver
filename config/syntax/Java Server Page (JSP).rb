@@ -3,7 +3,7 @@
 {fileTypes: ["jsp"],
  foldingStartMarker: /\/\*\*|\{\s*$/,
  foldingStopMarker: /\*\*\/|^\s*\}/,
- keyEquivalent: /^~J/,
+ keyEquivalent: "^~J",
  name: "Java Server Page (JSP)",
  patterns: 
   [{begin: /<%--/,
@@ -36,7 +36,8 @@
           name: "string.quoted.single.jsp",
           patterns: 
            [{match: /\\./, name: "constant.character.escape.jsp"}]}]}]},
-   {begin: /(<%[!=]?)|(<jsp:scriptlet>|<jsp:expression>|<jsp:declaration>)/,
+   {begin: 
+     /(?<_1><%[!=]?)|(?<_2><jsp:scriptlet>|<jsp:expression>|<jsp:declaration>)/,
     beginCaptures: 
      {1 => {name: "punctuation.section.embedded.jsp"},
       2 => {name: "meta.tag.block.jsp"}},
@@ -46,7 +47,7 @@
         {1 => {name: "meta.tag.block.jsp"},
          2 => {name: "punctuation.section.embedded.jsp"}},
        match: 
-        /(<\/jsp:scriptlet>|<\/jsp:expression>|<\/jsp:declaration>)|(%>)/},
+        /(?<_1><\/jsp:scriptlet>|<\/jsp:expression>|<\/jsp:declaration>)|(?<_2>%>)/},
       {begin: 
         /(?<!\n)(?!<\/jsp:scriptlet>|<\/jsp:expression>|<\/jsp:declaration>|%>|\{|\})/,
        end: 
@@ -57,7 +58,7 @@
        end: "}",
        patterns: 
         [{begin: 
-           /(<\/jsp:scriptlet>|<\/jsp:expression>|<\/jsp:declaration>)|(%>)/,
+           /(?<_1><\/jsp:scriptlet>|<\/jsp:expression>|<\/jsp:declaration>)|(?<_2>%>)/,
           captures: 
            {1 => {name: "meta.tag.block.jsp"},
             2 => {name: "punctuation.section.embedded.jsp"}},

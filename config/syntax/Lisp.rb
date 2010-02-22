@@ -8,20 +8,21 @@
  name: "Lisp",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.lisp"}},
-    match: /(;).*$\n?/,
+    match: /(?<_1>;).*$\n?/,
     name: "comment.line.semicolon.lisp"},
    {captures: 
      {2 => {name: "storage.type.function-type.lisp"},
       4 => {name: "entity.name.function.lisp"}},
-    match: /(\b(?i:(defun|defmethod|defmacro))\b)(\s+)((\w|\-|\!|\?)*)/,
+    match: 
+     /(?<_1>\b(?i:(?<_2>defun|defmethod|defmacro))\b)(?<_3>\s+)(?<_4>(?<_5>\w|\-|\!|\?)*)/,
     name: "meta.function.lisp"},
    {captures: {1 => {name: "punctuation.definition.constant.lisp"}},
-    match: /(#)(\w|[\\+-=<>'"&#])+/,
+    match: /(?<_1>#)(?<_2>\w|[\\+-=<>'"&#])+/,
     name: "constant.character.lisp"},
    {captures: 
      {1 => {name: "punctuation.definition.variable.lisp"},
       3 => {name: "punctuation.definition.variable.lisp"}},
-    match: /(\*)(\S*)(\*)/,
+    match: /(?<_1>\*)(?<_2>\S*)(?<_3>\*)/,
     name: "variable.other.global.lisp"},
    {match: /\b(?i:case|do|let|loop|if|else|when)\b/,
     name: "keyword.control.lisp"},
@@ -31,7 +32,7 @@
      /\b(?i:cons|car|cdr|cond|lambda|format|setq|setf|quote|eval|append|list|listp|memberp|t|load|progn)\b/,
     name: "support.function.lisp"},
    {match: 
-     /\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\b/,
+     /\b(?<_1>(?<_2>0(?<_3>x|X)[0-9a-fA-F]*)|(?<_4>(?<_5>[0-9]+\.?[0-9]*)|(?<_6>\.[0-9]+))(?<_7>(?<_8>e|E)(?<_9>\+|-)?[0-9]+)?)(?<_10>L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\b/,
     name: "constant.numeric.lisp"},
    {begin: /"/,
     beginCaptures: {0 => {name: "punctuation.definition.string.begin.lisp"}},

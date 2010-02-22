@@ -2,7 +2,7 @@
 
 {fileTypes: [],
  foldingStartMarker: /%\s*region \w*/,
- foldingStopMarker: /%\s*end(\s*region)?/,
+ foldingStopMarker: /%\s*end(?<_1>\s*region)?/,
  keyEquivalent: "^~P",
  name: "Prolog",
  patterns: 
@@ -19,7 +19,7 @@
     end: "\\*/",
     name: "comment.block.prolog"},
    {captures: {1 => {name: "punctuation.definition.comment.prolog"}},
-    match: /(%).*$\n?/,
+    match: /(?<_1>%).*$\n?/,
     name: "comment.line.percentage.prolog"},
    {match: /:-/, name: "keyword.operator.definition.prolog"},
    {match: /\b[A-Z][a-zA-Z0-9_]*\b/, name: "variable.other.prolog"},

@@ -2,17 +2,17 @@
 
 {fileTypes: ["textmate"],
  firstLineMatch: "^\\{\\s*scopeName = .*$",
- foldingStartMarker: /^\s*([a-zA-Z_-]+ = )?[{(](?!.*[)}][;,]?\s*$)/,
- foldingStopMarker: /^\s*(\}|\))/,
+ foldingStartMarker: /^\s*(?<_1>[a-zA-Z_-]+ = )?[{(?<_2>](?!.*[)}][;,]?\s*$)/,
+ foldingStopMarker: /^\s*(?<_1>\}|\))/,
  keyEquivalent: "^~L",
  name: "Language Grammar",
  patterns: 
-  [{begin: /(\{)/,
+  [{begin: /(?<_1>\{)/,
     captures: {1 => {name: "punctuation.section.dictionary.tm-grammar"}},
     end: "(\\})",
     patterns: 
      [{include: "#comment"},
-      {begin: /\b(scopeName)\s*(=)/,
+      {begin: /\b(?<_1>scopeName)\s*(?<_2>=)/,
        beginCaptures: 
         {1 => {name: "support.constant.tm-grammar"},
          2 => {name: "punctuation.section.dictionary.tm-grammar"}},
@@ -24,7 +24,7 @@
         [{include: "#comment"},
          {include: "#scope-root"},
          {include: "#catch-all"}]},
-      {begin: /\b(fileTypes)\s*(=)/,
+      {begin: /\b(?<_1>fileTypes)\s*(?<_2>=)/,
        beginCaptures: 
         {1 => {name: "support.constant.tm-grammar"},
          2 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -33,7 +33,7 @@
        endCaptures: 
         {1 => {name: "punctuation.terminator.dictionary.tm-grammar"}},
        patterns: 
-        [{begin: /(\()/,
+        [{begin: /(?<_1>\()/,
           captures: {1 => {name: "punctuation.section.array.tm-grammar"}},
           end: "(\\))",
           patterns: 
@@ -45,12 +45,13 @@
              patterns: 
               [{include: "#comment"},
                {match: /\s+(?=\/\/|\/\*)/},
-               {begin: /[[^\n]&&\s](?!\s*(,|\)|$)).*/,
+               {begin: /[[^\n]&&\s](?!\s*(?<_1>,|\)|$)).*/,
                 end: "^$not possible$^",
                 name: "invalid.illegal.missing-comma.tm-grammar"},
                {include: "#string"}]},
             {include: "#catch-all"}]}]},
-      {begin: /\b(firstLineMatch|folding(Start|Stop)Marker)\s*(=)/,
+      {begin: 
+        /\b(?<_1>firstLineMatch|folding(?<_2>Start|Stop)Marker)\s*(?<_3>=)/,
        beginCaptures: 
         {1 => {name: "support.constant.tm-grammar"},
          3 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -63,7 +64,7 @@
          {include: "#regexp"},
          {include: "#catch-all"}]},
       {include: "#patterns"},
-      {begin: /\b(repository)\s*(=)/,
+      {begin: /\b(?<_1>repository)\s*(?<_2>=)/,
        beginCaptures: 
         {1 => {name: "support.constant.repository.tm-grammar"},
          2 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -73,12 +74,12 @@
         {1 => {name: "punctuation.terminator.dictionary.tm-grammar"}},
        name: "meta.dictionary.repository.tm-grammar",
        patterns: 
-        [{begin: /(\{)/,
+        [{begin: /(?<_1>\{)/,
           captures: {1 => {name: "punctuation.section.dictionary.tm-grammar"}},
           end: "(\\})",
           patterns: 
            [{include: "#comment"},
-            {begin: /(["']?)([-a-zA-Z0-9._]+)\1\s*(=)/,
+            {begin: /(?<_1>["']?)(?<_2>[-a-zA-Z0-9._]+)\k<_1>\s*(?<_3>=)/,
              beginCaptures: 
               {2 => {name: "entity.name.section.repository.tm-grammar"},
                3 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -91,7 +92,7 @@
                {include: "#rule"},
                {include: "#catch-all"}]},
             {include: "#string"},
-            {begin: /(=)/,
+            {begin: /(?<_1>=)/,
              beginCaptures: 
               {1 => {name: "punctuation.separator.key-value.tm-grammar"}},
              end: "(;)",
@@ -103,7 +104,7 @@
       {include: "#comment-keyword"},
       {include: "#invalid-keyword"},
       {include: "#string"},
-      {begin: /(=)/,
+      {begin: /(?<_1>=)/,
        beginCaptures: 
         {1 => {name: "punctuation.separator.key-value.tm-grammar"}},
        end: "(;)",
@@ -121,7 +122,7 @@
        {include: "#dictionary"},
        {include: "#catch-all"}]},
    array: 
-    {begin: /(\()/,
+    {begin: /(?<_1>\()/,
      captures: {1 => {name: "punctuation.section.array.tm-grammar"}},
      end: "(\\))",
      patterns: 
@@ -132,7 +133,7 @@
         patterns: 
          [{include: "#comment"},
           {match: /\s+(?=\/\/|\/\*)/},
-          {begin: /[[^\n]&&\s](?!\s*(,|\)|$)).*/,
+          {begin: /[[^\n]&&\s](?!\s*(?<_1>,|\)|$)).*/,
            end: "^$not possible$^",
            name: "invalid.illegal.missing-comma.tm-grammar"},
           {include: "#any"}]},
@@ -147,7 +148,7 @@
       [{begin: /\/\*/, end: "\\*/", name: "comment.block.tm-grammar"},
        {match: /\/\/.*$\n?/, name: "comment.line.double-slash.tm-grammar"}]},
    :"comment-keyword" => 
-    {begin: /\b(comment)\s*(=)/,
+    {begin: /\b(?<_1>comment)\s*(?<_2>=)/,
      beginCaptures: 
       {1 => {name: "support.constant.tm-grammar"},
        2 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -157,7 +158,7 @@
      patterns: 
       [{include: "#comment"},
        {applyEndPatternLast: 1,
-        begin: /(')/,
+        begin: /(?<_1>')/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.tm-grammar"}},
         contentName: "comment.block.string.tm-grammar",
@@ -168,7 +169,7 @@
         patterns: 
          [{match: /''/,
            name: "constant.character.escape.apostrophe.tm-grammar"}]},
-       {begin: /(")/,
+       {begin: /(?<_1>")/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.tm-grammar"}},
         contentName: "comment.block.string.tm-grammar",
@@ -180,13 +181,13 @@
          [{match: /\\[\\"]/, name: "constant.character.escape.tm-grammar"}]},
        {include: "#catch-all"}]},
    dictionary: 
-    {begin: /(\{)/,
+    {begin: /(?<_1>\{)/,
      captures: {1 => {name: "punctuation.section.dictionary.tm-grammar"}},
      end: "(\\})",
      patterns: 
       [{include: "#comment"},
        {include: "#string"},
-       {begin: /(=)/,
+       {begin: /(?<_1>=)/,
         beginCaptures: 
          {1 => {name: "punctuation.separator.key-value.tm-grammar"}},
         end: "(;)",
@@ -198,17 +199,17 @@
    :"invalid-keyword" => 
     {patterns: 
       [{match: 
-         /\b(fileTypes|foldingStartMarker|foldingStopMarker|patterns|match|begin|end|include|scopeName|captures|beginCaptures|endCaptures|firstLineMatch|comment|repository|disabled|contentName|applyEndPatternLast)\b(?=\s*=)/,
+         /\b(?<_1>fileTypes|foldingStartMarker|foldingStopMarker|patterns|match|begin|end|include|scopeName|captures|beginCaptures|endCaptures|firstLineMatch|comment|repository|disabled|contentName|applyEndPatternLast)\b(?=\s*=)/,
         name: "invalid.illegal.constant.misplaced-keyword.tm-grammar"},
-       {match: /\b(swallow|mode)\b(?=\s*=)/,
+       {match: /\b(?<_1>swallow|mode)\b(?=\s*=)/,
         name: "invalid.deprecated.constant.tm-grammar"},
        {match: 
-         /\b(foregroundColor|backgroundColor|fontStyle|elementForegroundColor|elementBackgroundColor|elementFontStyle|highlightPairs|smartTypingPairs|increaseIndentPattern)\b(?=\s*=)/,
+         /\b(?<_1>foregroundColor|backgroundColor|fontStyle|elementForegroundColor|elementBackgroundColor|elementFontStyle|highlightPairs|smartTypingPairs|increaseIndentPattern)\b(?=\s*=)/,
         name: "invalid.illegal.constant.outdated.tm-grammar"},
        {match: /[-a-zA-Z_.]+(?=\s*=)/,
         name: "invalid.illegal.constant.unknown-keyword.tm-grammar"}]},
    patterns: 
-    {begin: /\b(patterns)\s*(=)/,
+    {begin: /\b(?<_1>patterns)\s*(?<_2>=)/,
      beginCaptures: 
       {1 => {name: "support.constant.tm-grammar"},
        2 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -218,7 +219,7 @@
      name: "meta.array.patterns.tm-grammar",
      patterns: 
       [{include: "#comment"},
-       {begin: /(\()/,
+       {begin: /(?<_1>\()/,
         captures: {1 => {name: "punctuation.section.array.tm-grammar"}},
         end: "(\\))",
         patterns: 
@@ -230,7 +231,7 @@
            patterns: 
             [{include: "#comment"},
              {match: /\s+(?=\/\/|\/\*)/},
-             {begin: /[[^\n]&&\s](?!\s*(,|\)|$)).*/,
+             {begin: /[[^\n]&&\s](?!\s*(?<_1>,|\)|$)).*/,
               end: "^$not possible$^",
               name: "invalid.illegal.missing-comma.tm-grammar"},
              {include: "#rule"},
@@ -239,7 +240,7 @@
        {include: "#catch-all"}]},
    regexp: 
     {patterns: 
-      [{begin: /(')/,
+      [{begin: /(?<_1>')/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.tm-grammar"}},
         end: "(')(?!')",
@@ -250,7 +251,7 @@
          [{match: /''/,
            name: "constant.character.escape.apostrophe.tm-grammar"},
           {include: "source.regexp.oniguruma"}]},
-       {begin: /(")/,
+       {begin: /(?<_1>")/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.tm-grammar"}},
         end: "(\")",
@@ -261,13 +262,13 @@
          [{match: /\\\\|\\"/, name: "constant.character.escape.tm-grammar"},
           {include: "source.regexp.oniguruma"}]}]},
    rule: 
-    {begin: /(\{)/,
+    {begin: /(?<_1>\{)/,
      captures: {1 => {name: "punctuation.section.dictionary.tm-grammar"}},
      end: "(\\})",
      name: "meta.dictionary.rule.tm-grammar",
      patterns: 
       [{include: "#comment"},
-       {begin: /\b((contentN|n)ame)\s*(=)/,
+       {begin: /\b(?<_1>(?<_2>contentN|n)ame)\s*(?<_3>=)/,
         beginCaptures: 
          {1 => {name: "support.constant.tm-grammar"},
           3 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -280,7 +281,7 @@
          [{include: "#comment"},
           {include: "#scope"},
           {include: "#catch-all"}]},
-       {begin: /\b(begin|end|while|match)\s*(=)/,
+       {begin: /\b(?<_1>begin|end|while|match)\s*(?<_2>=)/,
         beginCaptures: 
          {1 => {name: "support.constant.tm-grammar"},
           2 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -292,7 +293,7 @@
          [{include: "#comment"},
           {include: "#regexp"},
           {include: "#catch-all"}]},
-       {begin: /\b(include)\s*(=)/,
+       {begin: /\b(?<_1>include)\s*(?<_2>=)/,
         beginCaptures: 
          {1 => {name: "support.constant.tm-grammar"},
           2 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -310,7 +311,8 @@
              4 => {name: "constant.other.reference.grammar.tm-grammar"},
              5 => {name: "punctuation.definition.constant.tm-grammar"},
              6 => {name: "punctuation.definition.string.end.tm-grammar"}},
-           match: /(')(?:((#)[-a-zA-Z0-9._]+)|((\$)(?:base|self)))?(')/,
+           match: 
+            /(?<_1>')(?:(?<_2>(?<_3>#)[-a-zA-Z0-9._]+)|(?<_4>(?<_5>\$)(?:base|self)))?(?<_6>')/,
            name: "string.quoted.single.include.tm-grammar"},
           {captures: 
             {1 => {name: "punctuation.definition.string.begin.tm-grammar"},
@@ -320,11 +322,12 @@
              4 => {name: "constant.other.reference.grammar.tm-grammar"},
              5 => {name: "punctuation.definition.constant.tm-grammar"},
              6 => {name: "punctuation.definition.string.end.tm-grammar"}},
-           match: /(')(?:((#)[-a-zA-Z0-9._]+)|((\$)(?:base|self)))?(')/,
+           match: 
+            /(?<_1>')(?:(?<_2>(?<_3>#)[-a-zA-Z0-9._]+)|(?<_4>(?<_5>\$)(?:base|self)))?(?<_6>')/,
            name: "string.quoted.double.include.tm-grammar"},
           {include: "#scope-root"},
           {include: "#catch-all"}]},
-       {begin: /\b((beginC|endC|whileC|c)aptures)\s*(=)/,
+       {begin: /\b(?<_1>(?<_2>beginC|endC|whileC|c)aptures)\s*(?<_3>=)/,
         beginCaptures: 
          {1 => {name: "support.constant.tm-grammar"},
           3 => {name: "punctuation.separator.key-value.tm-grammar"}},
@@ -334,14 +337,14 @@
          {1 => {name: "punctuation.terminator.dictionary.tm-grammar"}},
         name: "meta.dictionary.captures.tm-grammar",
         patterns: 
-         [{begin: /(\{)/,
+         [{begin: /(?<_1>\{)/,
            captures: 
             {1 => {name: "punctuation.section.dictionary.tm-grammar"}},
            end: "(\\})",
            patterns: 
             [{include: "#comment"},
              {include: "#string"},
-             {begin: /(=)/,
+             {begin: /(?<_1>=)/,
               beginCaptures: 
                {1 => {name: "punctuation.separator.key-value.tm-grammar"}},
               end: "(;)",
@@ -349,14 +352,14 @@
                {1 => {name: "punctuation.terminator.dictionary.tm-grammar"}},
               patterns: 
                [{include: "#comment"},
-                {begin: /(\{)/,
+                {begin: /(?<_1>\{)/,
                  captures: 
                   {1 => {name: "punctuation.section.dictionary.tm-grammar"}},
                  end: "(\\})",
                  patterns: 
                   [{include: "#comment"},
                    {include: "#comment-keyword"},
-                   {begin: /\b(name)\s*(=)/,
+                   {begin: /\b(?<_1>name)\s*(?<_2>=)/,
                     beginCaptures: 
                      {1 => {name: "support.constant.tm-grammar"},
                       2 => 
@@ -390,12 +393,12 @@
           9 => {name: "punctuation.definition.string.begin.tm-grammar"}},
         comment: "disabled, applyEndPatternLast",
         match: 
-         /\b(disabled|applyEndPatternLast)\s*(=)\s*(?:(0|1)|((")(0|1)("))|((')(0|1)(')))\s*(;)/},
+         /\b(?<_1>disabled|applyEndPatternLast)\s*(?<_2>=)\s*(?:(?<_3>0|1)|(?<_4>(?<_5>")(?<_6>0|1)(?<_7>"))|(?<_8>(?<_9>')(?<_10>0|1)(?<_11>')))\s*(?<_12>;)/},
        {include: "#patterns"},
        {include: "#comment-keyword"},
        {include: "#invalid-keyword"},
        {include: "#string"},
-       {begin: /(=)/,
+       {begin: /(?<_1>=)/,
         beginCaptures: 
          {1 => {name: "punctuation.separator.key-value.tm-grammar"}},
         end: "(;)",
@@ -414,8 +417,8 @@
           5 => {name: "punctuation.definition.string.end.tm-grammar"}},
         match: 
          /(?x)
-	(')								# Open String
-	(							# Optionally match the valid
+	(?<_1>')								# Open String
+	(?<_2>							# Optionally match the valid
 	# scopes, and the following
 	# part of the scope, meaning
 	# anything else is invalid
@@ -466,9 +469,9 @@
 	\.(?:parameter|language|other)
 	)?
 	)?
-	((?<!')[^\s,()&|\[\]:"'{}<>*?=^;#]*(?<!\.))?
-	([^']*)?
-	(')								# Close String
+	(?<_3>(?<!')[^\s,(?<_4>)&|\[\]:"'{}<>*?=^;#]*(?<!\.))?
+	(?<_5>[^']*)?
+	(?<_6>')								# Close String
 	/,
         name: "string.quoted.single.scope.tm-grammar"},
        {captures: 
@@ -479,8 +482,8 @@
           5 => {name: "punctuation.definition.string.end.tm-grammar"}},
         match: 
          /(?x)
-	(")								# Open String
-	(							# Optionally match the valid
+	(?<_1>")								# Open String
+	(?<_2>							# Optionally match the valid
 	# scopes, and the following
 	# part of the scope, meaning
 	# anything else is invalid
@@ -531,9 +534,9 @@
 	\.(?:parameter|language|other)
 	)?
 	)?
-	((?<!")[^\s,()&|\[\]:"'{}<>*?=^;#]*(?<!\.))?
-	([^"]*)?
-	(")								# Close String
+	(?<_3>(?<!")[^\s,(?<_4>)&|\[\]:"'{}<>*?=^;#]*(?<!\.))?
+	(?<_5>[^"]*)?
+	(?<_6>")								# Close String
 	/,
         name: "string.quoted.double.scope.tm-grammar"}]},
    :"scope-root" => 
@@ -545,7 +548,7 @@
           4 => {name: "invalid.deprecated.scope_not_allowed.tm-grammar"},
           5 => {name: "punctuation.definition.string.end.tm-grammar"}},
         match: 
-         /(')(?:((?:source|text)\.[^\s,()&|\[\]:"'{}<>*?=^;#]*)([^']*)|([^']*))(')/,
+         /(?<_1>')(?:(?<_2>(?:source|text)\.[^\s,(?<_3>)&|\[\]:"'{}<>*?=^;#]*)(?<_4>[^']*)|(?<_5>[^']*))(?<_6>')/,
         name: "string.quoted.single.scope.root.tm-grammar"},
        {captures: 
          {1 => {name: "punctuation.definition.string.begin.tm-grammar"},
@@ -554,14 +557,14 @@
           4 => {name: "invalid.deprecated.scope_not_allowed.tm-grammar"},
           5 => {name: "punctuation.definition.string.end.tm-grammar"}},
         match: 
-         /(")(?:((?:source|text)\.[^\s,()&|\[\]:"'{}<>*?=^;#]*)([^"]*)|([^"]*))(")/,
+         /(?<_1>")(?:(?<_2>(?:source|text)\.[^\s,(?<_3>)&|\[\]:"'{}<>*?=^;#]*)(?<_4>[^"]*)|(?<_5>[^"]*))(?<_6>")/,
         name: "string.quoted.double.scope.root.tm-grammar"}]},
    string: 
     {patterns: 
       [{match: /\b[0-9]+\b/, name: "constant.numeric.tm-grammar"},
        {match: /[-a-zA-Z0-9_.]+/, name: "string.unquoted.tm-grammar"},
        {applyEndPatternLast: 1,
-        begin: /(')/,
+        begin: /(?<_1>')/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.tm-grammar"}},
         end: "('(?!'))",
@@ -571,7 +574,7 @@
         patterns: 
          [{match: /''/,
            name: "constant.character.escape.apostrophe.tm-grammar"}]},
-       {begin: /(")/,
+       {begin: /(?<_1>")/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.tm-grammar"}},
         end: "(\")",

@@ -6,7 +6,7 @@
  keyEquivalent: "^~O",
  name: "OCamllex",
  patterns: 
-  [{begin: /^\s*({)/,
+  [{begin: /^\s*(?<_1>{)/,
     beginCaptures: 
      {1 => {name: "punctuation.section.embedded.ocaml.begin.ocamllex"}},
     end: "^\\s*(})",
@@ -14,7 +14,7 @@
      {1 => {name: "punctuation.section.embedded.ocaml.end.ocamllex"}},
     name: "meta.embedded.ocaml",
     patterns: [{include: "source.ocaml"}]},
-   {begin: /\b(let)\s+([a-z][a-zA-Z0-9'_]*)\s+=/,
+   {begin: /\b(?<_1>let)\s+(?<_2>[a-z][a-zA-Z0-9'_]*)\s+=/,
     beginCaptures: 
      {1 => {name: "keyword.other.pattern-definition.ocamllex"},
       2 => {name: "entity.name.type.pattern.stupid-goddamn-hack.ocamllex"}},
@@ -22,7 +22,7 @@
     name: "meta.pattern-definition.ocaml",
     patterns: [{include: "#match-patterns"}]},
    {begin: 
-     /(rule|and)\s+([a-z][a-zA-Z0-9_]*)\s+(=)\s+(parse)(?=\s*$)|((?<!\|)(\|)(?!\|))/,
+     /(?<_1>rule|and)\s+(?<_2>[a-z][a-zA-Z0-9_]*)\s+(?<_3>=)\s+(?<_4>parse)(?=\s*$)|(?<_5>(?<!\|)(?<_6>\|)(?!\|))/,
     beginCaptures: 
      {1 => {name: "keyword.other.ocamllex"},
       2 => {name: "entity.name.function.entrypoint.ocamllex"},
@@ -40,12 +40,12 @@
     end: "\\)",
     name: "meta.paren-group.ocamllex",
     patterns: [{include: "$self"}]},
-   {match: /(’|‘|“|”)/,
+   {match: /(?<_1>’|‘|“|”)/,
     name: "invalid.illegal.unrecognized-character.ocamllex"}],
  repository: 
   {actions: 
     {patterns: 
-      [{begin: /[^\']({)/,
+      [{begin: /[^\'](?<_1>{)/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.action.begin.ocamllex"}},
         end: "(})",
@@ -59,28 +59,28 @@
          {1 => {name: "punctuation.definition.char.begin.ocamllex"},
           4 => {name: "punctuation.definition.char.end.ocamllex"}},
         match: 
-         /(')([^\\]|\\(x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\]))(')/,
+         /(?<_1>')(?<_2>[^\\]|\\(?<_3>x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\]))(?<_4>')/,
         name: "constant.character.ocamllex"}]},
    comments: 
     {patterns: 
       [{captures: 
          {1 => {name: "comment.block.empty.ocaml"},
           2 => {name: "comment.block.empty.ocaml"}},
-        match: /\(\*(?:(\*)| ( )\*)\)/,
+        match: /\(\*(?:(?<_1>\*)| (?<_2> )\*)\)/,
         name: "comment.block.ocaml"},
        {begin: /\(\*/,
         end: "\\*\\)",
         name: "comment.block.ocaml",
         patterns: [{include: "#comments"}]},
-       {begin: /(?=[^\\])(")/,
+       {begin: /(?=[^\\])(?<_1>")/,
         end: "\"",
         name: "comment.block.string.quoted.double.ocaml",
         patterns: 
-         [{match: /\\(x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\])/,
+         [{match: /\\(?<_1>x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\])/,
            name: "comment.block.string.constant.character.escape.ocaml"}]}]},
    :"match-patterns" => 
     {patterns: 
-      [{begin: /(\()/,
+      [{begin: /(?<_1>\()/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.sub-pattern.begin.ocamllex"}},
         end: "(\\))",
@@ -94,7 +94,7 @@
        {match: /\bas\b/, name: "keyword.other.pattern.ocamllex"},
        {match: /eof/, name: "constant.language.eof.ocamllex"},
        {match: /_/, name: "constant.language.universal-match.ocamllex"},
-       {begin: /(\[)(\^?)/,
+       {begin: /(?<_1>\[)(?<_2>\^?)/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.character-class.begin.ocamllex"},
           2 => 
@@ -113,7 +113,7 @@
        {include: "#strings"}]},
    strings: 
     {patterns: 
-      [{begin: /(?=[^\\])(")/,
+      [{begin: /(?=[^\\])(?<_1>")/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.string.begin.ocaml"}},
         end: "(\")",
@@ -122,12 +122,12 @@
         patterns: 
          [{match: /\\$[ \t]*/,
            name: "punctuation.separator.string.ignore-eol.ocaml"},
-          {match: /\\(x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\])/,
+          {match: /\\(?<_1>x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\])/,
            name: "constant.character.string.escape.ocaml"},
           {match: /\\[\|\(\)1-9$^.*+?\[\]]/,
            name: "constant.character.regexp.escape.ocaml"},
           {match: 
-            /\\(?!(x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\]|[\|\(\)1-9$^.*+?\[\]]|$[ \t]*))(?:.)/,
+            /\\(?!(?<_1>x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\]|[\|\(\)1-9$^.*+?\[\]]|$[ \t]*))(?:.)/,
            name: "invalid.illegal.character.string.escape"}]}]}},
  scopeName: "source.ocamllex",
  uuid: "007E5263-8E0D-4BEF-B0E1-F01AE32590E8"}

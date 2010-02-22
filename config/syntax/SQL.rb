@@ -12,26 +12,27 @@
       2 => {name: "keyword.other.sql"},
       5 => {name: "entity.name.function.sql"}},
     match: 
-     /(?i:^\s*(create)\s+(aggregate|conversion|database|domain|function|group|(unique\s+)?index|language|operator class|operator|rule|schema|sequence|table|tablespace|trigger|type|user|view)\s+)(['"`]?)(\w+)\4/,
+     /(?i:^\s*(?<_1>create)\s+(?<_2>aggregate|conversion|database|domain|function|group|(?<_3>unique\s+)?index|language|operator class|operator|rule|schema|sequence|table|tablespace|trigger|type|user|view)\s+)(?<_4>['"`]?)(?<_5>\w+)\k<_4>/,
     name: "meta.create.sql"},
    {captures: 
      {1 => {name: "keyword.other.create.sql"},
       2 => {name: "keyword.other.sql"}},
     match: 
-     /(?i:^\s*(drop)\s+(aggregate|conversion|database|domain|function|group|index|language|operator class|operator|rule|schema|sequence|table|tablespace|trigger|type|user|view))/,
+     /(?i:^\s*(?<_1>drop)\s+(?<_2>aggregate|conversion|database|domain|function|group|index|language|operator class|operator|rule|schema|sequence|table|tablespace|trigger|type|user|view))/,
     name: "meta.drop.sql"},
    {captures: 
      {1 => {name: "keyword.other.create.sql"},
       2 => {name: "keyword.other.table.sql"},
       3 => {name: "entity.name.function.sql"},
       4 => {name: "keyword.other.cascade.sql"}},
-    match: /(?i:\s*(drop)\s+(table)\s+(\w+)(\s+cascade)?\b)/,
+    match: 
+     /(?i:\s*(?<_1>drop)\s+(?<_2>table)\s+(?<_3>\w+)(?<_4>\s+cascade)?\b)/,
     name: "meta.drop.sql"},
    {captures: 
      {1 => {name: "keyword.other.create.sql"},
       2 => {name: "keyword.other.table.sql"}},
     match: 
-     /(?i:^\s*(alter)\s+(aggregate|conversion|database|domain|function|group|index|language|operator class|operator|rule|schema|sequence|table|tablespace|trigger|type|user|view)\s+)/,
+     /(?i:^\s*(?<_1>alter)\s+(?<_2>aggregate|conversion|database|domain|function|group|index|language|operator class|operator|rule|schema|sequence|table|tablespace|trigger|type|user|view)\s+)/,
     name: "meta.alter.sql"},
    {captures: 
      {1 => {name: "storage.type.sql"},
@@ -53,74 +54,75 @@
      /(?xi)
 
 	# normal stuff, capture 1
-	 \b(bigint|bigserial|bit|boolean|box|bytea|cidr|circle|date|double\sprecision|inet|int|integer|line|lseg|macaddr|money|oid|path|point|polygon|real|serial|smallint|sysdate|text)\b
+	 \b(?<_1>bigint|bigserial|bit|boolean|box|bytea|cidr|circle|date|double\sprecision|inet|int|integer|line|lseg|macaddr|money|oid|path|point|polygon|real|serial|smallint|sysdate|text)\b
 
 	# numeric suffix, capture 2 + 3i
-	|\b(bit\svarying|character\s(?:varying)?|tinyint|var\schar|float|interval)\((\d+)\)
+	|\b(?<_2>bit\svarying|character\s(?:varying)?|tinyint|var\schar|float|interval)\((?<_3>\d+)\)
 
 	# optional numeric suffix, capture 4 + 5i
-	|\b(char|number|varchar\d?)\b(?:\((\d+)\))?
+	|\b(?<_4>char|number|varchar\d?)\b(?:\((?<_5>\d+)\))?
 
 	# special case, capture 6 + 7i + 8i
-	|\b(numeric)\b(?:\((\d+),(\d+)\))?
+	|\b(?<_6>numeric)\b(?:\((?<_7>\d+),(?<_8>\d+)\))?
 
 	# special case, captures 9, 10i, 11
-	|\b(times)(?:\((\d+)\))(\swithoutstimeszone\b)?
+	|\b(?<_9>times)(?:\((?<_10>\d+)\))(?<_11>\swithoutstimeszone\b)?
 
 	# special case, captures 12, 13, 14i, 15
-	|\b(timestamp)(?:(s)\((\d+)\)(\swithoutstimeszone\b)?)?
+	|\b(?<_12>timestamp)(?:(?<_13>s)\((?<_14>\d+)\)(?<_15>\swithoutstimeszone\b)?)?
 
 	/},
    {match: 
-     /(?i:\b((?:primary|foreign)\s+key|references|on\sdelete(\s+cascade)?|check|constraint)\b)/,
+     /(?i:\b(?<_1>(?:primary|foreign)\s+key|references|on\sdelete(?<_2>\s+cascade)?|check|constraint)\b)/,
     name: "storage.modifier.sql"},
    {match: /\b\d+\b/, name: "constant.numeric.sql"},
    {match: 
-     /(?i:\b(select(\s+distinct)?|insert\s+(ignore\s+)?into|update|delete|from|set|where|group\sby|or|like|and|union(\s+all)?|having|order\sby|limit|(inner|cross)\s+join|join|straight_join|(left|right)(\s+outer)?\s+join|natural(\s+(left|right)(\s+outer)?)?\s+join)\b)/,
+     /(?i:\b(?<_1>select(?<_2>\s+distinct)?|insert\s+(?<_3>ignore\s+)?into|update|delete|from|set|where|group\sby|or|like|and|union(?<_4>\s+all)?|having|order\sby|limit|(?<_5>inner|cross)\s+join|join|straight_join|(?<_6>left|right)(?<_7>\s+outer)?\s+join|natural(?<_8>\s+(?<_9>left|right)(?<_10>\s+outer)?)?\s+join)\b)/,
     name: "keyword.other.DML.sql"},
-   {match: /(?i:\b(on|((is\s+)?not\s+)?null)\b)/,
+   {match: /(?i:\b(?<_1>on|(?<_2>(?<_3>is\s+)?not\s+)?null)\b)/,
     name: "keyword.other.DDL.create.II.sql"},
    {match: /(?i:\bvalues\b)/, name: "keyword.other.DML.II.sql"},
    {match: 
-     /(?i:\b(begin(\s+work)?|start\s+transaction|commit(\s+work)?|rollback(\s+work)?)\b)/,
+     /(?i:\b(?<_1>begin(?<_2>\s+work)?|start\s+transaction|commit(?<_3>\s+work)?|rollback(?<_4>\s+work)?)\b)/,
     name: "keyword.other.LUW.sql"},
-   {match: /(?i:\b(grant(\swith\sgrant\soption)?|revoke)\b)/,
+   {match: /(?i:\b(?<_1>grant(?<_2>\swith\sgrant\soption)?|revoke)\b)/,
     name: "keyword.other.authorization.sql"},
    {match: /(?i:\bin\b)/, name: "keyword.other.data-integrity.sql"},
    {match: 
-     /(?i:^\s*(comment\s+on\s+(table|column|aggregate|constraint|database|domain|function|index|operator|rule|schema|sequence|trigger|type|view))\s+.*?\s+(is)\s+)/,
+     /(?i:^\s*(?<_1>comment\s+on\s+(?<_2>table|column|aggregate|constraint|database|domain|function|index|operator|rule|schema|sequence|trigger|type|view))\s+.*?\s+(?<_3>is)\s+)/,
     name: "keyword.other.object-comments.sql"},
    {match: /(?i)\bAS\b/, name: "keyword.other.alias.sql"},
-   {match: /(?i)\b(DESC|ASC)\b/, name: "keyword.other.order.sql"},
+   {match: /(?i)\b(?<_1>DESC|ASC)\b/, name: "keyword.other.order.sql"},
    {match: /\*/, name: "keyword.operator.star.sql"},
    {match: /[!<>]?=|<>|<|>/, name: "keyword.operator.comparison.sql"},
    {match: /-|\+|\//, name: "keyword.operator.math.sql"},
    {match: /\|\|/, name: "keyword.operator.concatenator.sql"},
    {comment: 
      "List of SQL99 built-in functions from http://www.oreilly.com/catalog/sqlnut/chapter/ch04.html",
-    match: /(?i)\b(CURRENT_(DATE|TIME(STAMP)?|USER)|(SESSION|SYSTEM)_USER)\b/,
+    match: 
+     /(?i)\b(?<_1>CURRENT_(?<_2>DATE|TIME(?<_3>STAMP)?|USER)|(?<_4>SESSION|SYSTEM)_USER)\b/,
     name: "support.function.scalar.sql"},
    {comment: 
      "List of SQL99 built-in functions from http://www.oreilly.com/catalog/sqlnut/chapter/ch04.html",
-    match: /(?i)\b(AVG|COUNT|MIN|MAX|SUM)(?=\s*\()/,
+    match: /(?i)\b(?<_1>AVG|COUNT|MIN|MAX|SUM)(?=\s*\()/,
     name: "support.function.aggregate.sql"},
    {match: 
-     /(?i)\b(CONCATENATE|CONVERT|LOWER|SUBSTRING|TRANSLATE|TRIM|UPPER)\b/,
+     /(?i)\b(?<_1>CONCATENATE|CONVERT|LOWER|SUBSTRING|TRANSLATE|TRIM|UPPER)\b/,
     name: "support.function.string.sql"},
    {captures: 
      {1 => {name: "constant.other.database-name.sql"},
       2 => {name: "constant.other.table-name.sql"}},
-    match: /(\w+?)\.(\w+)/},
+    match: /(?<_1>\w+?)\.(?<_2>\w+)/},
    {include: "#strings"},
    {include: "#regexps"}],
  repository: 
   {comments: 
     {patterns: 
       [{captures: {1 => {name: "punctuation.definition.comment.sql"}},
-        match: /(--).*$\n?/,
+        match: /(?<_1>--).*$\n?/,
         name: "comment.line.double-dash.sql"},
        {captures: {1 => {name: "punctuation.definition.comment.sql"}},
-        match: /(#).*$\n?/,
+        match: /(?<_1>#).*$\n?/,
         name: "comment.line.number-sign.sql"},
        {begin: /\/\*/,
         captures: {0 => {name: "punctuation.definition.comment.sql"}},
@@ -148,7 +150,7 @@
    string_escape: {match: /\\./, name: "constant.character.escape.sql"},
    string_interpolation: 
     {captures: {1 => {name: "punctuation.definition.string.end.sql"}},
-     match: /(#\{)([^\}]*)(\})/,
+     match: /(?<_1>#\{)(?<_2>[^\}]*)(?<_3>\})/,
      name: "string.interpolated.sql"},
    strings: 
     {patterns: 
@@ -157,7 +159,7 @@
           3 => {name: "punctuation.definition.string.end.sql"}},
         comment: 
          "this is faster than the next begin/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
-        match: /(')[^'\\]*(')/,
+        match: /(?<_1>')[^'\\]*(?<_2>')/,
         name: "string.quoted.single.sql"},
        {begin: /'/,
         beginCaptures: 
@@ -171,7 +173,7 @@
           3 => {name: "punctuation.definition.string.end.sql"}},
         comment: 
          "this is faster than the next begin/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
-        match: /(`)[^`\\]*(`)/,
+        match: /(?<_1>`)[^`\\]*(?<_2>`)/,
         name: "string.quoted.other.backtick.sql"},
        {begin: /`/,
         beginCaptures: 
@@ -185,7 +187,7 @@
           3 => {name: "punctuation.definition.string.end.sql"}},
         comment: 
          "this is faster than the next begin/end rule since sub-pattern will match till end-of-line and SQL files tend to have very long lines.",
-        match: /(")[^"#]*(")/,
+        match: /(?<_1>")[^"#]*(?<_2>")/,
         name: "string.quoted.double.sql"},
        {begin: /"/,
         beginCaptures: 

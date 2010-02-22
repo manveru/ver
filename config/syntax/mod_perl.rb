@@ -3,13 +3,13 @@
 {fileTypes: [],
  foldingStartMarker: 
   /^[ ]*(?x)
-	(<(?i:FilesMatch|Files|DirectoryMatch|Directory|LocationMatch|Location|VirtualHost|IfModule|IfDefine|Perl)\b.*?>
+	(?<_1><(?i:FilesMatch|Files|DirectoryMatch|Directory|LocationMatch|Location|VirtualHost|IfModule|IfDefine|Perl)\b.*?>
 	)/,
  foldingStopMarker: 
   /^[ ]*(?x)
-	(<\/(?i:FilesMatch|Files|DirectoryMatch|Directory|LocationMatch|Location|VirtualHost|IfModule|IfDefine|Perl)>
+	(?<_1><\/(?i:FilesMatch|Files|DirectoryMatch|Directory|LocationMatch|Location|VirtualHost|IfModule|IfDefine|Perl)>
 	)/,
- keyEquivalent: /^~A/,
+ keyEquivalent: "^~A",
  name: "mod_perl",
  patterns: 
   [{begin: /^=/,
@@ -17,12 +17,12 @@
     end: "^=cut",
     name: "comment.block.documentation.apache-config.mod_perl"},
    {match: 
-     /\b(PerlAddVar|PerlConfigRequire|PerlLoadModule|PerlModule|PerlOptions|PerlPassEnv|PerlPostConfigRequire|PerlRequire|PerlSetEnv|PerlSetVar|PerlSwitches|SetHandler|PerlOpenLogsHandler|PerlPostConfigHandler|PerlChildInitHandler|PerlChildExitHandler|PerlPreConnectionHandler|PerlProcessConnectionHandler|PerlInputFilterHandler|PerlOutputFilterHandler|PerlSetInputFilter|PerlSetOutputFilter|PerlPostReadRequestHandler|PerlTransHandler|PerlMapToStorageHandler|PerlInitHandler|PerlHeaderParserHandler|PerlAccessHandler|PerlAuthenHandler|PerlAuthzHandler|PerlTypeHandler|PerlFixupHandler|PerlResponseHandler|PerlLogHandler|PerlCleanupHandler|PerlInterpStart|PerlInterpMax|PerlInterpMinSpare|PerlInterpMaxSpare|PerlInterpMaxRequests|PerlInterpScope|PerlTrace)\b/,
+     /\b(?<_1>PerlAddVar|PerlConfigRequire|PerlLoadModule|PerlModule|PerlOptions|PerlPassEnv|PerlPostConfigRequire|PerlRequire|PerlSetEnv|PerlSetVar|PerlSwitches|SetHandler|PerlOpenLogsHandler|PerlPostConfigHandler|PerlChildInitHandler|PerlChildExitHandler|PerlPreConnectionHandler|PerlProcessConnectionHandler|PerlInputFilterHandler|PerlOutputFilterHandler|PerlSetInputFilter|PerlSetOutputFilter|PerlPostReadRequestHandler|PerlTransHandler|PerlMapToStorageHandler|PerlInitHandler|PerlHeaderParserHandler|PerlAccessHandler|PerlAuthenHandler|PerlAuthzHandler|PerlTypeHandler|PerlFixupHandler|PerlResponseHandler|PerlLogHandler|PerlCleanupHandler|PerlInterpStart|PerlInterpMax|PerlInterpMinSpare|PerlInterpMaxSpare|PerlInterpMaxRequests|PerlInterpScope|PerlTrace)\b/,
     name: "support.constant.apache-config.mod_perl"},
    {match: 
-     /\b(PerlHandler|PerlScript|PerlSendHeader|PerlSetupEnv|PerlTaintCheck|PerlWarn|PerlFreshRestart)\b/,
+     /\b(?<_1>PerlHandler|PerlScript|PerlSendHeader|PerlSetupEnv|PerlTaintCheck|PerlWarn|PerlFreshRestart)\b/,
     name: "support.constant.apache-config.mod_perl_1.mod_perl"},
-   {begin: /^\s*((<)(Perl)(>))/,
+   {begin: /^\s*(?<_1>(?<_2><)(?<_3>Perl)(?<_4>>))/,
     beginCaptures: 
      {1 => {name: "meta.tag.apache-config"},
       2 => {name: "punctuation.definition.tag.apache-config"},

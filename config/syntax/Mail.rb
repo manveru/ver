@@ -5,14 +5,14 @@
  keyEquivalent: "^~M",
  name: "Mail",
  patterns: 
-  [{begin: /((?i:subject))(:)\s*/,
+  [{begin: /(?<_1>(?i:subject))(?<_2>:)\s*/,
     beginCaptures: 
      {1 => {name: "keyword.other.mail"},
       2 => {name: "punctuation.separator.key-value.mail"}},
     contentName: "entity.name.section.mail",
     end: "^(?![ \\t\\v])",
     name: "meta.header.mail"},
-   {begin: /([\x21-\x39\x3B-\x7E]+)(:)\s*/,
+   {begin: /(?<_1>[\x21-\x39\x3B-\x7E]+)(?<_2>:)\s*/,
     beginCaptures: 
      {1 => {name: "keyword.other.mail"},
       2 => {name: "punctuation.separator.key-value.mail"}},
@@ -39,7 +39,8 @@
        {include: "#domain_literal"},
        {include: "#atom"}]},
    atom: 
-    {match: /[^ \t\v\n()<>@,;:\\".\[\]]+/, name: "string.unquoted.atom.mail"},
+    {match: /[^ \t\v\n(?<_1>)<>@,;:\\".\[\]]+/,
+     name: "string.unquoted.atom.mail"},
    comment: 
     {begin: /\(/,
      captures: {0 => {name: "punctuation.definition.comment.mail"}},
@@ -61,7 +62,7 @@
     {captures: 
       {1 => {name: "constant.other.charset.mail"},
        2 => {name: "constant.other.encoding.mail"}},
-     match: /=\?(.*?)(?:\*[^?]+)?\?([QB])\?(.*?)\?=/,
+     match: /=\?(?<_1>.*?)(?:\*[^?]+)?\?(?<_2>[QB])\?(?<_3>.*?)\?=/,
      name: "meta.encoded-text.mail"},
    group: 
     {begin: /:(?=.*;)/,

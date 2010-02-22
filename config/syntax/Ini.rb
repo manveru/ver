@@ -7,19 +7,19 @@
  name: "Ini",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.ini"}},
-    match: /(#).*$\n?/,
+    match: /(?<_1>#).*$\n?/,
     name: "comment.line.number-sign.ini"},
    {captures: {1 => {name: "punctuation.definition.comment.ini"}},
-    match: /(;).*$\n?/,
+    match: /(?<_1>;).*$\n?/,
     name: "comment.line.semicolon.ini"},
    {captures: 
      {1 => {name: "keyword.other.definition.ini"},
       2 => {name: "punctuation.separator.key-value.ini"}},
-    match: /\b([a-zA-Z0-9_.-]+)\b\s*(=)/},
+    match: /\b(?<_1>[a-zA-Z0-9_.-]+)\b\s*(?<_2>=)/},
    {captures: 
      {1 => {name: "punctuation.definition.entity.ini"},
       3 => {name: "punctuation.definition.entity.ini"}},
-    match: /^(\[)(.*?)(\])/,
+    match: /^(?<_1>\[)(?<_2>.*?)(?<_3>\])/,
     name: "entity.name.section.group-title.ini"},
    {begin: /'/,
     beginCaptures: {0 => {name: "punctuation.definition.string.begin.ini"}},

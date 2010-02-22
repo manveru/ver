@@ -6,14 +6,14 @@
  keyEquivalent: "^~R",
  name: "reStructuredText",
  patterns: 
-  [{begin: /^([ \t]*)(?=\S)/,
+  [{begin: /^(?<_1>[ \t]*)(?=\S)/,
     contentName: "meta.paragraph.restructuredtext",
     end: "^(?!\\1(?=\\S))",
     patterns: [{include: "#inline"}]}],
  repository: 
   {inline: 
     {patterns: 
-      [{begin: /^([ \t]*)((\.\.)\sraw(::)) html/,
+      [{begin: /^(?<_1>[ \t]*)(?<_2>(?<_3>\.\.)\sraw(?<_4>::)) html/,
         captures: 
          {2 => {name: "meta.directive.restructuredtext"},
           3 => {name: "punctuation.definition.directive.restructuredtext"},
@@ -25,9 +25,9 @@
          {1 => {name: "punctuation.definition.directive.restructuredtext"},
           2 => {name: "punctuation.separator.key-value.restructuredtext"}},
         comment: "directives",
-        match: /(\.\.)\s[A-z][A-z0-9_-]+(::)\s*$/,
+        match: /(?<_1>\.\.)\s[A-z][A-z0-9_-]+(?<_2>::)\s*$/,
         name: "meta.other.directive.restructuredtext"},
-       {begin: /^([ \t]*).*?((::))/,
+       {begin: /^(?<_1>[ \t]*).*?(?<_2>(?<_3>::))/,
         captures: 
          {2 => {name: "markup.raw.restructuredtext"},
           3 => {name: "punctuation.definition.raw.restructuredtext"}},
@@ -42,13 +42,13 @@
          {1 => {name: "punctuation.definition.italic.restructuredtext"},
           2 => {name: "punctuation.definition.italic.restructuredtext"}},
         comment: "strong emphasis",
-        match: /(\*\*)[^*]+(\*\*)/,
+        match: /(?<_1>\*\*)[^*]+(?<_2>\*\*)/,
         name: "markup.bold.restructuredtext"},
        {captures: 
          {1 => {name: "punctuation.definition.italic.restructuredtext"},
           2 => {name: "punctuation.definition.italic.restructuredtext"}},
         comment: "emphasis",
-        match: /(\*)\w[^*]\w+(\*)/,
+        match: /(?<_1>\*)\w[^*]\w+(?<_2>\*)/,
         name: "markup.italic.restructuredtext"},
        {captures: 
          {1 => {name: "punctuation.definition.link.restructuredtext"},
@@ -57,25 +57,25 @@
           4 => {name: "punctuation.separator.key-value.restructuredtext"},
           5 => {name: "markup.underline.link.restructuredtext"}},
         comment: "replacement",
-        match: /(\.\.)\s+(_)([\w\s]+)(:)\s+(.*)/,
+        match: /(?<_1>\.\.)\s+(?<_2>_)(?<_3>[\w\s]+)(?<_4>:)\s+(?<_5>.*)/,
         name: "meta.link.reference.def.restructuredtext"},
        {captures: 
          {1 => {name: "punctuation.definition.substitution.restructuredtext"}},
         comment: "substitution",
-        match: /(\|)[^|]+(\|_{0,2})/,
+        match: /(?<_1>\|)[^|]+(?<_2>\|_{0,2})/,
         name: "markup.underline.substitution.restructuredtext"},
        {captures: 
          {1 => {name: "string.other.link.title.restructuredtext"},
           2 => {name: "punctuation.definition.link.restructuredtext"}},
         comment: "links `...`_ or `...`__",
-        match: /\b(\w+)(_)\b/,
+        match: /\b(?<_1>\w+)(?<_2>_)\b/,
         name: "meta.link.reference"},
        {captures: 
          {1 => {name: "punctuation.definition.link.restructuredtext"},
           2 => {name: "string.other.link.title.restructuredtext"},
           3 => {name: "punctuation.definition.link.restructuredtext"}},
         comment: "links `...`_ or `...`__",
-        match: /(`)([\w\s]+)(`_)/,
+        match: /(?<_1>`)(?<_2>[\w\s]+)(?<_3>`_)/,
         name: "meta.link.reference"},
        {captures: 
          {1 => {name: "punctuation.definition.link.restructuredtext"},
@@ -85,7 +85,7 @@
           5 => {name: "punctuation.definition.location.restructuredtext"},
           6 => {name: "punctuation.definition.link.restructuredtext"}},
         comment: "links `...`_ ",
-        match: /(`)([\w\s]+)\s+(<)(.*?)(>)(`_)/,
+        match: /(?<_1>`)(?<_2>[\w\s]+)\s+(?<_3><)(?<_4>.*?)(?<_5>>)(?<_6>`_)/,
         name: "meta.link.inline.restructuredtext"},
        {captures: 
          {1 => {name: "punctuation.definition.link.restructuredtext"},
@@ -95,7 +95,8 @@
           7 => {name: "punctuation.definition.constant.restructuredtext"},
           8 => {name: "string.other.footnote.restructuredtext"}},
         comment: "replacement",
-        match: /^(\.\.)\s+((\[)(((#?)[^\]]*?)|\*)(\]))\s+(.*)/,
+        match: 
+         /^(?<_1>\.\.)\s+(?<_2>(?<_3>\[)(?<_4>(?<_5>(?<_6>#?)[^\]]*?)|\*)(?<_7>\]))\s+(?<_8>.*)/,
         name: "meta.link.footnote.def.restructuredtext"},
        {captures: 
          {1 => {name: "constant.other.footnote.link"},
@@ -103,7 +104,7 @@
           3 => {name: "punctuation.definition.constant.restructuredtext"},
           4 => {name: "punctuation.definition.constant.restructuredtext"}},
         comment: "footnote reference: [0]_",
-        match: /((\[)[0-9]+(\]))(_)/,
+        match: /(?<_1>(?<_2>\[)[0-9]+(?<_3>\]))(?<_4>_)/,
         name: "meta.link.footnote.numeric.restructuredtext"},
        {captures: 
          {1 => {name: "constant.other.footnote.link"},
@@ -111,7 +112,7 @@
           3 => {name: "punctuation.definition.constant.restructuredtext"},
           4 => {name: "punctuation.definition.constant.restructuredtext"}},
         comment: "footnote reference [#]_ or [#foo]_",
-        match: /((\[#)[A-z0-9_]*(\]))(_)/,
+        match: /(?<_1>(?<_2>\[#)[A-z0-9_]*(?<_3>\]))(?<_4>_)/,
         name: "meta.link.footnote.auto.restructuredtext"},
        {captures: 
          {1 => {name: "constant.other.footnote.link.restructuredtext"},
@@ -119,7 +120,7 @@
           3 => {name: "punctuation.definition.constant.restructuredtext"},
           4 => {name: "punctuation.definition.constant.restructuredtext"}},
         comment: "footnote reference [*]_",
-        match: /((\[)\*(\]))(_)/,
+        match: /(?<_1>(?<_2>\[)\*(?<_3>\]))(?<_4>_)/,
         name: "meta.link.footnote.symbol.auto.restructuredtext"},
        {captures: 
          {1 => {name: "punctuation.definition.link.restructuredtext"},
@@ -129,7 +130,8 @@
           5 => {name: "punctuation.definition.constant.restructuredtext"},
           6 => {name: "string.other.citation.restructuredtext"}},
         comment: "replacement",
-        match: /^(\.\.)\s+((\[)[A-z][A-z0-9]*(\]))(_)\s+(.*)/,
+        match: 
+         /^(?<_1>\.\.)\s+(?<_2>(?<_3>\[)[A-z][A-z0-9]*(?<_4>\]))(?<_5>_)\s+(?<_6>.*)/,
         name: "meta.link.citation.def.restructuredtext"},
        {captures: 
          {1 => {name: "constant.other.citation.link.restructuredtext"},
@@ -137,7 +139,7 @@
           3 => {name: "punctuation.definition.constant.restructuredtext"},
           4 => {name: "punctuation.definition.constant.restructuredtext"}},
         comment: "citation reference",
-        match: /((\[)[A-z][A-z0-9_-]*(\]))(_)/,
+        match: /(?<_1>(?<_2>\[)[A-z][A-z0-9_-]*(?<_3>\]))(?<_4>_)/,
         name: "meta.link.citation.restructuredtext"},
        {begin: /``/,
         captures: {0 => {name: "punctuation.definition.raw.restructuredtext"}},
@@ -148,13 +150,13 @@
          {1 => {name: "punctuation.definition.intepreted.restructuredtext"},
           2 => {name: "punctuation.definition.intepreted.restructuredtext"}},
         comment: "intepreted text",
-        match: /(`)[^`]+(`)(?!_)/,
+        match: /(?<_1>`)[^`]+(?<_2>`)(?!_)/,
         name: "markup.other.command.restructuredtext"},
        {captures: 
          {1 => {name: "punctuation.definition.field.restructuredtext"},
           2 => {name: "punctuation.definition.field.restructuredtext"}},
         comment: "field list",
-        match: /(:)[A-z][A-z0-9  =\s\t_]*(:)/,
+        match: /(?<_1>:)[A-z][A-z0-9  =\s\t_]*(?<_2>:)/,
         name: "entity.name.tag.restructuredtext"},
        {captures: 
          {0 => {name: "punctuation.definition.table.restructuredtext"}},
@@ -168,9 +170,9 @@
         name: "markup.other.table.restructuredtext"},
        {captures: 
          {1 => {name: "punctuation.definition.heading.restructuredtext"}},
-        match: /(^(=|-|~|`|#|"|\^|\+|\*){3,}$){1,1}?/,
+        match: /(?<_1>^(?<_2>=|-|~|`|#|"|\^|\+|\*){3,}$){1,1}?/,
         name: "markup.heading.restructuredtext"},
-       {begin: /^(\.\.)/,
+       {begin: /^(?<_1>\.\.)/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.comment.restructuredtext"}},
         comment: "comment",

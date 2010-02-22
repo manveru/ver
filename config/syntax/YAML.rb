@@ -1,13 +1,14 @@
 # Encoding: UTF-8
 
 {fileTypes: ["yaml", "yml"],
- foldingStartMarker: /^[^#]\s*.*:(\s*\[?| &.+)?$/,
+ foldingStartMarker: /^[^#]\s*.*:(?<_1>\s*\[?| &.+)?$/,
  foldingStopMarker: /^\s*$|^\s*\}|^\s*\]|^\s*\)/,
  keyEquivalent: "^~Y",
  name: "YAML",
  patterns: 
   [{include: "#erb"},
-   {begin: /^(\s*)(?:(-)|(?:(-\s*)?(\w+\s*(:))))\s*(\||>)/,
+   {begin: 
+     /^(?<_1>\s*)(?:(?<_2>-)|(?:(?<_3>-\s*)?(?<_4>\w+\s*(?<_5>:))))\s*(?<_6>\||>)/,
     beginCaptures: 
      {2 => {name: "punctuation.definition.entry.yaml"},
       3 => {name: "punctuation.definition.entry.yaml"},
@@ -22,7 +23,7 @@
       3 => {name: "punctuation.separator.key-value.yaml"},
       4 => {name: "punctuation.definition.entry.yaml"}},
     match: 
-     /(?:(?:(-\s*)?(\w+\s*(:)))|(-))\s*((0(x|X)[0-9a-fA-F]*)|(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f)?\s*$/,
+     /(?:(?:(?<_1>-\s*)?(?<_2>\w+\s*(?<_3>:)))|(?<_4>-))\s*(?<_5>(?<_6>0(?<_7>x|X)[0-9a-fA-F]*)|(?<_8>(?<_9>[0-9]+\.?[0-9]*)|(?<_10>\.[0-9]+))(?<_11>(?<_12>e|E)(?<_13>\+|-)?[0-9]+)?)(?<_14>L|l|UL|ul|u|U|F|f)?\s*$/,
     name: "constant.numeric.yaml"},
    {captures: 
      {1 => {name: "punctuation.definition.entry.yaml"},
@@ -37,24 +38,25 @@
       8 => {name: "string.quoted.single.yaml"},
       9 => {name: "punctuation.definition.string.begin.yaml"}},
     match: 
-     /(?:(?:(-\s*)?(\w+\s*(:)))|(-))\s*(?:((")[^"]*("))|((')[^']*('))|([^,{}&#\[\]]+))\s*/,
+     /(?:(?:(?<_1>-\s*)?(?<_2>\w+\s*(?<_3>:)))|(?<_4>-))\s*(?:(?<_5>(?<_6>")[^"]*(?<_7>"))|(?<_8>(?<_9>')[^']*(?<_10>'))|(?<_11>[^,{}&#\[\]]+))\s*/,
     name: "string.unquoted.yaml"},
    {captures: 
      {1 => {name: "punctuation.definition.entry.yaml"},
       2 => {name: "entity.name.tag.yaml"},
       3 => {name: "punctuation.separator.key-value.yaml"},
       4 => {name: "punctuation.definition.entry.yaml"}},
-    match: /(?:(?:(-\s*)?(\w+\s*(:)))|(-))\s*([0-9]{4}-[0-9]{2}-[0-9]{2})\s*$/,
+    match: 
+     /(?:(?:(?<_1>-\s*)?(?<_2>\w+\s*(?<_3>:)))|(?<_4>-))\s*(?<_5>[0-9]{4}-[0-9]{2}-[0-9]{2})\s*$/,
     name: "constant.other.date.yaml"},
    {captures: 
      {1 => {name: "entity.name.tag.yaml"},
       2 => {name: "punctuation.separator.key-value.yaml"},
       3 => {name: "keyword.other.omap.yaml"},
       4 => {name: "punctuation.definition.keyword.yaml"}},
-    match: /(\w.*?)(:)\s*((\!\!)omap)?/,
+    match: /(?<_1>\w.*?)(?<_2>:)\s*(?<_3>(?<_4>\!\!)omap)?/,
     name: "meta.tag.yaml"},
    {captures: {1 => {name: "punctuation.definition.variable.yaml"}},
-    match: /(\&|\*)\w.*?$/,
+    match: /(?<_1>\&|\*)\w.*?$/,
     name: "variable.other.yaml"},
    {begin: /"/,
     beginCaptures: {0 => {name: "punctuation.definition.string.begin.yaml"}},
@@ -78,13 +80,13 @@
      {1 => {name: "entity.name.tag.yaml"},
       2 => {name: "keyword.operator.merge-key.yaml"},
       3 => {name: "punctuation.definition.keyword.yaml"}},
-    match: /(\<\<): ((\*).*)$/,
+    match: /(?<_1>\<\<): (?<_2>(?<_3>\*).*)$/,
     name: "keyword.operator.merge-key.yaml"},
    {disabled: "1",
-    match: /( |	)+$/,
+    match: /(?<_1> |	)+$/,
     name: "invalid.deprecated.trailing-whitespace.yaml"},
    {captures: {1 => {name: "punctuation.definition.comment.yaml"}},
-    match: /(?<!\$)(#)(?!\{).*$\n?/,
+    match: /(?<!\$)(?<_1>#)(?!\{).*$\n?/,
     name: "comment.line.number-sign.yaml"},
    {match: /-/, name: "keyword.operator.symbol"},
    {begin: /^(?=\t)/,
@@ -92,7 +94,7 @@
     name: "meta.leading-tabs.yaml",
     patterns: 
      [{captures: {1 => {name: "meta.odd-tab"}, 2 => {name: "meta.even-tab"}},
-       match: /(\t)(\t)?/}]}],
+       match: /(?<_1>\t)(?<_2>\t)?/}]}],
  repository: 
   {erb: 
     {begin: /<%+(?!>)=?/,
@@ -101,7 +103,7 @@
      name: "source.ruby.rails.embedded.html",
      patterns: 
       [{captures: {1 => {name: "punctuation.definition.comment.ruby"}},
-        match: /(#).*?(?=%>)/,
+        match: /(?<_1>#).*?(?=%>)/,
         name: "comment.line.number-sign.ruby"},
        {include: "source.ruby.rails"}]},
    escaped_char: {match: /\\./, name: "constant.character.escape.yaml"}},

@@ -3,15 +3,15 @@
 {fileTypes: ["rhtml", "erb", "html.erb"],
  foldingStartMarker: 
   /(?x)
-	(<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)\b.*?>
+	(?<_1><(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)\b.*?>
 	|<!--(?!.*-->)
-	|\{\s*($|\?>\s*$|\/\/|\/\*(.*\*\/\s*$|(?!.*?\*\/)))
+	|\{\s*(?<_2>$|\?>\s*$|\/\/|\/\*(?<_3>.*\*\/\s*$|(?!.*?\*\/)))
 	)/,
  foldingStopMarker: 
   /(?x)
-	(<\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)>
+	(?<_1><\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)>
 	|^\s*-->
-	|(^|\s)\}
+	|(?<_2>^|\s)\}
 	)/,
  keyEquivalent: "^~R",
  name: "HTML (Rails)",
@@ -26,7 +26,7 @@
     name: "source.ruby.rails.embedded.html",
     patterns: 
      [{captures: {1 => {name: "punctuation.definition.comment.ruby"}},
-       match: /(#).*?(?=-?%>)/,
+       match: /(?<_1>#).*?(?=-?%>)/,
        name: "comment.line.number-sign.ruby"},
       {include: "source.ruby.rails"}]},
    {include: "text.html.basic"}],

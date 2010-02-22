@@ -1,7 +1,7 @@
 # Encoding: UTF-8
 
 {fileTypes: ["haml", "sass"],
- foldingStartMarker: /^\s*([-%#\:\.\w\=].*)\s$/,
+ foldingStartMarker: /^\s*(?<_1>[-%#\:\.\w\=].*)\s$/,
  foldingStopMarker: /^\s*$/,
  keyEquivalent: "^~H",
  name: "Ruby Haml",
@@ -11,17 +11,17 @@
     end: "$\\n?",
     patterns: [{include: "#interpolated_ruby"}]},
    {captures: {1 => {name: "punctuation.definition.prolog.haml"}},
-    match: /^(!!!)($|\s.*)/,
+    match: /^(?<_1>!!!)(?<_2>$|\s.*)/,
     name: "meta.prolog.haml"},
    {captures: {1 => {name: "punctuation.section.comment.haml"}},
-    match: /^ *(\/)\s*\S.*$\n?/,
+    match: /^ *(?<_1>\/)\s*\S.*$\n?/,
     name: "comment.line.slash.haml"},
-   {begin: /^( *)(\/)\s*$/,
+   {begin: /^(?<_1> *)(?<_2>\/)\s*$/,
     beginCaptures: {2 => {name: "punctuation.section.comment.haml"}},
     end: "^(?!\\1  )",
     name: "comment.block.haml",
     patterns: [{include: "text.haml"}]},
-   {begin: /^\s*(?:((%)([\w:]+))|(?=\.|#))/,
+   {begin: /^\s*(?:(?<_1>(?<_2>%)(?<_3>[\w:]+))|(?=\.|#))/,
     captures: 
      {1 => {name: "meta.tag.haml"},
       2 => {name: "punctuation.definition.tag.haml"},
@@ -44,18 +44,18 @@
        patterns: [{include: "source.ruby.rails"}, {include: "#continuation"}]},
       {include: "#rubyline"},
       {match: /\//, name: "punctuation.terminator.tag.haml"}]},
-   {captures: {1 => {name: "meta.escape.haml"}}, match: /^\s*(\\.)/},
+   {captures: {1 => {name: "meta.escape.haml"}}, match: /^\s*(?<_1>\\.)/},
    {begin: /^\s*(?==|-|~)/, end: "$", patterns: [{include: "#rubyline"}]}],
  repository: 
   {continuation: 
     {captures: {1 => {name: "punctuation.separator.continuation.haml"}},
-     match: /(\|)\s*\n/},
+     match: /(?<_1>\|)\s*\n/},
    interpolated_ruby: 
     {patterns: 
       [{captures: 
          {0 => {name: "punctuation.section.embedded.ruby"},
           1 => {name: "source.ruby.embedded.source.empty"}},
-        match: /#\{(\})/,
+        match: /#\{(?<_1>\})/,
         name: "source.ruby.embedded.source"},
        {begin: /#\{/,
         captures: {0 => {name: "punctuation.section.embedded.ruby"}},
@@ -64,13 +64,13 @@
         patterns: 
          [{include: "#nest_curly_and_self"}, {include: "source.ruby"}]},
        {captures: {1 => {name: "punctuation.definition.variable.ruby"}},
-        match: /(\#@)[a-zA-Z_]\w*/,
+        match: /(?<_1>\#@)[a-zA-Z_]\w*/,
         name: "variable.other.readwrite.instance.ruby"},
        {captures: {1 => {name: "punctuation.definition.variable.ruby"}},
-        match: /(\#@@)[a-zA-Z_]\w*/,
+        match: /(?<_1>\#@@)[a-zA-Z_]\w*/,
         name: "variable.other.readwrite.class.ruby"},
        {captures: {1 => {name: "punctuation.definition.variable.ruby"}},
-        match: /(#\$)[a-zA-Z_]\w*/,
+        match: /(?<_1>#\$)[a-zA-Z_]\w*/,
         name: "variable.other.readwrite.global.ruby"}]},
    nest_curly_and_self: 
     {patterns: 

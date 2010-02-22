@@ -14,17 +14,17 @@
     endCaptures: {0 => {name: "punctuation.definition.string.end.strings"}},
     name: "string.quoted.double.strings",
     patterns: 
-     [{match: /\\(\\|[abefnrtv'"?]|[0-3]\d{,2}|[4-7]\d?|x[a-zA-Z0-9]+)/,
+     [{match: /\\(?<_1>\\|[abefnrtv'"?]|[0-3]\d{,2}|[4-7]\d?|x[a-zA-Z0-9]+)/,
        name: "constant.character.escape.strings"},
       {match: /\\./, name: "invalid.illegal.unknown-escape.strings"},
       {match: 
         /(?x)%
-	(\d+\$)?                             # field (argument #)
+	(?<_1>\d+\$)?                             # field (?<_2>argument #)
 	[#0\- +']*                           # flags
-	[,;:_]?                              # separator character (AltiVec)
-	((-?\d+)|\*(-?\d+\$)?)?              # minimum field width
-	(\.((-?\d+)|\*(-?\d+\$)?)?)?         # precision
-	(hh|h|ll|l|j|t|z|q|L|vh|vl|v|hv|hl)? # length modifier
+	[,;:_]?                              # separator character (?<_3>AltiVec)
+	(?<_4>(?<_5>-?\d+)|\*(?<_6>-?\d+\$)?)?              # minimum field width
+	(?<_7>\.(?<_8>(?<_9>-?\d+)|\*(?<_10>-?\d+\$)?)?)?         # precision
+	(?<_11>hh|h|ll|l|j|t|z|q|L|vh|vl|v|hv|hl)? # length modifier
 	[@diouxXDOUeEfFgGaACcSspn%]          # conversion type
 	/,
        name: "constant.other.placeholder.strings"},

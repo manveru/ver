@@ -4,7 +4,7 @@
  keyEquivalent: "^~H",
  name: "Literate Haskell",
  patterns: 
-  [{begin: /^((\\)begin)({)code(})(\s*\n)?/,
+  [{begin: /^(?<_1>(?<_2>\\)begin)(?<_3>{)code(?<_4>})(?<_5>\s*\n)?/,
     captures: 
      {1 => {name: "support.function.be.latex"},
       2 => {name: "punctuation.definition.function.latex"},
@@ -14,7 +14,7 @@
     end: "^((\\\\)end)({)code(})",
     name: "meta.function.embedded.haskell.latex",
     patterns: [{include: "source.haskell"}]},
-   {begin: /^(> )/,
+   {begin: /^(?<_1>> )/,
     beginCaptures: {1 => {name: "punctuation.definition.bird-track.haskell"}},
     comment: 
      "This breaks type signature detection for now, but it's better than having no highlighting whatsoever.",

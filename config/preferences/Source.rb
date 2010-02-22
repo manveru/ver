@@ -1,24 +1,6 @@
 # Encoding: UTF-8
 
-[{name: "Comments",
-  scope: "source",
-  settings: 
-   {shellVariables: 
-     [{name: "TM_COMMENT_START", value: "/*"},
-      {name: "TM_COMMENT_END", value: "*/"},
-      {name: "TM_COMMENT_DISABLE_INDENT", value: "YES"},
-      {name: "TM_COMMENT_START_2", value: "// "},
-      {name: "TM_COMMENT_START_3", value: "# "}]},
-  uuid: "A8D04E65-97FA-4DE0-85A5-AC426B6184C6"},
- {name: "Spell Checking: Disable for Source",
-  scope: "source, constant, keyword, storage, support, variable",
-  settings: {spellChecking: 0},
-  uuid: "67C15B0D-A505-4D6D-9443-6B1265C52DD7"},
- {name: "Spell Checking: Enable for Strings",
-  scope: "source string.quoted - punctuation",
-  settings: {spellChecking: 1},
-  uuid: "CF9BE765-81D0-4644-9684-4F310C94A3AD"},
- {name: "Miscellaneous",
+[{name: "Miscellaneous",
   scope: "source",
   settings: 
    {decreaseIndentPattern: "^(.*\\*/)?\\s*\\}[;\\s]*$",
@@ -34,6 +16,20 @@
       ["`", "`"]],
     unIndentedLinePattern: "^\\s*$"},
   uuid: "9D03129B-D636-4F5B-A862-E52FD1F912F5"},
+ {name: "Spell Checking: Disable for Source",
+  scope: "source, constant, keyword, storage, support, variable",
+  settings: {spellChecking: 0},
+  uuid: "67C15B0D-A505-4D6D-9443-6B1265C52DD7"},
+ {name: "Comments",
+  scope: "source",
+  settings: 
+   {shellVariables: 
+     [{name: "TM_COMMENT_START", value: "/*"},
+      {name: "TM_COMMENT_END", value: "*/"},
+      {name: "TM_COMMENT_DISABLE_INDENT", value: "YES"},
+      {name: "TM_COMMENT_START_2", value: "// "},
+      {name: "TM_COMMENT_START_3", value: "# "}]},
+  uuid: "A8D04E65-97FA-4DE0-85A5-AC426B6184C6"},
  {name: "Typing Pairs: String and Comment",
   scope: "string.quoted.double, comment",
   settings: 
@@ -48,4 +44,8 @@
  {name: "Symbol List",
   scope: "entity.name.function, entity.name.type, meta.toc-list",
   settings: {showInSymbolList: "1"},
-  uuid: "0A0DA1FC-59DE-4FD9-9A2C-63C6811A3C39"}]
+  uuid: "0A0DA1FC-59DE-4FD9-9A2C-63C6811A3C39"},
+ {name: "Spell Checking: Enable for Strings",
+  scope: "source string.quoted - punctuation",
+  settings: {spellChecking: 1},
+  uuid: "CF9BE765-81D0-4644-9684-4F310C94A3AD"}]

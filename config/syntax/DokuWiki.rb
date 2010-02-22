@@ -2,8 +2,10 @@
 
 {fileTypes: [],
  firstLineMatch: "^\\s*={2,}(.*)={2,}\\s*$",
- foldingStartMarker: /(<(php|html|file|nowiki)>|<code(\s*.*)?>)|\/\*\*|\{\s*$/,
- foldingStopMarker: /(<\/(code|php|html|file|nowiki)>)|\*\*\/|^\s*\}/,
+ foldingStartMarker: 
+  /(?<_1><(?<_2>php|html|file|nowiki)>|<code(?<_3>\s*.*)?>)|\/\*\*|\{\s*$/,
+ foldingStopMarker: 
+  /(?<_1><\/(?<_2>code|php|html|file|nowiki)>)|\*\*\/|^\s*\}/,
  keyEquivalent: "^~D",
  name: "DokuWiki",
  patterns: 
@@ -23,18 +25,18 @@
    {captures: 
      {1 => {name: "punctuation.definition.heading.dokuwiki"},
       3 => {name: "punctuation.definition.heading.dokuwiki"}},
-    match: /^\s*(={2,})(.*)(={2,})\s*$\n?/,
+    match: /^\s*(?<_1>={2,})(?<_2>.*)(?<_3>={2,})\s*$\n?/,
     name: "markup.heading.dokuwiki"},
    {match: /~~NOTOC~~/, name: "keyword.other.notoc.dokuwiki"},
    {match: /~~NOCACHE~~/, name: "keyword.other.nocache.dokuwiki"},
    {match: /^\s*-{4,}\s*$/, name: "meta.separator.dokuwiki"},
    {match: /\\\\\s/, name: "markup.other.paragraph.dokuwiki"},
-   {begin: /^((\t+)|( {2,}))(\*)/,
+   {begin: /^(?<_1>(?<_2>\t+)|(?<_3> {2,}))(?<_4>\*)/,
     captures: {4 => {name: "punctuation.definition.list_item.dokuwiki"}},
     end: "$\\n?",
     name: "markup.list.unnumbered.dokuwiki",
     patterns: [{include: "#inline"}]},
-   {begin: /^((\t+)|( {2,}))(-)/,
+   {begin: /^(?<_1>(?<_2>\t+)|(?<_3> {2,}))(?<_4>-)/,
     captures: {4 => {name: "punctuation.definition.list_item.dokuwiki"}},
     end: "$\\n?",
     name: "markup.list.numbered.dokuwiki",
@@ -44,7 +46,7 @@
     end: "$",
     name: "markup.other.table.dokuwiki",
     patterns: [{include: "#inline"}]},
-   {begin: /(\<)(file|nowiki)(\>)/,
+   {begin: /(?<_1>\<)(?<_2>file|nowiki)(?<_3>\>)/,
     captures: 
      {0 => {name: "meta.tag.template.dokuwiki"},
       1 => {name: "punctuation.definition.tag.dokuwiki"},
@@ -52,11 +54,11 @@
       3 => {name: "punctuation.definition.tag.dokuwiki"}},
     end: "(<\\/)(\\2)(\\>)",
     name: "markup.raw.dokuwiki"},
-   {begin: /(%%|\'\')/,
+   {begin: /(?<_1>%%|\'\')/,
     captures: {0 => {name: "punctuation.definition.raw.dokuwiki"}},
     end: "\\1",
     name: "markup.raw.dokuwiki"},
-   {begin: /(<)(html)(>)/,
+   {begin: /(?<_1><)(?<_2>html)(?<_3>>)/,
     captures: 
      {0 => {name: "meta.tag.template.block.dokuwiki"},
       1 => {name: "punctuation.definition.tag.dokuwiki"},
@@ -64,8 +66,9 @@
       3 => {name: "punctuation.definition.tag.dokuwiki"}},
     end: "(</)(html)(>)",
     patterns: [{include: "text.html.basic"}]},
-   {match: /^((\s\s)|(\t))[^\*\-].*$/, name: "markup.raw.dokuwiki"},
-   {begin: /(\<)(sub|sup|del)(\>)/,
+   {match: /^(?<_1>(?<_2>\s\s)|(?<_3>\t))[^\*\-].*$/,
+    name: "markup.raw.dokuwiki"},
+   {begin: /(?<_1>\<)(?<_2>sub|sup|del)(?<_3>\>)/,
     captures: 
      {0 => {name: "meta.tag.template.dokuwiki"},
       1 => {name: "punctuation.definition.tag.dokuwiki"},
@@ -74,7 +77,7 @@
     end: "(\\</)(\\2)(\\>)",
     name: "markup.other.dokuwiki",
     patterns: [{include: "#inline"}]},
-   {begin: /(<)(code)(?:\s+[^>]*)?(>)/,
+   {begin: /(?<_1><)(?<_2>code)(?:\s+[^>]*)?(?<_3>>)/,
     captures: 
      {0 => {name: "meta.tag.template.code.dokuwiki"},
       1 => {name: "punctuation.definition.tag.dokuwiki"},
@@ -104,32 +107,33 @@
          {1 => {name: "punctuation.definition.image.dokuwiki"},
           2 => {name: "markup.underline.link.dokuwiki"},
           3 => {name: "punctuation.definition.image.dokuwiki"}},
-        match: /(\{\{)(.+?)(\}\})/,
+        match: /(?<_1>\{\{)(?<_2>.+?)(?<_3>\}\})/,
         name: "meta.image.inline.dokuwiki"},
        {captures: 
          {1 => {name: "punctuation.definition.link.dokuwiki"},
           2 => {name: "markup.underline.link.dokuwiki"},
           3 => {name: "punctuation.definition.link.dokuwiki"}},
-        match: /(\[\[)(.*?)(\]\])/,
+        match: /(?<_1>\[\[)(?<_2>.*?)(?<_3>\]\])/,
         name: "meta.link.dokuwiki"},
        {captures: 
          {1 => {name: "punctuation.definition.link.dokuwiki"},
           2 => {name: "markup.underline.link.interwiki.dokuwiki"},
           3 => {name: "punctuation.definition.link.dokuwiki"}},
-        match: /(\[\[)([^\[\]]+\>[^|\]]+)(\]\])/},
+        match: /(?<_1>\[\[)(?<_2>[^\[\]]+\>[^|\]]+)(?<_3>\]\])/},
        {captures: {1 => {name: "markup.underline.link.dokuwiki"}},
         match: 
-         /((https?|telnet|gopher|wais|ftp|ed2k|irc):\/\/[\w\/\#~:.?+=&%@!\-;,]+?(?=[.:?\-;,]*[^\w\/\#~:.?+=&%@!\-;,]))/},
+         /(?<_1>(?<_2>https?|telnet|gopher|wais|ftp|ed2k|irc):\/\/[\w\/\#~:.?+=&%@!\-;,]+?(?=[.:?\-;,]*[^\w\/\#~:.?+=&%@!\-;,]))/},
        {captures: 
          {1 => {name: "punctuation.definition.link.dokuwiki"},
           2 => {name: "markup.underline.link.dokuwiki"},
           3 => {name: "punctuation.definition.link.dokuwiki"}},
-        match: /(<)([\w0-9\-_.]+?@[\w\-]+\.[\w\-\.]+\.*[\w]+)(\>)/,
+        match: 
+         /(?<_1><)(?<_2>[\w0-9\-_.]+?@[\w\-]+\.[\w\-\.]+\.*[\w]+)(?<_3>\>)/,
         name: "meta.link.email.dokuwiki"}]},
    php: 
     {patterns: 
       [{include: "source.php"},
-       {begin: /(^\s*)?(?=<php>)/,
+       {begin: /(?<_1>^\s*)?(?=<php>)/,
         beginCaptures: 
          {1 => {name: "punctuation.whitespace.embedded.leading.dokuwiki"}},
         contentName: "meta.embedded.php",
@@ -137,7 +141,7 @@
         endCaptures: 
          {1 => {name: "punctuation.whitespace.embedded.trailing.dokuwiki"}},
         patterns: 
-         [{begin: /((<)(php)(>))/,
+         [{begin: /(?<_1>(?<_2><)(?<_3>php)(?<_4>>))/,
            beginCaptures: 
             {0 => {name: "punctuation.definition.embedded.begin.dokuwiki"},
              1 => {name: "meta.tag.template.dokuwiki"},

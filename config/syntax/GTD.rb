@@ -4,7 +4,7 @@
  keyEquivalent: "^~G",
  name: "GTD",
  patterns: 
-  [{match: /[A-Z][a-z]+([A-Z][a-z]*)+/, name: "markup.other.pagename"},
+  [{match: /[A-Z][a-z]+(?<_1>[A-Z][a-z]*)+/, name: "markup.other.pagename"},
    {match: /^-\s{2}\S+\s/, name: "string.unquoted.gtd"},
    {match: /^<-\s\S+\s/, name: "entity.name.tag.gtd"},
    {match: /^->\s\S+\s/, name: "constant.language.gtd"},

@@ -4,10 +4,11 @@
  firstLineMatch: "^\\\\documentclass(\\[.*\\])?\\{memoir\\}",
  foldingStartMarker: /\\begin\{.*\}|%.*\(fold\)\s*$/,
  foldingStopMarker: /\\end\{.*\}|%.*\(end\)\s*$/,
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "LaTeX Memoir",
  patterns: 
-  [{begin: /(?:\s*)((\\)begin)(\{)(framed|shaded|leftbar)(\})/,
+  [{begin: 
+     /(?:\s*)(?<_1>(?<_2>\\)begin)(?<_3>\{)(?<_4>framed|shaded|leftbar)(?<_5>\})/,
     captures: 
      {1 => {name: "support.function.be.latex"},
       2 => {name: "punctuation.definition.function.latex"},
@@ -17,7 +18,8 @@
     end: "((\\\\)end)(\\{)(\\4)(\\})",
     name: "meta.function.memoir-fbox.latex",
     patterns: [{include: "$self"}]},
-   {begin: /(?:\s*)((\\)begin)(\{)((?:fboxv|boxedv|V)erbatim)(\})/,
+   {begin: 
+     /(?:\s*)(?<_1>(?<_2>\\)begin)(?<_3>\{)(?<_4>(?:fboxv|boxedv|V)erbatim)(?<_5>\})/,
     captures: 
      {1 => {name: "support.function.be.latex"},
       2 => {name: "punctuation.definition.function.latex"},
@@ -27,7 +29,7 @@
     contentName: "markup.raw.verbatim.latex",
     end: "((\\\\)end)(\\{)(\\4)(\\})",
     name: "meta.function.memoir-verbatim.latex"},
-   {begin: /(?:\s*)((\\)begin)(\{)(alltt)(\})/,
+   {begin: /(?:\s*)(?<_1>(?<_2>\\)begin)(?<_3>\{)(?<_4>alltt)(?<_5>\})/,
     captures: 
      {1 => {name: "support.function.be.latex"},
       2 => {name: "punctuation.definition.function.latex"},
@@ -39,7 +41,7 @@
     name: "meta.function.memoir-alltt.latex",
     patterns: 
      [{captures: {1 => {name: "punctuation.definition.function.tex"}},
-       match: /(\\)[A-Za-z]+/,
+       match: /(?<_1>\\)[A-Za-z]+/,
        name: "support.function.general.tex"}]},
    {include: "text.tex.latex"}],
  scopeName: "text.tex.latex.memoir",

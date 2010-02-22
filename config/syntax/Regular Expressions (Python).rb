@@ -2,13 +2,13 @@
 
 {comment: "Matches Python's regular expression syntax.",
  fileTypes: ["re"],
- foldingStartMarker: /(\/\*|\{|\()/,
- foldingStopMarker: /(\*\/|\}|\))/,
+ foldingStartMarker: /(?<_1>\/\*|\{|\()/,
+ foldingStopMarker: /(?<_1>\*\/|\}|\))/,
  name: "Regular Expressions (Python)",
  patterns: 
   [{match: /\\[bBAZzG]|\^|\$/, name: "keyword.control.anchor.regexp"},
    {match: /\\[1-9][0-9]?/, name: "keyword.other.back-reference.regexp"},
-   {match: /[?+*][?+]?|\{(\d+,\d+|\d+,|,\d+|\d+)\}\??/,
+   {match: /[?+*][?+]?|\{(?<_1>\d+,\d+|\d+,|,\d+|\d+)\}\??/,
     name: "keyword.operator.quantifier.regexp"},
    {match: /\|/, name: "keyword.operator.or.regexp"},
    {begin: /\(\?\#/, end: "\\)", name: "comment.block.regexp"},
@@ -17,9 +17,9 @@
     match: /(?<=^|\s)#\s[[a-zA-Z0-9,. \t?!-:][^\x00-\x7F]]*$/,
     name: "comment.line.number-sign.regexp"},
    {match: /\(\?[iLmsux]+\)/, name: "keyword.other.option-toggle.regexp"},
-   {match: /(\()(\?P=([a-zA-Z_][a-zA-Z_0-9]*\w*))(\))/,
+   {match: /(?<_1>\()(?<_2>\?P=(?<_3>[a-zA-Z_][a-zA-Z_0-9]*\w*))(?<_4>\))/,
     name: "keyword.other.back-reference.named.regexp"},
-   {begin: /(\()((\?=)|(\?!)|(\?<=)|(\?<!))/,
+   {begin: /(?<_1>\()(?<_2>(?<_3>\?=)|(?<_4>\?!)|(?<_5>\?<=)|(?<_6>\?<!))/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.group.regexp"},
       2 => {name: "punctuation.definition.group.assertion.regexp"},
@@ -31,7 +31,7 @@
     endCaptures: {1 => {name: "punctuation.definition.group.regexp"}},
     name: "meta.group.assertion.regexp",
     patterns: [{include: "$self"}]},
-   {begin: /(\()(\?\(([1-9][0-9]?|[a-zA-Z_][a-zA-Z_0-9]*)\))/,
+   {begin: /(?<_1>\()(?<_2>\?\((?<_3>[1-9][0-9]?|[a-zA-Z_][a-zA-Z_0-9]*)\))/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.group.regexp"},
       2 => {name: "punctuation.definition.group.assertion.conditional.regexp"},
@@ -41,7 +41,7 @@
     end: "(\\))",
     name: "meta.group.assertion.conditional.regexp",
     patterns: [{include: "$self"}]},
-   {begin: /(\()((\?P<)([a-z]\w*)(>)|(\?:))?/,
+   {begin: /(?<_1>\()(?<_2>(?<_3>\?P<)(?<_4>[a-z]\w*)(?<_5>>)|(?<_6>\?:))?/,
     beginCaptures: 
      {1 => {name: "punctuation.definition.group.regexp"},
       3 => {name: "punctuation.definition.group.capture.regexp"},
@@ -59,7 +59,7 @@
       [{match: /\\[wWsSdDhH]|\./,
         name: "constant.character.character-class.regexp"},
        {match: /\\./, name: "constant.character.escape.backslash.regexp"},
-       {begin: /(\[)(\^)?/,
+       {begin: /(?<_1>\[)(?<_2>\^)?/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.character-class.regexp"},
           2 => {name: "keyword.operator.negation.regexp"}},
@@ -72,7 +72,7 @@
           {captures: 
             {2 => {name: "constant.character.escape.backslash.regexp"},
              4 => {name: "constant.character.escape.backslash.regexp"}},
-           match: /((\\.)|.)\-((\\.)|[^\]])/,
+           match: /(?<_1>(?<_2>\\.)|.)\-(?<_3>(?<_4>\\.)|[^\]])/,
            name: "constant.other.character-class.range.regexp"}]}]}},
  scopeName: "source.regexp.python",
  uuid: "DD867ABF-1EC6-415D-B047-687F550A1D51"}

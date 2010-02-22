@@ -7,7 +7,7 @@
  repository: 
   {field: 
     {patterns: 
-      [{begin: /(:^|(?<=\t))(?!$|\t)/,
+      [{begin: /(?<_1>:^|(?<=\t))(?!$|\t)/,
         contentName: "meta.tabular.field.tsv",
         end: "$|(\\t)",
         endCaptures: {1 => {name: "punctuation.separator.tabular.field.tsv"}}},
@@ -28,7 +28,7 @@
      name: "meta.tabular.table.tsv",
      patterns: 
       [{include: "#header"},
-       {begin: /(\n)/,
+       {begin: /(?<_1>\n)/,
         beginCaptures: {1 => {name: "punctuation.separator.table.row.tsv"}},
         comment: 
          "\n\t\t\t\t\t\teverything after the first row is not a header\n\t\t\t\t\t",

@@ -5,19 +5,19 @@
  fileTypes: ["aspx", "ascx"],
  foldingStartMarker: 
   /(?x)
-	(<(?i:mm:dataset|mm:insert|mm:update|asp:DataGrid|asp:Repeater|asp:TemplateColumn|head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)\b
+	(?<_1><(?i:mm:dataset|mm:insert|mm:update|asp:DataGrid|asp:Repeater|asp:TemplateColumn|head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)\b
 	|<!--(?!.*-->)
 	|<%(?!.*%>)
-	|\{\{?(if|foreach|capture|literal|foreach|php|section|strip)
-	|\{\s*($|\?>\s*$|\/\/|\/\*(.*\*\/\s*$|(?!.*?\*\/)))
+	|\{\{?(?<_2>if|foreach|capture|literal|foreach|php|section|strip)
+	|\{\s*(?<_3>$|\?>\s*$|\/\/|\/\*(?<_4>.*\*\/\s*$|(?!.*?\*\/)))
 	)/,
  foldingStopMarker: 
   /(?x)
-	(<\/(?i:mm:dataset|mm:insert|mm:update|asp:DataGrid|asp:Repeater|asp:TemplateColumn|head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)>
+	(?<_1><\/(?i:mm:dataset|mm:insert|mm:update|asp:DataGrid|asp:Repeater|asp:TemplateColumn|head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|form|dl)>
 	|^\s*-->
 	|^\s*%>
-	|\{\{?\/(if|foreach|capture|literal|foreach|php|section|strip)
-	|(^|\s)\}
+	|\{\{?\/(?<_2>if|foreach|capture|literal|foreach|php|section|strip)
+	|(?<_3>^|\s)\}
 	)/,
  keyEquivalent: "^~A",
  name: "HTML (ASP.net)",
@@ -32,9 +32,9 @@
       4 => {name: "meta.scope.between-tag-pair.html"},
       5 => {name: "entity.name.tag.html"},
       6 => {name: "punctuation.definition.tag.html"}},
-    match: /(<)(\w+)[^>]*((>)<\/)(\2)(>)/,
+    match: /(?<_1><)(?<_2>\w+)[^>]*(?<_3>(?<_4>>)<\/)(?<_5>\k<_2>)(?<_6>>)/,
     name: "meta.tag.html"},
-   {begin: /(<\?)(xml)/,
+   {begin: /(?<_1><\?)(?<_2>xml)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.xml.html"}},
@@ -55,7 +55,7 @@
     end: ">",
     name: "meta.tag.sgml.html",
     patterns: 
-     [{begin: /(DOCTYPE)/,
+     [{begin: /(?<_1>DOCTYPE)/,
        captures: {1 => {name: "entity.name.tag.doctype.html"}},
        end: "(?=>)",
        name: "meta.tag.sgml.doctype.html",
@@ -65,9 +65,9 @@
       {begin: /\[CDATA\[/,
        end: "]](?=>)",
        name: "constant.other.inline-data.html"},
-      {match: /(\s*)(?!--|>)\S(\s*)/,
+      {match: /(?<_1>\s*)(?!--|>)\S(?<_2>\s*)/,
        name: "invalid.illegal.bad-comments-or-CDATA.html"}]},
-   {begin: /(?:^\s+)?(<)((?i:script))\b(?![^>]*\/>)/,
+   {begin: /(?:^\s+)?(?<_1><)(?<_2>(?i:script))\b(?![^>]*\/>)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.script.html"}},
@@ -75,11 +75,11 @@
     name: "source.js.embedded.html",
     patterns: 
      [{include: "#tag-stuff"},
-      {begin: /(?<!<\/(?:script|SCRIPT))(>)/,
+      {begin: /(?<!<\/(?:script|SCRIPT))(?<_1>>)/,
        captures: {1 => {name: "punctuation.definition.tag.html"}},
        end: "(</)((?i:script))",
        patterns: [{include: "source.js"}]}]},
-   {begin: /(?:^\s+)?(<)((?i:style))\b(?![^>]*\/>)/,
+   {begin: /(?:^\s+)?(?<_1><)(?<_2>(?i:style))\b(?![^>]*\/>)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.style.html"},
@@ -88,11 +88,11 @@
     name: "source.css.embedded.html",
     patterns: 
      [{include: "#tag-stuff"},
-      {begin: /(>)/,
+      {begin: /(?<_1>>)/,
        beginCaptures: {1 => {name: "punctuation.definition.tag.html"}},
        end: "(?=</(?i:style))",
        patterns: [{include: "source.css"}]}]},
-   {begin: /(<\/?)((?i:body|head|html)\b)/,
+   {begin: /(?<_1><\/?)(?<_2>(?i:body|head|html)\b)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.structure.any.html"}},
@@ -100,7 +100,7 @@
     name: "meta.tag.structure.any.html",
     patterns: [{include: "#tag-stuff"}]},
    {begin: 
-     /(<\/?)((?i:address|blockquote|dd|div|dl|dt|fieldset|form|frame|frameset|h1|h2|h3|h4|h5|h6|iframe|noframes|object|ol|p|ul|applet|center|dir|hr|menu|pre)\b)/,
+     /(?<_1><\/?)(?<_2>(?i:address|blockquote|dd|div|dl|dt|fieldset|form|frame|frameset|h1|h2|h3|h4|h5|h6|iframe|noframes|object|ol|p|ul|applet|center|dir|hr|menu|pre)\b)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.block.any.html"}},
@@ -108,14 +108,14 @@
     name: "meta.tag.block.any.html",
     patterns: [{include: "#tag-stuff"}]},
    {begin: 
-     /(<\/?)((?i:a|abbr|acronym|area|b|base|basefont|bdo|big|br|button|caption|cite|code|col|colgroup|del|dfn|em|font|head|html|i|img|input|ins|isindex|kbd|label|legend|li|link|map|meta|noscript|optgroup|option|param|q|s|samp|script|select|small|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var)\b)/,
+     /(?<_1><\/?)(?<_2>(?i:a|abbr|acronym|area|b|base|basefont|bdo|big|br|button|caption|cite|code|col|colgroup|del|dfn|em|font|head|html|i|img|input|ins|isindex|kbd|label|legend|li|link|map|meta|noscript|optgroup|option|param|q|s|samp|script|select|small|span|strike|strong|style|sub|sup|table|tbody|td|textarea|tfoot|th|thead|title|tr|tt|u|var)\b)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.inline.any.html"}},
     end: "(>)",
     name: "meta.tag.inline.any.html",
     patterns: [{include: "#tag-stuff"}]},
-   {begin: /(<\/?)([a-zA-Z0-9:]+)/,
+   {begin: /(?<_1><\/?)(?<_2>[a-zA-Z0-9:]+)/,
     captures: 
      {1 => {name: "punctuation.definition.tag.html"},
       2 => {name: "entity.name.tag.other.html"}},
@@ -135,7 +135,7 @@
        {captures: 
          {1 => {name: "punctuation.definition.tag.asp"},
           3 => {name: "punctuation.definition.tag.asp"}},
-        match: /(<!--)\s+#include.*(-->)/,
+        match: /(?<_1><!--)\s+#include.*(?<_2>-->)/,
         name: "meta.source.embedded.asp.include"}]},
    :"embedded-code" => 
     {patterns: [{include: "#php"}, {include: "#asp"}, {include: "#smarty"}]},
@@ -144,18 +144,18 @@
       [{captures: 
          {1 => {name: "punctuation.definition.entity.html"},
           3 => {name: "punctuation.definition.entity.html"}},
-        match: /(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)/,
+        match: /(?<_1>&)(?<_2>[a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(?<_3>;)/,
         name: "constant.character.entity.html"},
        {match: /&/, name: "invalid.illegal.bad-ampersand.html"}]},
    php: 
     {patterns: 
-      [{begin: /(?:^\s*)(<\?(php|=)?)(?!.*\?>)/,
+      [{begin: /(?:^\s*)(?<_1><\?(?<_2>php|=)?)(?!.*\?>)/,
         captures: {1 => {name: "punctuation.section.embedded.php"}},
         comment: "match only multi-line PHP with leading whitespace",
         end: "(\\?>)(?:\\s*$\\n)?",
         name: "source.php.embedded.html",
         patterns: [{include: "#php-source"}]},
-       {begin: /<\?(php|=)?/,
+       {begin: /<\?(?<_1>php|=)?/,
         beginCaptures: {0 => {name: "punctuation.section.embedded.begin.php"}},
         end: "\\?>",
         endCaptures: {0 => {name: "punctuation.section.embedded.end.php"}},
@@ -164,10 +164,10 @@
    :"php-source" => 
     {patterns: 
       [{captures: {1 => {name: "punctuation.definition.comment.php"}},
-        match: /(#).*?(?=\?>)/,
+        match: /(?<_1>#).*?(?=\?>)/,
         name: "comment.line.number-sign.php"},
        {captures: {1 => {name: "punctuation.definition.comment.php"}},
-        match: /(\/\/).*?(?=\?>)/,
+        match: /(?<_1>\/\/).*?(?=\?>)/,
         name: "comment.line.double-slash.php"},
        {include: "source.php"}]},
    ruby: 
@@ -178,12 +178,12 @@
      name: "source.ruby.embedded.html",
      patterns: 
       [{captures: {1 => {name: "punctuation.definition.comment.ruby"}},
-        match: /(#).*?(?=-?%>)/,
+        match: /(?<_1>#).*?(?=-?%>)/,
         name: "comment.line.number-sign.ruby"},
        {include: "source.ruby"}]},
    smarty: 
     {patterns: 
-      [{begin: /((\{)(literal)(\}))/,
+      [{begin: /(?<_1>(?<_2>\{)(?<_3>literal)(?<_4>\}))/,
         captures: 
          {1 => {name: "source.smarty.embedded.html"},
           2 => {name: "punctuation.section.embedded.smarty"},
@@ -219,7 +219,7 @@
         name: "source.asp.embedded.html",
         patterns: [{include: "source.asp.vb.net"}]}]},
    :"source-asp-embedded-scripttag" => 
-    {begin: /(?:^\s+)?(<)(script).*runat=.server[^>]*(>)/,
+    {begin: /(?:^\s+)?(?<_1><)(?<_2>script).*runat=.server[^>]*(?<_3>>)/,
      captures: 
       {1 => {name: "punctuation.definition.tag.html"},
        2 => {name: "entity.name.tag.script.html"},
@@ -227,7 +227,7 @@
      end: "(</)(script)(>)(?:\\s*$\\n)?",
      name: "meta.source.embedded.script-tag",
      patterns: 
-      [{begin: /(?<=(>))/,
+      [{begin: /(?<=(?<_1>>))/,
         end: "(?=</script>)",
         name: "source.asp.embedded.html",
         patterns: [{include: "source.asp.vb.net"}]}]},
@@ -243,7 +243,7 @@
         name: "source.asp.embedded.html",
         patterns: [{include: "source.asp.vb.net"}]}]},
    :"source-asp-single-line" => 
-    {begin: /<%(=|#|@)/,
+    {begin: /<%(?<_1>=|#|@)/,
      beginCaptures: {0 => {name: "punctuation.section.embedded.begin.asp"}},
      comment: "DEBUG",
      end: "%>",
@@ -269,9 +269,9 @@
      name: "string.quoted.single.html",
      patterns: [{include: "#embedded-code"}, {include: "#entities"}]},
    :"tag-generic-attribute" => 
-    {match: /\b([a-zA-Z:-]+)/, name: "entity.other.attribute-name.html"},
+    {match: /\b(?<_1>[a-zA-Z:-]+)/, name: "entity.other.attribute-name.html"},
    :"tag-id-attribute" => 
-    {begin: /\b(id)\b\s*(=)/,
+    {begin: /\b(?<_1>id)\b\s*(?<_2>=)/,
      captures: 
       {1 => {name: "entity.other.attribute-name.id.html"},
        2 => {name: "punctuation.separator.key-value.html"}},

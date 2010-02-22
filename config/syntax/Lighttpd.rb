@@ -1,23 +1,23 @@
 # Encoding: UTF-8
 
-{foldingStartMarker: /(\{|\()\s*$/,
- foldingStopMarker: /^\s*(\}|\))/,
+{foldingStartMarker: /(?<_1>\{|\()\s*$/,
+ foldingStopMarker: /^\s*(?<_1>\}|\))/,
  keyEquivalent: "^~L",
  name: "Lighttpd",
  patterns: 
   [{captures: {1 => {name: "punctuation.definition.comment.lighttpd-config"}},
-    match: /(#).*$\n?/,
+    match: /(?<_1>#).*$\n?/,
     name: "comment.line.number-sign.lighttpd-config"},
    {captures: 
      {1 => {name: "punctuation.separator.key-value.lighttpd-config"},
       2 => {name: "string.regexp.lighttpd-config"},
       3 => {name: "punctuation.definition.string.begin.lighttpd-config"},
       4 => {name: "punctuation.definition.string.end.lighttpd-config"}},
-    match: /(=~|!~)\s*((").*("))/},
+    match: /(?<_1>=~|!~)\s*(?<_2>(?<_3>").*(?<_4>"))/},
    {captures: 
      {1 => {name: "punctuation.separator.key-value.lighttpd-config"},
       2 => {name: "constant.numeric.lighttpd-config"}},
-    match: /(=>?)\s*([0-9]+)/},
+    match: /(?<_1>=>?)\s*(?<_2>[0-9]+)/},
    {match: /=|\+=|==|!=|=~|!~|=>/,
     name: "punctuation.separator.key-value.lighttpd-config"},
    {begin: /"/,
@@ -30,12 +30,12 @@
     patterns: 
      [{match: /""/, name: "constant.character.escape.quote.lighttpd-config"}]},
    {captures: {1 => {name: "punctuation.definition.variable.lighttpd-config"}},
-    match: /(\$)[a-zA-Z][0-9a-zA-Z]*/,
+    match: /(?<_1>\$)[a-zA-Z][0-9a-zA-Z]*/,
     name: "variable.language.lighttpd-config"},
    {match: /^\s*[a-zA-Z][0-9a-zA-Z.-]*/,
     name: "support.constant.name.lighttpd-config"},
    {captures: 
      {1 => {name: "invalid.illegal.semicolon-at-end-of-line.lighttpd-config"}},
-    match: /(;)\s*$/}],
+    match: /(?<_1>;)\s*$/}],
  scopeName: "source.lighttpd-config",
  uuid: "C244BFF4-2C1A-490F-831E-8EF7DF4E0C9B"}

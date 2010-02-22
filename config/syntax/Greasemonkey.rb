@@ -9,7 +9,7 @@
  patterns: 
   [{match: /\bunsafeWindow\b/, name: "support.class.greasemonkey"},
    {match: 
-     /\bGM_(registerMenuCommand|xmlhttpRequest|setValue|getValue|log|openInTab|addStyle)\b(?=\()/,
+     /\bGM_(?<_1>registerMenuCommand|xmlhttpRequest|setValue|getValue|log|openInTab|addStyle)\b(?=\()/,
     name: "support.function.greasemonkey"},
    {begin: /\/\/ ==UserScript==/,
     end: "// ==/UserScript==\\s*",
@@ -19,12 +19,12 @@
         {1 => {name: "keyword.other.greasemonkey"},
          3 => {name: "string.unquoted.greasemonkey"}},
        match: 
-        /\/\/ (@(name|namespace|description|include|exclude))\b\s*(.+\s+)?/,
+        /\/\/ (?<_1>@(?<_2>name|namespace|description|include|exclude))\b\s*(?<_3>.+\s+)?/,
        name: "meta.directive.standard.greasemonkey"},
       {captures: 
         {1 => {name: "keyword.other.greasemonkey"},
          3 => {name: "string.unquoted.greasemonkey"}},
-       match: /\/\/ (@(\S+))\b\s*(.+\s+)?/,
+       match: /\/\/ (?<_1>@(?<_2>\S+))\b\s*(?<_3>.+\s+)?/,
        name: "meta.directive.nonstandard.greasemonkey"}]},
    {include: "source.js"}],
  scopeName: "source.js.greasemonkey",

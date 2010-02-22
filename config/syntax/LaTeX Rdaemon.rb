@@ -6,7 +6,7 @@
  keyEquivalent: "^~L",
  name: "LaTeX Rdaemon",
  patterns: 
-  [{begin: /(?:\s*)((\\)begin)(\{)(Rdaemon)(\})/,
+  [{begin: /(?:\s*)(?<_1>(?<_2>\\)begin)(?<_3>\{)(?<_4>Rdaemon)(?<_5>\})/,
     captures: 
      {1 => {name: "support.function.be.latex.rdaemon.embedded"},
       2 => {name: "punctuation.definition.function.latex.rdaemon.embedded"},

@@ -6,7 +6,7 @@
  keyEquivalent: "^~O",
  name: "OCamlyacc",
  patterns: 
-  [{begin: /(%{)\s*$/,
+  [{begin: /(?<_1>%{)\s*$/,
     beginCaptures: {1 => {name: "punctuation.section.header.begin.ocamlyacc"}},
     end: "^\\s*(%})",
     endCaptures: {1 => {name: "punctuation.section.header.end.ocamlyacc"}},
@@ -16,7 +16,7 @@
     end: "(?:^)(?=%%)",
     name: "meta.declarations.ocamlyacc",
     patterns: [{include: "#comments"}, {include: "#declaration-matches"}]},
-   {begin: /(%%)\s*$/,
+   {begin: /(?<_1>%%)\s*$/,
     beginCaptures: {1 => {name: "punctuation.section.rules.begin.ocamlyacc"}},
     end: "^\\s*(%%)",
     endCaptures: {1 => {name: "punctuation.section.rules.end.ocamlyacc"}},
@@ -24,7 +24,8 @@
     patterns: [{include: "#comments"}, {include: "#rules"}]},
    {include: "source.ocaml"},
    {include: "#comments"},
-   {match: /(’|‘|“|”)/, name: "invalid.illegal.unrecognized-character.ocaml"}],
+   {match: /(?<_1>’|‘|“|”)/,
+    name: "invalid.illegal.unrecognized-character.ocaml"}],
  repository: 
   {comments: 
     {patterns: 
@@ -32,16 +33,16 @@
         end: "\\*/",
         name: "comment.block.ocamlyacc",
         patterns: [{include: "#comments"}]},
-       {begin: /(?=[^\\])(")/,
+       {begin: /(?=[^\\])(?<_1>")/,
         end: "\"",
         name: "comment.block.string.quoted.double.ocamlyacc",
         patterns: 
-         [{match: /\\(x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\])/,
+         [{match: /\\(?<_1>x[a-fA-F0-9][a-fA-F0-9]|[0-2]\d\d|[bnrt'"\\])/,
            name: 
             "comment.block.string.constant.character.escape.ocamlyacc"}]}]},
    :"declaration-matches" => 
     {patterns: 
-      [{begin: /(%)(token)/,
+      [{begin: /(?<_1>%)(?<_2>token)/,
         beginCaptures: 
          {1 => {name: "keyword.other.decorator.token.ocamlyacc"},
           2 => {name: "keyword.other.token.ocamlyacc"}},
@@ -52,7 +53,7 @@
           {match: /[A-Z][A-Za-z0-9_]*/,
            name: "entity.name.type.token.ocamlyacc"},
           {include: "#comments"}]},
-       {begin: /(%)(left|right|nonassoc)/,
+       {begin: /(?<_1>%)(?<_2>left|right|nonassoc)/,
         beginCaptures: 
          {1 => {name: "keyword.other.decorator.token.associativity.ocamlyacc"},
           2 => {name: "keyword.other.token.associativity.ocamlyacc"}},
@@ -64,7 +65,7 @@
           {match: /[a-z][A-Za-z0-9_]*/,
            name: "entity.name.function.non-terminal.reference.ocamlyacc"},
           {include: "#comments"}]},
-       {begin: /(%)(start)/,
+       {begin: /(?<_1>%)(?<_2>start)/,
         beginCaptures: 
          {1 => {name: "keyword.other.decorator.start-symbol.ocamlyacc"},
           2 => {name: "keyword.other.start-symbol.ocamlyacc"}},
@@ -74,7 +75,7 @@
          [{match: /[a-z][A-Za-z0-9_]*/,
            name: "entity.name.function.non-terminal.reference.ocamlyacc"},
           {include: "#comments"}]},
-       {begin: /(%)(type)/,
+       {begin: /(?<_1>%)(?<_2>type)/,
         beginCaptures: 
          {1 => {name: "keyword.other.decorator.symbol-type.ocamlyacc"},
           2 => {name: "keyword.other.symbol-type.ocamlyacc"}},
@@ -94,7 +95,8 @@
           2 => {name: "keyword.other.precedence.ocamlyacc"},
           4 => {name: "entity.name.function.non-terminal.reference.ocamlyacc"},
           5 => {name: "entity.name.type.token.reference.ocamlyacc"}},
-        match: /(%)(prec)\s+(([a-z][a-zA-Z0-9_]*)|(([A-Z][a-zA-Z0-9_]*)))/,
+        match: 
+         /(?<_1>%)(?<_2>prec)\s+(?<_3>(?<_4>[a-z][a-zA-Z0-9_]*)|(?<_5>(?<_6>[A-Z][a-zA-Z0-9_]*)))/,
         name: "meta.precidence.declaration"}]},
    references: 
     {patterns: 
@@ -104,7 +106,7 @@
         name: "entity.name.type.token.reference.ocamlyacc"}]},
    :"rule-patterns" => 
     {patterns: 
-      [{begin: /((?<!\||:)(\||:)(?!\||:))/,
+      [{begin: /(?<_1>(?<!\||:)(?<_2>\||:)(?!\||:))/,
         beginCaptures: {0 => {name: "punctuation.separator.rule.ocamlyacc"}},
         end: "\\s*(?=\\||;)",
         name: "meta.rule-match.ocaml",
@@ -124,7 +126,7 @@
         patterns: [{include: "#rule-patterns"}]}]},
    :"semantic-actions" => 
     {patterns: 
-      [{begin: /[^\']({)/,
+      [{begin: /[^\'](?<_1>{)/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.action.semantic.ocamlyacc"}},
         end: "(})",

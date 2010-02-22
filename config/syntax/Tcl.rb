@@ -7,26 +7,26 @@
  keyEquivalent: "^~T",
  name: "Tcl",
  patterns: 
-  [{begin: /(?<=^|;)\s*((#))/,
+  [{begin: /(?<=^|;)\s*(?<_1>(?<_2>#))/,
     beginCaptures: 
      {1 => {name: "comment.line.number-sign.tcl"},
       2 => {name: "punctuation.definition.comment.tcl"}},
     contentName: "comment.line.number-sign.tcl",
     end: "\\n",
-    patterns: [{match: /(\\\\|\\\n)/}]},
+    patterns: [{match: /(?<_1>\\\\|\\\n)/}]},
    {captures: {1 => {name: "keyword.control.tcl"}},
     match: 
-     /(?<=^|[\[{;])\s*(if|while|for|catch|return|break|continue|switch|exit|foreach)\b/},
+     /(?<=^|[\[{;])\s*(?<_1>if|while|for|catch|return|break|continue|switch|exit|foreach)\b/},
    {captures: {1 => {name: "keyword.control.tcl"}},
-    match: /(?<=^|})\s*(then|elseif|else)\b/},
+    match: /(?<=^|})\s*(?<_1>then|elseif|else)\b/},
    {captures: 
      {1 => {name: "keyword.other.tcl"},
       2 => {name: "entity.name.function.tcl"}},
-    match: /^\s*(proc)\s+([^\s]+)/},
+    match: /^\s*(?<_1>proc)\s+(?<_2>[^\s]+)/},
    {captures: {1 => {name: "keyword.other.tcl"}},
     match: 
-     /(?<=^|[\[{;])\s*(after|append|array|auto_execok|auto_import|auto_load|auto_mkindex|auto_mkindex_old|auto_qualify|auto_reset|bgerror|binary|cd|clock|close|concat|dde|encoding|eof|error|eval|exec|expr|fblocked|fconfigure|fcopy|file|fileevent|filename|flush|format|gets|glob|global|history|http|incr|info|interp|join|lappend|library|lindex|linsert|list|llength|load|lrange|lreplace|lsearch|lset|lsort|memory|msgcat|namespace|open|package|parray|pid|pkg::create|pkg_mkIndex|proc|puts|pwd|re_syntax|read|registry|rename|resource|scan|seek|set|socket|SafeBase|source|split|string|subst|Tcl|tcl_endOfWord|tcl_findLibrary|tcl_startOfNextWord|tcl_startOfPreviousWord|tcl_wordBreakAfter|tcl_wordBreakBefore|tcltest|tclvars|tell|time|trace|unknown|unset|update|uplevel|upvar|variable|vwait)\b/},
-   {begin: /(?<=^|[\[{;])\s*(regexp|regsub)\b\s*/,
+     /(?<=^|[\[{;])\s*(?<_1>after|append|array|auto_execok|auto_import|auto_load|auto_mkindex|auto_mkindex_old|auto_qualify|auto_reset|bgerror|binary|cd|clock|close|concat|dde|encoding|eof|error|eval|exec|expr|fblocked|fconfigure|fcopy|file|fileevent|filename|flush|format|gets|glob|global|history|http|incr|info|interp|join|lappend|library|lindex|linsert|list|llength|load|lrange|lreplace|lsearch|lset|lsort|memory|msgcat|namespace|open|package|parray|pid|pkg::create|pkg_mkIndex|proc|puts|pwd|re_syntax|read|registry|rename|resource|scan|seek|set|socket|SafeBase|source|split|string|subst|Tcl|tcl_endOfWord|tcl_findLibrary|tcl_startOfNextWord|tcl_startOfPreviousWord|tcl_wordBreakAfter|tcl_wordBreakBefore|tcltest|tclvars|tell|time|trace|unknown|unset|update|uplevel|upvar|variable|vwait)\b/},
+   {begin: /(?<=^|[\[{;])\s*(?<_1>regexp|regsub)\b\s*/,
     beginCaptures: {1 => {name: "keyword.other.tcl"}},
     comment: 
      "special-case regexp/regsub keyword in order to handle the expression",
@@ -72,7 +72,7 @@
      name: "source.tcl.embedded",
      patterns: [{include: "source.tcl"}]},
    escape: 
-    {match: /\\(\d{1,3}|x[a-fA-F0-9]+|u[a-fA-F0-9]{1,4}|.|\n)/,
+    {match: /\\(?<_1>\d{1,3}|x[a-fA-F0-9]+|u[a-fA-F0-9]{1,4}|.|\n)/,
      name: "constant.character.escape.tcl"},
    :"inner-braces" => 
     {begin: /\{/,
@@ -113,7 +113,8 @@
      patterns: [{include: "#bare-string"}]},
    variable: 
     {captures: {1 => {name: "punctuation.definition.variable.tcl"}},
-     match: /(\$)((?:[a-zA-Z0-9_]|::)+(\([^\)]+\))?|\{[^\}]*\})/,
+     match: 
+      /(?<_1>\$)(?<_2>(?:[a-zA-Z0-9_]|::)+(?<_3>\([^\)]+\))?|\{[^\}]*\})/,
      name: "variable.other.tcl"}},
  scopeName: "source.tcl",
  uuid: "F01F22AC-7CBB-11D9-9B10-000A95E13C98"}

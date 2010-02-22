@@ -1,12 +1,12 @@
 # Encoding: UTF-8
 
 {fileTypes: ["fxscript"],
- foldingStartMarker: /(^|(?<=;)[ \t]*)on[ \t]+(\w+)[ \t]*/,
- foldingStopMarker: /end(;|;?[ \t]*|;?[ \t]*\/\/.*[ \t]*)/,
+ foldingStartMarker: /(?<_1>^|(?<=;)[ \t]*)on[ \t]+(?<_2>\w+)[ \t]*/,
+ foldingStopMarker: /end(?<_1>;|;?[ \t]*|;?[ \t]*\/\/.*[ \t]*)/,
  keyEquivalent: "^~F",
  name: "FXScript",
  patterns: 
-  [{begin: /(^|(?<=;)[ \t]*)on[ \t]+(\w+)[ \t]*(?=\([^\)]*\))/,
+  [{begin: /(?<_1>^|(?<=;)[ \t]*)on[ \t]+(?<_2>\w+)[ \t]*(?=\([^\)]*\))/,
     captures: {2 => {name: "entity.name.function.fxscript"}},
     end: "end(;|;?[ \\t]*\\n|;?[ \\t]*//.*[ \\t]*\\n)",
     name: "meta.function.fxscript",
@@ -18,9 +18,9 @@
            {1 => {name: "support.type.fxscript"},
             2 => {name: "variable.parameter.function.fxscript"}},
           match: 
-           /((?i:clip|color|float|image|point|string|value|point3d))[ \t]+([^,)]+)/}]},
+           /(?<_1>(?i:clip|color|float|image|point|string|value|point3d))[ \t]+(?<_2>[^,)]+)/}]},
       {include: "$self"}]},
-   {begin: /(^|(?<=;)[ \t]*)input[ \t]*/,
+   {begin: /(?<_1>^|(?<=;)[ \t]*)input[ \t]*/,
     comment: "Input Controls",
     end: "\\n",
     name: "keyword.other.input-control.fxscript",
@@ -31,12 +31,12 @@
          2 => {name: "string.quoted.double.fxscript"},
          3 => {name: "support.type.fxscript"}},
        match: 
-        /\b(\w+),[ \t]+("[^"]+"),[ \t]+(?i:Angle|CheckBox|Clip|Color|FontList|Label|Point|Popup|RadioGroup|Slider|Text),?/}]},
+        /\b(?<_1>\w+),[ \t]+(?<_2>"[^"]+"),[ \t]+(?i:Angle|CheckBox|Clip|Color|FontList|Label|Point|Popup|RadioGroup|Slider|Text),?/}]},
    {comment: "Data Types",
     match: /(?i:float|image|point|point3d|region|string|value|YUVcolor)\b/,
     name: "storage.type.fxscript"},
    {match: 
-     /\b(?i:if|(end|else)( if)?|for|next|return|repeat( While| With (Counter|List)))\b/,
+     /\b(?i:if|(?<_1>end|else)(?<_2> if)?|for|next|return|repeat(?<_3> While| With (?<_4>Counter|List)))\b/,
     name: "keyword.control.fxscrpt"},
    {match: 
      /\/b(?i:AlphaType|EffectID|FullFrame|Group|InformationFlag|InvalEntireItem|KeyType|ProducesAlpha|QTEffect|RenderEachFrameWhenStill|WipeCode)\/b/,
@@ -45,12 +45,13 @@
      /!|\$|%|&|\*|\-\-|\-|\+\+|\+|~|==|=|!=|!==|<=|>=|<|>|!|&&|\|\||\?\:|\*=|\/=|%=|\+=|\-=|&=|\^=/,
     name: "keyword.operator.arithmetic.fxscrpt"},
    {captures: {1 => {name: "punctuation.definition.comment.fxscript"}},
-    match: /(\/\/).*$\n?/,
+    match: /(?<_1>\/\/).*$\n?/,
     name: "comment.line.double-slash.fxscript"},
    {match: /(?i:kFormatRGB219|kFormatRGB255|kFormatYUV219)/,
     name: "support.constant.colorspace.fxscript"},
-   {match: /\b[0-9]+(\.[0-9]*)?\b/, name: "constant.numeric.fxscript"},
-   {match: /\b0x([a-fA-F0-9]*)?\b/, name: "constant.numeric.hex.fxscript"},
+   {match: /\b[0-9]+(?<_1>\.[0-9]*)?\b/, name: "constant.numeric.fxscript"},
+   {match: /\b0x(?<_1>[a-fA-F0-9]*)?\b/,
+    name: "constant.numeric.hex.fxscript"},
    {match: /(?i:kBlack|kBlue|kCyan|kGray|kGreen|kMagenta|kRed|kWhite|kYellow)/,
     name: "support.constant.color.fxscript"},
    {match: 
@@ -80,7 +81,8 @@
       5 => {name: "entity.name.function.color.luma.fxscript"},
       6 => {name: "entity.name.function.color.chroma-u.fxscript"},
       7 => {name: "entity.name.function.color.chroma-v.fxscript"}},
-    match: /\b\w+\.(?i:(a)|(r)|(g)|(b)|(y)|(u)|(v))\b/},
+    match: 
+     /\b\w+\.(?i:(?<_1>a)|(?<_2>r)|(?<_3>g)|(?<_4>b)|(?<_5>y)|(?<_6>u)|(?<_7>v))\b/},
    {begin: /"/,
     beginCaptures: 
      {0 => {name: "punctuation.definition.string.begin.fxscript"}},
@@ -111,7 +113,7 @@
    {match: /\b(?i:BezToLevelMap|ChromaAngleKey)/,
     name: "support.function.parser.fxscript"},
    {match: 
-     /\b(?i:Blend|Blur|BlurChannel|Channel(Copy|Fill|Multiply)|ColorTransform|Convolve|Desaturate|Diffuse|DiffuseOffset|LevelMap|MotionBlur|RadialBlur)\b/,
+     /\b(?i:Blend|Blur|BlurChannel|Channel(?<_1>Copy|Fill|Multiply)|ColorTransform|Convolve|Desaturate|Diffuse|DiffuseOffset|LevelMap|MotionBlur|RadialBlur)\b/,
     name: "support.function.process.fxscript"},
    {match: 
      /\b(?i:CurveTo|DrawSoftDot|FillArc|FillOval|FillPoly|FillRegion|FrameArc|FrameOval|FramePoly|FrameRegion|Line|MakeRect|MakeRegion|OvalRegion|RegionIsEmpty)\b/,
@@ -129,12 +131,12 @@
     name: "support.function.undocumented.fxscript"},
    {match: /\b(?i:debugtext)\b/, name: "support.function.debug.fxscript"},
    {match: 
-     /\b(?i:Assert|CircleLight|ColorOf|ConvertImage|GetConversionMatrix|GetPixelFormat|Highlight|MatrixConcat|PointTrack|Random(Noise|Seed|Table)?|SetPixelFormat|SysTime|Truncate)\b/,
+     /\b(?i:Assert|CircleLight|ColorOf|ConvertImage|GetConversionMatrix|GetPixelFormat|Highlight|MatrixConcat|PointTrack|Random(?<_1>Noise|Seed|Table)?|SetPixelFormat|SysTime|Truncate)\b/,
     name: "support.function.utility.fxscript"},
    {comment: 
      "Joe Maller’s personal FXScript Functions, these will be appearing on the FXScript Reference site someday.",
     match: 
-     /\b((?i:absNoInt|ArrayFloatAbs|ArrayFloatAverage|ArrayFloatCount|ArrayFloatCountAll|ArrayFloatFlatten|ArrayFloatIndexExists|ArrayFloatInsertionSort|ArrayFloatMax|ArrayFloatMin|ArrayFloatNormalize|ArrayFloatPrint_r|ArrayFloatQuickSort|ArrayFloatSum|ArrayPointCount|ArrayPointReverse|ArrayPointWrap|BlurChannelInPlace|BoundsOfPoly|ceil|CenterOfPoly|ChannelCopyFit|ChannelMultiplyYUV|ChannelScreen|ChannelView|ColorRampImage|ColorReporter|DeInterlace|DeInterlaceFast|DeInterlaceInterpolate|DifferenceMask|DimensionsOfPoly|DrawGridFrames|ease|easeIn|easeMiddle|easeOut|easeS|ErrorReporter|factorial|factorialabsNoInt|FastRotate|FieldDouble|fitPoly|fitRange|fitRect|floor|gcd|getField|indexExistsPt|isFloatArray|isIndexFloat|isIndexFloatArray|makeLevelMapBez|makeThresholdMapBez|max|min|mirrorRect|NumReporter|PlaceFrame|PointInPoly|pt3dReporter|PtReporter|RandomNoiseScaled|RandomSeedFPS|RGBtoYUVcolor|round|scaleToFit|sumNaturals|T_borderFade|whattype|YUVtoRGBcolor))\b/,
+     /\b(?<_1>(?i:absNoInt|ArrayFloatAbs|ArrayFloatAverage|ArrayFloatCount|ArrayFloatCountAll|ArrayFloatFlatten|ArrayFloatIndexExists|ArrayFloatInsertionSort|ArrayFloatMax|ArrayFloatMin|ArrayFloatNormalize|ArrayFloatPrint_r|ArrayFloatQuickSort|ArrayFloatSum|ArrayPointCount|ArrayPointReverse|ArrayPointWrap|BlurChannelInPlace|BoundsOfPoly|ceil|CenterOfPoly|ChannelCopyFit|ChannelMultiplyYUV|ChannelScreen|ChannelView|ColorRampImage|ColorReporter|DeInterlace|DeInterlaceFast|DeInterlaceInterpolate|DifferenceMask|DimensionsOfPoly|DrawGridFrames|ease|easeIn|easeMiddle|easeOut|easeS|ErrorReporter|factorial|factorialabsNoInt|FastRotate|FieldDouble|fitPoly|fitRange|fitRect|floor|gcd|getField|indexExistsPt|isFloatArray|isIndexFloat|isIndexFloatArray|makeLevelMapBez|makeThresholdMapBez|max|min|mirrorRect|NumReporter|PlaceFrame|PointInPoly|pt3dReporter|PtReporter|RandomNoiseScaled|RandomSeedFPS|RGBtoYUVcolor|round|scaleToFit|sumNaturals|T_borderFade|whattype|YUVtoRGBcolor))\b/,
     name: "support.function.joe.fxscript"}],
  scopeName: "source.fxscript",
  uuid: "43751327-3FD1-4BE7-AD05-136FC552BABA"}

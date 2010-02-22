@@ -57,11 +57,13 @@ module VER::Syntax::Detector
   exts "Fortran - Punchcard", ["f", "F", "f77", "F77", "for", "FOR", "fpp", "FPP"]
   exts "FXScript", ["fxscript"]
   exts "Gettext", ["po", "potx"]
+  exts "Grails Server Page", ["gsp"]
   exts "Graphviz (DOT)", ["dot", "DOT"]
   exts "Greasemonkey", ["user.js"]
   head "Greasemonkey", /\/\/ ==UserScript==/
   exts "Gri", ["gri"]
   head "Gri", /-[*]-( Mode:)? Gri -[*]-/
+  exts "Groovy", ["groovy", "gvy"]
   exts "GTD", ["gtd"]
   exts "GTDalt", ["gtd", "gtdlog"]
   exts "Haskell", ["hs"]
@@ -157,7 +159,7 @@ module VER::Syntax::Detector
   exts "RJS", ["rjs"]
   exts "RSpec", ["spec.rb"]
   exts "Ruby", ["rb", "rbx", "rjs", "Rakefile", "rake", "cgi", "fcgi", "gemspec", "irbrc", "capfile"]
-  head "Ruby", /^#!\/.*\bruby\b/
+  head "Ruby", /^#!\/.*\bruby/
   exts "Ruby Haml", ["haml", "sass"]
   exts "Ruby on Rails", ["rxml", "builder"]
   exts "S5 Slide Show", ["s5"]

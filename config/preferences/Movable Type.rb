@@ -1,11 +1,6 @@
 # Encoding: UTF-8
 
-[{name: "Tag Preferences",
-  scope: 
-   "text.html.mt entity.name.tag.mt, text.html.mt variable.other.mt, text.html.mt meta.tag",
-  settings: {spellChecking: "0"},
-  uuid: "23367101-9398-4601-8521-D6C2C6FEBDBE"},
- {name: "Miscellaneous",
+[{name: "Miscellaneous",
   scope: "text.html.mt",
   settings: 
    {decreaseIndentPattern: 
@@ -37,6 +32,11 @@
       ["$", "$"]],
     spellChecking: "0"},
   uuid: "DD648860-34B2-4350-8684-E1C13C54DEEC"},
+ {name: "Tag Preferences",
+  scope: 
+   "text.html.mt entity.name.tag.mt, text.html.mt variable.other.mt, text.html.mt meta.tag",
+  settings: {spellChecking: "0"},
+  uuid: "23367101-9398-4601-8521-D6C2C6FEBDBE"},
  {name: "Comments",
   scope: "text.html.mt.pure",
   settings: 

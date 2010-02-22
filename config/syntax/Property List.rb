@@ -16,14 +16,14 @@
    "savedSearch"],
  foldingStartMarker: 
   /(?x)
-	(
-	(^|=|=[ ]|\s\s|\t)				# Openstep foldings
-	(\{|\()(?!.*(\)|\}))			# spaces before them to 
+	(?<_1>
+	(?<_2>^|=|=[ ]|\s\s|\t)				# Openstep foldings
+	(?<_3>\{|\()(?!.*(?<_4>\)|\}))			# spaces before them to 
 	# limit false positives
-	  | (
+	  | (?<_5>
 	^\s*
-	(
-	<[^!?%\/](?!.+?(\/>
+	(?<_6>
+	<[^!?%\/](?!.+?(?<_7>\/>
 	  | <\/.+?>))
 	  | <[!%]--(?!.+?--%?>)
 	)
@@ -32,10 +32,10 @@
 	 /,
  foldingStopMarker: 
   /(?x)
-	(
-	(\}|\))(,|;)?					# Openstep foldings
+	(?<_1>
+	(?<_2>\}|\))(?<_3>,|;)?					# Openstep foldings
 	.*$								# limit false positives
-	  | (^\s*(<\/[^>]+>|\/>|-->)\s*$)		# XML						
+	  | (?<_4>^\s*(?<_5><\/[^>]+>|\/>|-->)\s*$)		# XML						
 	)
 	/,
  keyEquivalent: "^~P",
@@ -49,11 +49,11 @@
     comment: "This gives us the proper scope for the convert plist command.",
     end: "(?=not)possible",
     name: "source.plist.binary"},
-   {begin: /(?=\s*(<\?xml|<!DOCTYPE\s*plist))/,
+   {begin: /(?=\s*(?<_1><\?xml|<!DOCTYPE\s*plist))/,
     end: "(?=not)possible",
     name: "text.xml.plist",
     patterns: [{include: "#xml"}]},
-   {begin: /(?=\s*({|\(|\/\/|\/\*))/,
+   {begin: /(?=\s*(?<_1>{|\(|\/\/|\/\*))/,
     end: "(?=not)possible",
     name: "source.plist",
     patterns: [{include: "#openstep"}]}],
@@ -65,7 +65,7 @@
        {include: "#openstep_array"},
        {include: "#openstep_stray-char"}]},
    openstep_array: 
-    {begin: /(\()/,
+    {begin: /(?<_1>\()/,
      captures: {1 => {name: "punctuation.section.array.plist"}},
      end: "(\\))",
      name: "meta.group.array.plist",
@@ -95,10 +95,10 @@
         end: "\\*/",
         name: "comment.block.plist"},
        {captures: {1 => {name: "punctuation.definition.comment.plist"}},
-        match: /(\/\/).*$\n?/,
+        match: /(?<_1>\/\/).*$\n?/,
         name: "comment.line.double-slash.plist"}]},
    openstep_data: 
-    {begin: /(<)/,
+    {begin: /(?<_1><)/,
      beginCaptures: {1 => {name: "punctuation.definition.data.plist"}},
      end: "(=?)\\s*?(>)",
      endCaptures: 
@@ -109,7 +109,7 @@
       [{match: /[A-Za-z0-9+\/]/, name: "constant.numeric.base64.plist"},
        {match: /[^ \n]/, name: "invalid.illegal.invalid-character.plist"}]},
    openstep_dictionary: 
-    {begin: /(\{)/,
+    {begin: /(?<_1>\{)/,
      captures: {1 => {name: "punctuation.section.dictionary.plist"}},
      end: "(\\})",
      name: "meta.group.dictionary.plist",
@@ -119,7 +119,7 @@
        {include: "#openstep_stray-char"}]},
    openstep_name: 
     {patterns: 
-      [{begin: /(?=([-a-zA-Z0-9_.]+)|("|'))/,
+      [{begin: /(?=(?<_1>[-a-zA-Z0-9_.]+)|(?<_2>"|'))/,
         end: "((?<=\\));)|((?<=\\});)|(;)",
         endCaptures: 
          {1 => {name: "punctuation.terminator.array.plist"},
@@ -128,12 +128,12 @@
         name: "meta.rule.named.plist",
         patterns: 
          [{match: /[-a-zA-Z0-9_.]+/, name: "constant.other.key.plist"},
-          {begin: /(?<=('|"|[-a-zA-Z0-9_.]))(?!=)|\s/,
+          {begin: /(?<=(?<_1>'|"|[-a-zA-Z0-9_.]))(?!=)|\s/,
            comment: 
             "Mark anything between the name and the =\n\t\t\t\t\t\t\t\t\t\tas invalid.",
            end: "(?==)",
            patterns: [{include: "#openstep_stray-char"}]},
-          {begin: /("|')/,
+          {begin: /(?<_1>"|')/,
            beginCaptures: 
             {0 => {name: "punctuation.definition.string.begin.plist"}},
            end: "(\\1)",
@@ -141,7 +141,7 @@
             {0 => {name: "punctuation.definition.string.end.plist"}},
            name: "constant.other.key.plist",
            patterns: [{include: "#openstep_string-contents"}]},
-          {begin: /(=)(?!;)/,
+          {begin: /(?<_1>=)(?!;)/,
            beginCaptures: 
             {1 => {name: "punctuation.separator.key-value.plist"}},
            end: "(?=;)",
@@ -174,15 +174,15 @@
         endCaptures: {0 => {name: "punctuation.definition.string.end.plist"}},
         name: "string.quoted.double.plist",
         patterns: [{include: "#openstep_string-contents"}]},
-       {match: /[-+]?\d+(\.\d*)?(E[-+]\d+)?(?!\w)/,
+       {match: /[-+]?\d+(?<_1>\.\d*)?(?<_2>E[-+]\d+)?(?!\w)/,
         name: "constant.numeric.plist"},
        {match: /[-a-zA-Z0-9_.]+/, name: "string.unquoted.plist"}]},
    :"openstep_string-contents" => 
-    {match: /\\([uU](\h{4}|\h{2})|\d{1,3}|.)/,
+    {match: /\\(?<_1>[uU](?<_2>\h{4}|\h{2})|\d{1,3}|.)/,
      name: "constant.character.escape.plist"},
    xml: 
     {patterns: 
-      [{begin: /((<)((plist\b)))/,
+      [{begin: /(?<_1>(?<_2><)(?<_3>(?<_4>plist\b)))/,
         captures: 
          {1 => {name: "meta.tag.plist.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -192,7 +192,7 @@
         end: "((/)((plist))(>))",
         patterns: 
          [{begin: 
-            /(?<=<plist)(?!>)\s*(?:(version)(=)(?:((").*?("))|((').*?('))))?/,
+            /(?<=<plist)(?!>)\s*(?:(?<_1>version)(?<_2>=)(?:(?<_3>(?<_4>").*?(?<_5>"))|(?<_6>(?<_7>').*?(?<_8>'))))?/,
            beginCaptures: 
             {1 => {name: "entity.other.attribute-name.version.xml.plist"},
              2 => {name: "punctuation.separator.key-value.xml.plist"},
@@ -209,8 +209,8 @@
              2 => {name: "punctuation.definition.tag.xml.plist"},
              3 => {name: "meta.scope.between-tag-pair.xml.plist"}},
            comment: "Tag with no content",
-           match: /((>(<)))(?=\/plist)/},
-          {begin: /((>))(?!<\/plist)/,
+           match: /(?<_1>(?<_2>>(?<_3><)))(?=\/plist)/},
+          {begin: /(?<_1>(?<_2>>))(?!<\/plist)/,
            beginCaptures: 
             {1 => {name: "meta.tag.plist.xml.plist"},
              2 => {name: "punctuation.definition.tag.xml.plist"}},
@@ -233,7 +233,7 @@
         name: "invalid.illegal.double-dash-not-allowed.xml.plist"}]},
    xml_innertag: 
     {patterns: 
-      [{match: /&([a-zA-Z0-9_-]+|#[0-9]+|#x[0-9a-fA-F]+);/,
+      [{match: /&(?<_1>[a-zA-Z0-9_-]+|#[0-9]+|#x[0-9a-fA-F]+);/,
         name: "constant.character.entity.xml.plist"},
        {match: /&/, name: "invalid.illegal.bad-ampersand.xml.plist"}]},
    xml_invalid: 
@@ -243,7 +243,7 @@
        3 => {name: "invalid.illegal.tag-not-recognized.xml.plist"},
        4 => {name: "punctuation.definition.tag.xml.plist"}},
      comment: "Invalid tag",
-     match: /((<)\/?(\w+).*?(>))/},
+     match: /(?<_1>(?<_2><)\/?(?<_3>\w+).*?(?<_4>>))/},
    :"xml_stray-char" => 
     {match: /\S/,
      name: "invalid.illegal.character-data-not-allowed-here.xml.plist"},
@@ -262,7 +262,8 @@
           8 => {name: "meta.scope.between-tag-pair.xml.plist"},
           9 => {name: "entity.name.tag.xml.plist"}},
         comment: "Empty tag: Dictionary",
-        match: /((<)((dict))(>))(((<)\/)((dict))(>))/},
+        match: 
+         /(?<_1>(?<_2><)(?<_3>(?<_4>dict))(?<_5>>))(?<_6>(?<_7>(?<_8><)\/)(?<_9>(?<_10>dict))(?<_11>>))/},
        {captures: 
          {1 => {name: "meta.tag.array.xml.plist"},
           10 => {name: "entity.name.tag.localname.xml.plist"},
@@ -276,7 +277,8 @@
           8 => {name: "meta.scope.between-tag-pair.xml.plist"},
           9 => {name: "entity.name.tag.xml.plist"}},
         comment: "Empty tag: Array",
-        match: /((<)((array))(>))(((<)\/)((array))(>))/},
+        match: 
+         /(?<_1>(?<_2><)(?<_3>(?<_4>array))(?<_5>>))(?<_6>(?<_7>(?<_8><)\/)(?<_9>(?<_10>array))(?<_11>>))/},
        {captures: 
          {1 => {name: "meta.tag.string.xml.plist"},
           10 => {name: "entity.name.tag.localname.xml.plist"},
@@ -290,8 +292,9 @@
           8 => {name: "meta.scope.between-tag-pair.xml.plist"},
           9 => {name: "entity.name.tag.xml.plist"}},
         comment: "Empty tag: String",
-        match: /((<)((string))(>))(((<)\/)((string))(>))/},
-       {begin: /((<)((key))(>))/,
+        match: 
+         /(?<_1>(?<_2><)(?<_3>(?<_4>string))(?<_5>>))(?<_6>(?<_7>(?<_8><)\/)(?<_9>(?<_10>string))(?<_11>>))/},
+       {begin: /(?<_1>(?<_2><)(?<_3>(?<_4>key))(?<_5>>))/,
         captures: 
          {1 => {name: "meta.tag.key.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -313,7 +316,7 @@
           4 => {name: "entity.name.tag.localname.xml.plist"},
           5 => {name: "punctuation.definition.tag.xml.plist"}},
         comment: "Self-closing Dictionary",
-        match: /((<)((dict))\s*?\/(>))/},
+        match: /(?<_1>(?<_2><)(?<_3>(?<_4>dict))\s*?\/(?<_5>>))/},
        {captures: 
          {1 => {name: "meta.tag.array.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -321,7 +324,7 @@
           4 => {name: "entity.name.tag.localname.xml.plist"},
           5 => {name: "punctuation.definition.tag.xml.plist"}},
         comment: "Self-closing Array",
-        match: /((<)((array))\s*?\/(>))/},
+        match: /(?<_1>(?<_2><)(?<_3>(?<_4>array))\s*?\/(?<_5>>))/},
        {captures: 
          {1 => {name: "meta.tag.string.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -329,7 +332,7 @@
           4 => {name: "entity.name.tag.localname.xml.plist"},
           5 => {name: "punctuation.definition.tag.xml.plist"}},
         comment: "Self-closing String",
-        match: /((<)((string))\s*?\/(>))/},
+        match: /(?<_1>(?<_2><)(?<_3>(?<_4>string))\s*?\/(?<_5>>))/},
        {captures: 
          {1 => {name: "meta.tag.key.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -337,8 +340,8 @@
           4 => {name: "entity.name.tag.localname.xml.plist"},
           5 => {name: "punctuation.definition.tag.xml.plist"}},
         comment: "Self-closing Key",
-        match: /((<)((key))\s*?\/(>))/},
-       {begin: /((<)((dict))(>))/,
+        match: /(?<_1>(?<_2><)(?<_3>(?<_4>key))\s*?\/(?<_5>>))/},
+       {begin: /(?<_1>(?<_2><)(?<_3>(?<_4>dict))(?<_5>>))/,
         captures: 
          {1 => {name: "meta.tag.dict.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -348,7 +351,7 @@
         comment: "Dictionary",
         end: "((</)((dict))(>))",
         patterns: [{include: "#xml_tags"}]},
-       {begin: /((<)((array))(>))/,
+       {begin: /(?<_1>(?<_2><)(?<_3>(?<_4>array))(?<_5>>))/,
         captures: 
          {1 => {name: "meta.tag.array.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -358,7 +361,7 @@
         comment: "Array",
         end: "((</)((array))(>))",
         patterns: [{include: "#xml_tags"}]},
-       {begin: /((<)((string))(>))/,
+       {begin: /(?<_1>(?<_2><)(?<_3>(?<_4>string))(?<_5>>))/,
         captures: 
          {1 => {name: "meta.tag.string.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -374,7 +377,7 @@
            captures: {0 => {name: "punctuation.definition.string.xml"}},
            end: "]]>",
            name: "string.unquoted.cdata.xml"}]},
-       {begin: /((<)((real))(>))/,
+       {begin: /(?<_1>(?<_2><)(?<_3>(?<_4>real))(?<_5>>))/,
         captures: 
          {1 => {name: "meta.tag.real.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -384,19 +387,19 @@
         comment: "Numeric",
         end: "((</)((real))(>))",
         patterns: 
-         [{begin: /(<!\[CDATA\[)/,
+         [{begin: /(?<_1><!\[CDATA\[)/,
            captures: 
             {0 => {name: "punctuation.definition.constant.xml"},
              1 => {name: "constant.numeric.real.xml.plist"}},
            end: "(]]>)",
            patterns: 
-            [{match: /[-+]?\d+(\.\d*)?(E[-+]\d+)?/,
+            [{match: /[-+]?\d+(?<_1>\.\d*)?(?<_2>E[-+]\d+)?/,
               name: "constant.numeric.real.xml.plist"},
              {match: /./, name: "invalid.illegal.not-a-number.xml.plist"}]},
-          {match: /[-+]?\d+(\.\d*)?(E[-+]\d+)?/,
+          {match: /[-+]?\d+(?<_1>\.\d*)?(?<_2>E[-+]\d+)?/,
            name: "constant.numeric.real.xml.plist"},
           {match: /./, name: "invalid.illegal.not-a-number.xml.plist"}]},
-       {begin: /((<)((integer))(>))/,
+       {begin: /(?<_1>(?<_2><)(?<_3>(?<_4>integer))(?<_5>>))/,
         captures: 
          {1 => {name: "meta.tag.integer.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -415,8 +418,8 @@
           4 => {name: "entity.name.tag.localname.xml.plist"},
           5 => {name: "punctuation.definition.tag.xml.plist"}},
         comment: "Boolean",
-        match: /((<)((true|false))\s*?(\/>))/},
-       {begin: /((<)((data))(>))/,
+        match: /(?<_1>(?<_2><)(?<_3>(?<_4>true|false))\s*?(?<_5>\/>))/},
+       {begin: /(?<_1>(?<_2><)(?<_3>(?<_4>data))(?<_5>>))/,
         captures: 
          {1 => {name: "meta.tag.data.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -430,7 +433,7 @@
           {match: /=/, name: "constant.numeric.base64.xml.plist"},
           {match: /[^ \n\t]/,
            name: "invalid.illegal.invalid-character.xml.plist"}]},
-       {begin: /((<)((date))(>))/,
+       {begin: /(?<_1>(?<_2><)(?<_3>(?<_4>date))(?<_5>>))/,
         captures: 
          {1 => {name: "meta.tag.date.xml.plist"},
           2 => {name: "punctuation.definition.tag.xml.plist"},
@@ -444,7 +447,7 @@
             /(?x)
 	[0-9]{4}						# Year
 	-								# Divider
-	(0[1-9]|1[012])					# Month
+	(?<_1>0[1-9]|1[012])					# Month
 	-								# Divider
 	(?!00|3[2-9])[0-3][0-9]			# Day
 	T								# Separator

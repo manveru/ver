@@ -14,14 +14,14 @@
    {match: /.*\.def/, name: "entity.name.tag.definition"},
    {match: /.*Info.*/, name: "comment.block.documentation"},
    {match: /.*FiXme:/, name: "meta.log.latex.fixme"},
-   {begin: /(Overfull|Underfull)/,
+   {begin: /(?<_1>Overfull|Underfull)/,
     captures: {1 => {name: "keyword.control.hyphenation.latex"}},
     end: "(\\[\\]\\n)",
     name: "meta.log.latex.hyphenation",
     patterns: 
      [{match: /[0-9]+\-\-[0-9]+/,
        name: "variable.parameter.hyphenation.latex2"}]},
-   {begin: /(<)/,
+   {begin: /(?<_1><)/,
     beginCaptures: 
      {0 => {name: "punctuation.definition.string.begin.log.latex"}},
     end: "(>)",
@@ -29,7 +29,7 @@
     name: "string.unquoted.other.filename.log.latex",
     patterns: 
      [{captures: {1 => {name: "entity.name.function.filename.latex"}},
-       match: /(.*\/.*\.pdf)/,
+       match: /(?<_1>.*\/.*\.pdf)/,
        name: "support.function.with-arg.latex"}]}],
  scopeName: "text.log.latex",
  uuid: "F68ACE95-7DB3-4DFB-AA8A-89988B116B5C"}

@@ -1,13 +1,6 @@
 # Encoding: UTF-8
 
-[{name: "Comments",
-  scope: "text.xml",
-  settings: 
-   {shellVariables: 
-     [{name: "TM_COMMENT_START", value: "<!-- "},
-      {name: "TM_COMMENT_END", value: " -->"}]},
-  uuid: "41A5608C-C589-411E-9581-548D7DE335AC"},
- {name: "Miscellaneous",
+[{name: "Miscellaneous",
   scope: "text.xml",
   settings: 
    {comment: 
@@ -23,4 +16,11 @@
   settings: 
    {showInSymbolList: 1,
     symbolTransformation: "s/^\\s*<xsl:template\\s+(.*)\\s*>/$1/"},
-  uuid: "0B6F39CC-AF39-46CD-85FB-7F895D14F04A"}]
+  uuid: "0B6F39CC-AF39-46CD-85FB-7F895D14F04A"},
+ {name: "Comments",
+  scope: "text.xml",
+  settings: 
+   {shellVariables: 
+     [{name: "TM_COMMENT_START", value: "<!-- "},
+      {name: "TM_COMMENT_END", value: " -->"}]},
+  uuid: "41A5608C-C589-411E-9581-548D7DE335AC"}]

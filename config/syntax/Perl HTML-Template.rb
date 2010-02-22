@@ -3,10 +3,10 @@
 {fileTypes: ["tmpl"],
  firstLineMatch: "<(?i:TMPL)_.+?>",
  foldingStartMarker: 
-  /(<(?i:(head|table|tr|div|style|script|ul|ol|form|dl))\b.*?>|^ *<(?i:TMPL_(?:LOOP|UNLESS|IF))\b(?!.*<\/(?i:TMPL_(?:LOOP|UNLESS|IF))>))/,
+  /(?<_1><(?i:(?<_2>head|table|tr|div|style|script|ul|ol|form|dl))\b.*?>|^ *<(?i:TMPL_(?:LOOP|UNLESS|IF))\b(?!.*<\/(?i:TMPL_(?:LOOP|UNLESS|IF))>))/,
  foldingStopMarker: 
-  /(<\/(?i:(head|table|tr|div|style|script|ul|ol|form|dl))>|^ *<\/(?i:TMPL_(?:LOOP|UNLESS|IF)) *>)/,
- keyEquivalent: /^~H/,
+  /(?<_1><\/(?i:(?<_2>head|table|tr|div|style|script|ul|ol|form|dl))>|^ *<\/(?i:TMPL_(?:LOOP|UNLESS|IF)) *>)/,
+ keyEquivalent: "^~H",
  name: "Perl HTML-Template",
  patterns: [{include: "#tmpl-container-tag"}, {include: "text.html.basic"}],
  repository: 
@@ -16,7 +16,7 @@
       [{captures: 
          {1 => {name: "punctuation.definition.constant.html"},
           3 => {name: "punctuation.definition.constant.html"}},
-        match: /(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)/,
+        match: /(?<_1>&)(?<_2>[a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(?<_3>;)/,
         name: "constant.character.entity.html"},
        {match: /&/, name: "invalid.illegal.bad-ampersand.html"}]},
    :"html-template-stuff" => 
@@ -28,7 +28,7 @@
        {include: "#string-single-quoted"},
        {include: "#keyword"}]},
    keyword: 
-    {match: /\b([A-Za-z0-9_]+)/, name: "string.unquoted.html-template"},
+    {match: /\b(?<_1>[A-Za-z0-9_]+)/, name: "string.unquoted.html-template"},
    :"string-double-quoted" => 
     {begin: /"/,
      beginCaptures: 

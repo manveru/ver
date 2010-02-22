@@ -2,8 +2,8 @@
 
 {comment: 
   "This is a wrapper for and adds nested bracket scopes to Prototype & Script.aculo.us (JavaScript). It also allow for embedded ruby source. By Thomas Aylott",
- foldingStartMarker: /(\{[^\}]*$|\([^\)]*$|<%)/,
- foldingStopMarker: /(^[^\{]*\}|^\s*\)|%>)/,
+ foldingStartMarker: /(?<_1>\{[^\}]*$|\([^\)]*$|<%)/,
+ foldingStopMarker: /(?<_1>^[^\{]*\}|^\s*\)|%>)/,
  keyEquivalent: "^~J",
  name: "Prototype & Script.aculo.us (JavaScript) Bracketed",
  patterns: 
@@ -39,25 +39,25 @@
         name: "comment.block.conditional.js",
         patterns: [{include: "$base"}]},
        {captures: {1 => {name: "punctuation.definition.keyword.js"}},
-        match: /(@)(if|elif|else|end)/,
+        match: /(?<_1>@)(?<_2>if|elif|else|end)/,
         name: "keyword.control.conditional.js"},
        {captures: {1 => {name: "punctuation.definition.keyword.js"}},
-        match: /(@)(cc_on|set)/,
+        match: /(?<_1>@)(?<_2>cc_on|set)/,
         name: "keyword.operator.conditional.js"},
        {captures: {1 => {name: "punctuation.definition.variable.js"}},
         match: 
-         /(@)(_win32|_win16|_mac|_alpha|_x86|_mc680x0|_PowerPC|_jscript_build|_jscript_version|_jscript|_debug|_fast|[a-zA-Z]\w+)/,
+         /(?<_1>@)(?<_2>_win32|_win16|_mac|_alpha|_x86|_mc680x0|_PowerPC|_jscript_build|_jscript_version|_jscript|_debug|_fast|[a-zA-Z]\w+)/,
         name: "variable.other.conditional.js"}]},
    :"round-brackets" => 
     {patterns: 
-      [{begin: /(?<=\))\s*+(\{)/,
+      [{begin: /(?<=\))\s*+(?<_1>\{)/,
         captures: 
          {1 => {name: "punctuation.section.function.js.prototype"},
           2 => {name: "punctuation.separator.objects.js.prototype"}},
         end: "(\\})(,)?\\s*",
         name: "meta.group.braces.curly.function.js.prototype",
         patterns: [{include: "$base"}]},
-       {begin: /(\{)/,
+       {begin: /(?<_1>\{)/,
         captures: 
          {1 => {name: "punctuation.section.scope.js"},
           2 => {name: "punctuation.separator.objects.js.prototype"}},
@@ -66,32 +66,34 @@
         patterns: 
          [{captures: 
             {1 => {name: "invalid.illegal.delimiter.object.comma.js"}},
-           match: /(,)\s*+(?=\})/},
+           match: /(?<_1>,)\s*+(?=\})/},
           {captures: 
             {1 => {name: "string.quoted.double.js.prototype"},
              2 => {name: "punctuation.definition.string.js.prototype"},
              3 => {name: "constant.other.object.key.js.prototype"},
              4 => {name: "punctuation.definition.string.js.prototype"},
              5 => {name: "punctuation.separator.objects.js.prototype"}},
-           match: /((")([^"]*)(")\s*)(:)\s*+(?!function)/},
+           match: 
+            /(?<_1>(?<_2>")(?<_3>[^"]*)(?<_4>")\s*)(?<_5>:)\s*+(?!function)/},
           {captures: 
             {1 => {name: "string.quoted.single.js.prototype"},
              2 => {name: "punctuation.definition.string.js.prototype"},
              3 => {name: "constant.other.object.key.js.prototype"},
              4 => {name: "punctuation.definition.string.js.prototype"},
              5 => {name: "punctuation.separator.objects.js.prototype"}},
-           match: /((')([^']*)(')\s*)(:)\s*+(?!function)/},
+           match: 
+            /(?<_1>(?<_2>')(?<_3>[^']*)(?<_4>')\s*)(?<_5>:)\s*+(?!function)/},
           {captures: 
             {1 => {name: "constant.other.object.key.js.prototype"},
              2 => {name: "punctuation.separator.objects.js.prototype"}},
-           match: /\b(\w+\b\s*)(:)\s*+(?!function)/},
+           match: /\b(?<_1>\w+\b\s*)(?<_2>:)\s*+(?!function)/},
           {include: "$base"}]},
-       {begin: /(\()(?!\))/,
+       {begin: /(?<_1>\()(?!\))/,
         captures: {1 => {name: "punctuation.section.scope.js"}},
         end: "(\\))",
         name: "meta.group.braces.round",
         patterns: [{include: "$base"}]},
-       {begin: /(\[)(?!\])/,
+       {begin: /(?<_1>\[)(?!\])/,
         captures: {1 => {name: "punctuation.section.scope.js"}},
         end: "(\\])",
         name: "meta.group.braces.square",

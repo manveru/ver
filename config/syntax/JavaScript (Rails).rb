@@ -16,7 +16,7 @@
     name: "source.ruby.rails.erb",
     patterns: 
      [{captures: {1 => {name: "punctuation.definition.comment.ruby"}},
-       match: /(#).*?(?=-?%>)/,
+       match: /(?<_1>#).*?(?=-?%>)/,
        name: "comment.line.number-sign.ruby"},
       {include: "source.ruby.rails"}]},
    {include: "source.js"}],

@@ -4,8 +4,8 @@
  foldingStartMarker: 
   /(?x)
 	 \/\*\*(?!\*)
-	|^(?![^{]*?\/\/|[^{]*?\/\*(?!.*?\*\/.*?\{)).*?\{\s*($|\/\/|\/\*(?!.*?\*\/.*\S))
-	|^@(interface|protocol|implementation)\b
+	|^(?![^{]*?\/\/|[^{]*?\/\*(?!.*?\*\/.*?\{)).*?\{\s*(?<_1>$|\/\/|\/\*(?!.*?\*\/.*\S))
+	|^@(?<_2>interface|protocol|implementation)\b
 	/,
  foldingStopMarker: /(?<!\*)\*\*\/|^\s*\}|^@end\b/,
  keyEquivalent: "^~O",

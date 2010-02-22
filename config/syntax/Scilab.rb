@@ -1,14 +1,15 @@
 # Encoding: UTF-8
 
 {fileTypes: ["sce", "sci", "tst", "dem"],
- foldingStartMarker: /^(?!.*\/\/.*).*\b(if|while|for|function|select)\b/,
- foldingStopMarker: /\b(endfunction|end)\b/,
+ foldingStartMarker: /^(?!.*\/\/.*).*\b(?<_1>if|while|for|function|select)\b/,
+ foldingStopMarker: /\b(?<_1>endfunction|end)\b/,
  name: "Scilab",
  patterns: 
   [{begin: /\/\//, end: "$\\n?", name: "comment.line.double-slash.scilab"},
-   {match: /\b(([0-9]+\.?[0-9]*)|(\.[0-9]+))((e|E)(\+|-)?[0-9]+)?\b/,
+   {match: 
+     /\b(?<_1>(?<_2>[0-9]+\.?[0-9]*)|(?<_3>\.[0-9]+))(?<_4>(?<_5>e|E)(?<_6>\+|-)?[0-9]+)?\b/,
     name: "constant.numeric.scilab"},
-   {match: /(%inf|%i|%pi|%eps|%e|%nan|%s|%t|%f)\b/,
+   {match: /(?<_1>%inf|%i|%pi|%eps|%e|%nan|%s|%t|%f)\b/,
     name: "support.constant.scilab"},
    {begin: /"/,
     end: "\"(?!\")",
@@ -21,9 +22,9 @@
    {captures: 
      {1 => {name: "keyword.control.scilab"},
       2 => {name: "entity.name.function.scilab"}},
-    match: /\b(function)\s+(?:[^=]+=\s*)?(\w+)(?:\s*\(.*\))?/},
+    match: /\b(?<_1>function)\s+(?:[^=]+=\s*)?(?<_2>\w+)(?:\s*\(.*\))?/},
    {match: 
-     /\b(if|then|else|elseif|while|for|function|end|endfunction|return|select|case|break|global)\b/,
+     /\b(?<_1>if|then|else|elseif|while|for|function|end|endfunction|return|select|case|break|global)\b/,
     name: "keyword.control.scilab"},
    {match: /\.\.\.\s*$/, name: "punctuation.separator.continuation.scilab"}],
  scopeName: "source.scilab",

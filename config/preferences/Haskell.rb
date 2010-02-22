@@ -1,12 +1,6 @@
 # Encoding: UTF-8
 
-[{name: "Indent Patterns",
-  scope: "source.haskell",
-  settings: 
-   {increaseIndentPattern: 
-     "((^.*(=|\\bdo|\\bwhere|\\bthen|\\belse|\\bof)\\s*$)|(^.*\\bif(?!.*\\bthen\\b.*\\belse\\b.*).*$))"},
-  uuid: "39417FB9-B85C-4213-BB1D-C19BCDD4E487"},
- {name: "Typing Pairs",
+[{name: "Typing Pairs",
   scope: "source.haskell",
   settings: 
    {smartTypingPairs: 
@@ -17,6 +11,12 @@
       ["(", ")"],
       ["`", "`"]]},
   uuid: "FBF9D932-D5CE-4EC4-9162-122E511C8627"},
+ {name: "Indent Patterns",
+  scope: "source.haskell",
+  settings: 
+   {increaseIndentPattern: 
+     "((^.*(=|\\bdo|\\bwhere|\\bthen|\\belse|\\bof)\\s*$)|(^.*\\bif(?!.*\\bthen\\b.*\\belse\\b.*).*$))"},
+  uuid: "39417FB9-B85C-4213-BB1D-C19BCDD4E487"},
  {name: "Comments",
   scope: "source.haskell",
   settings: 

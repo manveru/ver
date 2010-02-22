@@ -1,74 +1,74 @@
 # Encoding: UTF-8
 
-{"BA.t" => 
+{"num" => 
   {scope: "source.ocaml",
-   name: "Native sized signed int",
-   content: "nativeint_elt"},
- "Dynlink.err" => 
-  {scope: "source.ocaml", name: "Unsafe_file", content: "Dynlink.Unsafe_file"},
- "Dbm.Dbm_" => 
-  {scope: "source.ocaml", name: "Open write-only", content: "Dbm.Dbm_wronly"},
- "Dynlink.lerr" => 
+   name: "decr_num",
+   content: "decr_num ${1:num_ref}$0"},
+ "Array3." => 
   {scope: "source.ocaml",
-   name: "Uninitialized_global",
-   content: "Dynlink.Uninitialized_global ${1:global}$0"},
- "bi" => 
-  {scope: "source.ocaml", name: "zero_big_int", content: "zero_big_int"},
- "num" => 
-  {scope: "source.ocaml", name: "succ_num", content: "succ_num ${1:num}$0"},
+   name: "sub_left (C layout only)",
+   content: "Array3.sub_left ${1:bigarray} ${2:offset} ${3:len}$0"},
+ "Thread." => 
+  {scope: "source.ocaml",
+   name: "delay",
+   content: "Thread.delay ${1:secs}${2:;}$0"},
  "rat" => 
   {scope: "source.ocaml",
-   name: "sub_ratio",
-   content: "sub_ratio ${1:ratio} ${2:ratio2}$0"},
- "Dynlink." => 
-  {scope: "source.ocaml",
-   name: "prohibit",
-   content: "Dynlink.prohibit ${1:[${2:unit_list;}]}${3:;}$0"},
- "Event." => 
-  {scope: "source.ocaml",
-   name: "wrap_abort",
-   content: "Event.wrap_abort ${1:even} ${2:(fun () -> ${3:})}$0"},
- "arith" => 
-  {scope: "source.ocaml",
-   name: "set_normalize_ratio_when_printing",
-   content: "set_normalize_ratio_when_printing ${1:true}${2:;}$0"},
+   name: "eq_ratio",
+   content: "eq_ratio ${1:ratio} ${2:ratio2}$0"},
  "BA." => 
   {scope: "source.ocaml",
-   name: "reshape_3",
-   content: 
-    "reshape_3 ${1:genarray} ${2:new_dim1} ${3:new_dim2} ${4:new_dim3}$0"},
- "Array1." => 
+   name: "genarray_of_array3",
+   content: "genarray_of_array3 ${1:bigarray3}$0"},
+ "Dbm.Dbm_" => 
   {scope: "source.ocaml",
-   name: "sub",
-   content: "Array1.sub ${1:bigarraay} ${2:offset} ${3:len}$0"},
+   name: "Open for reading and writing",
+   content: "Dbm.Dbm_rdwr"},
+ "bi" => 
+  {scope: "source.ocaml",
+   name: "gt_big_int",
+   content: "gt_big_int ${1:bi} ${2:bi2}$0"},
+ "arith" => 
+  {scope: "source.ocaml",
+   name: "set_floating_precision",
+   content: "set_floating_precision ${1:precision}${2:;}$0"},
+ "Str." => 
+  {scope: "source.ocaml",
+   name: "string_before",
+   content: "Str.string_before ${1:str} ${2:pos}$0"},
+ "BA.t" => 
+  {scope: "source.ocaml", name: "32-bit float", content: "float32_elt"},
+ "Event." => 
+  {scope: "source.ocaml", name: "poll", content: "Event.poll ${1:event}$0"},
  "Genarray." => 
   {scope: "source.ocaml",
    name: "sub_right (Fortran layout only)",
    content: "Genarray.sub_right ${1:genarray} ${2:offset} ${3:len}$0"},
- "Array3." => 
+ "Dynlink.err" => 
   {scope: "source.ocaml",
-   name: "sub_right (Fortran layout only)",
-   content: "Array3.sub_right ${1:bigarray} ${2:offset} ${3:len}$0"},
- "Array2." => 
-  {scope: "source.ocaml",
-   name: "sub_right (Fortran layout only)",
-   content: "Array2.sub_right ${1:bigarray} ${2:offset} ${3:len}$0"},
- "Str." => 
-  {scope: "source.ocaml",
-   name: "substitute_first",
-   content: "Str.substitute_first ${1:regexp} ${2:subst_func} ${3:str}$0"},
+   name: "Cannot_open_dll",
+   content: "Dynlink.Cannot_open_dll ${1:file_name}$0"},
  "Condition." => 
   {scope: "source.ocaml",
-   name: "wait",
-   content: "Condition.wait ${1:cond} ${2:mtx}${3:;}$0"},
- "BA.kind" => {scope: "source.ocaml", name: "nativeint", content: "nativeint"},
- "Dbm." => 
+   name: "signal",
+   content: "Condition.signal ${1:cond}${2:;}$0"},
+ "Dynlink.lerr" => 
   {scope: "source.ocaml",
-   name: "replace",
-   content: "Dbm.replace ${1:db} ${2:key} ${3:data}$0"},
+   name: "Undefined_global",
+   content: "Dynlink.Undefined_global ${1:global}$0"},
  "Mutex." => 
+  {scope: "source.ocaml", name: "create", content: "Mutex.create ()${1:;}$0"},
+ "Array2." => 
   {scope: "source.ocaml",
-   name: "unlock",
-   content: "Mutex.unlock ${1:mtx}${2:;}$0"},
- "Thread." => 
-  {scope: "source.ocaml", name: "yield", content: "Thread.yield ()${1:;}$0"}}
+   name: "map_file",
+   content: 
+    "Array2.map_file ${1:Unix.file_descr} BA.kind$0 ${2:fortran}_layout${3:shared} ${4:dim1} ${5:dim2}"},
+ "Dynlink." => 
+  {scope: "source.ocaml",
+   name: "default_available_units",
+   content: "Dynlink.default_available_units ()${1:;}$0"},
+ "Array1." => 
+  {scope: "source.ocaml", name: "dim", content: "Array1.dim ${1:bigarraay}$0"},
+ "Dbm." => 
+  {scope: "source.ocaml", name: "firstkey", content: "Dbm.firstkey ${1:db}$0"},
+ "BA.kind" => {scope: "source.ocaml", name: "int32", content: "int32"}}

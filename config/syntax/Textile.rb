@@ -2,10 +2,11 @@
 
 {fileTypes: ["textile"],
  firstLineMatch: "textile",
- keyEquivalent: /^~T/,
+ keyEquivalent: "^~T",
  name: "Textile",
  patterns: 
-  [{begin: /(^h[1-6]([<>=()]+)?)(\([^)]*\)|{[^}]*})*(\.)/,
+  [{begin: 
+     /(?<_1>^h[1-6](?<_2>[<>=(?<_3>)]+)?)(?<_4>\([^)]*\)|{[^}]*})*(?<_5>\.)/,
     captures: 
      {1 => {name: "entity.name.tag.heading.textile"},
       3 => {name: "entity.name.type.textile"},
@@ -13,7 +14,7 @@
     end: "^$",
     name: "markup.heading.textile",
     patterns: [{include: "#inline"}, {include: "text.html.basic"}]},
-   {begin: /(^bq([<>=()]+)?)(\([^)]*\)|{[^}]*})*(\.)/,
+   {begin: /(?<_1>^bq(?<_2>[<>=(?<_3>)]+)?)(?<_4>\([^)]*\)|{[^}]*})*(?<_5>\.)/,
     captures: 
      {1 => {name: "entity.name.tag.blockquote.textile"},
       3 => {name: "entity.name.type.textile"},
@@ -21,7 +22,8 @@
     end: "^$",
     name: "markup.quote.textile",
     patterns: [{include: "#inline"}, {include: "text.html.basic"}]},
-   {begin: /(^fn[0-9]+([<>=()]+)?)(\([^)]*\)|{[^}]*})*(\.)/,
+   {begin: 
+     /(?<_1>^fn[0-9]+(?<_2>[<>=(?<_3>)]+)?)(?<_4>\([^)]*\)|{[^}]*})*(?<_5>\.)/,
     captures: 
      {1 => {name: "entity.name.tag.footnote.textile"},
       3 => {name: "entity.name.type.textile"},
@@ -29,7 +31,8 @@
     end: "^$",
     name: "markup.other.footnote.textile",
     patterns: [{include: "#inline"}, {include: "text.html.basic"}]},
-   {begin: /(^table([<>=()]+)?)(\([^)]*\)|{[^}]*})*(\.)/,
+   {begin: 
+     /(?<_1>^table(?<_2>[<>=(?<_3>)]+)?)(?<_4>\([^)]*\)|{[^}]*})*(?<_5>\.)/,
     captures: 
      {1 => {name: "entity.name.tag.footnote.textile"},
       3 => {name: "entity.name.type.textile"},
@@ -45,7 +48,8 @@
         {1 => {name: "entity.name.tag.paragraph.textile"},
          3 => {name: "entity.name.type.textile"},
          4 => {name: "entity.name.tag.paragraph.textile"}},
-       match: /(^p([<>=()]+)?)(\([^)]*\)|{[^}]*})*(\.)/,
+       match: 
+        /(?<_1>^p(?<_2>[<>=(?<_3>)]+)?)(?<_4>\([^)]*\)|{[^}]*})*(?<_5>\.)/,
        name: "entity.name.section.paragraph.textile"},
       {include: "#inline"},
       {include: "text.html.basic"}]},
@@ -59,10 +63,10 @@
         match: /&(?![A-Za-z0-9]+;)/,
         name: "text.html.textile"},
        {captures: {1 => {name: "entity.name.type.textile"}},
-        match: /^\*+(\([^)]*\)|{[^}]*})*(\s+|$)/,
+        match: /^\*+(?<_1>\([^)]*\)|{[^}]*})*(?<_2>\s+|$)/,
         name: "markup.list.unnumbered.textile"},
        {captures: {1 => {name: "entity.name.type.textile"}},
-        match: /^#+(\([^)]*\)|{[^}]*})*\s+/,
+        match: /^#+(?<_1>\([^)]*\)|{[^}]*})*\s+/,
         name: "markup.list.numbered.textile"},
        {captures: 
          {1 => {name: "string.other.link.title.textile"},
@@ -81,12 +85,12 @@
 	  | (?:\[[^\]]+\])?(?:\{[^}]+\})?(?:\([^)]+\))?
 	# Lang, Style, Class
 	)?
-	([^"]+?)					# Link name
+	(?<_1>[^"]+?)					# Link name
 	\s?							# Optional whitespace
-	(?:\(([^)]+?)\))?
+	(?:\((?<_2>[^)]+?)\))?
 	":								# End name
-	(\w[-\w_]*)						# Linkref
-	(?=[^\w\/;]*?(<|\s|$))			# Catch closing punctuation
+	(?<_3>\w[-\w_]*)						# Linkref
+	(?=[^\w\/;]*?(?<_4><|\s|$))			# Catch closing punctuation
 	#  and end of meta.link
 	/,
         name: "meta.link.reference.textile"},
@@ -107,12 +111,12 @@
 	  | (?:\[[^\]]+\])?(?:\{[^}]+\})?(?:\([^)]+\))?
 	# Lang, Style, Class
 	)?
-	([^"]+?)					# Link name
+	(?<_1>[^"]+?)					# Link name
 	\s?							# Optional whitespace
-	(?:\(([^)]+?)\))?
+	(?:\((?<_2>[^)]+?)\))?
 	":								# End Name
-	(\S*?(?:\w|\/|;))				# URL
-	(?=[^\w\/;]*?(<|\s|$))			# Catch closing punctuation
+	(?<_3>\S*?(?:\w|\/|;))				# URL
+	(?=[^\w\/;]*?(?<_4><|\s|$))			# Catch closing punctuation
 	#  and end of meta.link
 	/,
         name: "meta.link.inline.textile"},
@@ -123,7 +127,7 @@
         match: 
          /(?x)
 	\!										# Open image
-	(\<|\=|\>)?								# Optional alignment
+	(?<_1>\<|\=|\>)?								# Optional alignment
 	(?:										# Attributes
 	# I swear, this is how the language is defined,
 	# couldnt make it up if I tried.
@@ -135,37 +139,39 @@
 	# Lang, Style, Class
 	)?
 	(?:\.[ ])?            					# Optional
-	([^\s(!]+?)         					# Image URL
+	(?<_2>[^\s(?<_3>!]+?)         					# Image URL
 	\s?                						# Optional space
-	(?:\(((?:[^\(\)]|\([^\)]+\))+?)\))?   	# Optional title
+	(?:\((?<_4>(?:[^\(\)]|\([^\)]+\))+?)\))?   	# Optional title
 	\!										# Close image
 	(?:
 	:
-	(\S*?(?:\w|\/|;))					# URL
-	(?=[^\w\/;]*?(<|\s|$))				# Catch closing punctuation
+	(?<_5>\S*?(?:\w|\/|;))					# URL
+	(?=[^\w\/;]*?(?<_6><|\s|$))				# Catch closing punctuation
 	)?
 	/,
         name: "meta.image.inline.textile"},
        {captures: {1 => {name: "entity.name.type.textile"}},
-        match: /\|(\([^)]*\)|{[^}]*})*(\\\||.)+\|/,
+        match: /\|(?<_1>\([^)]*\)|{[^}]*})*(?<_2>\\\||.)+\|/,
         name: "markup.other.table.cell.textile"},
        {captures: {3 => {name: "entity.name.type.textile"}},
         match: 
-         /\B(\*\*?)((\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(\S.*?\S|\S)\1\B/,
+         /\B(?<_1>\*\*?)(?<_2>(?<_3>\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(?<_4>\S.*?\S|\S)\k<_1>\B/,
         name: "markup.bold.textile"},
        {captures: {2 => {name: "entity.name.type.textile"}},
-        match: /\B-((\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(\S.*?\S|\S)-\B/,
+        match: 
+         /\B-(?<_1>(?<_2>\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(?<_3>\S.*?\S|\S)-\B/,
         name: "markup.deleted.textile"},
        {captures: {2 => {name: "entity.name.type.textile"}},
-        match: /\B\+((\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(\S.*?\S|\S)\+\B/,
+        match: 
+         /\B\+(?<_1>(?<_2>\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(?<_3>\S.*?\S|\S)\+\B/,
         name: "markup.inserted.textile"},
        {captures: {2 => {name: "entity.name.type.textile"}},
         match: 
-         /(?:\b|\s)_((\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(\S.*?\S|\S)_(?:\b|\s)/,
+         /(?:\b|\s)_(?<_1>(?<_2>\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(?<_3>\S.*?\S|\S)_(?:\b|\s)/,
         name: "markup.italic.textile"},
        {captures: {3 => {name: "entity.name.type.textile"}},
         match: 
-         /\B([@\^~%]|\?\?)((\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(\S.*?\S|\S)\1/,
+         /\B(?<_1>[@\^~%]|\?\?)(?<_2>(?<_3>\([^)]*\)|{[^}]*}|\[[^\]]+\]){0,3})(?<_4>\S.*?\S|\S)\k<_1>/,
         name: "markup.italic.phrasemodifiers.textile"},
        {comment: "Footnotes",
         match: /(?<!w)\[[0-9+]\]/,

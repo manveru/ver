@@ -3,12 +3,12 @@
 {fileTypes: ["a4l"],
  foldingStartMarker: 
   /(?x)
-	(^\s*(?i:if|while|for\ each|for|case\ of|repeat|method)\b
+	(?<_1>^\s*(?i:if|while|for\ each|for|case\ of|repeat|method)\b
 	|^\s*<fusedoc\ fuse
 	)/,
  foldingStopMarker: 
   /(?x)
-	(^\s*(?i:end\ (if|while|for\ each|for|case|method)|until)\b
+	(?<_1>^\s*(?i:end\ (?<_2>if|while|for\ each|for|case|method)|until)\b
 	|^\s*<\/fusedoc>
 	)/,
  keyEquivalent: "^~A",

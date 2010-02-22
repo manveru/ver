@@ -13,7 +13,7 @@
    {include: "#rule-directive"}],
  repository: 
   {:"background-directive" => 
-    {begin: /\b(background)/,
+    {begin: /\b(?<_1>background)/,
      beginCaptures: {1 => {name: "keyword.control.background.cfdg"}},
      end: "(\\})|(\\])",
      endCaptures: 
@@ -21,11 +21,12 @@
        2 => {name: "punctuation.section.ordered-block.end.cfdg"}},
      patterns: [{include: "#color-adjustment-block"}, {include: "#comment"}]},
    :"color-adjustment" => 
-    {match: /\||\b(h(ue)?|sat(uration)?|b(rightness)?|a(lpha)?)\b/,
+    {match: 
+      /\||\b(?<_1>h(?<_2>ue)?|sat(?<_3>uration)?|b(?<_4>rightness)?|a(?<_5>lpha)?)\b/,
      name: "constant.language.color-adjustment.cfdg"},
    :"color-adjustment-block" => 
     {patterns: 
-      [{begin: /(\{)/,
+      [{begin: /(?<_1>\{)/,
         beginCaptures: 
          {1 => {name: "punctuation.section.unordered-block.begin.cfdg"}},
         end: "(?=\\})",
@@ -33,7 +34,7 @@
          [{include: "#color-adjustment"},
           {include: "#number"},
           {include: "#comment"}]},
-       {begin: /(\[)/,
+       {begin: /(?<_1>\[)/,
         beginCaptures: 
          {1 => {name: "punctuation.section.ordered-block.begin.cfdg"}},
         end: "(?=\\])",
@@ -43,26 +44,27 @@
           {include: "#comment"}]}]},
    comment: 
     {patterns: 
-      [{begin: /(\/\/|#)/,
+      [{begin: /(?<_1>\/\/|#)/,
         beginCaptures: {1 => {name: "punctuation.definition.comment.cfdg"}},
         end: "$\\n?",
         name: "comment.line.cfdg"},
-       {begin: /(\/\*)/,
+       {begin: /(?<_1>\/\*)/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.comment.begin.cfdg"}},
         end: "(\\*/)",
         endCaptures: {1 => {name: "punctuation.definition.comment.end.cfdg"}},
         name: "comment.block.cfdg"}]},
    :"geometry-adjustment" => 
-    {match: /\b(x|y|z|s(ize)?|r(ot(ate)?)?|f(lip)?|skew)\b/,
+    {match: 
+      /\b(?<_1>x|y|z|s(?<_2>ize)?|r(?<_3>ot(?<_4>ate)?)?|f(?<_5>lip)?|skew)\b/,
      name: "constant.language.geometry-adjustment.cfdg"},
    :"include-directive" => 
     {captures: 
       {1 => {name: "keyword.control.include.cfdg"},
        2 => {name: "string.unquoted.file-name.cfdg"}},
-     match: /\b(include)\s++(\S++)/},
+     match: /\b(?<_1>include)\s++(?<_2>\S++)/},
    loop: 
-    {begin: /(\d++)\s*+(\*)/,
+    {begin: /(?<_1>\d++)\s*+(?<_2>\*)/,
      beginCaptures: 
       {1 => {name: "constant.numeric.cfdg"},
        2 => {name: "keyword.operator.loop.cfdg"}},
@@ -75,10 +77,10 @@
     {captures: 
       {1 => {name: "keyword.operator.sign.cfdg"},
        4 => {name: "punctuation.separator.integer-float.cfdg"}},
-     match: /(\+|\-)?((\d++)?(\.))?\d++/,
+     match: /(?<_1>\+|\-)?(?<_2>(?<_3>\d++)?(?<_4>\.))?\d++/,
      name: "constant.numeric.cfdg"},
    rule: 
-    {begin: /(\{)/,
+    {begin: /(?<_1>\{)/,
      beginCaptures: {1 => {name: "punctuation.section.rule.begin.cfdg"}},
      end: "(?=\\})",
      patterns: 
@@ -87,7 +89,7 @@
        {include: "#comment"}]},
    :"rule-directive" => 
     {begin: 
-      /\b(rule)\s++([a-zA-Z_][a-zA-Z_\.\d]*+)(\s++(((\d++)?(\.))?\d++))?/,
+      /\b(?<_1>rule)\s++(?<_2>[a-zA-Z_][a-zA-Z_\.\d]*+)(?<_3>\s++(?<_4>(?<_5>(?<_6>\d++)?(?<_7>\.))?\d++))?/,
      beginCaptures: 
       {1 => {name: "keyword.control.rule.cfdg"},
        2 => {name: "entity.name.function.rule.definition.cfdg"},
@@ -98,7 +100,7 @@
      patterns: [{include: "#rule"}, {include: "#comment"}]},
    :"shape-adjustment-block" => 
     {patterns: 
-      [{begin: /(\{)/,
+      [{begin: /(?<_1>\{)/,
         beginCaptures: 
          {1 => {name: "punctuation.section.unordered-block.begin.cfdg"}},
         end: "(?=\\})",
@@ -107,7 +109,7 @@
           {include: "#geometry-adjustment"},
           {include: "#number"},
           {include: "#comment"}]},
-       {begin: /(\[)/,
+       {begin: /(?<_1>\[)/,
         beginCaptures: 
          {1 => {name: "punctuation.section.ordered-block.begin.cfdg"}},
         end: "(?=\\])",
@@ -117,7 +119,7 @@
           {include: "#number"},
           {include: "#comment"}]}]},
    :"shape-replacement" => 
-    {begin: /([a-zA-Z_][a-zA-Z_\.\d]*+)/,
+    {begin: /(?<_1>[a-zA-Z_][a-zA-Z_\.\d]*+)/,
      beginCaptures: {1 => {name: "entity.name.function.rule.cfdg"}},
      end: "(\\})|(\\])",
      endCaptures: 
@@ -128,6 +130,6 @@
     {captures: 
       {1 => {name: "keyword.control.startshape.cfdg"},
        2 => {name: "entity.name.function.rule.cfdg"}},
-     match: /\b(startshape)\s++([a-zA-Z_][a-zA-Z_\.\d]*+)/}},
+     match: /\b(?<_1>startshape)\s++(?<_2>[a-zA-Z_][a-zA-Z_\.\d]*+)/}},
  scopeName: "source.context-free",
  uuid: "8D0EE5A2-FB60-40F8-8D0F-1E1FFB506462"}

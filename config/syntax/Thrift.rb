@@ -12,39 +12,42 @@
       2 => {name: "string.quoted.thrift"},
       3 => {name: "punctuation.definition.string.begin.thrift"},
       4 => {name: "punctuation.definition.string.end.thrift"}},
-    match: /(?<!\S)(include)(?!\S)(?:\s+((['"])(?>.*?(\3))))?/,
+    match: 
+     /(?<!\S)(?<_1>include)(?!\S)(?:\s+(?<_2>(?<_3>['"])(?>.*?(?<_4>\k<_3>))))?/,
     name: "meta.include.thrift"},
    {captures: 
      {1 => {name: "keyword.other.cpp-include.thrift"},
       2 => {name: "string.quoted.thrift"},
       3 => {name: "punctuation.definition.string.begin.thrift"},
       4 => {name: "punctuation.definition.string.end.thrift"}},
-    match: /(?<!\S)(cpp_include)(?!\S)(?:\s+((['"])(?>.*?(\3))))?/,
+    match: 
+     /(?<!\S)(?<_1>cpp_include)(?!\S)(?:\s+(?<_2>(?<_3>['"])(?>.*?(?<_4>\k<_3>))))?/,
     name: "meta.cpp-include.thrift"},
    {captures: 
      {1 => {name: "keyword.other.namespace.thrift"},
       2 => {name: "support.other.namespace-language.thrift"},
       3 => {name: "variable.other.namespace.thrift"}},
     match: 
-     /(?<!\S)(namespace)(?!\S)(?:\s+([a-zA-Z_][\w.]*)(?:\s+([a-zA-Z_][\w.]*))?)?/,
+     /(?<!\S)(?<_1>namespace)(?!\S)(?:\s+(?<_2>[a-zA-Z_][\w.]*)(?:\s+(?<_3>[a-zA-Z_][\w.]*))?)?/,
     name: "meta.namespace.thrift"},
    {captures: 
      {1 => {name: "keyword.other.namespace.thrift"},
       2 => {name: "variable.other.namespace.thrift"}},
-    match: /(?<!\S)((?:php|xsd)_namespace)(?!\S)(?:\s+([a-zA-Z_][\w.]*))?/,
+    match: 
+     /(?<!\S)(?<_1>(?:php|xsd)_namespace)(?!\S)(?:\s+(?<_2>[a-zA-Z_][\w.]*))?/,
     name: "meta.namespace.thrift"},
    {captures: 
      {1 => {name: "invalid.deprecated.namespace.thrift"},
       2 => {name: "variable.other.namespace.thrift"}},
     match: 
-     /(?<!\S)((?:cpp|ruby|csharp)_namespace|py_module|(?:java|perl)_package|smalltalk_(?:category|prefix)|cocoa_prefix)(?!\S)(?:\s+([a-zA-Z_][\w.]*))?/},
-   {begin: /(?=(struct|s?enum|service|const|typedef|exception)\b)/,
+     /(?<!\S)(?<_1>(?:cpp|ruby|csharp)_namespace|py_module|(?:java|perl)_package|smalltalk_(?:category|prefix)|cocoa_prefix)(?!\S)(?:\s+(?<_2>[a-zA-Z_][\w.]*))?/},
+   {begin: /(?=(?<_1>struct|s?enum|service|const|typedef|exception)\b)/,
     comment: "begin the definition list",
     end: "(?x)$.^ # this regex should never end",
     patterns: 
      [{include: "#comments"},
       {begin: 
-        /(?<!\S)(const)(?!\S)(?:\s+(?<ft>map\s*<\s*\g<ft>\s*,\s*\g<ft>\s*>|set\s*<\s*\g<ft>\s*>|list\s*<\s*\g<ft>\s*>\s*cpp_type|[a-zA-Z_][\w.]*)(?:\s+([a-zA-Z_][\w.]*)(?:\s*=)?)?)?/,
+        /(?<!\S)(?<_1>const)(?!\S)(?:\s+(?<ft>map\s*<\s*\g<ft>\s*,\s*\g<ft>\s*>|set\s*<\s*\g<ft>\s*>|list\s*<\s*\g<ft>\s*>\s*cpp_type|[a-zA-Z_][\w.]*)(?:\s+(?<_2>[a-zA-Z_][\w.]*)(?:\s*=)?)?)?/,
        beginCaptures: 
         {1 => {name: "keyword.other.const.thrift"},
          2 => {name: "storage.type.const.thrift"},
@@ -53,7 +56,7 @@
        name: "meta.const.thrift",
        patterns: [{include: "#comments"}, {include: "#value"}]},
       {begin: 
-        /(?<!\S)(typedef)(?!\S)(?:\s+(?<ft>map\s*<\s*\g<ft>\s*,\s*\g<ft>\s*>|set\s*<\s*\g<ft>\s*>|list\s*<\s*\g<ft>\s*>\s*cpp_type|[a-zA-Z_][\w.]*)(?:\s+([a-zA-Z_][\w.]*))?)?/,
+        /(?<!\S)(?<_1>typedef)(?!\S)(?:\s+(?<ft>map\s*<\s*\g<ft>\s*,\s*\g<ft>\s*>|set\s*<\s*\g<ft>\s*>|list\s*<\s*\g<ft>\s*>\s*cpp_type|[a-zA-Z_][\w.]*)(?:\s+(?<_2>[a-zA-Z_][\w.]*))?)?/,
        beginCaptures: 
         {1 => {name: "keyword.other.typedef.thrift"},
          2 => {name: "storage.type.typedef.thrift"},
@@ -61,7 +64,8 @@
        end: "$|^",
        name: "meta.typedef.thrift",
        patterns: [{include: "#comments"}]},
-      {begin: /(?<!\S)(enum)(?!\S)(?:\s+([a-zA-Z_][\w.]*)\s*(?![^\s{]))?/,
+      {begin: 
+        /(?<!\S)(?<_1>enum)(?!\S)(?:\s+(?<_2>[a-zA-Z_][\w.]*)\s*(?![^\s{]))?/,
        beginCaptures: 
         {1 => {name: "keyword.other.enum.thrift"},
          2 => {name: "entity.name.type.enum.thrift"}},
@@ -77,10 +81,12 @@
            [{captures: 
               {1 => {name: "variable.other.enum.thrift"},
                2 => {name: "constant.numeric.integer.thrift"}},
-             match: /(?<!\S)([a-zA-Z_][\w.]*)(?:\s*=\s*(\d*)(?:\s*[,;])?)?/},
+             match: 
+              /(?<!\S)(?<_1>[a-zA-Z_][\w.]*)(?:\s*=\s*(?<_2>\d*)(?:\s*[,;])?)?/},
             {include: "#comments"},
             {match: /\S/, name: "invalid.illegal.thrift"}]}]},
-      {begin: /(?<!\S)(senum)(?!\S)(?:\s+([a-zA-Z_][\w.]*)\s*(?![^\s{]))?/,
+      {begin: 
+        /(?<!\S)(?<_1>senum)(?!\S)(?:\s+(?<_2>[a-zA-Z_][\w.]*)\s*(?![^\s{]))?/,
        beginCaptures: 
         {1 => {name: "keyword.other.senum.thrift"},
          2 => {name: "entity.name.type.senum.thrift"}},
@@ -94,10 +100,11 @@
           endCaptures: {0 => {name: "punctuation.section.senum.end.thrift"}},
           patterns: 
            [{captures: {1 => {name: "variable.other.senum.thrift"}},
-             match: /(?<!\S)([a-zA-Z_][\w.]*)(?:\s*[,;])?/},
+             match: /(?<!\S)(?<_1>[a-zA-Z_][\w.]*)(?:\s*[,;])?/},
             {include: "#comments"},
             {match: /\S/, name: "invalid.illegal.thrift"}]}]},
-      {begin: /(?<!\S)(struct)(?!\S)(?:\s+([a-zA-Z_][\w.]*)\s*(?![^\s{]))?/,
+      {begin: 
+        /(?<!\S)(?<_1>struct)(?!\S)(?:\s+(?<_2>[a-zA-Z_][\w.]*)\s*(?![^\s{]))?/,
        beginCaptures: 
         {1 => {name: "keyword.other.struct.thrift"},
          2 => {name: "entity.name.type.struct.thrift"}},
@@ -111,7 +118,8 @@
           end: "\\}",
           endCaptures: {0 => {name: "punctuation.section.struct.end.thrift"}},
           patterns: [{include: "#comments"}, {include: "#field"}]}]},
-      {begin: /(?<!\S)(exception)(?!\S)(?:\s+([a-zA-Z_][\w.]*)\s*(?![^\s{]))?/,
+      {begin: 
+        /(?<!\S)(?<_1>exception)(?!\S)(?:\s+(?<_2>[a-zA-Z_][\w.]*)\s*(?![^\s{]))?/,
        beginCaptures: 
         {1 => {name: "keyword.other.exception.thrift"},
          2 => {name: "entity.name.type.exception.thrift"}},
@@ -126,7 +134,7 @@
            {0 => {name: "punctuation.section.exception.end.thrift"}},
           patterns: [{include: "#comments"}, {include: "#field"}]}]},
       {begin: 
-        /(?<!\S)(service)(?!\S)(?:\s+([a-zA-z_][\w.]*)(?:\s+(extends)(?:\s+([a-zA-Z_][\w.]*))?)?\s*(?![^\s{]))?/,
+        /(?<!\S)(?<_1>service)(?!\S)(?:\s+(?<_2>[a-zA-z_][\w.]*)(?:\s+(?<_3>extends)(?:\s+(?<_4>[a-zA-Z_][\w.]*))?)?\s*(?![^\s{]))?/,
        beginCaptures: 
         {1 => {name: "keyword.other.service.thrift"},
          2 => {name: "entity.name.type.service.thrift"},
@@ -144,15 +152,15 @@
            [{include: "#comments"},
             {begin: 
               /(?x)(?<!\S)
-	(async(?!\S))?\s*
+	(?<_1>async(?!\S))?\s*
 	(?<ft>
 	map\s*<\s*\g<ft>\s*,\s*\g<ft>\s*> |
 	set\s*<\s*\g<ft>\s*> |
-	list\s*<\s*\g<ft>\s*>\s*(cpp_type(?!\S))? |
+	list\s*<\s*\g<ft>\s*>\s*(?<_2>cpp_type(?!\S))? |
 	(?!async\b)[a-zA-Z_][\w.]*
 	)\s*
 	(?:
-	(?<!\S)([a-zA-Z_][\w.]*)\s*(?![^\s(])
+	(?<!\S)(?<_3>[a-zA-Z_][\w.]*)\s*(?![^\s(?<_4>])
 	)?/,
              beginCaptures: 
               {1 => {name: "keyword.other.async.thrift"},
@@ -170,7 +178,7 @@
                 endCaptures: 
                  {0 => {name: "punctuation.definition.arguments.end.thrift"}},
                 patterns: [{include: "#comments"}, {include: "#field"}]},
-               {begin: /(?<![^\s)])(throws)(?![^\s(])/,
+               {begin: /(?<![^\s)])(?<_1>throws)(?![^\s(?<_2>])/,
                 beginCaptures: 
                  {1 => {name: "keyword.other.service.function.throws.thrift"}},
                 end: "$",
@@ -189,10 +197,10 @@
   {comments: 
     {patterns: 
       [{captures: {1 => {name: "punctuation.definition.comment.thrift"}},
-        match: /(#).*\n?/,
+        match: /(?<_1>#).*\n?/,
         name: "comment.line.number-sign.thrift"},
        {captures: {1 => {name: "punctuation.definition.comment.thrift"}},
-        match: /(\/\/).*\n?/,
+        match: /(?<_1>\/\/).*\n?/,
         name: "comment.line.double-slash.thrift"},
        {begin: /\/\*\*/,
         beginCaptures: 
@@ -211,9 +219,9 @@
    field: 
     {begin: 
       /(?x)
-	(?<![^\s{(])(?=\S)
-	(\d+\s*:)?[ \t]*
-	(?:	(required|optional)(?!\S)[ \t]*
+	(?<![^\s{(?<_1>])(?=\S)
+	(?<_2>\d+\s*:)?[ \t]*
+	(?:	(?<_3>required|optional)(?!\S)[ \t]*
 	|	(?=\S)(?!=required|optional|\d)
 	)/,
      beginCaptures: 
@@ -228,10 +236,10 @@
 	(?<ft>
 	map\s*<\s*\g<ft>\s*,\s*\g<ft>\s*> |
 	set\s*<\s*\g<ft>\s*> |
-	list\s*<\s*\g<ft>\s*>\s*(cpp_type(?!\S))? |
+	list\s*<\s*\g<ft>\s*>\s*(?<_1>cpp_type(?!\S))? |
 	[a-zA-Z_][\w.]*
 	)[ \t]*
-	(?:([a-zA-Z_][\w.]*)[ \t]*)? # identifier
+	(?:(?<_2>[a-zA-Z_][\w.]*)[ \t]*)? # identifier
 	/,
         beginCaptures: 
          {1 => {name: "storage.type.field.thrift"},
@@ -242,14 +250,14 @@
          [{begin: /=/,
            end: "(?=[,;]|[)#])|$",
            patterns: 
-            [{match: /(?<!\S)(xsd_optional)\b/,
+            [{match: /(?<!\S)(?<_1>xsd_optional)\b/,
               name: "keyword.other.xsd_optional.thrift"},
-             {match: /(?<!\S)(xsd_nillable)\b/,
+             {match: /(?<!\S)(?<_1>xsd_nillable)\b/,
               name: "keyword.other.xsd_nillable.thrift"},
              {include: "#value"}]}]}]},
    value: 
     {patterns: 
-      [{match: /[+-]?\d*\.\d+([eE][+-]?\d+)?/,
+      [{match: /[+-]?\d*\.\d+(?<_1>[eE][+-]?\d+)?/,
         name: "constant.numeric.float.thrift"},
        {match: /[+-]?\d+/, name: "constant.numeric.integer.thrift"},
        {match: /[a-zA-Z_][\w.]*/, name: "constant.other.const-data.thrift"},

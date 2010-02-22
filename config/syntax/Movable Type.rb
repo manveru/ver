@@ -4,25 +4,25 @@
  firstLineMatch: "<\\$?[Mm][Tt]",
  foldingStartMarker: 
   /(?x)
-	(<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)\b.*?>
-	|<(?i:MT:?(?!Else))(\w+:)?\w+\b.*?>
+	(?<_1><(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)\b.*?>
+	|<(?i:MT:?(?!Else))(?<_2>\w+:)?\w+\b.*?>
 	|<!--(?!.*--\s*>)
 	|^<!--\ \#tminclude\ (?>.*?-->)$
-	|<\?(?:php)?.*\b(if|for(each)?|while)\b.+:
-	|\{\{?(if|foreach|capture|literal|foreach|php|section|strip)
-	|\{\s*($|\?>\s*$|\/\/|\/\*(.*\*\/\s*$|(?!.*?\*\/)))
+	|<\?(?:php)?.*\b(?<_3>if|for(?<_4>each)?|while)\b.+:
+	|\{\{?(?<_5>if|foreach|capture|literal|foreach|php|section|strip)
+	|\{\s*(?<_6>$|\?>\s*$|\/\/|\/\*(?<_7>.*\*\/\s*$|(?!.*?\*\/)))
 	)/,
  foldingStopMarker: 
   /(?x)
-	(<\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)>
-	|<\/(?i:MT:?(?!Else))(\w+:)?\w+\b.*?>
+	(?<_1><\/(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)>
+	|<\/(?i:MT:?(?!Else))(?<_2>\w+:)?\w+\b.*?>
 	|^(?!.*?<!--).*?--\s*>
 	|^<!--\ end\ tminclude\ -->$
-	|<\?(?:php)?.*\bend(if|for(each)?|while)\b
-	|\{\{?\/(if|foreach|capture|literal|foreach|php|section|strip)
+	|<\?(?:php)?.*\bend(?<_3>if|for(?<_4>each)?|while)\b
+	|\{\{?\/(?<_5>if|foreach|capture|literal|foreach|php|section|strip)
 	|^[^{]*\}
 	)/,
- keyEquivalent: /^~M/,
+ keyEquivalent: "^~M",
  name: "Movable Type",
  patterns: 
   [{include: "#trans-tag"},
@@ -44,12 +44,12 @@
       [{captures: 
          {1 => {name: "punctuation.definition.constant.html"},
           3 => {name: "punctuation.definition.constant.html"}},
-        match: /(&)([a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(;)/,
+        match: /(?<_1>&)(?<_2>[a-zA-Z0-9]+|#[0-9]+|#x[0-9a-fA-F]+)(?<_3>;)/,
         name: "constant.character.entity.html"},
        {match: /&/, name: "invalid.illegal.bad-ampersand.html"}]},
    :"mt-container-tag" => 
     {patterns: 
-      [{begin: /(<\/?)([Mm][Tt]:?(\w+:)?\w+)/,
+      [{begin: /(?<_1><\/?)(?<_2>[Mm][Tt]:?(?<_3>\w+:)?\w+)/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.tag.mt"},
           2 => {name: "entity.name.tag.mt"}},
@@ -59,7 +59,7 @@
         patterns: [{include: "#tag-stuff"}]}]},
    :"mt-variable-tag" => 
     {patterns: 
-      [{begin: /(<)(\$[Mm][Tt]:?(\w+:)?\w+)/,
+      [{begin: /(?<_1><)(?<_2>\$[Mm][Tt]:?(?<_3>\w+:)?\w+)/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.tag.mt"},
           2 => {name: "variable.other.mt"}},
@@ -71,13 +71,13 @@
         patterns: [{include: "#tag-stuff"}]}]},
    php: 
     {patterns: 
-      [{begin: /(?:^\s*)(<\?(php|=)?)(?!.*\?>)/,
+      [{begin: /(?:^\s*)(?<_1><\?(?<_2>php|=)?)(?!.*\?>)/,
         captures: {1 => {name: "punctuation.section.embedded.php"}},
         comment: "match only multi-line PHP with leading whitespace",
         end: "(\\?>)(?:\\s*$\\n)?",
         name: "source.php.embedded.html",
         patterns: [{include: "#php-source"}]},
-       {begin: /<\?(php|=)?/,
+       {begin: /<\?(?<_1>php|=)?/,
         captures: {0 => {name: "punctuation.section.embedded.php"}},
         end: "\\?>",
         name: "source.php.embedded.html",
@@ -85,10 +85,10 @@
    :"php-source" => 
     {patterns: 
       [{captures: {1 => {name: "punctuation.definition.comment.php"}},
-        match: /(#).*?(?=\?>)/,
+        match: /(?<_1>#).*?(?=\?>)/,
         name: "comment.line.number-sign.ruby"},
        {captures: {1 => {name: "punctuation.definition.comment.php"}},
-        match: /(\/\/).*?(?=\?>)/,
+        match: /(?<_1>\/\/).*?(?=\?>)/,
         name: "comment.line.double-slash.ruby"},
        {include: "source.php"}]},
    ruby: 
@@ -98,7 +98,7 @@
      name: "source.ruby.embedded.html",
      patterns: 
       [{captures: {1 => {name: "punctuation.definition.comment.ruby"}},
-        match: /(#).*?(?=-?%>)/,
+        match: /(?<_1>#).*?(?=-?%>)/,
         name: "comment.line.number-sign.ruby"},
        {include: "source.ruby"}]},
    smarty: 
@@ -133,7 +133,7 @@
        {include: "#embedded-code"},
        {include: "#entities"}]},
    :"tag-generic-attribute" => 
-    {match: /\b([a-zA-Z_:-]+)/, name: "entity.other.attribute-name.html"},
+    {match: /\b(?<_1>[a-zA-Z_:-]+)/, name: "entity.other.attribute-name.html"},
    :"tag-stuff" => 
     {patterns: 
       [{include: "#trans-tag"},
@@ -142,7 +142,7 @@
        {include: "#string-single-quoted"}]},
    :"trans-tag" => 
     {patterns: 
-      [{begin: /(<)(__trans)/,
+      [{begin: /(?<_1><)(?<_2>__trans)/,
         beginCaptures: 
          {1 => {name: "punctuation.definition.tag.mt"},
           2 => {name: "variable.other.mt"}},

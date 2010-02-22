@@ -1,30 +1,30 @@
 # Encoding: UTF-8
 
 {fileTypes: ["sml", "sig"],
- foldingStartMarker: /\(\*|\b(struct|sig)\b/,
+ foldingStartMarker: /\(\*|\b(?<_1>struct|sig)\b/,
  foldingStopMarker: /\*\)|\bend\b/,
  keyEquivalent: "^~S",
  name: "Standard ML",
  patterns: 
   [{include: "#comments"},
    {match: 
-     /\b(val|datatype|struct|as|let|in|abstype|local|where|case|of|fn|raise|exception|handle|ref|infix|infixr|before|end|structure|withtype)\b/,
+     /\b(?<_1>val|datatype|struct|as|let|in|abstype|local|where|case|of|fn|raise|exception|handle|ref|infix|infixr|before|end|structure|withtype)\b/,
     name: "keyword.other.ml"},
-   {begin: /\b(let)\b/,
+   {begin: /\b(?<_1>let)\b/,
     captures: 
      {1 => {name: "keyword.other.ml"}, 2 => {name: "keyword.other.ml"}},
     end: "\\b(end)\\b",
     name: "meta.exp.let.ml",
     patterns: [{include: "$self"}]},
-   {begin: /\b(sig)\b/,
+   {begin: /\b(?<_1>sig)\b/,
     captures: 
      {1 => {name: "keyword.other.delimiter.ml"},
       2 => {name: "keyword.other.delimiter.ml"}},
     end: "\\b(end)\\b",
     name: "meta.module.sigdec.ml",
     patterns: [{include: "#spec"}]},
-   {match: /\b(if|then|else)\b/, name: "keyword.control.ml"},
-   {begin: /\b(fun|and)\s+([\w]+)\b/,
+   {match: /\b(?<_1>if|then|else)\b/, name: "keyword.control.ml"},
+   {begin: /\b(?<_1>fun|and)\s+(?<_2>[\w]+)\b/,
     captures: 
      {1 => {name: "keyword.control.fun.ml"},
       2 => {name: "entity.name.function.ml"}},
@@ -40,29 +40,32 @@
    {captures: 
      {1 => {name: "punctuation.definition.constant.ml"},
       3 => {name: "punctuation.definition.constant.ml"}},
-    match: /(#")(\\)?.(")/,
+    match: /(?<_1>#")(?<_2>\\)?.(?<_3>")/,
     name: "constant.character.ml"},
    {match: /\b\d*\.?\d+\b/, name: "constant.numeric.ml"},
-   {match: /\b(andalso|orelse|not)\b/, name: "keyword.operator.logical.ml"},
+   {match: /\b(?<_1>andalso|orelse|not)\b/,
+    name: "keyword.operator.logical.ml"},
    {begin: 
      /(?x)\b
-	(functor|structure|signature|funsig)\s+
-	(\w+)\s* # identifier/,
+	(?<_1>functor|structure|signature|funsig)\s+
+	(?<_2>\w+)\s* # identifier/,
     captures: 
      {1 => {name: "storage.type.module.binder.ml"},
       2 => {name: "entity.name.type.module.ml"}},
     end: "(?==|:|\\()",
     name: "meta.module.dec.ml"},
-   {match: /\b(open)\b/, name: "keyword.other.module.ml"},
-   {match: /\b(nil|true|false|NONE|SOME)\b/, name: "constant.language.ml"},
-   {begin: /\s*(type|eqtype) .* =/,
+   {match: /\b(?<_1>open)\b/, name: "keyword.other.module.ml"},
+   {match: /\b(?<_1>nil|true|false|NONE|SOME)\b/,
+    name: "constant.language.ml"},
+   {begin: /\s*(?<_1>type|eqtype) .* =/,
     captures: 
      {1 => {name: "keyword.other.typeabbrev.ml"},
       2 => {name: "variable.other.typename.ml"}},
     end: "$",
     name: "meta.typeabbrev.ml",
     patterns: 
-     [{match: /(([a-zA-Z0-9\.\* ]|(\->))*)/, name: "meta.typeexp.ml"}]}],
+     [{match: /(?<_1>(?<_2>[a-zA-Z0-9\.\* ]|(?<_3>\->))*)/,
+       name: "meta.typeexp.ml"}]}],
  repository: 
   {comments: 
     {patterns: 
@@ -76,9 +79,9 @@
       [{captures: 
          {1 => {name: "keyword.other.ml"},
           2 => {name: "entity.name.type.abbrev.ml"}},
-        match: /\b(exception|type)\s+([a-zA-Z][a-zA-Z0-9'_]*)/,
+        match: /\b(?<_1>exception|type)\s+(?<_2>[a-zA-Z][a-zA-Z0-9'_]*)/,
         name: "meta.spec.ml.type"},
-       {begin: /\b(datatype)\s+([a-zA-Z][a-zA-Z0-9'_]*)\s*(?==)/,
+       {begin: /\b(?<_1>datatype)\s+(?<_2>[a-zA-Z][a-zA-Z0-9'_]*)\s*(?==)/,
         captures: 
          {1 => {name: "keyword.other.ml"},
           2 => {name: "entity.name.type.datatype.ml"}},
@@ -88,31 +91,31 @@
          [{captures: 
             {1 => {name: "keyword.other.ml"},
              2 => {name: "entity.name.type.datatype.ml"}},
-           match: /\b(and)\s+([a-zA-Z][a-zA-Z0-9'_]*)\s*(?==)/,
+           match: /\b(?<_1>and)\s+(?<_2>[a-zA-Z][a-zA-Z0-9'_]*)\s*(?==)/,
            name: "meta.spec.ml.datatype"},
           {captures: 
             {1 => {name: "variable.other.dcon.ml"},
              2 => {name: "keyword.other.ml"}},
            match: /(?x)
-	=\s*([a-zA-Z][a-zA-Z0-9'_]*)(\s+of)?/,
+	=\s*(?<_1>[a-zA-Z][a-zA-Z0-9'_]*)(?<_2>\s+of)?/,
            name: "meta.datatype.rule.main.ml"},
           {captures: 
             {1 => {name: "variable.other.dcon.ml"},
              2 => {name: "keyword.other.ml"}},
-           match: /\|\s*([a-zA-Z][a-zA-Z0-9'_]*)(\s+of)?/,
+           match: /\|\s*(?<_1>[a-zA-Z][a-zA-Z0-9'_]*)(?<_2>\s+of)?/,
            name: "meta.datatype.rule.other.ml"}]},
        {captures: {1 => {name: "keyword.other.ml"}},
-        match: /\b(val)\s*([^:]+)\s*:/,
+        match: /\b(?<_1>val)\s*(?<_2>[^:]+)\s*:/,
         name: "meta.spec.ml.val"},
-       {begin: /\b(structure)\s*(\w+)\s*:/,
+       {begin: /\b(?<_1>structure)\s*(?<_2>\w+)\s*:/,
         captures: 
          {1 => {name: "keyword.other.ml"},
           2 => {name: "entity.name.type.module.ml"}},
         end: "(?=val|type|eqtype|datatype|structure|include)",
         name: "meta.spec.ml.structure",
-        patterns: [{match: /\b(sharing)\b/, name: "keyword.other.ml"}]},
+        patterns: [{match: /\b(?<_1>sharing)\b/, name: "keyword.other.ml"}]},
        {captures: {1 => {name: "keyword.other.ml"}},
-        match: /\b(include)\b/,
+        match: /\b(?<_1>include)\b/,
         name: "meta.spec.ml.include"},
        {include: "#comments"}]}},
  scopeName: "source.ml",

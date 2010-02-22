@@ -6,7 +6,7 @@
  keyEquivalent: "^~G",
  name: "GTDalt",
  patterns: 
-  [{begin: /^\s*(project)\s+(.*)(\n)/,
+  [{begin: /^\s*(?<_1>project)\s+(?<_2>.*)(?<_3>\n)/,
     beginCaptures: 
      {0 => {name: "meta.line.project.begin.gtdalt"},
       1 => {name: "keyword.control.project.begin.gtdalt"},
@@ -21,9 +21,9 @@
    {captures: 
      {1 => {name: "storage.type.context.action.gtdalt"},
       2 => {name: "punctuation.definition.context.action.gtdalt"}},
-    match: /^\s*((@)\S++\n)/,
+    match: /^\s*(?<_1>(?<_2>@)\S++\n)/,
     name: "meta.action.only-context.gtdalt"},
-   {begin: /^\s*((@)\S++\s)/,
+   {begin: /^\s*(?<_1>(?<_2>@)\S++\s)/,
     beginCaptures: 
      {1 => {name: "storage.type.context.action.gtdalt"},
       2 => {name: "punctuation.definition.context.action.gtdalt"}},
@@ -37,9 +37,10 @@
       4 => {name: "string.quoted.other.timestamp.action.completed.gtdalt"},
       5 => {name: "punctuation.definition.date.gtdalt"},
       6 => {name: "punctuation.definition.date.gtdalt"}},
-    match: /^((#)completed(:))((\[)\d{4}-\d{2}-\d{2}(\]))\s*(.*)/,
+    match: 
+     /^(?<_1>(?<_2>#)completed(?<_3>:))(?<_4>(?<_5>\[)\d{4}-\d{2}-\d{2}(?<_6>\]))\s*(?<_7>.*)/,
     name: "meta.action.completed.gtdalt"},
-   {begin: /^((\[)\d+(\]))/,
+   {begin: /^(?<_1>(?<_2>\[)\d+(?<_3>\]))/,
     beginCaptures: 
      {1 => {name: "support.other.note.gtdalt"},
       2 => {name: "punctuation.definition.note.note.gtdalt"},
@@ -55,17 +56,18 @@
       5 => {name: "punctuation.separator.archived.gtdalt"},
       6 => {name: "storage.type.context.action.archived.gtdalt"},
       7 => {name: "comment.line.slash.action.archived.gtdalt"}},
-    match: /^(\/)(\d{4}-\d{2}-\d{2})(\/)([^\/]+)(\/)(@\S+)\s++(.*)$/,
+    match: 
+     /^(?<_1>\/)(?<_2>\d{4}-\d{2}-\d{2})(?<_3>\/)(?<_4>[^\/]+)(?<_5>\/)(?<_6>@\S+)\s++(?<_7>.*)$/,
     name: "meta.action.archived.gtdalt"},
    {captures: 
      {1 => {name: "punctuation.separator.archived.gtdalt"},
       2 => {name: "string.quoted.other.timestamp.project.archived.gtdalt"},
       3 => {name: "punctuation.separator.archived.gtdalt"},
       4 => {name: "support.other.project.archived.gtdalt"}},
-    match: /^(\/)(\d{4}-\d{2}-\d{2})(\/)([^\/]+)$/,
+    match: /^(?<_1>\/)(?<_2>\d{4}-\d{2}-\d{2})(?<_3>\/)(?<_4>[^\/]+)$/,
     name: "meta.project.archived.gtdalt"},
    {captures: {1 => {name: "punctuation.definition.comment.gtdalt"}},
-    match: /^(#)\s+.*$/,
+    match: /^(?<_1>#)\s+.*$/,
     name: "comment.line.number-sign.generic.gtdalt"}],
  repository: 
   {date: 
@@ -75,18 +77,19 @@
        3 => {name: "string.quoted.other.timestamp.due.gtdalt"},
        4 => {name: "punctuation.definition.due.gtdalt"},
        5 => {name: "punctuation.definition.due.gtdalt"}},
-     match: /((?:due|at|from)(:))((\[)\d{4}-\d{2}-\d{2}(\]))/},
+     match: 
+      /(?<_1>(?:due|at|from)(?<_2>:))(?<_3>(?<_4>\[)\d{4}-\d{2}-\d{2}(?<_5>\]))/},
    link: 
     {captures: 
       {1 => {name: "punctuation.definition.link.gtdalt"},
        2 => {name: "markup.underline.link.gtdalt"},
        3 => {name: "punctuation.definition.link.gtdalt"}},
-     match: /(<)([^>]*)(>)/},
+     match: /(?<_1><)(?<_2>[^>]*)(?<_3>>)/},
    note: 
     {captures: 
       {1 => {name: "punctuation.definition.note.gtdalt"},
        2 => {name: "punctuation.definition.note.gtdalt"}},
-     match: /(\[)\d+(\])/,
+     match: /(?<_1>\[)\d+(?<_2>\])/,
      name: "support.other.note.gtdalt"},
    title: 
     {match: /\S+(?:\s+\S+)*?(?=\s*(?:\[\d+\]|(?:due|at|from):|$))/,

@@ -1,18 +1,19 @@
 # Encoding: UTF-8
 
-{"in" => 
+{"fd" => 
   {scope: "source.eiffel",
-   name: "when",
-   content: "when ${1:choice} then\n\t${2:instruction}"},
+   name: "unique",
+   content: "${1:constant}: ${2:TYPE} is unique"},
+ "in" => 
+  {scope: "source.eiffel",
+   name: "if",
+   content: 
+    "if ${1:boolean_expression} then\n\t${2:instruction}${3:\nelseif\n\t${4:instruction}}${5:\nelse\n\t${6:instruction}}\nend"},
  "cl" => 
   {scope: "source.eiffel",
    name: "expanded class",
    content: 
     "-- ${1:class_name}\n\nexpanded class\n\t${1/(.*)/\\U$0\\E/}\ninherit\n\ncreate\n\nfeature\n\ninvariant\n\nend -- ${1/(.*)/\\U$0\\E/}\n"},
- "fd" => 
-  {scope: "source.eiffel",
-   name: "variable",
-   content: "${1:constant}: ${2:TYPE}"},
  "ix" => 
   {scope: "source.eiffel",
    name: "indexing",
