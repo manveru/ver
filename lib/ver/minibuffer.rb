@@ -133,8 +133,6 @@ module VER
     def ask(prompt, options = {}, action = nil, &block)
       action ||= block
 
-      p ask: [prompt, options, action]
-
       if @asking
         ask_stack << [prompt, options, action]
       else
