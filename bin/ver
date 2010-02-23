@@ -63,6 +63,8 @@ module VER
       preferences << plist
     end
 
+    preferences = preferences.sort_by{|plist| plist[:name] }
+
     install_rb_source('Preferences', '../config/preferences', name, preferences)
   end
 
@@ -71,18 +73,16 @@ module VER
     name = info[:name]
 
     glob = File.expand_path('Snippets/*.{plist,tmSnippet}', path)
-    snippets = {}
+    snippets = []
 
     Dir.glob(glob, File::FNM_CASEFOLD) do |snippet|
       puts "Parsing #{snippet}" if $DEBUG
       plist = Plist.parse_xml(snippet)
       puts "Adding Snippet: #{plist[:name]}" if $DEBUG
-      snippets[plist[:tabTrigger]] = {
-        scope: plist[:scope],
-        name: plist[:name],
-        content: plist[:content],
-      }
+      snippets << plist
     end
+
+    snippets = snippets.sort_by{|plist| plist[:name] }
 
     install_rb_source('Snippets', '../config/snippets', name, snippets)
   end
