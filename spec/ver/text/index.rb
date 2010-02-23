@@ -94,6 +94,12 @@ VER.spec do
         @buffer.index('1.4').tag_names.should == []
         @buffer.index('1.5').tag_names.should == ['tags-tag']
       end
+
+      it 'copies line at position' do
+        Tk::Clipboard.set 'foo'
+        @buffer.index('1.0').copy_line
+        Tk::Clipboard.get.should == "one\nline"
+      end
     end
   end
 end

@@ -36,6 +36,11 @@ module VER
         return  0 if compare('==', other)
       end
 
+      def copy_line
+        content = text.get("#{self} linestart", "#{self} lineend + 1 chars")
+        Methods::Clipboard.copy(content)
+      end
+
       # Delete this and any other given +indices+ from the buffer.
       def delete(*indices)
         buffer.delete(self, *indices)
