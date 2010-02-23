@@ -32,6 +32,7 @@ module VER
     install_tm_syntax(path)
     install_tm_preferences(path)
     install_tm_snippets(path)
+    install_tm_commands(path)
 
     exit 0
   end
@@ -84,6 +85,25 @@ module VER
     snippets = snippets.sort_by{|plist| plist[:name] }
 
     install_rb_source('Snippets', '../config/snippets', name, snippets)
+  end
+
+  def install_tm_commands(path)
+    info = Plist.parse_xml(File.join(path, 'info.plist'))
+    name = info[:name]
+
+    glob = File.expand_path('Commands/*.{plist,tmCommand}', path)
+    commands = []
+
+    Dir.glob(glob, File::FNM_CASEFOLD) do |command|
+      puts "Parsing #{command}" if $DEBUG
+      plist = Plist.parse_xml(command)
+      puts "Adding Command: #{plist[:name]}" if $DEBUG
+      commands << plist
+    end
+
+    commands = commands.sort_by{|plist| plist[:name] }
+
+    install_rb_source('Commands', '../config/commands', name, commands)
   end
 
   def install_tm_theme(path)
