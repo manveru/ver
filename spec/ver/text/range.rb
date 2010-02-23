@@ -42,6 +42,12 @@ VER.spec do
       @buffer.value.should == "line one and two\n"
     end
 
+    it 'copies contents' do
+      Tk::Clipboard.set 'foo'
+      @range.copy
+      Tk::Clipboard.get.should == "one\nline"
+    end
+
     it 'dumps contents' do
       @range.dump(:all).should == [
         ["text", "one\n", "1.5"],
