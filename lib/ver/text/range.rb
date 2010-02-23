@@ -14,7 +14,7 @@ module VER
       end
 
       def count(*options)
-        buffer.count(*options, *self)
+        buffer.count(*self, *options)
       end
 
       def delete(*indices)
