@@ -225,6 +225,10 @@ module VER
       }
     end
 
+    def events
+      major_mode.event_history
+    end
+
     alias pristine? pristine
 
     def persisted?

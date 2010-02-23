@@ -4,7 +4,7 @@ before = lambda{ @buffer = VER::Buffer.new(VER.layout) }
 after = lambda{ @buffer.destroy }
 
 VER.spec do
-  describe 'VER::Buffer::Mark' do
+  describe 'VER::Text::Mark' do
     describe 'Instance methods' do
       before(&before)
       after(&after)
@@ -64,12 +64,12 @@ VER.spec do
       end
     end
 
-    describe 'Buffer methods' do
+    describe 'Text methods' do
       before(&before)
       after(&after)
 
       it 'returns mark from #mark' do
-        @buffer.mark(:insert).should == VER::Buffer::Mark.new(@buffer, :insert)
+        @buffer.mark(:insert).should == VER::Text::Mark.new(@buffer, :insert)
       end
 
       it 'sets mark with second argument to #mark' do

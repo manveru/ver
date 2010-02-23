@@ -14,15 +14,8 @@ module VER
       alias index= set
 
       def end_of_line(count_or_mode = nil)
-        case count_or_mode
-        when Symbol
-          set("#{self} display lineend")
-          buffer.minor_mode(:control, count_or_mode)
-        when nil
-          set("#{self} lineend")
-        else
-          set("#{self} display lineend")
-        end
+        super
+        buffer.minor_mode(:control, count_or_mode) if count_or_mode.is_a?(Symbol)
       end
 
       # Same as {Mark.forward_jump}, but generate <<Movement>> event.
@@ -73,6 +66,24 @@ module VER
       def insert_newline_above
         super
         buffer.minor_mode(:control, :insert)
+      end
+
+      # Set insert mark to a position in the previous page in buffer.
+      # Also sets the insert mark to the position it used to be on the old view.
+      #
+      # @params [Integer] count
+      #   Number of pages to scroll
+      def prev_page(count = buffer.prefix_count)
+        set(buffer.tk_prev_page_pos(count))
+      end
+
+      # Scroll down the view of buffer by +count+ number of pages.
+      # Also sets the insert mark to the position it used to be on the old view.
+      #
+      # @params [Integer] count
+      #   Number of pages to scroll
+      def next_page(count = buffer.prefix_count)
+        set(buffer.tk_next_page_pos(count))
       end
     end
   end

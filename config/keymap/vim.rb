@@ -100,28 +100,29 @@ module VER
   minor_mode :move do
     inherits :prefix
 
-    handler Methods::Move
     (0..9).each{|n| map :ask_go_line, ['colon', n.to_s] }
+
+    handler Methods::Move
     map :prefix_arg_sol,  %w[0]
-    map :matching_brace,  %w[percent]
-    map :next_page,       %w[Control-f], %w[Next]
-    map :prev_page,       %w[Control-b], %w[Prior]
 
     handler :at_insert
-    map :prev_char,       %w[h], %w[Left]
-    map :prev_chunk,      %w[B]
-    map :prev_word,       %w[b], %w[Shift-Left]
-    map :start_of_line,   %w[Home]
     map :end_of_buffer,   %w[G]
     map :end_of_line,     %w[dollar], %w[End]
+    map :go_line,         %w[g g]
+    map :matching_brace,  %w[percent]
     map :next_char,       %w[l], %w[Right]
     map :next_chunk,      %w[W]
-    map :next_word,       %w[w], %w[Shift-Right]
-    map :go_line,         %w[g g]
     map :next_line,       %w[j], %w[Down], %w[Control-n]
-    map :prev_line,       %w[k], %w[Up], %w[Control-p]
+    map :next_page,       %w[Control-f], %w[Next]
+    map :next_word,       %w[w], %w[Shift-Right]
     map :next_word_end,   %w[e]
+    map :prev_char,       %w[h], %w[Left]
+    map :prev_chunk,      %w[B]
+    map :prev_line,       %w[k], %w[Up], %w[Control-p]
+    map :prev_page,       %w[Control-b], %w[Prior]
+    map :prev_word,       %w[b], %w[Shift-Left]
     map :prev_word_end,   %w[E]
+    map :start_of_line,   %w[Home]
   end
 
   minor_mode :prefix do
@@ -302,7 +303,7 @@ module VER
     map [:killing, :prev_char],  %w[BackSpace]
     map [:killing, :prev_word],  %w[Control-w]
 
-    handler Methods::Move
+    handler :at_insert
     map :next_line,      %w[Down], %w[Control-n]
     map :next_page,      %w[Control-f], %w[Next], %w[Shift-Down]
     map :prev_page,      %w[Control-b], %w[Prior], %w[Shift-Up]

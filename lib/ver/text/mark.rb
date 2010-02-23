@@ -16,22 +16,33 @@ module VER
         self.index = index unless index.nil?
       end
 
+      # @return [Tk::TclString] tcl representation of {name}
       def to_tcl
         name.to_tcl
       end
 
+      # @return [String] representation of {name}
       def to_s
         name.to_s
       end
 
+      # @return [String] representation of {name} and {buffer}
       def inspect
         "#<VER::Text::Mark %p on %p>" % [name, buffer]
       end
 
+      # Number of characters from the start of the line.
+      # Counting characters starts at zero.
+      #
+      # @return [Integer] Number of characters from the line-start.
       def char
         index.char
       end
 
+      # The number of lines from the top of {buffer}.
+      # Counting lines starts at one.
+      #
+      # @return [Integer] Number of lines from top of buffer.
       def line
         index.line
       end
@@ -171,6 +182,8 @@ module VER
         end
       end
 
+      # Set mark to be +count+ display-chars to the right, jumps to next line
+      # when on last character of a line.
       def next_char(count = buffer.prefix_count)
         set(self + "#{count} displaychars")
       end
@@ -183,10 +196,13 @@ module VER
         forward_jump(count, &method(:chunk_char_type))
       end
 
+      # Jump to the last character of the word the insert cursor is over currently.
       def next_word_end(count = buffer.prefix_count)
         set(index_at_word_right_end(count))
       end
 
+      # Set mark to be +count+ display-chars to the left.
+      # Jumps to previous line when on first character of a line.
       def prev_char(count = buffer.prefix_count)
         set(self - "#{count} displaychars")
       end
@@ -227,6 +243,23 @@ module VER
         end
       end
 
+      # Move to the end of the line where mark is located.
+      #
+      # With +count+ it moves to the end of the display line, so when there is
+      # a line wrap it will move to the place where the line wraps instead of the
+      # real end of the line.
+      def end_of_line(count = nil)
+        if count
+          set("#{self} display lineend")
+        else
+          set("#{self} lineend")
+        end
+      end
+
+      # Move to the beginning of the line in which insert mark is located.
+      #
+      # With +count+ it will move to the beginning of the display line, which
+      # takes line wraps into account.
       def start_of_line(alternative = buffer.prefix_arg)
         if alternative
           set("#{self} display linestart")
@@ -235,6 +268,10 @@ module VER
         end
       end
 
+      # Move to the first character of the line in which insert mark is located.
+      #
+      # With +count+ it will move to the linestart of the displayed, taking
+      # linewraps into account.
       def home_of_line(alternative = buffer.prefix_arg)
         if alternative
           start_of_line(alternative)
