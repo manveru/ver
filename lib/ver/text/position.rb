@@ -81,6 +81,14 @@ module VER
         end
       end
 
+      def tags
+        buffer.tags(self)
+      end
+
+      def tag_names
+        buffer.tag_names(self)
+      end
+
       def to_a
         index.to_a
       end

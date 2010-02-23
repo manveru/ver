@@ -76,6 +76,24 @@ VER.spec do
         @buffer.index('1.0').char.should == 0
         @buffer.index('1.1').char.should == 0
       end
+
+      it 'gets a list of tags at the position' do
+        @buffer.insert 'end', 'some', 'some-tag'
+        @buffer.insert 'end', ' '
+        @buffer.insert 'end', 'tags', 'tags-tag'
+        @buffer.index('1.0').tags.should == [@buffer.tag('some-tag')]
+        @buffer.index('1.4').tags.should == []
+        @buffer.index('1.5').tags.should == [@buffer.tag('tags-tag')]
+      end
+
+      it 'gets a list of tag names at the position' do
+        @buffer.insert 'end', 'some', 'some-tag'
+        @buffer.insert 'end', ' '
+        @buffer.insert 'end', 'tags', 'tags-tag'
+        @buffer.index('1.0').tag_names.should == ['some-tag']
+        @buffer.index('1.4').tag_names.should == []
+        @buffer.index('1.5').tag_names.should == ['tags-tag']
+      end
     end
   end
 end

@@ -37,8 +37,8 @@ module VER
       end
     end
 
-    def tags(index = nil)
-      tag_names(*index).map{|name| Tag.new(self, name.to_sym) }
+    def tags(index = Tk::None)
+      tag_names(index).map{|name| Tag.new(self, name) }
     end
 
     def tag_ranges(tag_name)
