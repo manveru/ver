@@ -1,5 +1,16 @@
 require_relative '../helper'
 
+module SpecReceiver
+  class << self
+    attr_reader :widget
+
+    def set_widget(widget)
+      @widget = widget
+    end
+  end
+end
+
+
 VER.spec do
   describe 'VER::Action' do
     describe 'given Symbol handler' do
@@ -37,11 +48,9 @@ VER.spec do
     describe 'given Module handler' do
       it 'sends method on handler with widget as argument' do
         buffer = VER::Buffer.new(VER.layout)
-        buffer.value = 'some line'
-        action = VER::Action.new(:next_char, VER::Methods::Move)
-        buffer.insert = '1.0'
+        action = VER::Action.new(:set_widget, ::SpecReceiver)
         action.call(buffer)
-        buffer.at_insert.index.should == '1.1'
+        ::SpecReceiver.widget.should == buffer
       end
     end
 
