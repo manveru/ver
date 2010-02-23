@@ -186,10 +186,11 @@ module VER
   end
 
   minor_mode :clipboard do
-    handler Methods::Clipboard
+    handler :at_insert
+    map :copy_line,    %w[y y], %w[Y]
+    map :copy_motion,  ['y', :move]
 
-    map :copy_line,        %w[y y], %w[Y]
-    map :copy_motion,      ['y', :move]
+    handler Methods::Clipboard
     map :paste,            %w[p]
     map :paste_above,      %w[P]
   end
