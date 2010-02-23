@@ -1,4 +1,32 @@
 module VER
+  class Buffer
+    # Eval the value of {Buffer} in toplevel binding.
+    # So while hacking VER you can dynamically reload parts of it.
+    def eval_buffer
+      VER.message "Source #{uri}"
+      TOPLEVEL_BINDING.eval(value.to_s)
+    end
+
+    # Display a tooltip for the tags the insert cursor is on.
+    # Also generates a status message.
+    # Hides the tooltip after 5 seconds unless a seconds +count+ is given.
+    def tags_tooltip(count = prefix_arg)
+      index = at_insert
+      value = index.tag_names.join(', ')
+
+      VER.message(value)
+      tooltip(value, count || 5)
+    end
+
+    def tooltip(string, timeout = 5)
+      require 'ver/tooltip'
+
+      tooltip = Tk::Tooltip.new(string)
+      tooltip.show_on(self)
+      Tk::After.ms(timeout * 1000){ tooltip.destroy }
+    end
+  end
+
   module Methods
     module Basic
       module_function
@@ -25,19 +53,6 @@ module VER
             :abort
           end
         end
-      end
-
-      def tags_at(text, index = :insert)
-        index = text.index(index)
-        tags = text.tag_names(index)
-        VER.message tags.inspect
-
-        require 'ver/tooltip'
-
-        tooltip = Tk::Tooltip.new(tags.inspect)
-        tooltip.show_on(text)
-
-        Tk::After.ms(5000){ tooltip.destroy }
       end
 
       def open_terminal(text)

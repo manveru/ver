@@ -22,8 +22,10 @@ module VER
   end
 
   minor_mode :preview do
-    handler Methods::Preview
+    map :eval_buffer,  %w[Control-R]
+    map :tags_tooltip, %w[Control-g t]
 
+    handler Methods::Preview
     map :preview, %w[F5]
   end
 
@@ -31,9 +33,7 @@ module VER
     inherits :help, :preview, :save, :open
 
     handler Methods::Basic
-    map :source_buffer,       %w[Control-R]
     map :status_evaluate,     %w[Alt-x], %w[Control-m x]
-    map :tags_at,             %w[Control-g t]
 
     map :open_terminal,       %w[F9]
     map :open_console,        %w[Control-exclam] if defined?(::EM)
