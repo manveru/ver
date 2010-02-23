@@ -1,0 +1,30 @@
+# Encoding: UTF-8
+
+[{beforeRunningCommand: "nop",
+  command: 
+   "#!/usr/bin/env ruby\n\ns = ENV['TM_CURRENT_LINE']\n\n# See if the current line is a query. If it is, process it.\n\nif s =~ /^(\\s*)(query(?: selection)?\\s*)\\(\\[([^\\]]+)\\]/i then\n\tws = $1\n\tcommand = $2\n\ttable = $3\n\n\t# See if ;* has been added to the end of the query. If not, add it.\n\tif not s =~ %r{(^.*);\\s*\\*\\s*\\)\\s*(`.*|//.*|.*)$}i then\n\t\ts = s.gsub(%r{(^.*)(\\s*\\))(\\s*(`.*|//.*|.*)$)}, '\\1; *\\2')\n\tend\n\n\tprint s.gsub(/[\\$`]/) { |s| \"\\\\\#{s}\" }\n\tprint \"\\n\#{ws}\#{command}([${1:\#{table}}]; ${2:conjunction}; [$1]${3:field})\"\nelse\n\t# Current line is not a query, discard the output, which does nothing\n\texit(200)\nend\n",
+  fallbackInput: "line",
+  input: "selection",
+  keyEquivalent: "@*",
+  name: "Build Query",
+  output: "insertAsSnippet",
+  scope: "source.active4d",
+  tabTrigger: "qq",
+  uuid: "693C1CFB-85A8-4807-B7F6-41380BAE8B8C"},
+ {beforeRunningCommand: "nop",
+  command: "/usr/bin/env ruby \"${TM_BUNDLE_SUPPORT}/bin/new_circuit.rb\"",
+  input: "selection",
+  keyEquivalent: "@C",
+  name: "New Circuit",
+  output: "discard",
+  scope: "source.active4d",
+  uuid: "058B2171-37BF-4092-A28C-241AD16985D2"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "#\n# This command searches around the caret/selection for the nearest quotes and expands\n# the name to the full quoted text, then tries to open the file at the path described\n# by that text.\n#\n\n\"$TM_BUNDLE_SUPPORT/bin/open_include.rb\"",
+  input: "none",
+  keyEquivalent: "@D",
+  name: "Open Include File",
+  output: "discard",
+  scope: "source.active4d",
+  uuid: "A8C76535-C283-4C2C-8367-66368A3DBCFB"}]

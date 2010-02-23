@@ -1,40 +1,49 @@
 # Encoding: UTF-8
 
-{"proc" => 
-  {scope: "source.pascal",
-   name: "Procedure (proc)",
-   content: 
-    "PROCEDURE ${1:Name}${2:(${3:arg1:STRING})};\n\tBEGIN\n\t\t$4\nEND; { PROCEDURE $1 }\n$5"},
- "func" => 
-  {scope: "source.pascal",
-   name: "Function (func)",
-   content: 
-    "FUNCTION ${1:Name}${3:(${2:arg1:STRING})}:${4:BOOLEAN};\n\tBEGIN\n\t\t$5\n  \t\t$1 := ;\nEND;$6 { FUNCTION $1 }"},
- "beg" => 
-  {scope: "source.pascal.vectorscript",
-   name: "Begin..End (beg)",
-   content: "BEGIN\n\t$1\nEND;$2"},
- "setr" => 
-  {scope: "source.pascal.vectorscript",
-   name: "SetRField.. (setr)",
-   content: "SetRField(gObjectName,gObjectHd,'$1',$2)$0"},
- "getcus" => 
-  {scope: "source.pascal.vectorscript",
-   name: "GetCustomObjectInfo (getcus)",
-   content: "GetCustomObjectInfo(gObjectName,gObjectHd,gRecHd,gWallHd)"},
- "for" => 
-  {scope: "source.pascal",
-   name: "For (for)",
-   content: "FOR ${1:i} := ${2:1} TO ${3:n} DO BEGIN\n\t$4\nEND; { FOR }"},
- "group" => 
-  {scope: "source.pascal",
-   name: "BeginGroup..EndGroup (group)",
-   content: "BeginGroup;\n$1\nEndGroup;$2"},
- "if" => 
-  {scope: "source.pascal",
-   name: "If..Then (if)",
-   content: "IF ($1) THEN ${3:BEGIN\n\t$2\nEND}; { IF }"},
- "push" => 
-  {scope: "source.pascal",
-   name: "PushAttrs..PopAttrs (push)",
-   content: "PushAttrs;\n$1\nPopAttrs;$2"}}
+[{content: "BEGIN\n\t$1\nEND;$2",
+  name: "Begin..End (beg)",
+  scope: "source.pascal.vectorscript",
+  tabTrigger: "beg",
+  uuid: "DD03758D-9D92-4509-8AFA-C04CF2ACE2EE"},
+ {content: "BeginGroup;\n$1\nEndGroup;$2",
+  name: "BeginGroup..EndGroup (group)",
+  scope: "source.pascal",
+  tabTrigger: "group",
+  uuid: "069CE1A9-F3AA-4C70-9847-1041FA86F5C0"},
+ {content: "FOR ${1:i} := ${2:1} TO ${3:n} DO BEGIN\n\t$4\nEND; { FOR }",
+  name: "For (for)",
+  scope: "source.pascal",
+  tabTrigger: "for",
+  uuid: "EA22B2C2-F126-4E9A-AFB5-BC8CB9774CC5"},
+ {content: 
+   "FUNCTION ${1:Name}${3:(${2:arg1:STRING})}:${4:BOOLEAN};\n\tBEGIN\n\t\t$5\n  \t\t$1 := ;\nEND;$6 { FUNCTION $1 }",
+  name: "Function (func)",
+  scope: "source.pascal",
+  tabTrigger: "func",
+  uuid: "9CFC03E4-18D6-45DD-8639-6C387ACEA574"},
+ {content: "GetCustomObjectInfo(gObjectName,gObjectHd,gRecHd,gWallHd)",
+  name: "GetCustomObjectInfo (getcus)",
+  scope: "source.pascal.vectorscript",
+  tabTrigger: "getcus",
+  uuid: "F2DC1A1A-906F-4725-B81C-FE49537453A8"},
+ {content: "IF ($1) THEN ${3:BEGIN\n\t$2\nEND}; { IF }",
+  name: "If..Then (if)",
+  scope: "source.pascal",
+  tabTrigger: "if",
+  uuid: "1E100F1A-4194-4B34-A99B-D46805CD94EE"},
+ {content: 
+   "PROCEDURE ${1:Name}${2:(${3:arg1:STRING})};\n\tBEGIN\n\t\t$4\nEND; { PROCEDURE $1 }\n$5",
+  name: "Procedure (proc)",
+  scope: "source.pascal",
+  tabTrigger: "proc",
+  uuid: "7188C1B7-6355-474C-BAB2-20D1792B1D64"},
+ {content: "PushAttrs;\n$1\nPopAttrs;$2",
+  name: "PushAttrs..PopAttrs (push)",
+  scope: "source.pascal",
+  tabTrigger: "push",
+  uuid: "A03B09F2-8817-4E5B-AD89-AE285D18773D"},
+ {content: "SetRField(gObjectName,gObjectHd,'$1',$2)$0",
+  name: "SetRField.. (setr)",
+  scope: "source.pascal.vectorscript",
+  tabTrigger: "setr",
+  uuid: "CED2CEA7-33D1-4BE5-9DBC-8BCFA9A65846"}]

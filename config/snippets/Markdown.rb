@@ -1,6 +1,7 @@
 # Encoding: UTF-8
 
-{nil => 
-  {scope: "text.html.markdown -meta.disable-markdown",
-   name: "Hard Linebreak",
-   content: "  \n"}}
+[{content: "  \n",
+  keyEquivalent: "^\n",
+  name: "Hard Linebreak",
+  scope: "text.html.markdown -meta.disable-markdown",
+  uuid: "4405912F-4AD5-40F8-93B3-A63394036ACA"}]

@@ -1,44 +1,54 @@
 # Encoding: UTF-8
 
-{"get" => 
-  {scope: "source.js.greasemonkey",
-   name: "GM_getValue",
-   content: "GM_getValue(\"${1:key}\", ${2:\"${3:default value}\"});"},
- "log" => 
-  {scope: "source.js.greasemonkey",
-   name: "GM_log",
-   content: "GM_log(${1:\"${2:info}\"});"},
- "e" => 
-  {scope: "source.js.greasemonkey meta.header",
-   name: "@exclude",
-   content: "// @exclude       ${1:http://}$0"},
- "tab" => 
-  {scope: "source.js.greasemonkey",
-   name: "GM_openInTab",
-   content: "GM_openInTab(${1:\"${2:http://www.example.com}\"});\n$0"},
- "clog" => 
-  {scope: "source.js.greasemonkey",
-   name: "console.log",
-   content: "console.log(\"${1:Debug: %o}\", ${2:object});"},
- "set" => 
-  {scope: "source.js.greasemonkey",
-   name: "GM_setValue",
-   content: "GM_setValue(\"${1:key}\", ${2:\"${3:value}\"});"},
- "i" => 
-  {scope: "source.js.greasemonkey meta.header",
-   name: "@include",
-   content: "// @include       ${1:http://}$0"},
- "menu" => 
-  {scope: "source.js.greasemonkey",
-   name: "GM_registerMenuCommand",
-   content: 
-    "GM_registerMenuCommand(\"${1:Command Name}\", ${3:function() {\n\t$0\n\\}});"},
- "xhr" => 
-  {scope: "source.js.greasemonkey",
-   name: "GM_xmlhttpRequest",
-   content: 
-    "GM_xmlhttpRequest({\n\tmethod: \"GET\",\n\turl: ${1:\"${2:http://www.example.com}\"},\n\tonload: ${3:function(result) {\n\t\t${0:var response = result.responseText;}\n\t\\} }\n});"},
- "css" => 
-  {scope: "source.js.greasemonkey",
-   name: "GM_addStyle",
-   content: "GM_addStyle(\"${1:CSS}\");"}}
+[{content: "// @exclude       ${1:http://}$0",
+  name: "@exclude",
+  scope: "source.js.greasemonkey meta.header",
+  tabTrigger: "e",
+  uuid: "5EB937CB-0C23-4BD6-A0C6-445633CC5748"},
+ {content: "// @include       ${1:http://}$0",
+  name: "@include",
+  scope: "source.js.greasemonkey meta.header",
+  tabTrigger: "i",
+  uuid: "22137E1C-E20A-4FDD-BFEA-E16FB2AA9BEE"},
+ {content: "GM_addStyle(\"${1:CSS}\");",
+  name: "GM_addStyle",
+  scope: "source.js.greasemonkey",
+  tabTrigger: "css",
+  uuid: "F7B4EFE5-921E-4D2C-B55C-04BEE8EA309F"},
+ {content: "GM_getValue(\"${1:key}\", ${2:\"${3:default value}\"});",
+  name: "GM_getValue",
+  scope: "source.js.greasemonkey",
+  tabTrigger: "get",
+  uuid: "3EE53DB4-8CA6-4112-9CA3-63FE2BFBAA4D"},
+ {content: "GM_log(${1:\"${2:info}\"});",
+  name: "GM_log",
+  scope: "source.js.greasemonkey",
+  tabTrigger: "log",
+  uuid: "DCB85498-9420-46DA-9633-089CC29B458D"},
+ {content: "GM_openInTab(${1:\"${2:http://www.example.com}\"});\n$0",
+  name: "GM_openInTab",
+  scope: "source.js.greasemonkey",
+  tabTrigger: "tab",
+  uuid: "39D399A2-954D-49BE-AAA3-DE4C3336D97A"},
+ {content: 
+   "GM_registerMenuCommand(\"${1:Command Name}\", ${3:function() {\n\t$0\n\\}});",
+  name: "GM_registerMenuCommand",
+  scope: "source.js.greasemonkey",
+  tabTrigger: "menu",
+  uuid: "C95995B3-D4E6-48C0-9B18-141F28C5EADD"},
+ {content: "GM_setValue(\"${1:key}\", ${2:\"${3:value}\"});",
+  name: "GM_setValue",
+  scope: "source.js.greasemonkey",
+  tabTrigger: "set",
+  uuid: "47C68051-A520-40CD-A289-87C191F36638"},
+ {content: 
+   "GM_xmlhttpRequest({\n\tmethod: \"GET\",\n\turl: ${1:\"${2:http://www.example.com}\"},\n\tonload: ${3:function(result) {\n\t\t${0:var response = result.responseText;}\n\t\\} }\n});",
+  name: "GM_xmlhttpRequest",
+  scope: "source.js.greasemonkey",
+  tabTrigger: "xhr",
+  uuid: "ED343BF2-B3DE-4A57-92BB-B7F361C74BE3"},
+ {content: "console.log(\"${1:Debug: %o}\", ${2:object});",
+  name: "console.log",
+  scope: "source.js.greasemonkey",
+  tabTrigger: "clog",
+  uuid: "40106F2C-D041-450F-90B5-365F083D3AAC"}]

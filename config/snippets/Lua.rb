@@ -1,35 +1,45 @@
 # Encoding: UTF-8
 
-{"fori" => 
-  {scope: "source.lua",
-   name: "for i,v in ipairs()",
-   content: 
-    "for ${1:i},${2:v} in ipairs(${3:table_name}) do\n\t${0:print(i,v)}\nend"},
- "table.concat" => 
-  {scope: "source.lua",
-   name: "table.concat",
-   content: 
-    "table.concat( ${1:tablename}${2:, \", \"}${3:, start_index}${4:, end_index} )"},
- "function" => 
-  {scope: "source.lua",
-   name: "function",
-   content: "function ${1:function_name}( ${2:...} )\n\t${0:-- body}\nend"},
- "for" => 
-  {scope: "source.lua",
-   name: "for i=1,10",
-   content: "for ${1:i}=${2:1},${3:10} do\n\t${0:print(i)}\nend"},
- "fun" => 
-  {scope: "source.lua",
-   name: "function",
-   content: "function ${1:function_name}( ${2:...} )\n\t${0:-- body}\nend"},
- "forp" => 
-  {scope: "source.lua",
-   name: "for k,v in pairs()",
-   content: 
-    "for ${1:k},${2:v} in pairs(${3:table_name}) do\n\t${0:print(k,v)}\nend"},
- "local" => 
-  {scope: "source.lua", name: "local x = 1", content: "local ${1:x} = ${0:1}"},
- "table.sort" => 
-  {scope: "source.lua",
-   name: "table.sort",
-   content: "table.sort( ${1:tablename}${2:, sortfunction} )"}}
+[{content: 
+   "for ${1:i},${2:v} in ipairs(${3:table_name}) do\n\t${0:print(i,v)}\nend",
+  name: "for i,v in ipairs()",
+  scope: "source.lua",
+  tabTrigger: "fori",
+  uuid: "082D9465-0CEF-40DB-9B1C-34940D38F4F0"},
+ {content: "for ${1:i}=${2:1},${3:10} do\n\t${0:print(i)}\nend",
+  name: "for i=1,10",
+  scope: "source.lua",
+  tabTrigger: "for",
+  uuid: "B1FDD74B-F037-45B7-AA61-7CB56BFA67CD"},
+ {content: 
+   "for ${1:k},${2:v} in pairs(${3:table_name}) do\n\t${0:print(k,v)}\nend",
+  name: "for k,v in pairs()",
+  scope: "source.lua",
+  tabTrigger: "forp",
+  uuid: "A75263F5-C971-42F2-8FAC-83829AD945DE"},
+ {content: "function ${1:function_name}( ${2:...} )\n\t${0:-- body}\nend",
+  name: "function",
+  scope: "source.lua",
+  tabTrigger: "fun",
+  uuid: "3E0EEDB8-2C15-4703-939B-9334714B3A8E"},
+ {content: "function ${1:function_name}( ${2:...} )\n\t${0:-- body}\nend",
+  name: "function",
+  scope: "source.lua",
+  tabTrigger: "function",
+  uuid: "F4A541EB-8C83-4EFB-97A7-F780807AC23A"},
+ {content: "local ${1:x} = ${0:1}",
+  name: "local x = 1",
+  scope: "source.lua",
+  tabTrigger: "local",
+  uuid: "0CEE4504-F8F1-4A98-AC7B-AA679CAAAB55"},
+ {content: 
+   "table.concat( ${1:tablename}${2:, \", \"}${3:, start_index}${4:, end_index} )",
+  name: "table.concat",
+  scope: "source.lua",
+  tabTrigger: "table.concat",
+  uuid: "8E68AA99-64F4-4D36-AF80-D7D0B3DCD041"},
+ {content: "table.sort( ${1:tablename}${2:, sortfunction} )",
+  name: "table.sort",
+  scope: "source.lua",
+  tabTrigger: "table.sort",
+  uuid: "2052FA2D-5830-4665-8C90-01D0C7E04991"}]

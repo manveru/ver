@@ -1,42 +1,89 @@
 # Encoding: UTF-8
 
-{"dxf" => 
-  {scope: "source.objc, source.objc++, source.c, source.c++",
-   name: "Function",
-   content: 
-    "/** \\brief ${4:undocumented function}\n\t${5:\n\t\tlonger description\n\t}\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\date `date +%Y-%m-%d`\n\t\\param $2 ${3:description of parameter}\n\t${7:\\param $8 ${9:description of parameter}}$0\n\t\\return ${6:description of return value}\n\t\\sa\n**/"},
- "dxg" => 
-  {scope: "source.php",
-   name: "Group",
-   content: 
-    "/** \\name ${1:nameOfGroup} ${2\n${3:description}\n}**/\n//@{\n$TM_SELECTED_TEXT\n//@}"},
- "dxv" => 
-  {scope: "source.php",
-   name: "Class Variable",
-   content: "${1:var} ${2:var}; //!< ${3:undocumented class variable}\n"},
- "dxp" => 
-  {scope: "text.html.basic",
-   name: "Page Template",
-   content: 
-    "<?php\n/** \\page $TM_FILEPATH ${1:A documentation page}\n\t${2:longer description}\n© Copyright `date +%Y` $TM_ORGANIZATION_NAME - ${TM_AUTHOR:$TM_FULLNAME}. All Rights Reserved.\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\author \\$LastChangedBy\\$\n\t\\date `date +%Y-%m-%d`\n\t\\date \\$LastChangedDate\\$\n\t\\version \\$Rev\\$\n**/\n?>"},
- "dxc" => 
-  {scope: "source.php",
-   name: "Class PHP doc only",
-   content: 
-    "/** \\brief  ${3:undocumented class}\n\t\n\t${4:undocumented class}\n\t\n&copy; Copyright `date +%Y` `echo $TM_ORGANIZATION_NAME` - `echo $TM_AUTHOR`. All Rights Reserved.\n\n\t\\\\author `echo $TM_AUTHOR` `echo $TM_ORGANIZATION_NAME`\n\t\\\\author \\$LastChangedBy\\$\n\t\\\\date `TZ=GMT date +%Y-%m-%d # T%H:%M:%SZ`\n\t\\\\date \\$LastChangedDate\\$\n\t\\\\version \\$Rev\\$\n\t\\sa\n**/\n"},
- "dxpu" => 
-  {scope: "source.php",
-   name: "Public Section",
-   content: "/*! \\publicsection */"},
- "dxpr" => 
-  {scope: "source.php",
-   name: "Private Section",
-   content: "/*! \\privatesection */"},
- "/*!" => 
-  {scope: "source.c, source.objc, source.c++, source.objc++",
-   name: "/*! … */",
-   content: "/*!\n * $0\n */"},
- "/**" => 
-  {scope: "source.c, source.objc, source.c++, source.objc++",
-   name: "/** … */",
-   content: "/**\n * $0\n**/"}}
+[{content: "/*!\n * $0\n */",
+  name: "/*! … */",
+  scope: "source.c, source.objc, source.c++, source.objc++",
+  tabTrigger: "/*!",
+  uuid: "97624253-06BA-4D4E-AFD8-EFC24E4710A7"},
+ {content: "/**\n * $0\n**/",
+  name: "/** … */",
+  scope: "source.c, source.objc, source.c++, source.objc++",
+  tabTrigger: "/**",
+  uuid: "3F9A5A64-0E7B-4DD5-B683-9ADB93A13B81"},
+ {content: 
+   "/** \\brief  ${3:undocumented class}\n\t\n\t${4:undocumented class}\n\t\n© Copyright `date +%Y` $TM_ORGANIZATION_NAME - ${TM_AUTHOR:$TM_FULLNAME}. All Rights Reserved.\n\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\author \\$LastChangedBy\\$\n\t\\date `date +%Y-%m-%d`\n\t\\date \\$LastChangedDate\\$\n\t\\version \\$Rev\\$\t\\sa\n**/",
+  name: "Class",
+  scope: "source.objc, source.objc++, source.c, source.c++",
+  tabTrigger: "dxc",
+  uuid: "6206D909-7D5B-4401-966F-7B5077944D92"},
+ {content: 
+   "/** \\brief  ${3:undocumented class}\n\t\n\t${4:undocumented class}\n\t\n© Copyright `date +%Y` $TM_ORGANIZATION_NAME - ${TM_AUTHOR:$TM_FULLNAME}. All Rights Reserved.\n\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\author \\$LastChangedBy\\$\n\t\\date `date +%Y-%m-%d`\n\t\\date \\$LastChangedDate\\$\n\t\\version \\$Rev\\$\n\t\\sa\n**/\n$1class $2 {\n\t$5var \\$${6:var}; //!< ${7:undocumented class variable}\n\n\t/** \n\t\\brief class $2 constructor\n\t\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\date `date +%Y-%m-%d`\n\t\\param $8 ${9:description of parameter}\n\t\n\t\\return\n\t\\sa\n\t**/\n\t$1function $2 ($8) {$0\n\t} // END $1function $2\n\n\t\n} // END $1class $2\n\n",
+  name: "Class",
+  scope: "source.php",
+  tabTrigger: "dxc",
+  uuid: "7DD602B8-C3E0-11D9-BDD3-001124776DD2"},
+ {bundlePath: 
+   "/Users/kumar/Library/Application Support/TextMate/Bundles/PHPDoc.tmbundle",
+  content: 
+   "/** \\brief  ${3:undocumented class}\n\t\n\t${4:undocumented class}\n\t\n&copy; Copyright `date +%Y` `echo $TM_ORGANIZATION_NAME` - `echo $TM_AUTHOR`. All Rights Reserved.\n\n\t\\\\author `echo $TM_AUTHOR` `echo $TM_ORGANIZATION_NAME`\n\t\\\\author \\$LastChangedBy\\$\n\t\\\\date `TZ=GMT date +%Y-%m-%d # T%H:%M:%SZ`\n\t\\\\date \\$LastChangedDate\\$\n\t\\\\version \\$Rev\\$\n\t\\sa\n**/\n",
+  name: "Class PHP doc only",
+  scope: "source.php",
+  tabTrigger: "dxc",
+  uuid: "F51C9A24-33F8-4A8E-AC3F-1B80CA0D8B34"},
+ {content: "${1:var} ${2:var}; //!< ${3:undocumented class variable}\n",
+  name: "Class Variable",
+  scope: "source.php",
+  tabTrigger: "dxv",
+  uuid: "04B1865F-C3E2-11D9-BDD3-001124776DD2"},
+ {content: 
+   "${1:${2:TypeDef}\t${3:VarNameCamelCase}${4: = ${5:defaultValue}};}\t//!< ${6:undocumented class variable}",
+  name: "Class Variable",
+  scope: "source.objc, source.objc++, source.c, source.c++",
+  tabTrigger: "dxv",
+  uuid: "4FA08FFD-F89D-4782-8C69-C7D462BA6350"},
+ {content: 
+   "/** \\brief ${4:undocumented function}\n\t${5:\n\t\tlonger description\n\t}\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\date `date +%Y-%m-%d`\n\t\\param $2 ${3:description of parameter}\n\t\n\t\\return ${6:description of return value}\n\t\\sa\n**/\nfunction $1 (\\$$2) {\n\t$0\n} // END function $1\n\n",
+  name: "Function",
+  scope: "source.php",
+  tabTrigger: "dxf",
+  uuid: "65ECD57C-C3E1-11D9-BDD3-001124776DD2"},
+ {content: 
+   "/** \\brief ${4:undocumented function}\n\t${5:\n\t\tlonger description\n\t}\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\date `date +%Y-%m-%d`\n\t\\param $2 ${3:description of parameter}\n\t${7:\\param $8 ${9:description of parameter}}$0\n\t\\return ${6:description of return value}\n\t\\sa\n**/",
+  name: "Function",
+  scope: "source.objc, source.objc++, source.c, source.c++",
+  tabTrigger: "dxf",
+  uuid: "9F7C8A36-D569-4A7A-BCB6-2CC0220E493B"},
+ {content: 
+   "/** \\name ${1:nameOfGroup} ${2\n${3:description}\n}**/\n//@{\n$TM_SELECTED_TEXT\n//@}",
+  name: "Group",
+  scope: "source.php",
+  tabTrigger: "dxg",
+  uuid: "AFBF18F0-705E-4598-9F56-B494819DFA63"},
+ {content: 
+   "/** \\page $TM_FILEPATH ${1:A documentation page}\n\t${2:longer description}\n\t\n© Copyright `date +%Y` $TM_ORGANIZATION_NAME - ${TM_AUTHOR:$TM_FULLNAME}. All Rights Reserved.\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\author \\$LastChangedBy\\$\n\t\\date `date +%Y-%m-%d`\n\t\\date \\$LastChangedDate\\$\n\t\\version \\$Rev\\$\n**/",
+  name: "Page",
+  scope: "source.objc, source.objc++, source.c, source.c++",
+  tabTrigger: "dxp",
+  uuid: "6C21C945-F9D4-412B-A431-29FEFCB4A991"},
+ {content: 
+   "/** \\page ${1:fileName A documentation page}\n\t${2:longer description}\n\t\n© Copyright `date +%Y` $TM_ORGANIZATION_NAME - ${TM_AUTHOR:$TM_FULLNAME}. All Rights Reserved.\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\author \\$LastChangedBy\\$\n\t\\date `date +%Y-%m-%d`\n\t\\date \\$LastChangedDate\\$\n\t\\version \\$Rev\\$\n**/",
+  name: "Page",
+  scope: "source.php",
+  tabTrigger: "dxp",
+  uuid: "2E015C16-C3E7-11D9-BDD3-001124776DD2"},
+ {content: 
+   "<?php\n/** \\page $TM_FILEPATH ${1:A documentation page}\n\t${2:longer description}\n© Copyright `date +%Y` $TM_ORGANIZATION_NAME - ${TM_AUTHOR:$TM_FULLNAME}. All Rights Reserved.\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\author \\$LastChangedBy\\$\n\t\\date `date +%Y-%m-%d`\n\t\\date \\$LastChangedDate\\$\n\t\\version \\$Rev\\$\n**/\n?>",
+  name: "Page Template",
+  scope: "text.html.basic",
+  tabTrigger: "dxp",
+  uuid: "31C69848-30D5-4EDA-BEFE-9F9223A674B9"},
+ {content: "/*! \\privatesection */",
+  name: "Private Section",
+  scope: "source.php",
+  tabTrigger: "dxpr",
+  uuid: "D85FE1CC-C3E3-11D9-BDD3-001124776DD2"},
+ {content: "/*! \\publicsection */",
+  name: "Public Section",
+  scope: "source.php",
+  tabTrigger: "dxpu",
+  uuid: "3401EFAC-C3E4-11D9-BDD3-001124776DD2"}]

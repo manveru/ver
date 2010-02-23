@@ -1,22 +1,27 @@
 # Encoding: UTF-8
 
-{"inc" => 
-  {scope: "text.html.tt",
-   name: "include",
-   content: "[% INCLUDE ${1:template} %]"},
- "wrap" => 
-  {scope: "text.html.tt",
-   name: "wrapper",
-   content: "[% WRAPPER ${1:template} %]\n\t$2\n[% END %]"},
- "for" => 
-  {scope: "text.html.tt",
-   name: "for",
-   content: "[% FOR ${1:var} IN ${2:set} %]\n\t$3\n[% END %]"},
- "unl" => 
-  {scope: "text.html.tt",
-   name: "unless",
-   content: "[% UNLESS ${1:condition} %]\n\t$2\n[% END %]"},
- "if" => 
-  {scope: "text.html.tt",
-   name: "if",
-   content: "[% IF ${1:condition} %]\n\t$2\n[% ELSE %]\n\t$3\n[% END %]"}}
+[{content: "[% FOR ${1:var} IN ${2:set} %]\n\t$3\n[% END %]",
+  name: "for",
+  scope: "text.html.tt",
+  tabTrigger: "for",
+  uuid: "89E2CD88-5E20-4A30-988A-F9AA1FFDED09"},
+ {content: "[% IF ${1:condition} %]\n\t$2\n[% ELSE %]\n\t$3\n[% END %]",
+  name: "if",
+  scope: "text.html.tt",
+  tabTrigger: "if",
+  uuid: "30C5E785-BD38-4ECD-8F1E-E57E46D96659"},
+ {content: "[% INCLUDE ${1:template} %]",
+  name: "include",
+  scope: "text.html.tt",
+  tabTrigger: "inc",
+  uuid: "524B72D0-7196-4D65-AC9B-0F56F7FC94B0"},
+ {content: "[% UNLESS ${1:condition} %]\n\t$2\n[% END %]",
+  name: "unless",
+  scope: "text.html.tt",
+  tabTrigger: "unl",
+  uuid: "956498D2-745E-4C23-8463-702DF93FA1E5"},
+ {content: "[% WRAPPER ${1:template} %]\n\t$2\n[% END %]",
+  name: "wrapper",
+  scope: "text.html.tt",
+  tabTrigger: "wrap",
+  uuid: "57559761-BE40-418E-A0CB-BDED1020A3BD"}]
