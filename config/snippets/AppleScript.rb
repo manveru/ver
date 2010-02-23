@@ -1,107 +1,215 @@
 # Encoding: UTF-8
 
-{"alert" => 
-  {scope: "source.applescript",
-   name: "Alert",
-   content: 
-    "display alert \"${1:alert text}\" ¬\n\t${2:message \"${3:message text}\" ¬\n\t}${4:as warning}"},
- "tell" => 
-  {scope: "source.applescript",
-   name: "tell [app] … end",
-   content: 
-    "tell ${1:application \"${2:Finder}\"}\n\t${0:-- statements}\nend tell"},
- "choose" => 
-  {scope: "source.applescript",
-   name: "Choose Color",
-   content: 
-    "${1:set the_color to }choose color default color ${2:{65536, 65536, 65536\\}}\n$0"},
- "rep" => 
-  {scope: "source.applescript",
-   name: "repeat while ... end",
-   content: "repeat while ${1:condition}\n\t${0:-- statements}\nend repeat"},
- "dialog" => 
-  {scope: "source.applescript",
-   name: "OK/Cancel/Other",
-   content: 
-    "display dialog ${1:\"${2:text}\"}${3/.+/ ¬\n\twith icon /}${3:1} ¬\n\tbuttons {\"${5:Cancel}\", \"${6:Other}\", \"${4:OK}\"} ¬\n\tdefault button \"$4\"\nset button_pressed to button returned of result\nif button_pressed is \"$4\" then\n\t${7:-- statements for default button}${8/.+/\nelse if button_pressed is \"$5\" then\n\t/}${8:-- statements for cancel button}${9/.+/\nelse\n\t/}${9:-- statements for other button}\nend if\n"},
- "iff" => 
-  {scope: "source.applescript",
-   name: "if … then …",
-   content: "if ${1:condition} then ${0:value}"},
- "dup" => 
-  {scope: "source.applescript",
-   name: "duplicate … to …",
-   content: "duplicate ${1:value} to ${0:location}"},
- "timeout" => 
-  {scope: "source.applescript",
-   name: "with timeout … end",
-   content: 
-    "with timeout ${1:number} seconds\n\t${0:-- statements}\nend timeout"},
- "osa" => 
-  {scope: "source.applescript",
-   name: "#!/usr/bin/osascript",
-   content: "#!/usr/bin/osascript"},
- nil => 
-  {scope: "source.applescript",
-   name: "Split/Join Helper Functions",
-   content: 
-    "to split of aString by sep\n\tlocal aList, delims\n\ttell AppleScript\n\t\tset delims to text item delimiters\n\t\tset text item delimiters to sep\n\t\tset aList to text items of aString\n\t\tset  text item delimiters to delims\n\tend tell\n\treturn aList\nend split\n\nto join of aList by sep\n\tlocal aString, delims\n\ttell AppleScript\n\t\tset delims to text item delimiters\n\t\tset text item delimiters to sep\n\t\tset aString to aList as string\n\t\tset text item delimiters to delims\n\tend tell\n\treturn aString\nend join"},
- "con" => 
-  {scope: "source.applescript",
-   name: "considering … end",
-   content: "considering ${1:case}\n\t${0:-- statements}\nend considering"},
- "parent" => 
-  {scope: "source.applescript",
-   name: "prop parent …",
-   content: "property parent : ${1:application \"${2:Finder}\"}"},
- "prop" => 
-  {scope: "source.applescript",
-   name: "prop …",
-   content: "property ${1:prop_name} : ${0:value}"},
- "ign" => 
-  {scope: "source.applescript",
-   name: "ignoring … end",
-   content: 
-    "ignoring ${1:application responses}\n\t${0:-- statements}\nend ignoring"},
- "delim" => 
-  {scope: "source.applescript",
-   name: "change text item delimiters",
-   content: 
-    "set oldDelims to AppleScript's text item delimiters\nset AppleScript's text item delimiters to {\"${1:,}\"}\n${0:-- statements}\nset AppleScript's text item delimiters to oldDelims"},
- "try" => 
-  {scope: "source.applescript",
-   name: "try … on error … end",
-   content: 
-    "try\n\t${1:-- statements}\non error\n\t${2:-- error handling}\nend try"},
- "shell" => 
-  {scope: "source.applescript",
-   name: "do shell script …",
-   content: 
-    "${1/.+/set /}${1:shell_output}${1/.+/ to /}do shell script${2/.+/ ¬\n\t/}${2:\"${3:script}\"}${4/.+/ ¬\n\t/}${4:without altering line endings}\n"},
- "if" => 
-  {scope: "source.applescript",
-   name: "if … end",
-   content: "if ${1:condition} then\n\t${0:-- statements}\nend if"},
- "transaction" => 
-  {scope: "source.applescript",
-   name: "with transaction … end",
-   content: 
-    "with transaction${1/.+/ /}${1:session}\n\t${0:-- statements}\nend transaction"},
- "set" => 
-  {scope: "source.applescript",
-   name: "set … to …",
-   content: "set ${1:var_name} to ${0:value}"},
- "copy" => 
-  {scope: "source.applescript",
-   name: "copy … to …",
-   content: "copy ${1:value} to ${0:location}"},
- "script" => 
-  {scope: "source.applescript",
-   name: "script … end",
-   content: 
-    "script ${1:script_object}\n\ton run\n\t\t${0:-- statements}\n\tend run\nend script"},
- "terms" => 
-  {scope: "source.applescript",
-   name: "using terms from [app] … end",
-   content: 
-    "using terms from ${1:application \"${2:Finder}\"}\n\t${0:-- statements}\nend using terms from"}}
+[{content: "#!/usr/bin/osascript",
+  name: "#!/usr/bin/osascript",
+  scope: "source.applescript",
+  tabTrigger: "osa",
+  uuid: "6A58371E-DED1-44A6-A873-88DEFE0CEA3B"},
+ {content: 
+   "display alert \"${1:alert text}\" ¬\n\t${2:message \"${3:message text}\" ¬\n\t}${4:as warning}",
+  name: "Alert",
+  scope: "source.applescript",
+  tabTrigger: "alert",
+  uuid: "36586BF4-F77B-42B6-ADEF-AD2B65298602"},
+ {content: 
+   "on UIscript_check()\n\t-- check to see if assistive devices is enabled\n\ttell application \"System Events\" to set UI_enabled to UI elements enabled\n\tif not UI_enabled then\n\t\ttell application \"AppleScript Utility\"\n\t\t\tactivate\n\t\t\tdisplay dialog \"This script utilizes the built-in Graphical User Interface Scripting architecture of Mac OS X which is currently disabled.\" & return & return & \"You can activate GUI Scripting by selecting the checkbox “Enable GUI Scripting” in AppleScript Utility.\" with icon 1 buttons {\"Okay\"} default button 1\n\t\tend tell\n\tend if\nend UIscript_check\n\nUIscript_check()",
+  name: "Check that UI Scripting is Enabled",
+  scope: "source.applescript",
+  uuid: "E604B44D-3483-4993-9679-566392A03203"},
+ {content: 
+   "${1/.+/set /}${1:the_application}${1/.+/ to /}choose application with prompt \"${2:Choose an Application:}\"${3/.+/ ¬\n\t/}${3:with multiple selections allowed}\n",
+  name: "Choose Application(s)",
+  scope: "source.applescript",
+  tabTrigger: "choose",
+  uuid: "61FA9A41-E511-488F-AA30-4216C9154BE7"},
+ {content: 
+   "${1:set the_color to }choose color default color ${2:{65536, 65536, 65536\\}}\n$0",
+  name: "Choose Color",
+  scope: "source.applescript",
+  tabTrigger: "choose",
+  uuid: "C8B17E74-0D0F-4FC9-B53C-B2CD2BBE4EA4"},
+ {content: 
+   "${1:set the_file to }choose file with prompt \"${2:Pick a file:}\"${3: ¬\n\tdefault location path to home folder}${4: ¬\n\twith invisibles}${5: ¬\n\twith multiple selections allowed}${6: ¬\n\twith showing package contents}\n$0",
+  name: "Choose File(s)",
+  scope: "source.applescript",
+  tabTrigger: "choose",
+  uuid: "5C6AB1CA-170D-42A9-8E3C-961FE1054934"},
+ {content: 
+   "${1:set the_folder to }choose folder with prompt \"${2:Pick a folder:}\"${3: ¬\n\tdefault location path to home folder}${4: ¬\n\twith invisibles}${5: ¬\n\twith multiple selections allowed}${6: ¬\n\twith showing package contents}\n$0",
+  name: "Choose Folder(s)",
+  scope: "source.applescript",
+  tabTrigger: "choose",
+  uuid: "CDEB7EDE-7171-4801-AE12-258ED3F7A2BA"},
+ {content: "set the_choice to choose from list ${1:{\"${2:choices}\"\\}}\n$0 ",
+  name: "Choose Item from List",
+  scope: "source.applescript",
+  tabTrigger: "choose",
+  uuid: "1D418F08-770F-4407-AE6A-3CCF2CD9FA6E"},
+ {content: 
+   "${1:set the_filename to }choose file name with prompt \"${2:Name this file:}\" ¬\n\tdefault name \"${3:untitled}\" default location ${4:path to home folder}\n$0",
+  name: "Choose New File",
+  scope: "source.applescript",
+  tabTrigger: "choose",
+  uuid: "DE1A37AA-FB0F-480F-99DC-3D79B35A49C1"},
+ {content: 
+   "${1:set the_url to }choose URL showing ${2:Web} servers with editable URL\n$0",
+  name: "Choose URL",
+  scope: "source.applescript",
+  tabTrigger: "choose",
+  uuid: "5100F3C7-EC8E-43C3-B844-2F384FCEC6C4"},
+ {content: 
+   "display dialog ${1:\"${2:text}\"}${3/.+/ ¬\n\twith icon /}${3:1} ¬\n\tbuttons {\"${4:OK}\"} ¬\n\tdefault button 1\n",
+  name: "OK",
+  scope: "source.applescript",
+  tabTrigger: "dialog",
+  uuid: "244EC5B2-5821-4364-8585-A2B241A57590"},
+ {content: 
+   "display dialog ${1:\"${2:text}\"}${3/.+/ ¬\n\twith icon /}${3:1} ¬\n\tbuttons {\"${5:Cancel}\", \"${4:OK}\"} ¬\n\tdefault button \"$4\"\nset button_pressed to button returned of result\nif button_pressed is \"$4\" then\n\t${6:-- statements for default button}${7/.+/\nelse\n\t/}${7:-- statements for cancel button}\nend if\n",
+  name: "OK/Cancel",
+  scope: "source.applescript",
+  tabTrigger: "dialog",
+  uuid: "3495D4D5-E454-4A90-9288-8E7D34094544"},
+ {content: 
+   "display dialog ${1:\"${2:text}\"}${3/.+/ ¬\n\twith icon /}${3:1} ¬\n\tbuttons {\"${5:Cancel}\", \"${6:Other}\", \"${4:OK}\"} ¬\n\tdefault button \"$4\"\nset button_pressed to button returned of result\nif button_pressed is \"$4\" then\n\t${7:-- statements for default button}${8/.+/\nelse if button_pressed is \"$5\" then\n\t/}${8:-- statements for cancel button}${9/.+/\nelse\n\t/}${9:-- statements for other button}\nend if\n",
+  name: "OK/Cancel/Other",
+  scope: "source.applescript",
+  tabTrigger: "dialog",
+  uuid: "7DD1F1C1-3E7B-4157-951E-58B22BA00AB9"},
+ {content: 
+   "-- \\`menu_click\\`, by Jacob Rus, September 2006\n-- \n-- Accepts a list of form: \\`{\"Finder\", \"View\", \"Arrange By\", \"Date\"}\\`\n-- Execute the specified menu item.  In this case, assuming the Finder \n-- is the active application, arranging the frontmost folder by date.\n\non menu_click(mList)\n\tlocal appName, topMenu, r\n\t\n\t-- Validate our input\n\tif mList's length < 3 then error \"Menu list is not long enough\"\n\t\n\t-- Set these variables for clarity and brevity later on\n\tset {appName, topMenu} to (items 1 through 2 of mList)\n\tset r to (items 3 through (mList's length) of mList)\n\t\n\t-- This overly-long line calls the menu_recurse function with\n\t-- two arguments: r, and a reference to the top-level menu\n\ttell app \"System Events\" to my menu_click_recurse(r, ((process appName)'s (menu bar 1)'s (menu bar item topMenu)'s (menu topMenu)))\nend menu_click\n\non menu_click_recurse(mList, parentObject)\n\tlocal f, r\n\t\n\t-- \\`f\\` = first item, \\`r\\` = rest of items\n\tset f to item 1 of mList\n\tif mList's length > 1 then set r to (items 2 through (mList's length) of mList)\n\t\n\t-- either actually click the menu item, or recurse again\n\ttell app \"System Events\"\n\t\tif mList's length is 1 then\n\t\t\tclick parentObject's menu item f\n\t\telse\n\t\t\tmy menu_click_recurse(r, (parentObject's (menu item f)'s (menu f)))\n\t\tend if\n\tend tell\nend menu_click_recurse",
+  name: "Select Menu Item with UI Scripting",
+  scope: "source.applescript",
+  uuid: "E56CA3CB-D2C0-451F-B695-5E39D152708A"},
+ {content: 
+   "to split of aString by sep\n\tlocal aList, delims\n\ttell AppleScript\n\t\tset delims to text item delimiters\n\t\tset text item delimiters to sep\n\t\tset aList to text items of aString\n\t\tset  text item delimiters to delims\n\tend tell\n\treturn aList\nend split\n\nto join of aList by sep\n\tlocal aString, delims\n\ttell AppleScript\n\t\tset delims to text item delimiters\n\t\tset text item delimiters to sep\n\t\tset aString to aList as string\n\t\tset text item delimiters to delims\n\tend tell\n\treturn aString\nend join",
+  name: "Split/Join Helper Functions",
+  scope: "source.applescript",
+  uuid: "DB76600C-38FC-4B63-A1B6-CC926496B620"},
+ {content: 
+   "display dialog ${1:\"${2:text}\"} ¬\n\tdefault answer ${3:\"${4:default answer}\"}${5/.+/ ¬\n\twith icon /}${5:1} ¬\n\tbuttons {\"${7:Cancel}\", \"${6:OK}\"} ¬\n\tdefault button \"$6\"\nset button_pressed to button returned of result\nset text_typed to text returned of result\nif button_pressed is \"$6\" then\n\t${8:-- statements for default button}${9/.+/\nelse\n\t/}${9:-- statements for cancel button}\nend if",
+  name: "Text Field",
+  scope: "source.applescript",
+  tabTrigger: "dialog",
+  uuid: "E4CD6ED0-73A9-48A5-95F1-74794A93401F"},
+ {content: 
+   "set oldDelims to AppleScript's text item delimiters\nset AppleScript's text item delimiters to {\"${1:,}\"}\n${0:-- statements}\nset AppleScript's text item delimiters to oldDelims",
+  name: "change text item delimiters",
+  scope: "source.applescript",
+  tabTrigger: "delim",
+  uuid: "016BF4B7-53D3-49E0-A8DB-033917FAD031"},
+ {content: "considering ${1:case}\n\t${0:-- statements}\nend considering",
+  name: "considering … end",
+  scope: "source.applescript",
+  tabTrigger: "con",
+  uuid: "F6401A3A-7BDB-41E0-8628-3C2F24C3D5FC"},
+ {content: "copy ${1:value} to ${0:location}",
+  name: "copy … to …",
+  scope: "source.applescript",
+  tabTrigger: "copy",
+  uuid: "3754B2CC-DB4C-4B2D-9DAF-08CD402BB672"},
+ {content: 
+   "${1/.+/set /}${1:shell_output}${1/.+/ to /}do shell script${2/.+/ ¬\n\t/}${2:\"${3:script}\"}${4/.+/ ¬\n\t/}${4:without altering line endings}\n",
+  name: "do shell script …",
+  scope: "source.applescript",
+  tabTrigger: "shell",
+  uuid: "A26CF48B-F79C-4AEC-B2DC-9063DA264DDB"},
+ {content: "duplicate ${1:value} to ${0:location}",
+  name: "duplicate … to …",
+  scope: "source.applescript",
+  tabTrigger: "dup",
+  uuid: "D1F93513-B220-4580-835D-0D689607E25B"},
+ {content: "if ${1:condition} then\n\t${0:-- statements}\nend if",
+  name: "if … end",
+  scope: "source.applescript",
+  tabTrigger: "if",
+  uuid: "301C492A-03BE-4EFF-87A9-2FD276376B9B"},
+ {content: "if ${1:condition} then ${0:value}",
+  name: "if … then …",
+  scope: "source.applescript",
+  tabTrigger: "iff",
+  uuid: "1751AD24-B7C6-480B-A1A9-3A3682D5325E"},
+ {content: 
+   "ignoring ${1:application responses}\n\t${0:-- statements}\nend ignoring",
+  name: "ignoring … end",
+  scope: "source.applescript",
+  tabTrigger: "ign",
+  uuid: "AFC90003-4B8B-4661-8958-81F47D5E8277"},
+ {content: "property parent : ${1:application \"${2:Finder}\"}",
+  name: "prop parent …",
+  scope: "source.applescript",
+  tabTrigger: "parent",
+  uuid: "26A11710-54A2-4AB1-AE52-213869C21314"},
+ {content: "property ${1:prop_name} : ${0:value}",
+  name: "prop …",
+  scope: "source.applescript",
+  tabTrigger: "prop",
+  uuid: "E11743D3-7286-470A-9B32-16AB6188244C"},
+ {content: 
+   "repeat${1/.+/ /}${1:number}${1/.+/ times/}\n\t${0:-- statements}\nend repeat",
+  name: "repeat [times] … end",
+  scope: "source.applescript",
+  tabTrigger: "rep",
+  uuid: "4FFDA694-2B17-41AF-B92A-2172612CC82D"},
+ {content: "repeat until ${1:condition}\n\t${0:-- statements}\nend repeat",
+  name: "repeat until ... end",
+  scope: "source.applescript",
+  tabTrigger: "rep",
+  uuid: "6CAD1A94-B03B-4E78-B67B-2F3CDAADBAFA"},
+ {content: "repeat while ${1:condition}\n\t${0:-- statements}\nend repeat",
+  name: "repeat while ... end",
+  scope: "source.applescript",
+  tabTrigger: "rep",
+  uuid: "82EE8D3B-B2EE-457C-8412-F098DD5827FA"},
+ {content: 
+   "repeat with ${1:counter} from ${2:start} to ${3:stop}${4/.+/ by /}${4:step}\n\t${0:-- statements}\nend repeat",
+  name: "repeat with ... from ... end",
+  scope: "source.applescript",
+  tabTrigger: "rep",
+  uuid: "D1707E70-B8FA-4EAA-B6B6-3BC860268829"},
+ {content: 
+   "repeat with ${1:item} in ${2:list}\n\t${0:-- statements}\nend repeat",
+  name: "repeat with ... in ... end",
+  scope: "source.applescript",
+  tabTrigger: "rep",
+  uuid: "1E31B99C-B436-4BA6-A754-E8EE5A73680D"},
+ {content: 
+   "script ${1:script_object}\n\ton run\n\t\t${0:-- statements}\n\tend run\nend script",
+  name: "script … end",
+  scope: "source.applescript",
+  tabTrigger: "script",
+  uuid: "27E30615-B821-4998-AC39-B503B75699DB"},
+ {content: "set ${1:var_name} to ${0:value}",
+  name: "set … to …",
+  scope: "source.applescript",
+  tabTrigger: "set",
+  uuid: "E9B6FF87-9B89-4F3C-811A-0A8CC78D1B26"},
+ {content: 
+   "tell ${1:application \"${2:Finder}\"}\n\t${0:-- statements}\nend tell",
+  name: "tell [app] … end",
+  scope: "source.applescript",
+  tabTrigger: "tell",
+  uuid: "3E62DF03-32E3-40B6-978F-CD3DD86F8494"},
+ {content: 
+   "try\n\t${1:-- statements}\non error\n\t${2:-- error handling}\nend try",
+  name: "try … on error … end",
+  scope: "source.applescript",
+  tabTrigger: "try",
+  uuid: "A7169FD9-63FB-46EB-974F-6B31FFF4C52B"},
+ {content: 
+   "using terms from ${1:application \"${2:Finder}\"}\n\t${0:-- statements}\nend using terms from",
+  name: "using terms from [app] … end",
+  scope: "source.applescript",
+  tabTrigger: "terms",
+  uuid: "9E5E9C0B-471D-41FE-83CF-6BC51783B27F"},
+ {content: 
+   "with timeout ${1:number} seconds\n\t${0:-- statements}\nend timeout",
+  name: "with timeout … end",
+  scope: "source.applescript",
+  tabTrigger: "timeout",
+  uuid: "9C5B660B-94B9-44DD-AA84-F212AAE0065A"},
+ {content: 
+   "with transaction${1/.+/ /}${1:session}\n\t${0:-- statements}\nend transaction",
+  name: "with transaction … end",
+  scope: "source.applescript",
+  tabTrigger: "transaction",
+  uuid: "E17ACBC4-BDC8-4ACE-B67A-9148BA4B8B18"}]

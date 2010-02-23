@@ -1,9 +1,13 @@
 # Encoding: UTF-8
 
-[{name: "Symbol List: Hidden",
-  scope: "source.js.jsfl meta.property.function entity.name.function",
-  settings: {showInSymbolList: "0"},
-  uuid: "2DDE2259-EE26-4344-AC47-652D1AA90C7A"},
+[{name: "Comments",
+  scope: "source.js.jsfl",
+  settings: 
+   {shellVariables: 
+     [{name: "TM_COMMENT_START", value: "// "},
+      {name: "TM_COMMENT_START_2", value: "/*"},
+      {name: "TM_COMMENT_END_2", value: "*/"}]},
+  uuid: "A70164EE-FD9F-4448-8ED7-E599CBFC1E3B"},
  {name: "Completions",
   scope: "source.js.jsfl",
   settings: 
@@ -712,11 +716,7 @@
       "VideoItem",
       "XMLUI"]},
   uuid: "E4ACF90F-4643-4E3C-83FE-06C4464247A2"},
- {name: "Comments",
-  scope: "source.js.jsfl",
-  settings: 
-   {shellVariables: 
-     [{name: "TM_COMMENT_START", value: "// "},
-      {name: "TM_COMMENT_START_2", value: "/*"},
-      {name: "TM_COMMENT_END_2", value: "*/"}]},
-  uuid: "A70164EE-FD9F-4448-8ED7-E599CBFC1E3B"}]
+ {name: "Symbol List: Hidden",
+  scope: "source.js.jsfl meta.property.function entity.name.function",
+  settings: {showInSymbolList: "0"},
+  uuid: "2DDE2259-EE26-4344-AC47-652D1AA90C7A"}]

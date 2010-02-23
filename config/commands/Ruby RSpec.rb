@@ -1,0 +1,40 @@
+# Encoding: UTF-8
+
+[{beforeRunningCommand: "nop",
+  command: 
+   "#!/usr/bin/env ruby\n\nrequire ENV['TM_BUNDLE_SUPPORT'] + \"/lib/spec/mate/switch_command\"\nSpec::Mate::SwitchCommand.new.go_to_twin(ENV['TM_PROJECT_DIRECTORY'], ENV['TM_FILEPATH'])",
+  input: "none",
+  keyEquivalent: "^$",
+  name: "Alternate File",
+  output: "showAsTooltip",
+  scope: "source.ruby, text.html.ruby",
+  uuid: "0C96C910-0A83-4AFE-AEF7-1F4882A00232"},
+ {beforeRunningCommand: "saveActiveFile",
+  command: 
+   "#!/usr/bin/env ruby\n\nrequire ENV['TM_BUNDLE_SUPPORT'] + \"/lib/spec_mate\"\nSpecMate.new.run_file STDOUT",
+  fallbackInput: "document",
+  input: "document",
+  keyEquivalent: "@r",
+  name: "Run Behaviour Description",
+  output: "showAsHTML",
+  scope: "source.ruby.rspec",
+  uuid: "B5906021-8E54-4863-A13B-EA46333DB5F1"},
+ {beforeRunningCommand: "saveModifiedFiles",
+  command: 
+   "#!/usr/bin/env ruby\n\nrequire ENV['TM_BUNDLE_SUPPORT'] + \"/lib/spec_mate\"\nSpecMate.new.run_files STDOUT\n",
+  input: "none",
+  keyEquivalent: "~@r",
+  name: "Run Behaviour Descriptions in selected files/directories",
+  output: "showAsHTML",
+  scope: "source.ruby.rspec",
+  uuid: "67E726E0-63E2-4840-B8BB-37F665CD34B8"},
+ {beforeRunningCommand: "saveActiveFile",
+  command: 
+   "#!/usr/bin/env ruby\n\nrequire ENV['TM_BUNDLE_SUPPORT'] + \"/lib/spec_mate\"\nSpecMate.new.run_focussed STDOUT\n",
+  fallbackInput: "line",
+  input: "document",
+  keyEquivalent: "@R",
+  name: "Run Focused Example",
+  output: "showAsHTML",
+  scope: "source.ruby.rspec",
+  uuid: "240FDD9D-CD49-4917-9003-80A3E1DADFBA"}]

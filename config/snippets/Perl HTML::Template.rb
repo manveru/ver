@@ -1,27 +1,33 @@
 # Encoding: UTF-8
 
-{"if" => 
-  {scope: "text.html.html-template",
-   name: "If",
-   content: "<TMPL_IF NAME=\"$1\">\n\t$2\n</TMPL_IF>"},
- "loop" => 
-  {scope: "text.html.html-template",
-   name: "Loop",
-   content: "<TMPL_LOOP NAME=\"$1\">\n\t$2\n</TMPL_LOOP>"},
- "unless" => 
-  {scope: "text.html.html-template",
-   name: "Unless",
-   content: "<TMPL_UNLESS NAME=\"$1\">\n\t$2\n</TMPL_UNLESS>"},
- "var" => 
-  {scope: "text.html.html-template",
-   name: "Var",
-   content: 
-    "<TMPL_VAR NAME=\"$1\"${2:${3: DEFAULT=\"$4\"}${5: ESCAPE=\"${6:html|js|url|none}\"}}>"},
- "ife" => 
-  {scope: "text.html.html-template",
-   name: "If-Else",
-   content: "<TMPL_IF NAME=\"$1\">\n\t$2\n<TMPL_ELSE>\n\t$3\n</TMPL_IF>"},
- "inc" => 
-  {scope: "text.html.html-template",
-   name: "Include",
-   content: "<TMPL_INCLUDE NAME=\"$1\">"}}
+[{content: "<TMPL_IF NAME=\"$1\">\n\t$2\n</TMPL_IF>",
+  name: "If",
+  scope: "text.html.html-template",
+  tabTrigger: "if",
+  uuid: "907E21D1-ACD9-4CB6-9C20-C1BA813BFAED"},
+ {content: "<TMPL_IF NAME=\"$1\">\n\t$2\n<TMPL_ELSE>\n\t$3\n</TMPL_IF>",
+  name: "If-Else",
+  scope: "text.html.html-template",
+  tabTrigger: "ife",
+  uuid: "22A827CA-B0B7-4468-9FCD-95B5842ABF90"},
+ {content: "<TMPL_INCLUDE NAME=\"$1\">",
+  name: "Include",
+  scope: "text.html.html-template",
+  tabTrigger: "inc",
+  uuid: "30FBFAAA-B7E5-4A2B-8092-C8367C0838B9"},
+ {content: "<TMPL_LOOP NAME=\"$1\">\n\t$2\n</TMPL_LOOP>",
+  name: "Loop",
+  scope: "text.html.html-template",
+  tabTrigger: "loop",
+  uuid: "857B0182-F407-4ADC-B166-463C47A0369B"},
+ {content: "<TMPL_UNLESS NAME=\"$1\">\n\t$2\n</TMPL_UNLESS>",
+  name: "Unless",
+  scope: "text.html.html-template",
+  tabTrigger: "unless",
+  uuid: "826B32E3-9913-4D02-95E7-65716121F1F4"},
+ {content: 
+   "<TMPL_VAR NAME=\"$1\"${2:${3: DEFAULT=\"$4\"}${5: ESCAPE=\"${6:html|js|url|none}\"}}>",
+  name: "Var",
+  scope: "text.html.html-template",
+  tabTrigger: "var",
+  uuid: "AA7F838B-1706-4373-8AD4-9FD1796C838F"}]

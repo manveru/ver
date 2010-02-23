@@ -1,13 +1,6 @@
 # Encoding: UTF-8
 
-[{name: "Symbol List: Target",
-  scope: "meta.tag.target.xml.ant",
-  settings: 
-   {showInSymbolList: 1,
-    symbolTransformation: 
-     "\t\t\n\t\ts/.*name=\"([\\w\\.:-]+)\".*/$1/g;\t\t# Keep target name only.\n\t\ts/^/target: /;\t\t\t\t# Add target prefix.\n\t"},
-  uuid: "6078A7B7-1947-4A1A-9669-F9448479FA65"},
- {name: "Completions",
+[{name: "Completions",
   scope: "text.xml.ant",
   settings: 
    {completions: 
@@ -345,4 +338,11 @@
    {showInSymbolList: 1,
     symbolTransformation: 
      "\t\t\n\t\ts/.*name=\"([\\w-]+)\".*/$1/g;\t\t# Keep macro name only.\n\t\ts/^/macro: /;\t\t\t\t# Add macro prefix.\n\t"},
-  uuid: "250EA0F3-362B-406D-8FDD-D1EF8C3F2D88"}]
+  uuid: "250EA0F3-362B-406D-8FDD-D1EF8C3F2D88"},
+ {name: "Symbol List: Target",
+  scope: "meta.tag.target.xml.ant",
+  settings: 
+   {showInSymbolList: 1,
+    symbolTransformation: 
+     "\t\t\n\t\ts/.*name=\"([\\w\\.:-]+)\".*/$1/g;\t\t# Keep target name only.\n\t\ts/^/target: /;\t\t\t\t# Add target prefix.\n\t"},
+  uuid: "6078A7B7-1947-4A1A-9669-F9448479FA65"}]

@@ -1,0 +1,72 @@
+# Encoding: UTF-8
+
+[{beforeRunningCommand: "nop",
+  command: 
+   "#!/usr/bin/env ruby -rjcode -Ku\nrequire \"\#{ENV['TM_BUNDLE_SUPPORT']}/lib/blogging.rb\"\nBlogging.new.choose_blog_endpoint",
+  input: "none",
+  name: "Blog",
+  output: "afterSelectedText",
+  scope: "text.blog",
+  tabTrigger: "blog",
+  uuid: "C316CEDC-A4E1-41DE-B102-CDF78845ACF3"},
+ {beforeRunningCommand: "nop",
+  bundleUUID: "79741B2E-271D-4CBC-A61A-380C83D36863",
+  command: 
+   "#!/usr/bin/env ruby -rjcode -Ku\nrequire \"\#{ENV['TM_SUPPORT_PATH']}/lib/progress\"\nrequire \"\#{ENV['TM_SUPPORT_PATH']}/lib/exit_codes\"\nrequire \"\#{ENV['TM_SUPPORT_PATH']}/lib/escape\"\nrequire \"\#{ENV['TM_BUNDLE_SUPPORT']}/lib/blogging\"\nrequire 'xmlrpc/client'\n\n# fetches available categories (only tested with Wordpress)\n\ndef select_from_cats(cats)\n  # the metaWeblog API says the result is a per-category struct containing a\n  # description, but nothing about a categoryName (which e.g. WP will *also*\n  # give us). So we prefer a categoryName, then falls back on description,\n  # though Typo just returns strings instead of structs, so we handle that as\n  # well\n  names = cats.map do |p|\n    if Hash === p && p.has_key?('categoryName')\n      p['categoryName']\n    elsif Hash === p && p.has_key?('description')\n      p['description']\n    else\n      p.to_s\n    end\n  end\n\n  names.sort! { |a, b| a <=> b }\n  names.map! { |p| '\"' + e_as(p) + '\"' }\n\n  res = %x{ iconv <<'APPLESCRIPT' -f utf-8 -t mac|osascript 2>/dev/null\n    tell app \"TextMate\" to ¬\n      return choose from list { \#{names.join ','} } ¬\n        with title \"Categories\" ¬\n        with prompt \"Choose categories to insert:\" ¬\n        OK button name \"Insert\" ¬\n        with multiple selections allowed\n  }.chomp\n\n  TextMate.exit_discard if res == 'false'\n  puts res.gsub(/([^,]+),?\\s*/, \"Category: \\\\1\\n\")\nend # select_cats\n\ncred = Blogging.new\nendpoint = cred.endpoint\nusername = cred.username\npassword = cred.password\nres = TextMate.call_with_progress(:title => \"Fetch Categories\", :message => \"Contacting Server “\#{cred.host}”…\") do\n    cred.client.call(\"metaWeblog.getCategories\", endpoint, username, password)\nend\n\nTextMate.exit_show_tool_tip \"No categories are available!\" if res.nil? || res.empty?\nselect_from_cats(res)\n",
+  input: "document",
+  name: "Category",
+  output: "afterSelectedText",
+  scope: 
+   "text.blog, text.blog text.html.markdown, text.blog text.plain, text.blog text.html.textile, text.blog text.html",
+  tabTrigger: "cat",
+  uuid: "40318F5D-111F-4451-BBB0-F282DEAC881F"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "#!/usr/bin/env ruby -rjcode -Ku\nrequire \"\#{ENV['TM_BUNDLE_SUPPORT']}/lib/blogging.rb\"\nBlogging.new.fetch",
+  input: "none",
+  name: "Fetch Post",
+  output: "openAsNewDocument",
+  uuid: "FA5DC73E-AAE0-4C69-86E1-87B9E0390FD0"},
+ {beforeRunningCommand: "nop",
+  bundleUUID: "79741B2E-271D-4CBC-A61A-380C83D36863",
+  command: 
+   ". \"$TM_SUPPORT_PATH/lib/webpreview.sh\"\nhtml_header \"Blogging Bundle Help\" \"Blogging\"\n\"$TM_SUPPORT_PATH/lib/markdown_to_help.rb\" \"$TM_BUNDLE_SUPPORT/help.markdown\"\nhtml_footer\n",
+  input: "selection",
+  name: "Help",
+  output: "showAsHTML",
+  scope: "text.blog",
+  uuid: "17B2F39B-5CCB-4B0E-B305-8C27BED56887"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "#!/usr/bin/env ruby -rjcode -Ku\nrequire \"\#{ENV['TM_BUNDLE_SUPPORT']}/lib/blogging.rb\"\nBlogging.new.post_or_update",
+  input: "document",
+  keyEquivalent: "^@p",
+  name: "Post to Blog",
+  output: "showAsTooltip",
+  scope: "text.blog",
+  uuid: "60853977-B0D2-4776-A3D9-4B6C09E18596"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "#!/usr/bin/env ruby -rjcode -Ku\nrequire \"\#{ENV['TM_BUNDLE_SUPPORT']}/lib/blogging.rb\"\nBlogging.new.preview",
+  input: "document",
+  keyEquivalent: "^~@p",
+  name: "Preview",
+  output: "showAsHTML",
+  scope: 
+   "text.blog, text.blog text.html.markdown, text.blog text.plain, text.blog text.html.textile, text.blog text.html",
+  uuid: "10CFDE4C-E433-48F8-AB94-17E1FBEFC074"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "AccountFile=\"$HOME/Library/Preferences/com.macromates.textmate.blogging.txt\"\nif [[ ! -e \"$AccountFile\" ]]; then\n    echo \"# List of Blogs\n#\n# Enter a blog name followed by the endpoint URL\n#\n# Blog Name      URL\nexample          http://user@example.com/xmlrpc\" > \"$AccountFile\"\nfi\nAccountFile=${AccountFile// /%20} # turn spaces into %20\nopen txmt://open?url=file://$AccountFile",
+  input: "none",
+  name: "Setup Blogs",
+  output: "discard",
+  uuid: "8DCBE1EB-A3CC-4559-872E-34A3643F0BC4"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "#!/usr/bin/env ruby -rjcode -Ku\nrequire \"\#{ENV['TM_BUNDLE_SUPPORT']}/lib/blogging.rb\"\nBlogging.new.view",
+  input: "document",
+  name: "View Online Version",
+  output: "discard",
+  scope: "text.blog",
+  uuid: "BD6E6210-F4A3-4821-BA43-A9DFF4178704"}]

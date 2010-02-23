@@ -1,35 +1,49 @@
 # Encoding: UTF-8
 
-{"begin" => 
-  {scope: "source.pascal", name: "begin … end", content: "begin\n\t$0\nend;"},
- "prop" => 
-  {scope: "source.pascal",
-   name: "property",
-   content: 
-    "property ${1:PropertyName}: ${2:WideString} read ${3:F}${1} write ${4:F}${1};$0"},
- "unit" => 
-  {scope: "source.pascal",
-   name: "unit … implementation … end",
-   content: 
-    "unit ${1:unit_name};\n\ninterface\n\nuses\n\tSysUtils${2:, Classes};\n\nimplementation\n\n$0\n\nend."},
- nil => {scope: "source.pascal", name: "Newline", content: "#13#10"},
- "if" => 
-  {scope: "source.pascal",
-   name: "if … end",
-   content: "if ${1} then begin\n\t$0\nend;"},
- "constructor" => 
-  {scope: "source.pascal",
-   name: "constructor, destructor",
-   content: "constructor Create${1:()};\ndestructor Destroy; override;$0"},
- "for" => 
-  {scope: "source.pascal",
-   name: "for … end",
-   content: "for ${1:i} := ${2:0} to ${3:max} do begin\n\t$0\nend;"},
- "class" => 
-  {scope: "source.pascal",
-   name: "class … end",
-   content: "T${1:ClassName} = class\n\t$0\nend;"},
- "try" => 
-  {scope: "source.pascal",
-   name: "try … finally",
-   content: "try\n\t$0\nfinally\n\t$1\nend;"}}
+[{content: "#13#10",
+  keyEquivalent: "^\n",
+  name: "Newline",
+  scope: "source.pascal",
+  uuid: "6435405A-6B00-4860-A7EB-AC7D63FF286A"},
+ {content: "begin\n\t$0\nend;",
+  name: "begin … end",
+  scope: "source.pascal",
+  tabTrigger: "begin",
+  uuid: "8B351BE6-14CC-4C00-85ED-F307942A027F"},
+ {content: "T${1:ClassName} = class\n\t$0\nend;",
+  name: "class … end",
+  scope: "source.pascal",
+  tabTrigger: "class",
+  uuid: "B8D8A919-B1D9-48BE-B19B-E544FF7BD8CC"},
+ {content: "constructor Create${1:()};\ndestructor Destroy; override;$0",
+  name: "constructor, destructor",
+  scope: "source.pascal",
+  tabTrigger: "constructor",
+  uuid: "FAC2C75B-FCE5-4A7E-9B17-63E775BA6B21"},
+ {content: "for ${1:i} := ${2:0} to ${3:max} do begin\n\t$0\nend;",
+  name: "for … end",
+  scope: "source.pascal",
+  tabTrigger: "for",
+  uuid: "0F08A7E4-18E3-4F51-BC7F-5FFC378340AB"},
+ {content: "if ${1} then begin\n\t$0\nend;",
+  name: "if … end",
+  scope: "source.pascal",
+  tabTrigger: "if",
+  uuid: "79D1758B-ADC2-4421-81E0-A59E13BA9485"},
+ {content: 
+   "property ${1:PropertyName}: ${2:WideString} read ${3:F}${1} write ${4:F}${1};$0",
+  name: "property",
+  scope: "source.pascal",
+  tabTrigger: "prop",
+  uuid: "2CB361D7-E167-4B41-A094-07F6BD9FB896"},
+ {content: "try\n\t$0\nfinally\n\t$1\nend;",
+  name: "try … finally",
+  scope: "source.pascal",
+  tabTrigger: "try",
+  uuid: "4FA629B0-2CD2-4833-9C9E-F44EE762A997"},
+ {content: 
+   "unit ${1:unit_name};\n\ninterface\n\nuses\n\tSysUtils${2:, Classes};\n\nimplementation\n\n$0\n\nend.",
+  name: "unit … implementation … end",
+  scope: "source.pascal",
+  tabTrigger: "unit",
+  uuid: "72E62411-1227-4115-BC7E-CA3BDBC95B26"}]

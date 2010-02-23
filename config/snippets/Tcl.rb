@@ -1,28 +1,34 @@
 # Encoding: UTF-8
 
-{"switch" => 
-  {scope: "source.tcl",
-   name: "switch...",
-   content: 
-    "switch ${1:-exact} -- ${2:\\$var} {\n\t${3:match} {\n\t\t${4}\n\t}\n\tdefault {${5}}\n}\n"},
- "if" => 
-  {scope: "source.tcl",
-   name: "if...",
-   content: "if {${1:condition}} {\n\t${2}\n}\n"},
- "proc" => 
-  {scope: "source.tcl",
-   name: "proc...",
-   content: "proc ${1:name} {${2:args}} \\\\\n{\n\t${3}\n}\n"},
- "foreach" => 
-  {scope: "source.tcl",
-   name: "foreach...",
-   content: "foreach ${1:var} ${2:\\$list} {\n\t${3}\n}\n"},
- "while" => 
-  {scope: "source.tcl",
-   name: "while...",
-   content: "while {${1:condition}} {\n\t${2}\n}\n"},
- "for" => 
-  {scope: "source.tcl",
-   name: "for...",
-   content: 
-    "for {${1:set i 0}} {${2:\\$i < \\$n}} {${3:incr i}} {\n\t${4}\n}\n"}}
+[{content: 
+   "for {${1:set i 0}} {${2:\\$i < \\$n}} {${3:incr i}} {\n\t${4}\n}\n",
+  name: "for...",
+  scope: "source.tcl",
+  tabTrigger: "for",
+  uuid: "35FD4583-34CA-446A-958B-D6446220B2BF"},
+ {content: "foreach ${1:var} ${2:\\$list} {\n\t${3}\n}\n",
+  name: "foreach...",
+  scope: "source.tcl",
+  tabTrigger: "foreach",
+  uuid: "686ACE8E-AF2D-4429-BD3D-DB2272DE22FE"},
+ {content: "if {${1:condition}} {\n\t${2}\n}\n",
+  name: "if...",
+  scope: "source.tcl",
+  tabTrigger: "if",
+  uuid: "3BF57469-548C-4745-BB68-127C29CE70A1"},
+ {content: "proc ${1:name} {${2:args}} \\\\\n{\n\t${3}\n}\n",
+  name: "proc...",
+  scope: "source.tcl",
+  tabTrigger: "proc",
+  uuid: "16FB1812-6644-416D-8544-03F7E9C7C45E"},
+ {content: 
+   "switch ${1:-exact} -- ${2:\\$var} {\n\t${3:match} {\n\t\t${4}\n\t}\n\tdefault {${5}}\n}\n",
+  name: "switch...",
+  scope: "source.tcl",
+  tabTrigger: "switch",
+  uuid: "9301C846-1EED-4749-AB9D-2728EA661E97"},
+ {content: "while {${1:condition}} {\n\t${2}\n}\n",
+  name: "while...",
+  scope: "source.tcl",
+  tabTrigger: "while",
+  uuid: "6F958C1C-2A05-4794-A551-4C3ABAAEE817"}]

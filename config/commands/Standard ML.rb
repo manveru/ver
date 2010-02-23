@@ -1,0 +1,38 @@
+# Encoding: UTF-8
+
+[{beforeRunningCommand: "nop",
+  command: 
+   "require_cmd \"${TM_SML:=sml}\"\necho \"CM.make \\\"sources.cm\\\";\"|\"$TM_SML\"|pre",
+  input: "none",
+  keyEquivalent: "^R",
+  name: "Build CM",
+  output: "showAsHTML",
+  scope: "source.ml",
+  uuid: "1EA6E877-4B4E-44EC-9118-9295A0F1432D"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "if [[ -d \"$TM_SMLNJ_HOME/base/system\" ]]; then\n  cd \"$TM_SMLNJ_HOME/base/system\"\n  make\nelse\n  echo \"No such folder: $TM_SMLNJ_HOME/base/system\"\nfi\n",
+  input: "none",
+  keyEquivalent: "@b",
+  name: "Build SML",
+  output: "showAsHTML",
+  scope: "source.ml",
+  uuid: "0E144686-095D-4B69-94D0-6E0ECA41C90D"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "ruby -- \"$TM_SUPPORT_PATH/bin/checknest.rb\" '(?x) (functor|structure) (.+) = (?=\\s*struct)' 'end' 'end (* $1 $2 *)' -n$TM_LINE_NUMBER",
+  input: "document",
+  keyEquivalent: "~@.",
+  name: "Close Module Decl",
+  output: "afterSelectedText",
+  scope: "source.ml",
+  uuid: "C008E916-56AE-4310-9C05-D3070AAF1CF8"},
+ {autoScrollOutput: true,
+  beforeRunningCommand: "nop",
+  command: "require_cmd \"${TM_SML:=sml}\"\n\"$TM_SML\"|pre",
+  input: "selection",
+  keyEquivalent: "@r",
+  name: "Run in SML",
+  output: "showAsHTML",
+  scope: "source.ml",
+  uuid: "18819157-C273-4649-9013-3A2705993795"}]

@@ -1,17 +1,30 @@
 # Encoding: UTF-8
 
-{"isoD" => 
-  {scope: nil, name: "Current Date — YYYY-MM-DD", content: "`date +%Y-%m-%d`"},
- nil => 
-  {scope: "meta.bullet-point.star",
-   name: "Continue Star Bullet",
-   content: "\n* "},
- "lorem" => 
-  {scope: nil,
-   name: "Lorem ipsum",
-   content: 
-    "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."},
- "c)" => 
-  {scope: nil,
-   name: "Copyright Notice",
-   content: "(c) Copyright `date +%Y` $TM_FULLNAME. All Rights Reserved. "}}
+[{content: "\n• ",
+  keyEquivalent: "",
+  name: "Continue Bullet",
+  scope: "meta.bullet-point",
+  uuid: "C30BA263-B10E-11D9-9975-000D93589AF6"},
+ {content: "\n· ",
+  keyEquivalent: "",
+  name: "Continue Light Bullet",
+  scope: "meta.bullet-point.light",
+  uuid: "EA149DAB-B10E-11D9-9975-000D93589AF6"},
+ {content: "\n* ",
+  keyEquivalent: "",
+  name: "Continue Star Bullet",
+  scope: "meta.bullet-point.star",
+  uuid: "B5E22191-B151-11D9-85C9-000D93589AF6"},
+ {content: "(c) Copyright `date +%Y` $TM_FULLNAME. All Rights Reserved. ",
+  name: "Copyright Notice",
+  tabTrigger: "c)",
+  uuid: "BC8B89E4-5F16-11D9-B9C3-000D93589AF6"},
+ {content: "`date +%Y-%m-%d`",
+  name: "Current Date — YYYY-MM-DD",
+  tabTrigger: "isoD",
+  uuid: "C9CAF012-6E50-11D9-AA12-000D93589AF6"},
+ {content: 
+   "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  name: "Lorem ipsum",
+  tabTrigger: "lorem",
+  uuid: "BA9A2B17-DA89-49A5-809B-AC7510C24625"}]

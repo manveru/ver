@@ -1,12 +1,6 @@
 # Encoding: UTF-8
 
-[{name: "Typing Pairs: Default",
-  scope: "source.fscript",
-  settings: 
-   {smartTypingPairs: 
-     [["'", "'"], ["\"", "\""], ["(", ")"], ["{", "}"], ["[", "]"]]},
-  uuid: "DCAC81A0-6701-4EEC-B499-7C5859C7140F"},
- {name: "Miscellaneous",
+[{name: "Miscellaneous",
   scope: "source.fscript",
   settings: 
    {decreaseIndentPattern: "^\\s*\\][.\\s]*$",
@@ -26,4 +20,10 @@
       ["{", "}"],
       ["[", "]"],
       ["|", "|"]]},
-  uuid: "FEFBC3CD-E647-4DF0-903E-491E892E8484"}]
+  uuid: "FEFBC3CD-E647-4DF0-903E-491E892E8484"},
+ {name: "Typing Pairs: Default",
+  scope: "source.fscript",
+  settings: 
+   {smartTypingPairs: 
+     [["'", "'"], ["\"", "\""], ["(", ")"], ["{", "}"], ["[", "]"]]},
+  uuid: "DCAC81A0-6701-4EEC-B499-7C5859C7140F"}]

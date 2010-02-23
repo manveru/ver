@@ -1,6 +1,10 @@
 # Encoding: UTF-8
 
-[{name: "Miscellaneous",
+[{name: "Comments",
+  scope: "source.tcl",
+  settings: {shellVariables: [{name: "TM_COMMENT_START", value: "# "}]},
+  uuid: "742ABED6-94AD-4150-B0C8-329825E18B61"},
+ {name: "Miscellaneous",
   scope: "source.tcl",
   settings: 
    {highlightPairs: [["[", "]"], ["{", "}"]],
@@ -12,8 +16,4 @@
   settings: 
    {highlightPairs: [["[", "]"], ["{", "}"], ["(", ")"]],
     smartTypingPairs: [["[", "]"], ["{", "}"], ["(", ")"]]},
-  uuid: "0FC70800-0EC9-436E-B290-67E83A3C8B53"},
- {name: "Comments",
-  scope: "source.tcl",
-  settings: {shellVariables: [{name: "TM_COMMENT_START", value: "# "}]},
-  uuid: "742ABED6-94AD-4150-B0C8-329825E18B61"}]
+  uuid: "0FC70800-0EC9-436E-B290-67E83A3C8B53"}]

@@ -1,0 +1,22 @@
+# Encoding: UTF-8
+
+[{beforeRunningCommand: "nop",
+  command: 
+   "#!/usr/bin/env ruby\n\nrequire \"\#{ENV['TM_BUNDLE_SUPPORT']}/lib/ocamlcompletion\"\nrequire \"\#{ENV['TM_SUPPORT_PATH']}/lib/osx/plist\"\nrequire \"\#{ENV['TM_SUPPORT_PATH']}/lib/escape\"\n\n$contents = $stdin.read\n$line = ENV['TM_CURRENT_LINE']\n$linepos = ENV['TM_LINE_INDEX'].to_i\n\n\nclass Array\n  def map_i(&block)\n    accum = []\n    self.each_index do |i|\n      accum << yield(i, self[i])\n    end\n    accum\n  end\nend\n\n\ndef extract_module_from_line\n  if $line == \"\" then return ['',/^/] end\n\n  accum = []\n  start = [($linepos - 1), 0].max\n    \n  start.downto(0) do |i|\n    if $line[i].chr !~ /[A-Za-z_.]/\n      break\n    end\n    accum << $line[i].chr\n  end\n  \n  full = accum.reverse.join\n  if full[-1] == '.' || full.strip.length == 0\n    [full.chomp('.'), /^/]\n  else\n    matches = /^(.*?)\\.([^.]*)$/.match(full)\n    if matches\n      [matches[1].to_s, /^\#{Regexp.escape(matches[2].to_s)}/]\n    else\n      [\"\", /^\#{Regexp.escape(full)}/]\n    end\n  end\nend\n\n\ndef convert_to_snippet(str, stripregex)\n  matches = /^(\\S+)\\s+:\\s+(.*)$/.match(str)\n  funname = matches[1]\n  args = []\n  depth = 0\n  last = 'a'\n  token = []\n  matches[2].each_byte do |b|\n    c = b.chr\n    case c\n    when '('\n      token << c\n      depth += 1\n    when ')'\n      token << c\n      depth -= 1\n    when '>'\n      if last == '-' and depth == 0\n        args << (token.join.chomp('-').strip + ' ->')\n        token = []\n      else\n        token << c\n      end\n    else\n      token << c\n    end\n    last = c\n  end\n  args[-1] = args[-1][/^(.*) ->$/, 1]\n  i = 2\n  args = args.map do |a| \n    a.strip!    \n    i += 1\n    if a =~ /^\\S+:/\n      if a =~ /^\\?/\n        i += 1 \n        \"\\$\\{\#{i - 1}:~\#{a[/^\\S+:/]}\\$\\{\#{i}:\#{e_sn(a[/:(.*)$/, 1])}\\}}\"\n      else\n        \"~\#{a[/^\\S+:/]}\\$\\{\#{i}:\#{e_sn(a[/:(.*)$/, 1])}\\}\" \n      end\n    else\n      \"\\$\\{\#{i}:\#{e_sn(a)}\\}\" \n    end\n  end\n  snippet = \"\#{funname} ${1:\#{args.join(' ')}}\".sub(stripregex, '')\n  \n  snippet\nend\n\n\nbegin\n  openmodules = OCamlCompletion.open_modules($contents)\n  modulename, regex = extract_module_from_line\n  modules = if modulename == '' then nil else [modulename] end\n  possible_completions = OCamlCompletion::cmigrep(regex.source, :values, modules, openmodules).split(/\\n/).select { |l| l =~ /^val\\s+/ }.sort.uniq\n  possible_completions = possible_completions.map do |c|\n    chash = Hash.new\n    chash['completion'] = c[/^val\\s+(.*)/, 1]\n      \n    chash\n  end\n\n  plist = Hash.new\n  plist['possibleCompletions'] = possible_completions\n\n  cio = IO.popen(\"'\#{ENV['TM_SUPPORT_PATH']}/bin/tm_dialog' -m '\#{ENV['TM_BUNDLE_SUPPORT']}/nibs/CompletionsWindow.nib' | pl\", 'r+')\n  cio.puts(plist.to_plist)\n  cio.close_write\n  choice = OSX::PropertyList.load(cio.read)\n  if !choice['returnButton'] || choice['returnButton'] != 'Cancel'\n    selection = choice['result']['returnArgument'].to_i\n    snippettxt = plist['possibleCompletions'][selection]['completion']\n    print convert_to_snippet(snippettxt, regex)\n  else\n    print \"\"\n  end\nrescue\n  print \"\"\nend",
+  fallbackInput: "line",
+  input: "document",
+  keyEquivalent: "~",
+  name: "Complete vals",
+  output: "showAsTooltip",
+  scope: "source.ocaml",
+  uuid: "55235037-C23A-4B8D-8ECD-9ED5737DD0D5"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "#!/usr/bin/env ruby\n\nrequire \"\#{ENV['TM_SUPPORT_PATH']}/lib/ocamlcompletion\"\nrequire \"\#{ENV['TM_SUPPORT_PATH']}/lib/osx/plist\"\n\nsearchstring = $stdin.read.strip\n\nplist = \"{ignoreCase = 0; regularExpression = 0; searchString = \\\"\#{searchstring}\\\"; restrictTo = \\\"all\\\";}\"\noptions = `'\#{ENV['TM_SUPPORT_PATH']}/bin/tm_dialog' -p '\#{plist}' -m '\#{ENV['TM_BUNDLE_SUPPORT']}/nibs/SearchWindow.nib' | pl`\n\n\noptions = OSX::PropertyList.load(options)\nif options['returnButton'] == 'Search'\n  searchtype = options['restrictTo'].to_sym\n  searchstring = options['searchString']\n  if options['regularExpression'] != 1\n    searchstring = Regexp.escape(searchstring)\n  end\n  answers = OCamlCompletion::cmigrep(searchstring, searchtype)\n  if answers != ''\n    puts answers\n  else\n    puts 'No matches found'\n  end\nend",
+  fallbackInput: "word",
+  input: "selection",
+  keyEquivalent: "^~@f",
+  name: "Search .cmi",
+  output: "showAsTooltip",
+  scope: "source.ocaml",
+  uuid: "437E330A-5F7B-42D2-A69E-1112F1DAAE32"}]

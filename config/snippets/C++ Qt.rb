@@ -1,59 +1,74 @@
 # Encoding: UTF-8
 
-{"latin" => 
-  {scope: "source.c++.qt",
-   name: "toLatin1().data()",
-   content: "toLatin1().data()"},
- "warn" => 
-  {scope: "source.c++.qt",
-   name: "qWarning(...)",
-   content: 
-    "qWarning(\"$1\"${1/[^%]*(%)?.*/(?1:, :\\);)/}$2${1/[^%]*(%)?.*/(?1:\\);)/}"},
- "/*" => 
-  {scope: "source.c++.qt", name: "Block Comment", content: "/*\n * $0\n */"},
- "qSort" => 
-  {scope: "source.c++.qt",
-   name: "qSort(...)",
-   content: "qSort(${1:list}.begin(), ${1}.end())"},
- "fe" => 
-  {scope: "source.c++.qt",
-   name: "foreach",
-   content: 
-    "foreach( ${1:variable}, ${2:container} )\n{\n\t${3:doSomething();} \n}$0"},
- "utf8" => 
-  {scope: "source.c++.qt",
-   name: "toUtf8().data()",
-   content: "toUtf8().data()"},
- "con" => 
-  {scope: "source.c++.qt",
-   name: "connect",
-   content: 
-    "connect( ${1:sender}, SIGNAL(${2:signal}(${3})), ${4:reciever}, ${5:SLOT}(${6:slot}($3)) );$0"},
- "dis" => 
-  {scope: "source.c++.qt",
-   name: "disconnect",
-   content: 
-    "disconnect( ${1:sender}, SIGNAL(${2:signal}(${3})), ${4:reciever}, ${5:SLOT}(${6:slot}($3)) );$0"},
- "qp" => 
-  {scope: "source.c++.qt",
-   name: "Q_PROPERTY",
-   content: 
-    "Q_PROPERTY( ${1:type} ${2:name} READ ${3:$2} ${4:WRITE ${5:${2/.*/set\\u$0/}} ${6:RESET ${7:${2/.*/reset\\u$0/}} DESIGNABLE ${8:true} SCRIPTABLE ${9:true} STORED ${10:true} }})$0"},
- "singleShot" => 
-  {scope: "source.c++.qt",
-   name: "QTimer::singleShot(...)",
-   content: "QTimer::singleShot(${1:0}, ${2:this}, SLOT(${3:slotName()}))"},
- "stub" => 
-  {scope: "source.qmake",
-   name: "qmake Project template stub",
-   content: 
-    "TEMPLATE = app\nCONFIG += qt\nQT += gui\nSOURCES += ${1:main.cpp}\n\nwindows {\n\t# otherwise we would get 'unresolved external _WinMainCRTStartup'\n\t# when compiling with MSVC\n\tMOC_DIR     = _moc\n\tOBJECTS_DIR = _obj\n\tUI_DIR      = _ui\n\tRCC_DIR     = _rcc\n}\n!windows {\n\tMOC_DIR     = .moc\n\tOBJECTS_DIR = .obj\n\tUI_DIR      = .ui\n\tRCC_DIR     = .rcc\n}\n\n$0"},
- "qmain" => 
-  {scope: "source.c++.qt",
-   name: "main()",
-   content: 
-    "#include <QApplication>\n\nint main (int argc, char *argv[])\n{\n\tQApplication app(argc, argv);\n\t$0\n\treturn app.exec();\n}"},
- nil => 
-  {scope: "source.c++.qt comment.block.c",
-   name: "Block Comment Newline",
-   content: "\n* "}}
+[{content: "/*\n * $0\n */",
+  name: "Block Comment",
+  scope: "source.c++.qt",
+  tabTrigger: "/*",
+  uuid: "2FC991AF-86B9-4227-838A-30164B4923A1"},
+ {content: "\n* ",
+  keyEquivalent: "\n",
+  name: "Block Comment Newline",
+  scope: "source.c++.qt comment.block.c",
+  uuid: "9CD2DCE1-C4FE-46CF-BE35-D38041740C5D"},
+ {content: "QTimer::singleShot(${1:0}, ${2:this}, SLOT(${3:slotName()}))",
+  name: "QTimer::singleShot(...)",
+  scope: "source.c++.qt",
+  tabTrigger: "singleShot",
+  uuid: "466A5E55-F2E9-4542-8CE7-5799B4DC9BF8"},
+ {content: 
+   "Q_PROPERTY( ${1:type} ${2:name} READ ${3:$2} ${4:WRITE ${5:${2/.*/set\\u$0/}} ${6:RESET ${7:${2/.*/reset\\u$0/}} DESIGNABLE ${8:true} SCRIPTABLE ${9:true} STORED ${10:true} }})$0",
+  name: "Q_PROPERTY",
+  scope: "source.c++.qt",
+  tabTrigger: "qp",
+  uuid: "204E5213-CAF7-47FD-B272-34997632832D"},
+ {content: 
+   "connect( ${1:sender}, SIGNAL(${2:signal}(${3})), ${4:reciever}, ${5:SLOT}(${6:slot}($3)) );$0",
+  name: "connect",
+  scope: "source.c++.qt",
+  tabTrigger: "con",
+  uuid: "8D9D10AE-0531-11DB-8509-0011242E4184"},
+ {content: 
+   "disconnect( ${1:sender}, SIGNAL(${2:signal}(${3})), ${4:reciever}, ${5:SLOT}(${6:slot}($3)) );$0",
+  name: "disconnect",
+  scope: "source.c++.qt",
+  tabTrigger: "dis",
+  uuid: "48A79C21-0832-11DB-9495-0011242E4184"},
+ {content: 
+   "foreach( ${1:variable}, ${2:container} )\n{\n\t${3:doSomething();} \n}$0",
+  name: "foreach",
+  scope: "source.c++.qt",
+  tabTrigger: "fe",
+  uuid: "90F2231F-959B-4CA7-9CAF-7165E5160D04"},
+ {content: 
+   "#include <QApplication>\n\nint main (int argc, char *argv[])\n{\n\tQApplication app(argc, argv);\n\t$0\n\treturn app.exec();\n}",
+  name: "main()",
+  scope: "source.c++.qt",
+  tabTrigger: "qmain",
+  uuid: "1BE36C25-5F22-45EE-9339-C0A3D1EACEA2"},
+ {content: "qSort(${1:list}.begin(), ${1}.end())",
+  name: "qSort(...)",
+  scope: "source.c++.qt",
+  tabTrigger: "qSort",
+  uuid: "D05EDFB2-D456-420B-87EB-BD4CBEDAA58E"},
+ {content: 
+   "qWarning(\"$1\"${1/[^%]*(%)?.*/(?1:, :\\);)/}$2${1/[^%]*(%)?.*/(?1:\\);)/}",
+  name: "qWarning(...)",
+  scope: "source.c++.qt",
+  tabTrigger: "warn",
+  uuid: "611BEDBC-30B4-4019-B29C-A91ECD480051"},
+ {content: 
+   "TEMPLATE = app\nCONFIG += qt\nQT += gui\nSOURCES += ${1:main.cpp}\n\nwindows {\n\t# otherwise we would get 'unresolved external _WinMainCRTStartup'\n\t# when compiling with MSVC\n\tMOC_DIR     = _moc\n\tOBJECTS_DIR = _obj\n\tUI_DIR      = _ui\n\tRCC_DIR     = _rcc\n}\n!windows {\n\tMOC_DIR     = .moc\n\tOBJECTS_DIR = .obj\n\tUI_DIR      = .ui\n\tRCC_DIR     = .rcc\n}\n\n$0",
+  name: "qmake Project template stub",
+  scope: "source.qmake",
+  tabTrigger: "stub",
+  uuid: "C129BDA0-E887-4404-B8B5-3F6086468A5E"},
+ {content: "toLatin1().data()",
+  name: "toLatin1().data()",
+  scope: "source.c++.qt",
+  tabTrigger: "latin",
+  uuid: "9CC7A8E5-1EDD-4795-A1A9-3432D535F4C4"},
+ {content: "toUtf8().data()",
+  name: "toUtf8().data()",
+  scope: "source.c++.qt",
+  tabTrigger: "utf8",
+  uuid: "84CF7C01-9208-453D-8254-DCD17D0A7500"}]
