@@ -62,6 +62,16 @@ VER.spec do
         spec = @buffer.mark(:spec, '1.5')
         insert.previous.should == spec
       end
+
+      it 'copies motion starting at mark' do
+        @buffer.at_insert.insert("simple line")
+        insert = @buffer.mark(:insert, '1.0')
+        motion = VER::Action.new(:next_word)
+
+        Tk::Clipboard.set 'foo'
+        @buffer.mark(:insert).copy_motion(motion)
+        Tk::Clipboard.get.should == "simple "
+      end
     end
 
     describe 'Text methods' do

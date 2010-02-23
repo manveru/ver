@@ -96,12 +96,16 @@ module VER
       #   insert = buffer.at_insert
       #   insert.virtual(&:next_char).delete # delete to next character
       #   insert.virtual{|ins| ins.end_of_line }.copy # copy until end of line
-      def virtual(count = nil)
+      def virtual(*args)
         pos = index
-        yield(self, *count)
+        yield(self, *args)
         mark = index
         set(pos)
         return Range.new(buffer, *[pos, mark].sort)
+      end
+
+      def copy_motion(motion, count = 1)
+        virtual{|mark| motion.call(buffer, count) }.copy
       end
 
       def insert(string, *rest)
