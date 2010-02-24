@@ -180,14 +180,14 @@ module VER
         pos
       end
 
-      def replace(from, to, string)
+      def replace(from, to, string, tag = Tk::None)
         from, to = indices(from, to)
 
         data = widget.get(from, to)
-        widget.execute_only(:replace, from, to, string)
+        widget.execute_only(:replace, from, to, string, tag)
         widget.touch!(from, to)
 
-        self.redo_info = [:replace, from, to, string]
+        self.redo_info = [:replace, from, to, string, tag]
         self.undo_info = [from, index("#{from} + #{string.size} chars"), data]
         self.applied = true
         from

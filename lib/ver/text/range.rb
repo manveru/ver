@@ -38,8 +38,8 @@ module VER
         self[:last] = index.is_a?(Index) ? index : buffer.index(index)
       end
 
-      def replace(text)
-        buffer.replace(first, last, text)
+      def replace(*args)
+        buffer.replace(first, last, *args)
       end
 
       def to_a

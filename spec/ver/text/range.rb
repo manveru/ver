@@ -42,6 +42,15 @@ VER.spec do
       @buffer.value.should == "line one and two\n"
     end
 
+    it 'replaces contents with a tag' do
+      @range.replace("one\nline", 'some')
+      @range.dump(:all).should == [
+        ["tagon", "some", "1.5"],
+        ["text", "one\n", "1.5"],
+        ["text", "line", "2.0"]
+      ]
+    end
+
     it 'copies contents' do
       Tk::Clipboard.set 'foo'
       @range.copy
