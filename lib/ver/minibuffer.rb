@@ -1,15 +1,50 @@
 module VER
   class MiniBuffer < Text
+    class Peer < MiniBuffer
+      def initialize(text, parent, options = {})
+        @tk_parent = parent
+        @tk_pathname = Tk.register_object(parent, self)
+        Tk.execute(text.tk_pathname, 'peer', 'create', @tk_pathname, options)
+        setup_common
+      end
+
+      def adjust_size(event)
+        configure height: count('1.0', 'end', :lines)
+      end
+    end
+
     include Keymapped
 
     attr_accessor :messages_expire, :messages_pending, :char_width, :ask_stack
 
     def initialize(*args)
       super
+      setup
+    end
 
-      font = VER.options.font
+    def peer_create(*args)
+      Peer.new(self, *args)
+    end
+
+    def setup
+      setup_common
+
+      @info.configure(foreground: '#fff')
+      @warn.configure(foreground: '#f00')
+      @highlight.configure(background: '#330')
+
+      insert :end, 'prompt', :prompt
+      @prompt.configure elide: true
+
+      insert :end, 'answer', :answer
+      @answer.configure elide: true
+
+      bind('<Configure>'){ pack_forget }
+    end
+
+    def setup_common
       configure(
-        font: font,
+        font: VER.options.font,
         wrap: :none,
         undo: true,
         borderwidth: 0,
@@ -26,37 +61,25 @@ module VER
       self.major_mode = :MiniBuffer
       self.messages_expire = false
       self.messages_pending = 0
-      self.char_width = font.measure('0')
+      self.char_width = VER.options.font.measure('0')
       self.ask_stack = []
 
       @info, @warn, @highlight, @prompt, @answer =
         tag(:info), tag(:warn), tag(:highlight), tag(:prompt), tag(:answer)
 
-      @info.configure(foreground: '#fff')
-      @warn.configure(foreground: '#f00')
-      @highlight.configure(background: '#330')
-
-      insert :end, 'prompt', :prompt
-      @prompt.configure elide: true
-
-      insert :end, 'answer', :answer
-      @answer.configure elide: true
-
-      bind('<Configure>'){ adjust_size }
+      bind('<Configure>', &method(:adjust_size))
     end
 
-    def adjust_size
-      configure(
-        width: (tk_parent.winfo_width / char_width.to_f).floor,
-        height: count('1.0', 'end', :lines)
-      )
+    def adjust_size(event)
     end
 
-    def prompt=(prompt)
-      if !prompt || prompt.empty?
+    def prompt=(value)
+      string = value.to_s.strip
+
+      if string.empty?
         @prompt.configure elide: true
       else
-        @prompt.replace(prompt)
+        @prompt.replace(value, @prompt)
         @prompt.configure elide: false
       end
     end
@@ -65,11 +88,13 @@ module VER
       @prompt.get
     end
 
-    def answer=(answer)
-      if !answer || answer.empty?
+    def answer=(value)
+      string = value.to_s.strip
+
+      if string.empty?
         @answer.configure elide: true
       else
-        @answer.replace(answer)
+        @answer.replace(value, @answer)
         @answer.configure elide: false
       end
     end
@@ -224,8 +249,12 @@ module VER
       end
     end
 
-    def insert_string(event)
-      case string = event.unicode
+    def events
+      major_mode.event_history
+    end
+
+    def insert_string
+      case string = events.last[:unicode]
       when /^([[:word:][:ascii:]]| )+$/
         insert(:insert, string, 'answer')
         invoke(:modified)

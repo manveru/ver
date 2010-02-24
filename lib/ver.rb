@@ -34,6 +34,7 @@ module VER
   autoload :MiniBuffer,          'ver/minibuffer'
   autoload :NotebookLayout,      'ver/layout/notebook'
   autoload :PanedLayout,         'ver/layout/paned'
+  autoload :ToplevelLayout,      'ver/layout/toplevel'
   autoload :SYMKEYS,             'ver/keysyms'
   autoload :Status,              'ver/status'
   autoload :Syntax,              'ver/syntax'
@@ -255,7 +256,7 @@ module VER
     Tk::Tile.set_theme options.tk_theme
 
     @root = Tk.root
-    @root.wm_geometry = '160x80'
+    # @root.wm_geometry = '160x80'
 
     Tk::Tile::Style.configure('Label', font: options.font, sticky: :sw)
     # Tk::Tile::Style.configure('TLabelframe', background: '#f00')
@@ -264,11 +265,8 @@ module VER
 
     load("keymap/#{options.keymap}.rb")
 
-    @minibuf = MiniBuffer.new(@layout)
-    @layout.configure(
-      labelwidget: minibuf,
-      labelanchor: :sw
-    )
+    @minibuf = MiniBuffer.new(@root)
+    @minibuf.pack expand: true, fill: :both
 
     [:Messages, :Scratch].each do |name|
       defer{ Buffer[name].hide }
@@ -276,7 +274,7 @@ module VER
   end
 
   def setup_layout
-    @layout = (layout_class || PanedLayout).new(root)
+    @layout = (layout_class || ToplevelLayout).new(root)
   end
 
   def sanitize_options

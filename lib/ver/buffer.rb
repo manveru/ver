@@ -109,21 +109,24 @@ module VER
       @status    = Status.new(frame, self)
       @xbar      = Tk::Tile::XScrollbar.new(frame)
       @ybar      = Tk::Tile::YScrollbar.new(frame)
+      @minibuf   = VER.minibuf.peer_create(frame)
       xscrollbar(@xbar)
       yscrollbar(@ybar)
     end
 
     def setup_layout
-      self.  grid_configure row: 0, column: 0, sticky: :nsew
-      @ybar. grid_configure row: 0, column: 1, sticky: :ns if @ybar
-      @xbar. grid_configure row: 1, column: 0, sticky: :ew if @xbar
-      status.grid_configure row: 2, column: 0, sticky: :ew, columnspan: 2
+      self.    grid_configure row: 0, column: 0, sticky: :nsew
+      @ybar.   grid_configure row: 0, column: 1, sticky: :ns if @ybar
+      @xbar.   grid_configure row: 1, column: 0, sticky: :ew if @xbar
+      status.  grid_configure row: 2, column: 0, sticky: :ew
+      @minibuf.grid_configure row: 3, column: 0, sticky: :ew
 
       frame.grid_columnconfigure 0, weight: 1
       frame.grid_columnconfigure 1, weight: 0
       frame.grid_rowconfigure    0, weight: 1
       frame.grid_rowconfigure    1, weight: 0
       frame.grid_rowconfigure    2, weight: 0
+      frame.grid_rowconfigure    3, weight: 0
     end
 
     def setup_misc
@@ -172,14 +175,13 @@ module VER
 
     def on_focus_in(event)
       Dir.chdir(filename.dirname.to_s) if filename && options.auto_chdir
-      set_window_title
-      Tk::Tile::Style.configure(frame.style, border: 1, background: '#f00')
+      # Tk::Tile::Style.configure(frame.style, border: 1, background: '#f00')
       on_movement(event)
       Tk.callback_break
     end
 
     def on_focus_out(event)
-      Tk::Tile::Style.configure(frame.style, border: 1, background: '#fff')
+      # Tk::Tile::Style.configure(frame.style, border: 1, background: '#fff')
       Tk.callback_break
     end
 
@@ -375,6 +377,7 @@ module VER
     def after_open(syntax = nil)
       @undoer = VER::Undo::Tree.new(self)
       VER.opened_file(self)
+      layout.wm_title = uri.to_s
 
       bind('<Map>') do
         VER.defer do
@@ -466,15 +469,15 @@ module VER
     end
 
     def hide
-      layout.hide(frame)
+      layout.hide
     end
 
     def show
-      layout.show(frame)
+      layout.show
     end
 
     def close
-      layout.close_buffer(self)
+      layout.close
     end
 
     def touch!(*indices)
@@ -725,7 +728,7 @@ module VER
 
     def ask(prompt, options = {}, &action)
       options[:caller] ||= self
-      VER.minibuf.ask(prompt, options, &action)
+      @minibuf.ask(prompt, options, &action)
     end
 
     class HighlightPending < Tag
