@@ -98,8 +98,13 @@ module VER
       end
       alias tag_remove remove
 
-      def replace(string)
-        buffer.range("#{self} first", "#{self} last").replace(string)
+      def replace(*args)
+        buffer.range("#{self}.first", "#{self}.last").replace(*args)
+      end
+
+      def get
+        values = ranges.map{|range| range.get }
+        values.size == 1 ? values.first : values unless values.empty?
       end
 
       def each_range(&block)
@@ -123,6 +128,10 @@ module VER
 
       def to_tcl
         name.to_tcl
+      end
+
+      def to_s
+        name.to_s
       end
 
       def inspect

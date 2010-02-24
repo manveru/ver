@@ -49,6 +49,21 @@ VER.spec do
           @buffer.range('1.5', '1.9'),
         ]
       end
+
+      it 'replaces' do
+        @buffer.insert('end', 'some text', :spec)
+        tag = @buffer.tag(:spec)
+        tag.replace('less')
+        @buffer.dump(:tag, '1.0', 'end').should == []
+      end
+
+      it 'gets contents' do
+        tag = @buffer.tag(:spec)
+        tag.get.should == nil
+        @buffer.insert('end', 'some text', tag)
+        tag = @buffer.tag(:spec)
+        tag.get.should == 'some text'
+      end
     end
 
     describe 'Buffer methods' do
