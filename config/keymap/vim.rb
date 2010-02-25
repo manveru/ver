@@ -7,10 +7,11 @@ module VER
 
   minor_mode :open do
     handler Methods::Open
-
     map :file_open_popup, %w[Control-o]
-    map :file_open_fuzzy, %w[Alt-o], %w[Control-m o]
     map :file_open_ask,   %w[colon o space]
+
+    handler Methods::Control
+    map [:ex, :fuzzy], %w[Alt-o], %w[Control-m o]
   end
 
   minor_mode :save do
