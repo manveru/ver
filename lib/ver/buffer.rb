@@ -76,7 +76,8 @@ module VER
     attr_reader :frame, :status, :options, :at_current, :at_insert, :at_end,
                 :theme_config, :matching_brace, :layout, :syntax
     attr_accessor :uri, :project_root, :project_repo, :undoer, :pristine,
-                  :prefix_arg, :readonly, :encoding, :filename, :at_sel
+                  :prefix_arg, :readonly, :encoding, :filename, :at_sel,
+                  :symbolic
 
     def initialize(parent = VER.layout, given_options = {})
       @layout = parent
@@ -233,6 +234,7 @@ module VER
     end
 
     alias pristine? pristine
+    alias symbolic? symbolic
 
     def persisted?
       return false unless filename
@@ -327,6 +329,7 @@ module VER
 
     def open_symbolic(symbol)
       self.uri = symbol
+      self.symbolic = true
 
       case symbol
       when :Scratch
