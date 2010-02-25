@@ -16,7 +16,7 @@ module VER
         @shown = true
 
         bind('<Destroy>'){ destroy; Tk.callback_break }
-        bind('<FocusIn>'){ buffer.focus }
+        bind('<FocusIn>'){ buffer.focus; Tk.callback_break }
       end
 
       def style

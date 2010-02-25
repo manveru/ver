@@ -17,7 +17,7 @@ module VER
         return if buffer.options.hidden
         buffer.frame.pack expand: true, fill: :both
         wm_withdraw
-        bind('FocusIn'){ buffer.focus }
+        bind('<FocusIn>'){ buffer.focus; Tk.callback_break }
         Tk.eval('update')
         wm_deiconify
       end
