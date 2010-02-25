@@ -47,10 +47,10 @@ module VER
     def use(*minors)
       minors.each do |name|
         minor = MinorMode[name]
+        next if self.minors.any?{|m| m.name == minor.name }
         self.minors << minor
       end
 
-      self.minors.uniq!
       synchronize
     end
 
