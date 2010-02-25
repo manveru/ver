@@ -78,7 +78,7 @@ module VER
     attr_accessor :uri, :project_root, :project_repo, :undoer, :pristine,
                   :prefix_arg, :readonly, :encoding, :filename, :at_sel
 
-    def initialize(parent, given_options = {})
+    def initialize(parent = VER.layout, given_options = {})
       @layout = parent
       @frame = Frame.new(parent, self)
 

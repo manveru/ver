@@ -22,5 +22,25 @@ module VER
       invocation = [*self.invocation, action]
       self.class.new(invocation, handler)
     end
+
+    def to_proc
+      Proc.new{|widget, *args| call(widget, *args) }
+    end
+
+    def to_method(widget)
+      case handler
+      when Symbol
+        method = [*invocation].first
+        widget.send(handler).method(method)
+      when Module
+        method, *args = *invocation
+        handler.method(method)
+      when nil
+        method = [*invocation].first
+        widget.method(method)
+      else
+        raise ArgumentError
+      end
+    end
   end
 end
