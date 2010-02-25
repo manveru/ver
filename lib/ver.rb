@@ -65,6 +65,9 @@ module VER
     o "Fork off on startup to avoid dying with the terminal",
       :fork, true
 
+    o "Start hidden, useful for specs",
+      :hidden, false
+
     o "Use EventMachine inside VER, at the moment only for the console",
       :eventmachine, false
 
@@ -269,7 +272,7 @@ module VER
     @minibuf.pack expand: true, fill: :both
 
     [:Messages, :Scratch].each do |name|
-      defer{ Buffer[name].hide }
+      Buffer[name].hide
     end
   end
 
@@ -430,7 +433,9 @@ module VER
   end
 
   def find_or_create_buffer(file, line = nil, column = nil, &block)
-    Buffer.find_or_create(file, line, column, &block)
+    buffer = Buffer.find_or_create(file, line, column, &block)
+    buffer.show
+    buffer
   end
 
   def emergency_bindings

@@ -103,6 +103,7 @@ module VER
       setup_widgets
       setup_layout
       setup_binds
+      layout.bind('<Map>'){ Tk.eval('update') }
     end
 
     def setup_widgets

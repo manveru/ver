@@ -1,4 +1,10 @@
 module VER
+  # A layout that puts every {Buffer} into its own {Tk::Toplevel}.
+  # This means that the buffers can be managed by the window-manager itself
+  # instead of VER, which might be preferable for people using tiling wms.
+  #
+  # So far this only has been used inside awesome, feedback on other wms are
+  # welcome.
   class ToplevelLayout < Tk::Frame
     class Toplevel < Tk::Toplevel
       attr_accessor :buffer
@@ -8,9 +14,10 @@ module VER
       end
 
       def show
+        return if buffer.options.hidden
         buffer.frame.pack expand: true, fill: :both
-        bind('FocusIn'){ buffer.focus }
         wm_withdraw
+        bind('FocusIn'){ buffer.focus }
         Tk.eval('update')
         wm_deiconify
       end
@@ -33,8 +40,7 @@ module VER
       toplevel = Toplevel.new(self)
       buffer = Buffer.new(toplevel, options)
       toplevel.buffer = buffer
-      add_buffer(buffer)
-      yield buffer
+      yield buffer if block_given?
       buffer
     end
 

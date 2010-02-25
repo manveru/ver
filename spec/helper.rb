@@ -58,7 +58,7 @@ module VER
   def self.spec(&block)
     specs = Spec.new(&block)
 
-    VER.run fork: false do
+    VER.run fork: false, hidden: true do
       specs.run
     end
   end
