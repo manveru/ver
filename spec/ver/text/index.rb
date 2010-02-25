@@ -96,9 +96,10 @@ VER.spec do
       end
 
       it 'copies line at position' do
+        @buffer.insert '1.0', 'one line'
         Tk::Clipboard.set 'foo'
         @buffer.index('1.0').copy_line
-        Tk::Clipboard.get.should == "one\nline"
+        Tk::Clipboard.get.should == "one line\n"
       end
     end
   end

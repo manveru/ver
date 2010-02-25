@@ -37,8 +37,8 @@ module VER
       end
 
       def copy_line
-        content = text.get("#{self} linestart", "#{self} lineend + 1 chars")
-        Methods::Clipboard.copy(content)
+        content = buffer.get("#{self} linestart", "#{self} lineend + 1 chars")
+        Methods::Clipboard.copy(buffer, content)
       end
 
       # Delete this and any other given +indices+ from the buffer.
