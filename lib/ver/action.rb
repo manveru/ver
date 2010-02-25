@@ -11,6 +11,7 @@ module VER
     def call(widget, *given_args)
       args = [*self.args, *given_args]
 
+      Tracer.on if VER.options.tracer
       if receiver = self.receiver
         self.last = [receiver, method, widget.tk_pathname, args]
         receiver.send(method, widget, *args)
@@ -26,6 +27,8 @@ module VER
     rescue => ex
       puts self
       pp ex, ex.backtrace
+    ensure
+      Tracer.off if VER.options.tracer
     end
 
     def combine(action)

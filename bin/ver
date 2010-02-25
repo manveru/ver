@@ -171,6 +171,10 @@ op = OptionParser.new{|o|
   o.separator ' '
   o.on('-h', '--help', 'Show this help'){ puts o; exit }
   o.on('--debug', 'turn $DEBUG on'){ $DEBUG = true }
+  o.on('--trace', 'turn tracer on (extremely verbose)'){
+    require 'tracer'
+    options[:tracer] = true
+  }
 }
 op.parse!(ARGV)
 

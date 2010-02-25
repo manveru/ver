@@ -5,6 +5,7 @@
 autoload :Benchmark, 'benchmark'
 autoload :FileUtils, 'fileutils'
 autoload :Tempfile,  'tempfile'
+autoload :Tracer,    'tracer'
 
 # eager stdlib
 require 'digest/sha1'
@@ -62,6 +63,9 @@ module VER
   options.dsl do
     o "Fork off on startup to avoid dying with the terminal",
       :fork, true
+
+    o "Tracing",
+      :tracer, false
 
     o "Use EventMachine inside VER, at the moment only for the console",
       :eventmachine, false
