@@ -174,13 +174,14 @@ module VER
       end
     end
 
-    def message_expire(tag, timeout = 42000)
+    def message_expire(tag, timeout = 5000)
       self.messages_pending += 1
 
       Tk::After.ms timeout.to_int do
         self.messages_pending -= 1
         if messages_pending == 0
           delete("#{tag}.first", "#{tag}.last") rescue nil
+          adjust_size
         end
       end
     end
