@@ -18,15 +18,17 @@ module VER
           choices.deep_merge!(incomplete.choices)
         end
 
-        def to_s
+        def to_s(handler)
           stack = sequence.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
-          if choices.size > 2
-            follow = choices.keys.map(&:inspect).join('|')
-            "#{stack} -- (#{follow})"
-          else
-            follow = choices.map{|key, action| "#{key} => #{action}" }.join(' | ')
-            "#{stack} -- (#{follow})"
-          end
+          follow = choices.map{|key, action|
+            case action
+            when Action
+              '%s => %p' % [key, action.to_method(handler)]
+            else
+              '%s => %p' % [key, action]
+            end
+          }.join(' | ')
+          "#{stack} -- (#{follow})"
         end
       end
     end

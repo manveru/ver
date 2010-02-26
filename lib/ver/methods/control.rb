@@ -382,12 +382,6 @@ module VER
         end
       end
 
-      def eval_buffer
-        result = eval(value, TOPLEVEL_BINDING)
-      rescue Exception => exception
-        VER.error(exception)
-      end
-
       def join_line_forward(text)
         from, to = 'insert linestart', 'insert + 1 lines lineend'
         lines = text.get(from, to)

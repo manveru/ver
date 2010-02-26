@@ -233,6 +233,17 @@ module VER
       major_mode.event_history
     end
 
+    def message(*args)
+      @minibuf.message(*args)
+    end
+
+    def warn(*args)
+      @minibuf.warn(*args)
+    end
+
+    # Hack for smoother minibuf completion
+    public :binding, :local_variables, :global_variables
+
     alias pristine? pristine
     alias symbolic? symbolic
 
@@ -324,7 +335,7 @@ module VER
 
       self.insert = "#{line || 1}.#{char || 0}"
       VER.buffers << self
-      VER.message "Opened #{uri}"
+      message "Opened #{uri}"
     end
 
     def open_symbolic(symbol)

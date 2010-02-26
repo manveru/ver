@@ -90,10 +90,10 @@ module VER
 
       case result = resolve(stack)
       when Incomplete
-        VER.message result.to_s
+        message result.to_s(widget)
         # don't do anything yet...
       when Impossible
-        VER.message result.to_s
+        warn result.to_s
         stack.clear
       else
         stack.clear
@@ -101,6 +101,22 @@ module VER
         widget_event = WidgetEvent.new(widget, event)
         action.call(widget_event)
         action_history << [widget_event, *result]
+      end
+    end
+
+    def message(*args)
+      if widget.respond_to?(:message)
+        widget.message(*args)
+      else
+        VER.message(*args)
+      end
+    end
+
+    def warn(*args)
+      if widget.respond_to?(:warn)
+        widget.warn(*args)
+      else
+        VER.warn(*args)
       end
     end
 

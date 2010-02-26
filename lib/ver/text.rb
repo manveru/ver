@@ -49,8 +49,10 @@ module VER
       Range.new(self, Index.new(self, first), Index.new(self, last))
     end
 
-    def mark(name, index = nil)
-      Mark.new(self, name, index)
+    def mark(name, index = nil, gravity = nil)
+      mark = Mark.new(self, name, index)
+      mark.gravity = gravity if gravity
+      mark
     end
 
     def marks

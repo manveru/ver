@@ -34,10 +34,9 @@ module VER
     inherits :help, :preview, :save, :open
 
     handler Methods::Basic
-    map :status_evaluate,     %w[Alt-x], %w[Control-m x]
-
-    map :open_terminal,       %w[F9]
-    map :open_console,        %w[Control-exclam] if defined?(::EM)
+    map :minibuf_eval,    %w[Alt-x], %w[Control-m x]
+    map :open_terminal,   %w[F9]
+    map :open_console,    %w[Control-exclam] if defined?(::EM)
   end
 
   minor_mode :vim_layout do
@@ -452,10 +451,12 @@ module VER
   major_mode :MiniBuffer do
     use :readline
 
-    map :abort,    %w[Escape], %w[Control-c]
-    map :attempt,  %w[Return]
-    map :complete_large, %w[Double-Tab]
-    map :complete_small, %w[Tab]
+    map :abort,           %w[Escape], %w[Control-c]
+    map :attempt,         %w[Return]
+    map :complete_large,  %w[Double-Tab]
+    map :complete_small,  %w[Tab]
+    map :next_history,    %w[Down]
+    map :prev_history,    %w[Up]
   end
 
   major_mode :Completions do

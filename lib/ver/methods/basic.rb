@@ -31,13 +31,27 @@ module VER
     module Basic
       module_function
 
-      def quit(text)
-        Save.quit(text)
+      def minibuf_eval(buffer)
+        bind = buffer.binding
+
+        buffer.ask ':eval ' do |answer, action|
+          case action
+          when :attempt
+            begin
+              buffer.message(eval(answer, bind).inspect)
+            rescue Exception => ex
+              buffer.warn("#{ex.class}: #{ex}")
+            end
+
+            :abort
+          when :complete
+            EvalCompleter.complete(answer, bind)
+          end
+        end
       end
 
-      def source_buffer(text)
-        VER.message "Source #{text.filename}"
-        TOPLEVEL_BINDING.eval(text.value.to_s)
+      def quit(text)
+        Save.quit(text)
       end
 
       def status_evaluate(text)
