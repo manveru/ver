@@ -2,6 +2,9 @@ VER.options.dsl do
   o "Use automatic indentation",
     :autoindent, true
 
+  o "Web browser to use to open HTTP links",
+    :http_browser, (ENV['BROWSER'] || %w[links -g])
+
   o "Sequence to comment a line, may change through file type preferences",
     :comment_line, '#'
 

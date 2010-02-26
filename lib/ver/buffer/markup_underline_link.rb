@@ -15,7 +15,7 @@ module VER
           }
 
           if uri
-            browser = ENV['BROWSER'] || ['links', '-g']
+            browser = buffer.options.http_browser
             system(*browser, uri)
             VER.message "Opening %p in %p" % [uri, browser]
           end
