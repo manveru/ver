@@ -663,6 +663,7 @@ module VER
       }
 
       touch!('1.0', 'end')
+      handle_pending_syntax_highlights
 
       sync_mode_status
     end
