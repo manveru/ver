@@ -14,6 +14,7 @@ module VER
       exportselection:  true,   # provide selection to X automatically
       foreground:       '#fff', # when first showing, it's not highlighted...
       background:       '#000',
+      insertbackground: '#fff',
       setgrid:          false,
       takefocus:        true,
       tabstyle:         :wordprocessor,
