@@ -34,7 +34,7 @@ module VER
       def minibuf_eval(buffer)
         bind = buffer.binding
 
-        buffer.ask ':eval ' do |answer, action|
+        buffer.ask 'Eval: ' do |answer, action|
           case action
           when :attempt
             begin
