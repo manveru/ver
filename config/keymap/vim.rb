@@ -173,12 +173,13 @@ module VER
   end
 
   minor_mode :delete do
-    handler Methods::Delete
+    handler :at_insert
+    map :kill_line, %w[d d]
 
+    handler Methods::Delete
     map :change_line,               %w[c c]
     map :change_motion,             ['c', :move]
     map :change_word_right_end,     %w[c w]
-    map :kill_line,                 %w[d d]
     map :killing,                   ['d', :move]
     map [:changing, :end_of_line],  %w[C]
     map [:killing, :end_of_line],   %w[D]

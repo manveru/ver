@@ -46,6 +46,10 @@ module VER
         buffer.delete(self, *indices)
       end
 
+      def delete_line
+        buffer.delete("#{self} linestar", "#{self} lineend + 1 chars")
+      end
+
       def dlineinfo
         buffer.dlineinfo(self)
       end
@@ -54,16 +58,51 @@ module VER
         buffer.dump(*options, self)
       end
 
-      def get(*indices)
-        buffer.get(self, *indices)
+      def get(from = nil, to = nil)
+        if from && to
+          buffer.get("#{self} #{from}", "#{self} #{to}")
+        elsif from
+          buffer.get("#{self} #{from}")
+        else
+          buffer.get(self)
+        end
+      end
+
+      def inspect
+        index.inspect
       end
 
       def insert(*args)
         buffer.insert(self, *args)
       end
 
+      def kill_line
+        copy_line
+        delete_line
+      end
+
       def see
         buffer.see(self)
+      end
+
+      def linestart
+        buffer.index("#{self} linestart")
+      end
+
+      def lineend
+        buffer.index("#{self} lineend")
+      end
+
+      def tags
+        buffer.tags(self)
+      end
+
+      def tag_names
+        buffer.tag_names(self)
+      end
+
+      def to_a
+        index.to_a
       end
 
       def +(arg)
@@ -82,40 +121,6 @@ module VER
         else
           buffer.index("#{self} - #{arg}")
         end
-      end
-
-      def linestart
-        buffer.index("#{self} linestart")
-      end
-
-      def lineend
-        buffer.index("#{self} lineend")
-      end
-
-      def inspect
-        index.inspect
-      end
-
-      def get(from = nil, to = nil)
-        if from && to
-          buffer.get("#{self} #{from}", "#{self} #{to}")
-        elsif from
-          buffer.get("#{self} #{from}")
-        else
-          buffer.get(self)
-        end
-      end
-
-      def tags
-        buffer.tags(self)
-      end
-
-      def tag_names
-        buffer.tag_names(self)
-      end
-
-      def to_a
-        index.to_a
       end
     end
   end

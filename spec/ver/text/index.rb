@@ -101,6 +101,22 @@ VER.spec do
         @buffer.index('1.0').copy_line
         Tk::Clipboard.get.should == "one line\n"
       end
+
+      it 'deletes line at position' do
+        @buffer.insert '1.0', 'one line'
+        Tk::Clipboard.set 'foo'
+        @buffer.index('1.0').delete_line
+        Tk::Clipboard.get.should == "foo"
+        @buffer.value.should == "\n"
+      end
+
+      it 'kills line at position' do
+        @buffer.insert '1.0', 'one line'
+        Tk::Clipboard.set 'foo'
+        @buffer.index('1.0').kill_line
+        Tk::Clipboard.get.should == "one line\n"
+        @buffer.value.should == "\n"
+      end
     end
   end
 end
