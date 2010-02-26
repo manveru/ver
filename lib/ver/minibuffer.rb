@@ -179,7 +179,7 @@ module VER
         message ''
         warn ''
         self.messages_expire = true
-        bind('<FocusOut>'){ focus }
+        bind('<FocusOut>'){ focus; Tk.callback_break }
         focus
       end
     end
