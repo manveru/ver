@@ -170,7 +170,10 @@ module VER
       tag_add('highlight', "#{tag}.first", "#{tag}.last")
 
       Tk::After.ms timeout.to_int do
-        tag_remove('highlight', "#{tag}.first", "#{tag}.last")
+        begin
+          tag_remove('highlight', "#{tag}.first", "#{tag}.last")
+        rescue
+        end
       end
     end
 
