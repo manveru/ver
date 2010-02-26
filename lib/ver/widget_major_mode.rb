@@ -97,6 +97,7 @@ module VER
         stack.clear
       else
         stack.clear
+        message ''
         mode, action = result
         widget_event = WidgetEvent.new(widget, event)
         action.call(widget_event)
