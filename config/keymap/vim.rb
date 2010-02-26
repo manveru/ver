@@ -211,9 +211,13 @@ module VER
     become :select_block,   %w[Control-v]
     become :select_char,    %w[v]
     become :select_line,    %w[V]
-    become :insert,         %w[i]
+    become :insert,         %w[i], %w[Insert]
     become :replace,        %w[R]
     become :replace_char,   %w[r]
+
+    handler :at_insert
+    map :insert_newline_above, %w[O]
+    map :insert_newline_below, %w[o]
 
     handler Methods::Control
     enter :enter
@@ -257,10 +261,6 @@ module VER
 
     map :toggle_case, %w[asciitilde]
     map :wrap_line, %w[g w]
-
-    handler Methods::Insert
-    map :newline_above,     %w[O]
-    map :newline_below,     %w[o]
 
     handler Methods::SearchAndReplace
     map :query, %w[Alt-percent]
@@ -307,24 +307,24 @@ module VER
     map [:killing, :prev_word],  %w[Control-w]
 
     handler :at_insert
-    map :next_line,      %w[Down], %w[Control-n]
-    map :next_page,      %w[Control-f], %w[Next], %w[Shift-Down]
-    map :prev_page,      %w[Control-b], %w[Prior], %w[Shift-Up]
-    map :prev_line,      %w[Up], %w[Control-p]
-    map :end_of_line,    %w[End], %w[Control-e]
-    map :next_char,      %w[Right], %w[Control-f]
-    map :next_word,      %w[Shift-Right], %w[Alt-f]
-    map :prev_char,      %w[Left], %w[Control-b]
-    map :prev_word,      %w[Shift-Left], %w[Alt-b]
-    map :start_of_line,  %w[Home], %w[Control-a]
+    map :end_of_line,       %w[End], %w[Control-e]
+    map :insert_newline,    %w[Return]
+    map :insert_selection,  %w[Shift-Insert], %w[Insert]
+    map :insert_tab,        %w[Control-v Tab], %w[Control-i]
+    map :next_char,         %w[Right], %w[Control-f]
+    map :next_line,         %w[Down], %w[Control-n]
+    map :next_page,         %w[Control-f], %w[Next], %w[Shift-Down]
+    map :next_word,         %w[Shift-Right], %w[Alt-f]
+    map :prev_char,         %w[Left], %w[Control-b]
+    map :prev_line,         %w[Up], %w[Control-p]
+    map :prev_page,         %w[Control-b], %w[Prior], %w[Shift-Up]
+    map :prev_word,         %w[Shift-Left], %w[Alt-b]
+    map :start_of_line,     %w[Home], %w[Control-a]
 
     handler Methods::Control
     map :smart_evaluate,           %w[Alt-e], %w[Control-e]
 
     handler Methods::Insert
-    map :newline,    %w[Return]
-    map :selection,  %w[Shift-Insert]
-    map :tab,        %w[Control-v Tab], %w[Control-i]
     missing :string
   end
 
