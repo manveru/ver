@@ -97,5 +97,20 @@ VER.spec do
       ranges[1].first.should == '2.0'
       ranges[1].last. should == '2.1'
     end
+
+    it 'wraps selection' do
+      buffer.value = <<-TEXT.chomp
+Totam dolor debitis sit cupiditate placeat architecto quis. Sunt occaecati corrupti a porro dolor perspiciatis. Perferendis minima ipsam corrupti aut delectus. Deleniti assumenda ea velit. Rerum expedita veniam molestiae soluta.
+      TEXT
+      sel.add '1.0', 'end'
+      sel.wrap
+      buffer.value.should == <<-TEXT
+Totam dolor debitis sit cupiditate placeat architecto quis.
+Sunt occaecati corrupti a porro dolor perspiciatis.
+Perferendis minima ipsam corrupti aut delectus.
+Deleniti assumenda ea velit.
+Rerum expedita veniam molestiae soluta.
+      TEXT
+    end
   end
 end

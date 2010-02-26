@@ -448,6 +448,7 @@ module VER
           end
         end
 
+        lines.pop if lines.last == indent
         lines
       end
     end

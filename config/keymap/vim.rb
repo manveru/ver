@@ -371,7 +371,6 @@ module VER
     map :upper_case,      %w[U]
     map :uncomment,       %w[comma u]
     map :unindent,        %w[less]
-    map :wrap,            %w[g w]
 
     handler Methods::Control
     map :smart_evaluate,  %w[Alt-e], %w[Control-e]
@@ -388,6 +387,7 @@ module VER
     handler :at_sel
     enter :enter
     leave :leave
+    map :wrap, %w[g w]
   end
 
   minor_mode :select_line do
@@ -401,6 +401,7 @@ module VER
     handler :at_sel
     enter :enter
     leave :leave
+    map :wrap, %w[g w]
   end
 
   minor_mode :select_block do

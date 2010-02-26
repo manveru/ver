@@ -57,11 +57,39 @@ module VER
         buffer.tag_configure(self, *options)
       end
 
+      def copy
+        chunks = ranges.map{|range| range.get }
+        Methods::Clipboard.copy(buffer, chunks.size == 1 ? chunks.first : chunks)
+      end
+
       # pathName tag delete tagName ?tagName ...? 
       def delete
         buffer.tag_delete(self)
       end
       alias tag_delete delete
+
+      def each_range(&block)
+        ranges.each(&block)
+      end
+
+      def get
+        values = ranges.map{|range| range.get }
+        values.size == 1 ? values.first : values unless values.empty?
+      end
+
+      def inspect
+        "#<VER::Text::Tag %p on %p>" % [name, buffer]
+      end
+
+      def kill
+        indices = []
+        chunks = ranges.map{|range|
+          indices << range.first << range.last
+          range.get
+        }
+        Methods::Clipboard.copy(buffer, chunks.size == 1 ? chunks.first : chunks)
+        buffer.delete(*indices)
+      end
 
       # pathName tag lower tagName ?belowThis? 
       def lower(below_this = Tk::None)
@@ -102,40 +130,18 @@ module VER
         buffer.range("#{self}.first", "#{self}.last").replace(*args)
       end
 
-      def get
-        values = ranges.map{|range| range.get }
-        values.size == 1 ? values.first : values unless values.empty?
-      end
-
-      def each_range(&block)
-        ranges.each(&block)
-      end
-
-      def copy
-        chunks = ranges.map{|range| range.get }
-        Methods::Clipboard.copy(buffer, chunks.size == 1 ? chunks.first : chunks)
-      end
-
-      def kill
-        indices = []
-        chunks = ranges.map{|range|
-          indices << range.first << range.last
-          range.get
-        }
-        Methods::Clipboard.copy(buffer, chunks.size == 1 ? chunks.first : chunks)
-        buffer.delete(*indices)
+      def to_s
+        name.to_s
       end
 
       def to_tcl
         name.to_tcl
       end
 
-      def to_s
-        name.to_s
-      end
-
-      def inspect
-        "#<VER::Text::Tag %p on %p>" % [name, buffer]
+      def wrap(count = buffer.prefix_arg)
+        width = count || 80
+        wrapped = Methods::Control.wrap_lines_of(get, width)
+        replace(wrapped.join("\n"))
       end
     end
   end

@@ -103,6 +103,11 @@ module VER
         finish
       end
 
+      def wrap
+        super
+        finish
+      end
+
       class Char < Selection
         def refresh
           return unless @refresh
