@@ -322,6 +322,7 @@ module VER
 
     handler Methods::Control
     map :smart_evaluate,           %w[Alt-e], %w[Control-e]
+    map :unindent_line,            %w[ISO_Left_Tab]
 
     handler Methods::Insert
     missing :string
