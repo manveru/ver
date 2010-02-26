@@ -79,8 +79,6 @@ module VER
       def save_all(text)
         VER.buffers.each do |buffer|
           next if buffer.symbolic?
-          buffer.show
-          buffer.focus
           save(buffer)
         end
       end
