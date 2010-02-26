@@ -42,7 +42,14 @@ module VER
     end
 
     def initialize(name)
-      self.name = name.to_sym
+      self.name = name = name.to_sym
+
+      if MODES.key?(name)
+        raise ArgumentError, "Duplicate #{self.class}: %p" % [name]
+      else
+        MODES[name] = self
+      end
+
       self.parents = []
       self.keymap = Keymap.new
       self.receiver = nil
@@ -82,9 +89,11 @@ module VER
     def inherits(*names)
       names.each do |name|
         minor = self.class[name]
-        self.parents << minor unless minor == self
+        next if minor == self
+        parents << minor
       end
-      self.parents.uniq!
+
+      parents.uniq!
     end
 
     def become(other, *sequences)
@@ -194,6 +203,15 @@ module VER
 
     def inspect
       "#<VER::MinorMode name=%p>" % [name]
+    end
+
+    def hash
+      name.hash
+    end
+
+    # we assume that name is unique
+    def eql?(other)
+      other.class == self.class && other.name == self.name
     end
   end
 end

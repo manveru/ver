@@ -37,7 +37,14 @@ module VER
     end
 
     def initialize(name)
-      self.name = name.to_sym
+      self.name = name = name.to_sym
+
+      if MODES.key?(name)
+        raise ArgumentError, "Duplicate #{self.class}: %p" % [name]
+      else
+        MODES[name] = self
+      end
+
       self.minors = []
       self.keymap = Keymap.new
       self.bound_keys = Set.new
@@ -45,8 +52,6 @@ module VER
 
       KEYSYMS.each{|key, sym| bind_key(sym) }
       bind_key('<Escape>')
-
-      MODES[self.name] = self
     end
 
     def destroy
@@ -91,9 +96,10 @@ module VER
     def use(*minors)
       minors.each do |name|
         minor = MinorMode[name]
-        next if self.minors.any?{|m| m.name == minor.name }
         self.minors << minor
       end
+
+      self.minors.uniq!
     end
 
     def forget(*minors)
@@ -154,6 +160,15 @@ module VER
 
     def inspect
       "#<VER::MajorMode name=%p>" % [name]
+    end
+
+    def hash
+      name.hash
+    end
+
+    # we assume that name is unique
+    def eql?(other)
+      other.class == self.class && other.name == self.name
     end
   end
 end
