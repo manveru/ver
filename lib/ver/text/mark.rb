@@ -140,6 +140,16 @@ module VER
         buffer.minor_mode(:control, :insert)
       end
 
+      def change_at(motion, *args)
+        if motion.respond_to?(:call)
+          motion.call(buffer, *args)
+        else
+          send(motion, *args)
+        end
+
+        buffer.minor_mode(:control, :insert)
+      end
+
       def insert(string, *rest)
         buffer.insert(self, string, *rest)
       end

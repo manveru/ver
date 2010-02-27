@@ -181,6 +181,24 @@ VER.spec do
         type '<Home>'
         insert.index.should == '1.0'
       end
+
+      it 'changes at end of line with <A>' do
+        buffer.minor_mode?(:insert).should == nil
+        insert.index = '1.0'
+        type 'A'
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 47
+        insert.index.should == '1.0 lineend'
+        buffer.minor_mode?(:insert).should != nil
+      end
+
+      it 'changes at next char with <a>' do
+        buffer.minor_mode?(:insert).should == nil
+        insert.index = '1.0'
+        type 'a'
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 47
+        insert.index.should == '1.1'
+        buffer.minor_mode?(:insert).should != nil
+      end
     end
 
     describe 'Control mode deletion' do

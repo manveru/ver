@@ -213,8 +213,10 @@ module VER
     become :replace_char,   %w[r]
 
     handler :at_insert
-    map :insert_newline_above, %w[O]
-    map :insert_newline_below, %w[o]
+    map :insert_newline_above,       %w[O]
+    map :insert_newline_below,       %w[o]
+    map [:change_at, :end_of_line],  %w[A]
+    map [:change_at, :next_char],    %w[a]
 
     handler Methods::Control
     enter :enter
@@ -227,9 +229,6 @@ module VER
     map :cursor_vertical_center_sol,        %w[z period]
     map :cursor_vertical_top,               %w[z t]
     map :cursor_vertical_top_sol,           %w[z Return]
-
-    map [:insert_at, :end_of_line],         %w[A]
-    map [:insert_at, :next_char],           %w[a]
 
     map :indent_line,                       %w[greater]
     map :unindent_line,                     %w[less]
