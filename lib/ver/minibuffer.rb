@@ -153,7 +153,7 @@ module VER
         see "#{tag}.first"
 
         message_expire(tag) #  if messages_expire
-        message_notify(tag)
+        message_notify(tag) if string.to_s.strip != ''
         adjust_size
         # message_buffer_insert(string, tag)
       end
