@@ -9,18 +9,22 @@ module VER
     autoload :MatchingBrace,             'ver/buffer/matching_brace'
 
     OPTIONS = {
-      borderwidth:      0,
-      blockcursor:      false,
-      exportselection:  true,   # provide selection to X automatically
-      foreground:       '#fff', # when first showing, it's not highlighted...
-      background:       '#000',
-      insertbackground: '#fff',
-      setgrid:          false,
-      takefocus:        true,
-      tabstyle:         :wordprocessor,
-      wrap:             :word,
-      undo:             false,
-      autoseparators:   false
+      autoseparators:      false,
+      background:          '#000',
+      blockcursor:         false,
+      borderwidth:         0,
+      exportselection:     true,   # provide selection to X automatically
+      foreground:          '#fff', # when first showing, it's not highlighted...
+      highlightbackground: '#000', # this specifies the colors
+      highlightcolor:      '#fff', # that are used when the widget
+      highlightthickness:  1,      # has input focus.
+      insertbackground:    '#fff',
+      relief:              :solid,
+      setgrid:             false,
+      tabstyle:            :wordprocessor,
+      takefocus:           true,
+      undo:                false,
+      wrap:                :word
     }
 
     MODE_STYLES = {

@@ -76,18 +76,21 @@ module VER
 
     def setup_common
       configure(
-        font: VER.options.font,
-        wrap: :word,
-        undo: true,
+        autoseparators: true,
+        background: '#000',
+        blockcursor: false,
         borderwidth: 0,
         exportselection: true,
+        font: VER.options.font,
+        foreground: '#fff',
+        highlightbackground: '#000', # this specifies the colors
+        highlightcolor: '#fff',      # that are used when the widget
+        highlightthickness: 1,       # has input focus.
+        insertbackground: '#fff',
         insertofftime: 0,
         setgrid: false, # wtf?
-        autoseparators: true,
-        blockcursor: false,
-        background: '#000',
-        foreground: '#fff',
-        insertbackground: '#fff'
+        undo: true,
+        wrap: :word
       )
 
       self.major_mode = :MiniBuffer
