@@ -200,9 +200,16 @@ module VER
         forward_jump(count, &method(:chunk_char_type))
       end
 
-      # Jump to the last character of the word the insert cursor is over currently.
+      # Jump to the last character of the word the insert cursor is over
+      # currently.
       def next_word_end(count = buffer.prefix_count)
-        set(index_at_word_right_end(count))
+        forward_jump_end(count, &method(:word_char_type))
+      end
+
+      # Jump to the last character of the chunk the insert cursor is over
+      # currently.
+      def next_chunk_end(count = buffer.prefix_count)
+        forward_jump_end(count, &method(:chunk_char_type))
       end
 
       # Set mark to be +count+ display-chars to the left.
@@ -364,6 +371,39 @@ module VER
         VER.error(ex)
       end
 
+      def forward_jump_end(count)
+        offset = 1
+        last = buffer.index('end')
+
+        count.times do
+          pos  = buffer.index("#{self} + #{offset} chars")
+
+          return if pos == last
+
+          type = yield(pos.get)
+
+          while type == :space
+            offset += 1
+            pos = buffer.index("#{self} + #{offset} chars")
+            break if pos == last
+            type = yield(pos.get)
+          end
+
+          lock = type
+
+          while type == lock && type != :space
+            offset += 1
+            pos = buffer.index("#{self} + #{offset} chars")
+            break if pos == last
+            type = yield(pos.get)
+          end
+        end
+
+        set("#{self} + #{offset - 1} chars")
+      rescue => ex
+        VER.error(ex)
+      end
+
       def backward_jump(count)
         count.times do
           original_type = type = yield(get)
@@ -389,39 +429,6 @@ module VER
             type = yield(get('- 1 chars'))
           end
         end
-      rescue => ex
-        VER.error(ex)
-      end
-
-      def index_at_word_right_end(count = buffer.prefix_count)
-        offset = 1
-        last = buffer.index('end')
-
-        count.times do
-          pos  = buffer.index("#{self} + #{offset} chars")
-
-          return if pos == last
-
-          type = word_char_type(pos.get)
-
-          while type == :space
-            offset += 1
-            pos = buffer.index("#{self} + #{offset} chars")
-            break if pos == last
-            type = word_char_type(pos.get)
-          end
-
-          lock = type
-
-          while type == lock && type != :space
-            offset += 1
-            pos = buffer.index("#{self} + #{offset} chars")
-            break if pos == last
-            type = word_char_type(pos.get)
-          end
-        end
-
-        buffer.index("#{self} + #{offset - 1} chars")
       rescue => ex
         VER.error(ex)
       end

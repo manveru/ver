@@ -112,6 +112,7 @@ module VER
     map :matching_brace,  %w[percent]
     map :next_char,       %w[l], %w[Right]
     map :next_chunk,      %w[W]
+    map :next_chunk_end,  %w[E]
     map :next_line,       %w[j], %w[Down], %w[Control-n]
     map :next_page,       %w[Control-f], %w[Next]
     map :next_word,       %w[w], %w[Shift-Right]
@@ -121,7 +122,6 @@ module VER
     map :prev_line,       %w[k], %w[Up], %w[Control-p]
     map :prev_page,       %w[Control-b], %w[Prior]
     map :prev_word,       %w[b], %w[Shift-Left]
-    map :prev_word_end,   %w[E]
     map :start_of_line,   %w[Home]
   end
 
