@@ -104,6 +104,10 @@ module VER
       bind('<Configure>', &method(:adjust_size))
     end
 
+    def type(string)
+      major_mode.fake(string)
+    end
+
     def history
       HISTORY[@prompt.get]
     end

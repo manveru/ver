@@ -31,11 +31,15 @@ Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
   def type(string)
     buffer.type(string)
   end
+
+  def minibuf
+    buffer.minibuf
+  end
 end
 
 VER.spec do
   describe 'Keymap for VIM' do
-    describe 'Movement' do
+    describe 'Control mode movement' do
       behaves_like :with_buffer
 
       it 'goes to first column with <0>' do

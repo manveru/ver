@@ -15,6 +15,12 @@ module VER
 
       def show
         return if buffer.options.hidden
+
+        if buffer.winfo_ismapped
+          buffer.focus
+          return
+        end
+
         buffer.frame.pack expand: true, fill: :both
         wm_withdraw
         bind('<FocusIn>'){
