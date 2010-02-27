@@ -110,11 +110,17 @@ module VER
 
     def setup_widgets
       @status    = Status.new(frame, self)
-      @xbar      = Tk::Tile::XScrollbar.new(frame)
-      @ybar      = Tk::Tile::YScrollbar.new(frame)
       @minibuf   = VER.minibuf.peer_create(frame)
-      xscrollbar(@xbar)
-      yscrollbar(@ybar)
+
+      if options.horizontal_scrollbar
+        @xbar = Tk::Tile::XScrollbar.new(frame)
+        xscrollbar(@xbar)
+      end
+
+      if options.vertical_scrollbar
+        @ybar = Tk::Tile::YScrollbar.new(frame)
+        yscrollbar(@ybar)
+      end
     end
 
     def setup_layout

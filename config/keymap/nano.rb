@@ -1,6 +1,8 @@
 module VER
-  PanedLayout::OPTIONS[:slaves] = 0
-  layout.options[:slaves] = 0
+  options.horizontal_scrollbar = false
+  options.vertical_scrollbar = false
+  # PanedLayout::OPTIONS[:slaves] = 0
+  # layout.options[:slaves] = 0
 
   major_mode :Fundamental do
     use :control
@@ -62,6 +64,9 @@ module VER
 
     map :start_select_char_mode, %w[Control-asciicircum]
 
+    map :undo, %w[Alt-u]
+    map :redo, %w[Alt-e]
+
     handler Methods::Help
     map :nano, %w[Control-g], %w[F1]
 
@@ -75,8 +80,6 @@ module VER
 
     handler Methods::Control
     map :wrap_line, %w[Control-j], %w[F4]
-    map :indent_line, %w[Alt-bracketright]
-    map :unindent_line, %w[Alt-braceleft]
 
     handler Methods::Insert
     map :file, %w[Control-w], %w[F6]
@@ -87,23 +90,27 @@ module VER
     map :status_next, %w[Control-w], %w[F6]
     map :again,       %w[Alt-w], %w[F16]
 
-    handler Methods::Move
-    map :ask_go_line, %w[Control-underscore], %w[F13]
-    map :backward_scroll, %w[Alt-minus], %w[Alt-underscore]
-    map :end_of_file, %w[Alt-slash], %w[Alt-question]
-    map :end_of_line, %w[End], %w[Control-e]
-    map :forward_scroll, %w[Alt-plus], %w[Alt-equal]
-    map :matching_brace, %w[Control-bracketleft]
-    map :next_char, %w[Right], %w[Control-f]
-    map :next_line, %w[Control-n], %w[Down]
-    map :next_page, %w[Control-v], %w[F8]
-    map :next_word, %w[Shift-Right], %w[Alt-f], %w[Control-space]
-    map :prev_char, %w[Left], %w[Control-b]
-    map :prev_line, %w[Control-p], %w[Up]
-    map :prev_page, %w[Control-y], %w[F7]
-    map :prev_word, %w[Shift-Left], %w[Alt-b], %w[Alt-space]
-    map :start_of_file, %w[Alt-backslash], %w[Alt-bar]
-    map :start_of_line, %w[Home], %w[Control-a]
+    handler :at_insert
+    map :ask_go_line,                 %w[Control-underscore], %w[F13]
+    map :backward_scroll,             %w[Alt-minus], %w[Alt-underscore]
+    map :end_of_file,                 %w[Alt-slash], %w[Alt-question]
+    map :end_of_line,                 %w[End], %w[Control-e]
+    map :forward_scroll,              %w[Alt-plus], %w[Alt-equal]
+    map :indent_line,                 %w[Alt-bracketright]
+    map :kill_line,                   %w[Control-k], %w[F9]
+    map :matching_brace,              %w[Control-bracketleft]
+    map :next_char,                   %w[Right], %w[Control-f]
+    map :next_line,                   %w[Control-n], %w[Down]
+    map :next_page,                   %w[Control-v], %w[F8]
+    map :next_word,                   %w[Shift-Right], %w[Alt-f], %w[Control-space]
+    map :prev_char,                   %w[Left], %w[Control-b]
+    map :prev_line,                   %w[Control-p], %w[Up]
+    map :prev_page,                   %w[Control-y], %w[F7]
+    map :prev_word,                   %w[Shift-Left], %w[Alt-b], %w[Alt-space]
+    map :start_of_file,               %w[Alt-backslash], %w[Alt-bar]
+    map :start_of_line,               %w[Home], %w[Control-a]
+    map :unindent_line,               %w[Alt-braceleft]
+    map [:kill_motion, :end_of_file], %w[Alt-t]
 
     # M-(     (M-9)           Go to beginning of paragraph; then of previous paragraph
     map :start_of_paragraph, %w[Control-braceleft], %w[Alt-9]
@@ -113,18 +120,9 @@ module VER
     handler Methods::SearchAndReplace
     map :query, %w[Control-backslash], %w[F14], %w[Alt-r]
 
-    handler Methods::Delete
-    map :kill_line, %w[Control-k], %w[F9]
-    # M-T                     Cut from the cursor position to the end of the file
-    map [:kill_motion, :end_of_file], %w[Alt-t]
-
     handler Methods::Clipboard
     map :paste, %w[Control-u], %w[F10]
     map :copy_line, %w[Alt-asciicircum]
-
-    handler Methods::Undo
-    map :undo, %w[Alt-u]
-    map :redo, %w[Alt-e]
 
     handler Methods::Nano
     map :verbatim, ['Alt-v', :verbatim]

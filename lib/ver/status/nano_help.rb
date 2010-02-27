@@ -1,6 +1,8 @@
 module VER
   class Status
     class NanoHelp < Tk::Tile::Frame
+      include LabelToggle
+
       attr_reader :status, :weight, :row, :column, :sticky
 
       def initialize(status, options = {})
@@ -9,7 +11,7 @@ module VER
         @row = options.delete(:row)
         @column = options.delete(:column)
         @sticky = options.delete(:sticky)
-        @font = status.text.options.font
+        @font = status.buffer.options.font
 
         super
 
@@ -52,19 +54,6 @@ module VER
 
       def style=(config)
         # @long_labels.each{|label| label.configure(config) }
-      end
-
-      def toggle
-        info = grid_info
-
-        if info.empty?
-          grid_configure(@last_grid_info)
-          true
-        else
-          @last_grid_info = info
-          grid_forget
-          false
-        end
       end
     end
   end

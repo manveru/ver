@@ -48,6 +48,25 @@ module VER
       }
     }
 
+    module LabelToggle
+      def toggle
+        info = grid_info
+
+        if info.empty?
+          grid_configure(@last_grid_info)
+          status.show
+          true
+        else
+          @last_grid_info = info
+          grid_forget
+          unless status.winfo_children.any?{|child| Tk::Winfo.ismapped(child) }
+            status.hide
+          end
+          false
+        end
+      end
+    end
+
     attr_accessor :buffer, :widgets, :notify
 
     def initialize(parent, buffer, options = {})
@@ -84,6 +103,19 @@ module VER
 
     def style=(config)
       Tk::After.idle{ @widgets.each{|widget| widget.style = config } }
+    end
+
+    def show
+      return if winfo_ismapped
+      grid_configure(@last_grid_info)
+      true
+    end
+
+    def hide
+      return unless winfo_ismapped
+      @last_grid_info = grid_info
+      grid_forget
+      true
     end
   end
 end
