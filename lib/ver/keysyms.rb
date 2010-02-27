@@ -101,4 +101,38 @@ module VER
 
   # Inversion of KEYSYMS for fast lookup in {WidgetMajorMode}
   SYMKEYS = KEYSYMS.invert
+
+  # This can be used in specs or other code to fake events.
+  # It also represents the minimum required properties for events.
+  class FakeEvent < Struct.new(:sequence, :keysym, :unicode)
+    # A propably incomplete listing of keysyms to fake events.
+    LIST = {}
+
+    def self.add(sequence, *args)
+      LIST[sequence] = new(sequence, *args)
+    end
+
+    def self.[](sequence)
+      LIST.fetch(sequence)
+    end
+
+    def initialize(sequence, keysym = nil, unicode = nil)
+      self.sequence = sequence
+      self.keysym   = keysym  || sequence_to_keysym(sequence)
+      self.unicode  = unicode || sequence_to_unicode(sequence)
+    end
+
+    def sequence_to_keysym(sequence)
+      raise sequence
+    end
+
+    def sequence_to_unicode(sequence)
+      raise sequence
+    end
+
+    add '<Control-e>', 'e', "\x05"
+    add '<Control-a>', 'a', "\x01"
+    add '<Control-x>', 'x', "\x18"
+    add '<Home>', 'Home', ""
+  end
 end

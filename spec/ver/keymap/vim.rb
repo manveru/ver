@@ -47,7 +47,7 @@ shared :control_mode do
   end
 end
 
-VER.spec do
+VER.spec keymap: 'vim' do
   describe 'Keymap for VIM' do
     describe 'Control mode movement' do
       behaves_like :with_buffer

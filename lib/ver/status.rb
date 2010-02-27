@@ -27,6 +27,16 @@ module VER
           Encoding.new(status),
         ]
       },
+      emacs: lambda{|status|
+        [
+          ShortFilename.new(status, weight: 1),
+          Position.new(status),
+          Percent.new(status),
+          Mode.new(status),
+          Syntax.new(status),
+          Encoding.new(status),
+        ]
+      },
       nano: lambda{|status|
         [
           NanoPosition.new(status, row: 0, column: 0, weight: 1, anchor: :center),
