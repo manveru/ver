@@ -19,15 +19,26 @@ module VER
         end
 
         def to_s(handler)
-          stack = sequence.map{|seq| SYMKEYS[seq] || seq }.join(' - ')
+          stack = sequence.map{|seq| SYMKEYS[seq] || seq }.join
+
           follow = choices.map{|key, action|
             case action
             when Action
-              '%s => %p' % [key, action.to_method(handler)]
+              method = action.to_method(handler)
+              args = [*action.invocation][1..-1]
+              signature = "#{method.receiver}.#{method.name}"
+
+              unless args.empty?
+                signature << '(' << args.map(&:inspect).join(', ') << ')'
+              end
+
+              "#{key} => #{signature}"
+            when MapHash
+              key
             else
               '%s => %p' % [key, action]
             end
-          }.join(' | ')
+          }.join(', ')
           "#{stack} -- (#{follow})"
         end
       end
