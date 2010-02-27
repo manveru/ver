@@ -104,8 +104,40 @@ module VER
         return Range.new(buffer, *[pos, mark].sort)
       end
 
-      def copy_motion(motion, count = 1)
-        virtual{|mark| motion.call(buffer, count) }.copy
+      def virtual_motion(motion, *args)
+        virtual do |mark|
+          if motion.respond_to?(:call)
+            motion.call(buffer, *args)
+          else
+            mark.send(motion, *args)
+          end
+        end
+      end
+
+      def copying(motion, *args)
+        virtual_motion(motion, *args).copy
+      end
+
+      def changing(motion, *args)
+        virtual_motion(motion, *args).change
+      end
+
+      def killing(motion, *args)
+        virtual_motion(motion, *args).kill
+      end
+
+      def deleting(motion, *args)
+        virtual_motion(motion, *args).delete
+      end
+
+      # {word_right_end} goes to the last character, that is, the insert mark is
+      # between the second to last and last character.
+      # This means that the range to delete is off by one, account for it here.
+      def change_next_word_end
+        range = buffer.at_insert.virtual(&:next_word_end)
+        range.last += '1 chars'
+        range.kill
+        buffer.minor_mode(:control, :insert)
       end
 
       def insert(string, *rest)
@@ -259,7 +291,7 @@ module VER
       # With +count+ it moves to the end of the display line, so when there is
       # a line wrap it will move to the place where the line wraps instead of the
       # real end of the line.
-      def end_of_line(count = nil)
+      def end_of_line(count = buffer.prefix_arg)
         if count
           set("#{self} display lineend")
         else

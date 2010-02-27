@@ -36,6 +36,11 @@ module VER
         return  0 if compare('==', other)
       end
 
+      def change_line
+        kill_line
+        buffer.minor_mode(:control, :insert)
+      end
+
       def copy_line
         content = buffer.get("#{self} linestart", "#{self} lineend + 1 chars")
         Methods::Clipboard.copy(buffer, content)

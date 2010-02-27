@@ -173,23 +173,21 @@ module VER
 
   minor_mode :delete do
     handler :at_insert
-    map :kill_line, %w[d d]
-
-    handler Methods::Delete
+    map :changing,                  ['c', :move]
+    map :change_next_word_end,      %w[c w]
     map :change_line,               %w[c c]
-    map :change_motion,             ['c', :move]
-    map :change_word_right_end,     %w[c w]
     map :killing,                   ['d', :move]
+    map :kill_line,                 %w[d d]
     map [:changing, :end_of_line],  %w[C]
-    map [:killing, :end_of_line],   %w[D]
-    map [:killing, :next_char],     %w[x]
-    map [:killing, :prev_char],     %w[X]
+    map [:killing,  :end_of_line],  %w[D]
+    map [:killing,  :next_char],    %w[x]
+    map [:killing,  :prev_char],    %w[X]
   end
 
   minor_mode :clipboard do
     handler :at_insert
-    map :copy_line,    %w[y y], %w[Y]
-    map :copy_motion,  ['y', :move]
+    map :copy_line,  %w[y y], %w[Y]
+    map :copying,    ['y', :move]
 
     handler Methods::Clipboard
     map :paste,            %w[p]
@@ -300,25 +298,23 @@ module VER
     handler Methods::AutoFill
     map :auto_fill_space,          %w[space]
 
-    handler Methods::Delete
+    handler :at_insert
+    map :end_of_line,            %w[End], %w[Control-e]
+    map :insert_newline,         %w[Return]
+    map :insert_selection,       %w[Shift-Insert], %w[Insert]
+    map :insert_tab,             %w[Control-v Tab], %w[Control-i]
+    map :next_char,              %w[Right], %w[Control-f]
+    map :next_line,              %w[Down], %w[Control-n]
+    map :next_page,              %w[Control-f], %w[Next], %w[Shift-Down]
+    map :next_word,              %w[Shift-Right], %w[Alt-f]
+    map :prev_char,              %w[Left], %w[Control-b]
+    map :prev_line,              %w[Up], %w[Control-p]
+    map :prev_page,              %w[Control-b], %w[Prior], %w[Shift-Up]
+    map :prev_word,              %w[Shift-Left], %w[Alt-b]
+    map :start_of_line,          %w[Home], %w[Control-a]
     map [:killing, :next_char],  %w[Delete], %w[Control-d]
     map [:killing, :prev_char],  %w[BackSpace]
     map [:killing, :prev_word],  %w[Control-w]
-
-    handler :at_insert
-    map :end_of_line,       %w[End], %w[Control-e]
-    map :insert_newline,    %w[Return]
-    map :insert_selection,  %w[Shift-Insert], %w[Insert]
-    map :insert_tab,        %w[Control-v Tab], %w[Control-i]
-    map :next_char,         %w[Right], %w[Control-f]
-    map :next_line,         %w[Down], %w[Control-n]
-    map :next_page,         %w[Control-f], %w[Next], %w[Shift-Down]
-    map :next_word,         %w[Shift-Right], %w[Alt-f]
-    map :prev_char,         %w[Left], %w[Control-b]
-    map :prev_line,         %w[Up], %w[Control-p]
-    map :prev_page,         %w[Control-b], %w[Prior], %w[Shift-Up]
-    map :prev_word,         %w[Shift-Left], %w[Alt-b]
-    map :start_of_line,     %w[Home], %w[Control-a]
 
     handler Methods::Control
     map :smart_evaluate,           %w[Alt-e], %w[Control-e]

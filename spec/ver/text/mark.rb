@@ -69,7 +69,7 @@ VER.spec do
         motion = VER::Action.new(:next_word)
 
         Tk::Clipboard.set 'foo'
-        @buffer.mark(:insert).copy_motion(motion)
+        @buffer.mark(:insert).copying(motion)
         Tk::Clipboard.get.should == "simple "
       end
     end

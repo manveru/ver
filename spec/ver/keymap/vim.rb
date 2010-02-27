@@ -13,6 +13,7 @@ Ducimus quo et ea.
 Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
     TEXT
     @buffer.insert = '1.0'
+    @buffer.major_mode = VER::MajorMode[:Fundamental]
     @insert = @buffer.at_insert
   end
 
@@ -169,6 +170,101 @@ VER.spec do
       it 'goes to start of line with <Home>' do
         insert.index = '1.10'
         type '<Home>'
+        insert.index.should == '1.0'
+      end
+    end
+
+    describe 'Control mode deletion' do
+      behaves_like :with_buffer
+
+      it 'changes movement with <c> prefix' do
+        buffer.minor_mode?(:insert).should == nil
+        Tk::Clipboard.set 'foo'
+        type 'cl'
+        Tk::Clipboard.get.should == "F"
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
+        buffer.minor_mode?(:insert).should != nil
+        insert.index.should == '1.0'
+      end
+
+      it 'changes to right end of next word with <c><w>' do
+        buffer.minor_mode?(:insert).should == nil
+        Tk::Clipboard.set 'foo'
+        type 'cw'
+        Tk::Clipboard.get.should == "Fugiat"
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 41
+        buffer.minor_mode?(:insert).should != nil
+        insert.index.should == '1.0'
+      end
+
+      it 'changes a line with <c><c>' do
+        buffer.count('1.0', 'end', :lines).should == 8
+        buffer.minor_mode?(:insert).should == nil
+        Tk::Clipboard.set 'foo'
+        type 'cc'
+        Tk::Clipboard.get.should == "Fugiat eos voluptatum officia fugit ad sit qui.\n"
+        buffer.count('1.0', 'end', :lines).should == 7
+        buffer.minor_mode?(:insert).should != nil
+        insert.index.should == '1.0'
+      end
+
+      it 'kills movement with <d> prefix' do
+        insert.index = '1.1'
+        Tk::Clipboard.set 'foo'
+        type 'dl'
+        Tk::Clipboard.get.should == 'u'
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
+        buffer.minor_mode?(:insert).should == nil
+        insert.index.should == '1.1'
+      end
+
+      it 'kills a line with <d><d>' do
+        buffer.count('1.0', 'end', :lines).should == 8
+        Tk::Clipboard.set 'foo'
+        type 'dd'
+        Tk::Clipboard.get.should == "Fugiat eos voluptatum officia fugit ad sit qui.\n"
+        buffer.count('1.0', 'end', :lines).should == 7
+        buffer.minor_mode?(:insert).should == nil
+        insert.index.should == '1.0'
+      end
+
+      it 'changes to end of line with <C>' do
+        insert.index = '1.1'
+        Tk::Clipboard.set 'foo'
+        type 'C'
+        Tk::Clipboard.get.should == 'ugiat eos voluptatum officia fugit ad sit qui.'
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 1
+        buffer.minor_mode?(:insert).should != nil
+        insert.index.should == '1.1'
+      end
+
+      it 'kills to end of line with <D>' do
+        insert.index = '1.1'
+        Tk::Clipboard.set 'foo'
+        type 'D'
+        Tk::Clipboard.get.should == 'ugiat eos voluptatum officia fugit ad sit qui.'
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 1
+        buffer.minor_mode?(:insert).should == nil
+        insert.index.should == '1.1'
+      end
+
+      it 'kills next char with <x>' do
+        insert.index = '1.1'
+        Tk::Clipboard.set 'foo'
+        type 'x'
+        Tk::Clipboard.get.should == 'u'
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
+        buffer.minor_mode?(:insert).should == nil
+        insert.index.should == '1.1'
+      end
+
+      it 'kills previous char with <X>' do
+        insert.index = '1.1'
+        Tk::Clipboard.set 'foo'
+        type 'X'
+        Tk::Clipboard.get.should == 'F'
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
+        buffer.minor_mode?(:insert).should == nil
         insert.index.should == '1.0'
       end
     end

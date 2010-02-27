@@ -1,6 +1,11 @@
 module VER
   class Text
     class Range < Struct.new(:buffer, :first, :last)
+      def change
+        kill
+        buffer.minor_mode(:control, :insert)
+      end
+
       def copy
         Methods::Clipboard.copy(buffer, get)
       end
