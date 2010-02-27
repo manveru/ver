@@ -38,6 +38,15 @@ Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
   end
 end
 
+shared :control_mode do
+  behaves_like :with_buffer
+
+  before do
+    buffer.minor_mode?(:insert).should == nil
+    Tk::Clipboard.set 'foo'
+  end
+end
+
 VER.spec do
   describe 'Keymap for VIM' do
     describe 'Control mode movement' do
@@ -175,11 +184,9 @@ VER.spec do
     end
 
     describe 'Control mode deletion' do
-      behaves_like :with_buffer
+      behaves_like :control_mode
 
       it 'changes movement with <c> prefix' do
-        buffer.minor_mode?(:insert).should == nil
-        Tk::Clipboard.set 'foo'
         type 'cl'
         Tk::Clipboard.get.should == "F"
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
@@ -188,8 +195,6 @@ VER.spec do
       end
 
       it 'changes to right end of next word with <c><w>' do
-        buffer.minor_mode?(:insert).should == nil
-        Tk::Clipboard.set 'foo'
         type 'cw'
         Tk::Clipboard.get.should == "Fugiat"
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 41
@@ -198,9 +203,6 @@ VER.spec do
       end
 
       it 'changes a line with <c><c>' do
-        buffer.count('1.0', 'end', :lines).should == 8
-        buffer.minor_mode?(:insert).should == nil
-        Tk::Clipboard.set 'foo'
         type 'cc'
         Tk::Clipboard.get.should == "Fugiat eos voluptatum officia fugit ad sit qui.\n"
         buffer.count('1.0', 'end', :lines).should == 7
@@ -210,7 +212,6 @@ VER.spec do
 
       it 'kills movement with <d> prefix' do
         insert.index = '1.1'
-        Tk::Clipboard.set 'foo'
         type 'dl'
         Tk::Clipboard.get.should == 'u'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
@@ -219,8 +220,6 @@ VER.spec do
       end
 
       it 'kills a line with <d><d>' do
-        buffer.count('1.0', 'end', :lines).should == 8
-        Tk::Clipboard.set 'foo'
         type 'dd'
         Tk::Clipboard.get.should == "Fugiat eos voluptatum officia fugit ad sit qui.\n"
         buffer.count('1.0', 'end', :lines).should == 7
@@ -230,7 +229,6 @@ VER.spec do
 
       it 'changes to end of line with <C>' do
         insert.index = '1.1'
-        Tk::Clipboard.set 'foo'
         type 'C'
         Tk::Clipboard.get.should == 'ugiat eos voluptatum officia fugit ad sit qui.'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 1
@@ -240,7 +238,6 @@ VER.spec do
 
       it 'kills to end of line with <D>' do
         insert.index = '1.1'
-        Tk::Clipboard.set 'foo'
         type 'D'
         Tk::Clipboard.get.should == 'ugiat eos voluptatum officia fugit ad sit qui.'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 1
@@ -250,7 +247,6 @@ VER.spec do
 
       it 'kills next char with <x>' do
         insert.index = '1.1'
-        Tk::Clipboard.set 'foo'
         type 'x'
         Tk::Clipboard.get.should == 'u'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
@@ -260,7 +256,6 @@ VER.spec do
 
       it 'kills previous char with <X>' do
         insert.index = '1.1'
-        Tk::Clipboard.set 'foo'
         type 'X'
         Tk::Clipboard.get.should == 'F'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
