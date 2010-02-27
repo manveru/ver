@@ -159,9 +159,9 @@ module VER
       bind('<<EnterMinorMode>>', &method(:on_enter_minor_mode))
       bind('<<Modified>>',       &method(:on_modified))
       bind('<<Movement>>',       &method(:on_movement))
-      bind('<<FocusIn>>',        &method(:on_focus_in))
-      bind('<<FocusOut>>',       &method(:on_focus_out))
-      bind('<<Destroy>>',        &method(:on_destroy))
+      bind('<FocusIn>',          &method(:on_focus_in))
+      bind('<FocusOut>',         &method(:on_focus_out))
+      bind('<Destroy>',          &method(:on_destroy))
     end
 
     def setup_tags
@@ -198,6 +198,8 @@ module VER
 
     def on_destroy(event)
       VER.cancel_block(@highlighter)
+      VER.buffers.delete(self)
+      VER.exit if VER.buffers.empty?
     end
 
     def sync_mode_status

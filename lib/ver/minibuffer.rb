@@ -12,6 +12,7 @@ module VER
 
       def adjust_size(event = nil)
         configure height: count('1.0', 'end', 'displaylines')
+      rescue
       end
     end
 
@@ -118,6 +119,7 @@ module VER
 
     def adjust_size(event = nil)
       configure height: count('1.0', 'end', 'displaylines')
+    rescue
     end
 
     PROMPT_MISSING = %(text doesn't contain any characters tagged with "prompt")
@@ -185,7 +187,7 @@ module VER
       end
     end
 
-    def message_expire(tag, timeout = 42000)
+    def message_expire(tag, timeout = 5000)
       self.messages_pending += 1
 
       Tk::After.ms timeout.to_int do
