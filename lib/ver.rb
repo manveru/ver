@@ -258,23 +258,17 @@ module VER
 
   def setup_widgets
     Tk::Tile.set_theme options.tk_theme
+    Tk::Tile::Style.configure('Label', font: options.font, sticky: :sw)
 
     @root = Tk.root
-    # @root.wm_geometry = '160x80'
-
-    Tk::Tile::Style.configure('Label', font: options.font, sticky: :sw)
-    # Tk::Tile::Style.configure('TLabelframe', background: '#f00')
-
     setup_layout
-
     load("keymap/#{options.keymap}.rb")
-
     @minibuf = MiniBuffer.new(@root)
     @minibuf.pack expand: true, fill: :both
 
-    [:Messages, :Scratch].each do |name|
-      Buffer[name].hide
-    end
+    # [:Messages, :Scratch, :Completions].each do |name|
+    #   Buffer[name].hide
+    # end
   end
 
   def setup_layout

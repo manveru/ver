@@ -188,13 +188,11 @@ module VER
 
     def on_focus_in(event)
       Dir.chdir(filename.dirname.to_s) if filename && options.auto_chdir
-      # Tk::Tile::Style.configure(frame.style, border: 1, background: '#f00')
       on_movement(event)
       Tk.callback_break
     end
 
     def on_focus_out(event)
-      # Tk::Tile::Style.configure(frame.style, border: 1, background: '#fff')
       Tk.callback_break
     end
 

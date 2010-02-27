@@ -15,20 +15,7 @@ module VER
 
         @shown = true
 
-        bind('<Destroy>'){ destroy; Tk.callback_break }
         bind('<FocusIn>'){ buffer.focus; Tk.callback_break }
-      end
-
-      def style
-        style = cget(:style)
-        style.first if style
-      end
-
-      def destroy
-        style_name = style
-        super
-      ensure
-        VER.return_style_name(style_name)
       end
     end
   end

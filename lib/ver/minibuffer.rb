@@ -25,7 +25,7 @@ module VER
     include Keymapped
 
     attr_accessor :messages_expire, :messages_pending, :char_width, :ask_stack,
-                  :at_insert
+                  :at_insert, :completion_buffer
 
     def initialize(*args)
       super
@@ -99,6 +99,7 @@ module VER
       self.char_width = VER.options.font.measure('0')
       self.ask_stack = []
       self.at_insert = mark(:insert)
+      self.completion_buffer = Tk::Text.new(tk_parent)
 
       [ :info, :warn, :highlight, :prompt, :answer ].each do |name|
         instance_variable_set("@#{name}", tag(name))
@@ -168,9 +169,9 @@ module VER
       mark = buffer.at_end
       mark.insert(string, tag)
 
-      last_focus = Tk::Focus.focus # for some reason
-      mark.see                     # this changes focus to the text
-      Tk::Focus.focus(last_focus)  # so we restore it here
+      # last_focus = Tk::Focus.focus # for some reason
+      # mark.see                     # this changes focus to the text
+      # Tk::Focus.focus(last_focus)  # so we restore it here
     end
 
     def message_notify(tag, timeout = 500)
@@ -184,7 +185,7 @@ module VER
       end
     end
 
-    def message_expire(tag, timeout = 5000)
+    def message_expire(tag, timeout = 42000)
       self.messages_pending += 1
 
       Tk::After.ms timeout.to_int do
@@ -194,6 +195,15 @@ module VER
           adjust_size
         end
       end
+    end
+
+    def claim_focus
+      bind('<FocusOut>'){ focus; Tk.callback_break }
+      focus
+    end
+
+    def release_focus
+      bind('<FocusOut>'){ }
     end
 
     def warn(object)
@@ -227,7 +237,6 @@ module VER
 
         # Make sure display is ready.
         Tk.update
-        bind('<FocusOut>'){ focus; Tk.callback_break }
         focus
       end
     end
@@ -235,11 +244,10 @@ module VER
     def abort(event = nil)
       self.prompt = ''
       self.answer = ''
-      # Buffer[:Completions].hide
+      completion_buffer.place_forget
       @asking = false
 
       if ask_stack.empty?
-        bind('<FocusOut>'){ }
         self.messages_expire = false
         @caller.focus
       else
@@ -253,16 +261,13 @@ module VER
     end
 
     def show_completions(completions)
-      p completions
-      return
-      buffer = Buffer[:Completions]
+      buffer = completion_buffer
       buffer.delete('1.0', 'end')
       completions.each do |completion|
         buffer.insert('end', completion, 'ver.minibuf.completion')
         buffer.insert('end', "\n")
       end
-      buffer.show
-      focus
+      buffer.place relx: 0.0, rely: 0.9, anchor: :sw, relheight: 0.9
     end
 
     def complete_small(event = nil)
