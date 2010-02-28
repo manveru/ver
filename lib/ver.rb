@@ -331,7 +331,7 @@ module VER
   def exit
     store_session
     @cancel_blocks.keys.each{|key| @cancel_blocks[key] = true }
-    Tk.exit rescue nil
+    Tk.exit
     EM.stop rescue nil
     Kernel.exit
   end

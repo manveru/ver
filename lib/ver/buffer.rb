@@ -201,7 +201,6 @@ module VER
       VER.buffers.delete(self)
     ensure
       VER.defer {
-        p ensure: VER.buffers.empty?
         VER.exit if VER.buffers.empty?
       }
     end

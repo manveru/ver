@@ -2,8 +2,8 @@ module VER
   module Clipboard
     module_function
 
-    def get
-      Tk::Clipboard.get(VER.root, 'UTF8_STRING')
+    def get(type = 'UTF8_STRING')
+      Tk::Clipboard.get(VER.root, type)
     end
 
     def set(string)

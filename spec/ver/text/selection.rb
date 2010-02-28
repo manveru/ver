@@ -41,14 +41,14 @@ VER.spec do
       buffer.value = 'line one'
       sel.add('1.0', '1.9')
       sel.copy
-      Tk::Clipboard.get.should == 'line one'
+      VER::Clipboard.get.should == 'line one'
     end
 
     it 'copies multiple lines selection' do
       buffer.value = "line one\nline two\nline three\n"
       sel.add('1.0', '4.0')
       sel.copy
-      Tk::Clipboard.get.should == "line one\nline two\nline three\n"
+      VER::Clipboard.get.should == "line one\nline two\nline three\n"
     end
 
     it 'selects by character' do

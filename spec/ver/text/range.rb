@@ -25,16 +25,16 @@ VER.spec do
 
     it 'deletes contents' do
       @range.delete
-      Tk::Clipboard.set 'foo', type: 'STRING'
+      VER::Clipboard.set 'foo'
       @buffer.value.should == "line  two\n"
-      Tk::Clipboard.get.should == 'foo'
+      VER::Clipboard.get.should == 'foo'
     end
 
     it 'kills contents' do
-      Tk::Clipboard.set 'foo'
+      VER::Clipboard.set 'foo'
       @range.kill
       @buffer.value.should == "line  two\n"
-      Tk::Clipboard.get.should == "one\nline"
+      VER::Clipboard.get.should == "one\nline"
     end
 
     it 'replaces contents' do
@@ -52,9 +52,9 @@ VER.spec do
     end
 
     it 'copies contents' do
-      Tk::Clipboard.set 'foo'
+      VER::Clipboard.set 'foo'
       @range.copy
-      Tk::Clipboard.get.should == "one\nline"
+      VER::Clipboard.get.should == "one\nline"
     end
 
     it 'dumps contents' do

@@ -39,7 +39,7 @@ module VER
       end
 
       def copy_string(content)
-        Tk::Clipboard.set(content, type: 'UTF8_STRING')
+        VER::Clipboard.set(content)
 
         copy_message(content.count("\n") + 1, content.size)
       end
@@ -52,7 +52,7 @@ module VER
       end
 
       def copy_fallback(content)
-        Tk::Clipboard.set(content)
+        VER::Clipboard.set(content)
 
         VER.message "Copied unkown entity of class %p" % [content.class]
       end
@@ -90,7 +90,7 @@ module VER
       end
 
       def clipboard_get(text, type = 'UTF8_STRING')
-        Tk::Clipboard.get(text, type)
+        VER::Clipboard.get(type)
       rescue RuntimeError => ex
         if ex.message =~ /form "#{type}" not defined/
           yield if block_given?
