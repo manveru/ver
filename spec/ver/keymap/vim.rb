@@ -36,6 +36,14 @@ Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
   def minibuf
     buffer.minibuf
   end
+
+  def clipboard
+    VER::Clipboard.get
+  end
+
+  def clipboard_set(string)
+    VER::Clipboard.set(string)
+  end
 end
 
 shared :control_mode do
@@ -43,7 +51,7 @@ shared :control_mode do
 
   before do
     buffer.minor_mode?(:insert).should == nil
-    Tk::Clipboard.set 'foo'
+    clipboard_set 'foo'
   end
 end
 
@@ -206,7 +214,7 @@ VER.spec keymap: 'vim' do
 
       it 'changes movement with <c> prefix' do
         type 'cl'
-        Tk::Clipboard.get.should == "F"
+        clipboard.should == 'F'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
         buffer.minor_mode?(:insert).should != nil
         insert.index.should == '1.0'
@@ -214,7 +222,7 @@ VER.spec keymap: 'vim' do
 
       it 'changes to right end of next word with <c><w>' do
         type 'cw'
-        Tk::Clipboard.get.should == "Fugiat"
+        clipboard.should == "Fugiat"
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 41
         buffer.minor_mode?(:insert).should != nil
         insert.index.should == '1.0'
@@ -222,7 +230,7 @@ VER.spec keymap: 'vim' do
 
       it 'changes a line with <c><c>' do
         type 'cc'
-        Tk::Clipboard.get.should == "Fugiat eos voluptatum officia fugit ad sit qui.\n"
+        clipboard.should == "Fugiat eos voluptatum officia fugit ad sit qui.\n"
         buffer.count('1.0', 'end', :lines).should == 7
         buffer.minor_mode?(:insert).should != nil
         insert.index.should == '1.0'
@@ -231,7 +239,7 @@ VER.spec keymap: 'vim' do
       it 'kills movement with <d> prefix' do
         insert.index = '1.1'
         type 'dl'
-        Tk::Clipboard.get.should == 'u'
+        clipboard.should == 'u'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
         buffer.minor_mode?(:insert).should == nil
         insert.index.should == '1.1'
@@ -239,7 +247,7 @@ VER.spec keymap: 'vim' do
 
       it 'kills a line with <d><d>' do
         type 'dd'
-        Tk::Clipboard.get.should == "Fugiat eos voluptatum officia fugit ad sit qui.\n"
+        clipboard.should == "Fugiat eos voluptatum officia fugit ad sit qui.\n"
         buffer.count('1.0', 'end', :lines).should == 7
         buffer.minor_mode?(:insert).should == nil
         insert.index.should == '1.0'
@@ -248,7 +256,7 @@ VER.spec keymap: 'vim' do
       it 'changes to end of line with <C>' do
         insert.index = '1.1'
         type 'C'
-        Tk::Clipboard.get.should == 'ugiat eos voluptatum officia fugit ad sit qui.'
+        clipboard.should == 'ugiat eos voluptatum officia fugit ad sit qui.'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 1
         buffer.minor_mode?(:insert).should != nil
         insert.index.should == '1.1'
@@ -257,7 +265,7 @@ VER.spec keymap: 'vim' do
       it 'kills to end of line with <D>' do
         insert.index = '1.1'
         type 'D'
-        Tk::Clipboard.get.should == 'ugiat eos voluptatum officia fugit ad sit qui.'
+        clipboard.should == 'ugiat eos voluptatum officia fugit ad sit qui.'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 1
         buffer.minor_mode?(:insert).should == nil
         insert.index.should == '1.1'
@@ -266,7 +274,7 @@ VER.spec keymap: 'vim' do
       it 'kills next char with <x>' do
         insert.index = '1.1'
         type 'x'
-        Tk::Clipboard.get.should == 'u'
+        clipboard.should == 'u'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
         buffer.minor_mode?(:insert).should == nil
         insert.index.should == '1.1'
@@ -275,7 +283,7 @@ VER.spec keymap: 'vim' do
       it 'kills previous char with <X>' do
         insert.index = '1.1'
         type 'X'
-        Tk::Clipboard.get.should == 'F'
+        clipboard.should == 'F'
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 46
         buffer.minor_mode?(:insert).should == nil
         insert.index.should == '1.0'

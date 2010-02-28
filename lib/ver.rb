@@ -20,6 +20,7 @@ module VER
   autoload :Action,              'ver/action'
   autoload :Bookmarks,           'ver/methods/bookmark'
   autoload :Buffer,              'ver/buffer'
+  autoload :Clipboard,           'ver/clipboard'
   autoload :Entry,               'ver/entry'
   autoload :EvalCompleter,       'ver/vendor/eval_completer'
   autoload :ExceptionView,       'ver/exception_view'
