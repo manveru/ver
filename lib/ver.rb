@@ -78,6 +78,9 @@ module VER
     o "Keymap used",
       :keymap, 'vim'
 
+    o "Load personal rc.rb",
+      :load_rc, true
+
     o "Width of one tab in pixel",
       :tabs, 10
 
@@ -163,7 +166,11 @@ module VER
     @style_name_pools = {}
     @buffers = Set.new
 
-    load 'rc'
+    if given_options[:load_rc] != false
+      load 'rc'
+    else
+      require(options.core_conf_dir/'rc')
+    end
     @options.merge!(given_options)
   end
 

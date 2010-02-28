@@ -58,23 +58,9 @@ module VER
       self.minors -= minors.map{|name| MinorMode[name] }
     end
 
-    class FakeEvent < Struct.new(:sequence, :keysym, :unicode)
-      def initialize(name)
-        self.sequence = name
-        self.keysym = name2keysym(name)
-        self.unicode = name2unicode(name)
-      end
-
-      def name2keysym(name)
-      end
-
-      def name2unicode(name)
-      end
-    end
-
     def fake(input)
       input.scan(/<[\w-]+>|[[:word:]]/) do |name|
-        on_event(FakeEvent.new(name))
+        on_event(FakeEvent[name])
       end
     end
 
@@ -191,6 +177,10 @@ module VER
 
     def actions
       major.actions + minors.map{|minor| minor.actions }.flatten
+    end
+
+    def to_hash
+      [major.keymap, *minors].inject{|h, m| h.merge(m.keymap) }
     end
 
     def name
