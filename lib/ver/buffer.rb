@@ -199,7 +199,11 @@ module VER
     def on_destroy(event)
       VER.cancel_block(@highlighter)
       VER.buffers.delete(self)
-      VER.exit if VER.buffers.empty?
+    ensure
+      VER.defer {
+        p ensure: VER.buffers.empty?
+        VER.exit if VER.buffers.empty?
+      }
     end
 
     def sync_mode_status

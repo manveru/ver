@@ -70,7 +70,7 @@ module VER
             may_close(buffer) do
               pending[index] = true
               # p pending
-              VER.exit if pending.all?
+              # VER.exit if pending.all?
             end
           end
         end
