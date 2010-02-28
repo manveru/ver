@@ -9,11 +9,6 @@ module VER
         Tk.execute(text.tk_pathname, 'peer', 'create', @tk_pathname, options)
         setup_common
       end
-
-      def adjust_size(event = nil)
-        configure height: count('1.0', 'end', 'displaylines')
-      rescue
-      end
     end
 
     def self.answer_from(text)
@@ -101,6 +96,7 @@ module VER
       self.ask_stack = []
       self.at_insert = mark(:insert)
       self.completion_buffer = Tk::Text.new(tk_parent)
+      @old_grid_info = nil
 
       [ :info, :warn, :highlight, :prompt, :answer ].each do |name|
         instance_variable_set("@#{name}", tag(name))
@@ -118,7 +114,17 @@ module VER
     end
 
     def adjust_size(event = nil)
-      configure height: count('1.0', 'end', 'displaylines')
+      if get_displaychars('1.0', 'end').strip.empty?
+        if (info = grid_info) && !info.empty?
+          @old_grid_info = info
+          grid_forget
+        end
+      else
+        height = count('1.0', 'end', 'displaylines')
+        grid_configure(@old_grid_info) if @old_grid_info
+      end
+
+      configure height: height
     rescue
     end
 
