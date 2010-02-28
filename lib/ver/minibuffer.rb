@@ -339,7 +339,7 @@ module VER
     end
 
     def insert_selection(event = nil)
-      insert(:insert, Tk::Selection.get, 'answer')
+      insert(:insert, Tk::Selection.get(type: 'UTF8_STRING'), 'answer')
       invoke(:modified)
     end
 

@@ -15,7 +15,7 @@ module VER
 
       # FIXME: nasty hack or neccesary?
       def paste(text)
-        content = clipboard_get(text, 'STRING'){
+        content = clipboard_get(text, 'UTF8_STRING'){
           array = clipboard_get(text, 'ARRAY')
           return paste_array(text, array) if array
         }
@@ -39,7 +39,7 @@ module VER
       end
 
       def copy_string(content)
-        Tk::Clipboard.set(content, type: 'STRING')
+        Tk::Clipboard.set(content, type: 'UTF8_STRING')
 
         copy_message(content.count("\n") + 1, content.size)
       end
@@ -89,7 +89,7 @@ module VER
         end
       end
 
-      def clipboard_get(text, type = 'STRING')
+      def clipboard_get(text, type = 'UTF8_STRING')
         Tk::Clipboard.get(text, type)
       rescue RuntimeError => ex
         if ex.message =~ /form "#{type}" not defined/

@@ -66,7 +66,7 @@ module VER
 
     # Insert X selection at cursor position
     def insert_selection
-      insert(cursor, Tk::Selection.get)
+      insert(cursor, Tk::Selection.get(type: 'UTF8_STRING'))
     end
 
     # Insert a literal tab character at cursor position

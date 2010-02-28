@@ -171,7 +171,7 @@ module VER
       end
 
       def insert_selection
-        self << Tk::Selection.get
+        self << Tk::Selection.get(type: 'UTF8_STRING')
       end
 
       def insert_tab
