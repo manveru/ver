@@ -40,6 +40,17 @@ module VER
         @anchor.unset
       end
 
+      def each_line
+        return Enumerator.new(self, :each_line) unless block_given?
+
+        each_range do |range|
+          fy, fx, ty, tx = *range.first, *range.last
+          fy.upto(ty) do |y|
+            yield y, fx, tx
+          end
+        end
+      end
+
       def reset
         clear
         @anchor.index = :insert
@@ -108,7 +119,73 @@ module VER
         finish
       end
 
+      def indent
+        indent_size = buffer.options.shiftwidth
+        indent = ' ' * indent_size
+
+        buffer.undo_record do |record|
+          each_line do |y, fx, tx|
+            tx = fx + indent_size
+            next if buffer.get("#{y}.#{fx}", "#{y}.#{tx}").empty?
+            record.insert("#{y}.#{fx}", indent)
+          end
+        end
+
+        refresh
+      end
+
+      def unindent
+        indent_size = buffer.options.shiftwidth
+        indent = ' ' * indent_size
+        queue = []
+
+        each_line do |y, fx, tx|
+          tx = fx + indent_size
+          left, right = "#{y}.#{fx}", "#{y}.#{tx}"
+          next unless buffer.get(left, right) == indent
+          queue << left << right
+        end
+
+        buffer.delete(*queue)
+        refresh
+      end
+
       class Char < Selection
+        # For every chunk selected, this yields the corresponding coordinates as
+        # [from_y, from_x, to_y, to_x].
+        # It takes into account the current selection mode.
+        # In many cases from_y and to_y are identical, but don't rely on this.
+        #
+        # @see each_line
+        def each
+          return Enumerator.new(self, :each) unless block_given?
+
+          each_range do |range|
+            (fy, fx), (ty, tx) = *range.first, *range.last
+
+            if fy == ty
+              yield fy, fx, ty, tx
+            elsif (ty - fy) == 1
+              efy, efx = text.index("#{fy}.#{fx} lineend").split
+              sty, stx = text.index("#{ty}.#{tx} linestart").split
+              yield fy, fx, efy, efx
+              yield sty, stx, ty, tx
+            else
+              efy, efx = text.index("#{fy}.#{fx} lineend").split
+              yield fy, fx, efy, efx
+
+              ((fy + 1)...ty).each do |y|
+                sy, sx = text.index("#{y}.0 linestart").split
+                ey, ex = text.index("#{y}.0 lineend").split
+                yield sy, sx, ey, ex
+              end
+
+              sty, stx = text.index("#{ty}.#{tx} linestart").split
+              yield sty, stx, ty, tx
+            end
+          end
+        end
+
         def refresh
           return unless @refresh
           start = buffer.index("sel_anchor")
@@ -124,6 +201,20 @@ module VER
       end
 
       class Line < Selection
+        def each
+          return Enumerator.new(self, :each) unless block_given?
+
+          each_range do |range|
+            (fy, fx), (ty, tx) = *range.first, *range.last
+
+            fy.upto(ty) do |y|
+              sy, sx = text.index("#{y}.0 linestart").split
+              ey, ex = text.index("#{y}.0 lineend").split
+              yield sy, sx, ey, ex
+            end
+          end
+        end
+
         def refresh
           return unless @refresh
           start = buffer.index("sel_anchor")
@@ -139,6 +230,15 @@ module VER
       end
 
       class Block < Selection
+        def each
+          return Enumerator.new(self, :each) unless block_given?
+
+          each_range do |range|
+            (fy, fx), (ty, tx) = *range.first, *range.last
+            yield fy, fx, ty, tx
+          end
+        end
+
         def refresh
           return unless @refresh
           start = buffer.index(:sel_anchor)

@@ -51,6 +51,38 @@ VER.spec do
       VER::Clipboard.get.should == "line one\nline two\nline three\n"
     end
 
+    it 'indents selection' do
+      buffer.value = <<-TEXT.chomp
+line one
+line two
+line three
+    TEXT
+      sel.add('1.0', '4.0')
+      sel.indent
+      buffer.value.should == <<-TEXT
+  line one
+  line two
+  line three
+    TEXT
+    end
+
+    it 'unindents selection' do
+      buffer.value = <<-TEXT.chomp
+  line one
+  line two
+  line three
+    TEXT
+
+      sel.add('1.0', '4.0')
+      sel.unindent
+
+      buffer.value.should == <<-TEXT
+line one
+line two
+line three
+    TEXT
+    end
+
     it 'selects by character' do
       buffer.tag_delete :sel
       buffer.type 'ggvG'
