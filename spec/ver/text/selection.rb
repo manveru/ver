@@ -51,14 +51,33 @@ VER.spec do
       VER::Clipboard.get.should == "line one\nline two\nline three\n"
     end
 
-    it 'indents selection' do
+    it 'evaluates' do
+      buffer.value = '1 + 1'
+      sel.add('1.0', 'end')
+      sel.evaluate!
+      buffer.value.should == "1 + 1\n2\n"
+      sel.ranges.should.be.empty
+    end
+
+    it 'replace selection with pipe result' do
+      buffer.value = "one\ntwo\nthree"
+      sel.add('1.0', 'end')
+      sel.pipe!('rev')
+      buffer.value.should == "eno\nowt\neerht\n"
+      sel.ranges.should.be.empty
+    end
+
+    it 'indents' do
       buffer.value = <<-TEXT.chomp
 line one
 line two
 line three
     TEXT
+
       sel.add('1.0', '4.0')
       sel.indent
+      sel.ranges.should == [buffer.range('1.2', '4.0')]
+
       buffer.value.should == <<-TEXT
   line one
   line two
@@ -66,7 +85,7 @@ line three
     TEXT
     end
 
-    it 'unindents selection' do
+    it 'unindents' do
       buffer.value = <<-TEXT.chomp
   line one
   line two
@@ -75,6 +94,7 @@ line three
 
       sel.add('1.0', '4.0')
       sel.unindent
+      sel.ranges.should == [buffer.range('1.0', '4.0')]
 
       buffer.value.should == <<-TEXT
 line one

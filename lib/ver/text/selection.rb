@@ -18,6 +18,7 @@ module VER
         refresh() if @refresh = refresh
       end
 
+      # This is called when the minor mode changes.
       def enter(old_mode, new_mode)
         reset unless old_mode.name =~ /^select_/
         new_mode_name = new_mode.name
@@ -33,22 +34,12 @@ module VER
         sel.mode = new_mode_name.to_sym
       end
 
+      # This is called when the minor mode changes.
       def leave(old_mode, new_mode)
         return if new_mode.name =~ /^select/
         @refresh = false
         clear
         @anchor.unset
-      end
-
-      def each_line
-        return Enumerator.new(self, :each_line) unless block_given?
-
-        each_range do |range|
-          fy, fx, ty, tx = *range.first, *range.last
-          fy.upto(ty) do |y|
-            yield y, fx, tx
-          end
-        end
       end
 
       def reset
@@ -60,42 +51,9 @@ module VER
         tag_remove('1.0', 'end')
       end
 
+      # Enter control mode, indirectly invokes {leave}.
       def finish
         buffer.minor_mode(mode, :control)
-      end
-
-      # Convert all characters within the selection to lower-case using
-      # String#downcase.
-      # Usually only works for alphabetic ASCII characters.
-      def lower_case
-        buffer.undo_record do |record|
-          each_range do |range|
-            record.replace(*range, range.get.chomp.downcase)
-          end
-        end
-      end
-      alias downcase! lower_case
-
-      # Convert all characters within the selection to upper-case using
-      # String#upcase.
-      # Usually only works for alphabetic ASCII characters.
-      def upper_case
-        buffer.undo_record do |record|
-          each_range do |range|
-            record.replace(*range, range.get.chomp.upcase)
-          end
-        end
-      end
-      alias upcase! upper_case
-
-      # Toggle case within the selection.
-      # This only works for alphabetic ASCII characters, no other encodings.
-      def toggle_case
-        buffer.undo_record do |record|
-          each_range do |range|
-            record.replace(*range, range.get.chomp.tr('a-zA-Z', 'A-Za-z'))
-          end
-        end
       end
 
       # Using delete, since the sel tag cannot be deleted anyway.
@@ -111,6 +69,7 @@ module VER
 
       def kill
         super
+        clear
         finish
       end
 
@@ -119,35 +78,26 @@ module VER
         finish
       end
 
+      def evaluate!
+        super
+        clear
+        finish
+      end
+
       def indent
-        indent_size = buffer.options.shiftwidth
-        indent = ' ' * indent_size
-
-        buffer.undo_record do |record|
-          each_line do |y, fx, tx|
-            tx = fx + indent_size
-            next if buffer.get("#{y}.#{fx}", "#{y}.#{tx}").empty?
-            record.insert("#{y}.#{fx}", indent)
-          end
-        end
-
+        super
         refresh
       end
 
       def unindent
-        indent_size = buffer.options.shiftwidth
-        indent = ' ' * indent_size
-        queue = []
-
-        each_line do |y, fx, tx|
-          tx = fx + indent_size
-          left, right = "#{y}.#{fx}", "#{y}.#{tx}"
-          next unless buffer.get(left, right) == indent
-          queue << left << right
-        end
-
-        buffer.delete(*queue)
+        super
         refresh
+      end
+
+      def pipe!(*cmd)
+        super
+        clear
+        finish
       end
 
       class Char < Selection

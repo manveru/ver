@@ -72,9 +72,48 @@ module VER
         ranges.each(&block)
       end
 
+      def each_line
+        return Enumerator.new(self, :each_line) unless block_given?
+
+        each_range do |range|
+          fy, fx, ty, tx = *range.first, *range.last
+          fy.upto(ty) do |y|
+            yield y, fx, tx
+          end
+        end
+      end
+
+      # Eval contents of tag and insert them into the buffer.
+      def evaluate!
+        file = buffer.filename
+
+        each_range do |range|
+          code = range.get
+
+          Methods::Control.stdout_capture_evaluate(code, file, binding) do |res, out|
+            range.last.lineend.insert("\n%s%p" % [out, res])
+          end
+        end
+      end
+
       def get
         values = ranges.map{|range| range.get }
         values.size == 1 ? values.first : values unless values.empty?
+      end
+
+      def indent
+        indent_size = buffer.options.shiftwidth
+        indent = ' ' * indent_size
+
+        buffer.undo_record do |record|
+          each_line do |y, fx, tx|
+            tx = fx + indent_size
+            next if buffer.get("#{y}.#{fx}", "#{y}.#{tx}").empty?
+            record.insert("#{y}.#{fx}", indent)
+          end
+        end
+
+        refresh
       end
 
       def inspect
@@ -91,31 +130,61 @@ module VER
         buffer.delete(*indices)
       end
 
-      # pathName tag lower tagName ?belowThis? 
       def lower(below_this = Tk::None)
         buffer.tag_lower(self, below_this)
       end
       alias tag_lower lower
 
-      # pathName tag nextrange tagName index1 ?index2? 
+      # Convert all characters within the tag to lower-case using
+      # String#downcase.
+      # Usually only works for alphabetic ASCII characters.
+      def lower_case
+        buffer.undo_record do |record|
+          each_range do |range|
+            record.replace(*range, range.get.chomp.downcase)
+          end
+        end
+      end
+      alias downcase! lower_case
+
       def next_range(from_index, to_index = Tk::None)
         buffer.tag_nextrange(self, from_index, to_index)
       end
       alias nextrange next_range
 
-      # pathName tag prevrange tagName index1 ?index2? 
+      # Replace contents of tag with stdout output of a command
+      def pipe!(*cmd)
+        require 'open3'
+
+        Open3.popen3(*cmd) do |si, so, thread|
+          queue = []
+          each_range do |range|
+            si.write(range.get)
+            queue.concat(range.to_a)
+          end
+
+          si.close
+          output = so.read
+
+          return if queue.empty?
+
+          buffer.undo_record do |record|
+            record.delete(*queue)
+            record.insert(queue.first, output.chomp)
+          end
+        end
+      end
+
       def prev_range(from_index, to_index = Tk::None)
         buffer.tag_prevrange(self, from_index, to_index)
       end
       alias prevrange prev_range
 
-      # pathName tag raise tagName ?aboveThis? 
       def raise(above_this = Tk::None)
         buffer.tag_raise(above_this)
       end
       alias tag_raise raise
 
-      # pathName tag ranges tagName 
       def ranges
         buffer.tag_ranges(self)
       end
@@ -137,6 +206,44 @@ module VER
       def to_tcl
         name.to_tcl
       end
+
+      # Toggle case within the selection.
+      # This only works for alphabetic ASCII characters, no other encodings.
+      def toggle_case
+        buffer.undo_record do |record|
+          each_range do |range|
+            record.replace(*range, range.get.chomp.tr('a-zA-Z', 'A-Za-z'))
+          end
+        end
+      end
+
+      def unindent
+        indent_size = buffer.options.shiftwidth
+        indent = ' ' * indent_size
+        queue = []
+
+        each_line do |y, fx, tx|
+          tx = fx + indent_size
+          left, right = "#{y}.#{fx}", "#{y}.#{tx}"
+          next unless buffer.get(left, right) == indent
+          queue << left << right
+        end
+
+        buffer.delete(*queue)
+        refresh
+      end
+
+      # Convert all characters within the tag to upper-case using
+      # String#upcase.
+      # Usually only works for alphabetic ASCII characters.
+      def upper_case
+        buffer.undo_record do |record|
+          each_range do |range|
+            record.replace(*range, range.get.chomp.upcase)
+          end
+        end
+      end
+      alias upcase! upper_case
 
       def wrap(count = buffer.prefix_arg)
         width = count || 80

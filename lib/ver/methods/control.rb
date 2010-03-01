@@ -360,7 +360,7 @@ module VER
       def line_evaluate(text)
         content = text.get('insert linestart', 'insert lineend')
         stdout_capture_evaluate(content, text.filename, binding) do |res,out|
-          text.insert("insert lineend", "\n%s%p" % [out, res] )
+          at_insert.lineend.insert("n%s%p" % [out, res])
         end
       end
 
