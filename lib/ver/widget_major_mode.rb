@@ -22,7 +22,7 @@ module VER
     def initialize(widget, major)
       self.widget = widget
       self.major = MajorMode[major]
-      self.event_history = SizedArray.new(100)
+      self.event_history  = SizedArray.new(500) # this may be too small still
       self.action_history = SizedArray.new(100)
       self.stack = []
       self.minors = []
