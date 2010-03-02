@@ -33,6 +33,7 @@ module VER
           when :modified
             begin
               regexp = answer_to_regex(answer)
+              Search.incremental(text, regexp)
               text.warn ''
               text.message(" => #{regexp.inspect}")
             rescue RegexpError, SyntaxError => ex

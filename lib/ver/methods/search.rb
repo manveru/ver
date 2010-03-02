@@ -43,14 +43,23 @@ module VER
       end
 
       def incremental(text, term, force = false)
-        return if !term || term.empty?
-        return if !force && term.size <= text.options.search_incremental_min
-
-        begin
-          needle = Regexp.new(term)
-        rescue RegexpError, SyntaxError
-          needle = Regexp.escape(term)
-        end
+        needle =
+          case term
+          when nil, false
+            return
+          when Regexp
+            needle = term
+          when String
+            return if !force && term.size <= text.options.search_incremental_min
+            return if term.empty?
+            begin
+              Regexp.new(term)
+            rescue RegexpError, SyntaxError
+              Regexp.escape(term)
+            end
+          else
+            raise ArgumentError
+          end
 
         tag(text, needle)
         from, to = text.tag_nextrange(TAG, 1.0, :end)
