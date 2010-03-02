@@ -325,8 +325,9 @@ module VER
       end
 
       def line_evaluate(text)
-        content = text.get('insert linestart', 'insert lineend')
-        stdout_capture_evaluate(content, text.filename, binding) do |res,out|
+        code = text.get('insert linestart', 'insert lineend')
+        file = (text.filename || text.uri).to_s
+        stdout_capture_evaluate(code, file, binding) do |res, out|
           at_insert.lineend.insert("n%s%p" % [out, res])
         end
       end
