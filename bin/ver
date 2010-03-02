@@ -128,7 +128,7 @@ module VER
       return
     end
 
-    filename = name.gsub(/[\/\u2014]/, '-')
+    filename = name.gsub(/[:\/\u2014]/, '-').squeeze('-')
     target = File.expand_path("#{path}/#{filename}.rb", ROOT)
 
     dirname = File.dirname(target)
