@@ -34,7 +34,7 @@ module VER
     minor_mode :git do
       handler Methods::Git
 
-      map :git_blame,                        %w[g i t b]
+      map :git_blame,                         %w[g i t b]
       map [:spawn_rxvt, 'git add -p'],        %w[g i t a]
       map [:spawn_rxvt, 'git commit'],        %w[g i t c]
       map [:spawn_rxvt, 'git diff'  ],        %w[g i t d]

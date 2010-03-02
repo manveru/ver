@@ -7,7 +7,7 @@ module VER
   # welcome.
   class ToplevelLayout < Tk::Frame
     class Toplevel < Tk::Toplevel
-      attr_accessor :buffer
+     attr_accessor :buffer
 
       def hide
         wm_withdraw
