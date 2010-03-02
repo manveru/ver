@@ -27,16 +27,12 @@ module VER
       style.flatten.first if style
     end
 
-    def quit(event = nil)
-      VER.exit
+    def message(*args)
+      VER.message(*args)
     end
 
-    def message(string)
-      self.value = string
-    end
-
-    def error(string)
-      self.value = string
+    def error(*args)
+      VER.warn(*args)
     end
 
     def insert(*args)
@@ -236,9 +232,9 @@ module VER
       delete(0, :end)
     end
 
-    def virtual_movement(name, count = 1)
+    def virtual_movement(name, *args)
       pos = cursor
-      __send__(name, count)
+      __send__(name, *args)
       mark = cursor
       self.cursor = pos
       return [pos, mark].sort
