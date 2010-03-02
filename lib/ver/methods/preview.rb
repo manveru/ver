@@ -13,50 +13,56 @@ module VER
 
       module_function
 
-      def preview(text)
-        return unless syntax = text.syntax
+      def preview(buffer)
+        return unless syntax = buffer.syntax
 
         method = "preview_#{syntax.name}".downcase
 
         if respond_to?(method)
-          send(method, text)
+          send(method, buffer)
         end
       end
 
-      def compile(text)
-        return unless syntax = text.syntax
+      def compile(buffer)
+        return unless syntax = buffer.syntax
 
         method = "compile_#{syntax.name}".downcase
 
         if respond_to?(method)
-          send(method, text)
+          send(method, buffer)
         end
       end
 
-      def compile_haml(text)
+      def compile_haml(buffer)
       end
 
-      def compile_sass(text)
+      def compile_sass(buffer)
       end
 
-      def preview_ruby(text)
-        save(text)
-        open_rxvt(text, <<-SHELL)
-ruby #{text.filename.shellescape}
+      def preview_ruby(buffer)
+        save(buffer)
+        spawn_rxvt(<<-SHELL)
+ruby #{buffer.filename.shellescape}
 echo "\nPreview finished, press <Return> to return to VER"
 read
 exit
         SHELL
       end
 
-      def save(text)
-        Save.file_save(text)
+      def save(buffer)
+        Save.save(buffer)
+      end
+
+      # Open a new urxvt term in the background, this is not kept inside VER
+      # layout.
+      def spawn_rxvt(command)
+        system("urxvt -e $SHELL -c '%s' &" % [command])
       end
 
       # Open a new urxvt term and manage it inside the layout of VER.
       # Please let me know if you notice weird behaviour around the focus
-      def open_rxvt(text, command)
-        layout = text.layout
+      def open_rxvt(buffer, command)
+        layout = buffer.layout
 
         # No Tk::Tile::Frame as it doesn't support container
         frame = Frame.new(layout, container: true)
@@ -70,7 +76,7 @@ exit
           # Usually humans don't notice the delay, so we could increase it a bit
           # if need arises.
           Tk::After.ms 100 do
-            text.focus
+            buffer.focus
             frame.focus
           end
         end
@@ -84,7 +90,7 @@ exit
         frame.bind '<Destroy>' do |event|
           Tk::After.idle do
             layout.close_buffer(frame)
-            text.focus(:force) # need to use force, the term was outside tk
+            buffer.focus(:force) # need to use force, the term was outside tk
           end
         end
       end
