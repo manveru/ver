@@ -1,4 +1,9 @@
 module VER
+  # A subset of Tk::Event::Data with only the properties we actually use to
+  # allow for more event history while keeping memory usage low.
+  class Event < Struct.new(:sequence, :keysym, :unicode)
+  end
+
   # The WidgetMajorMode associates a widget with a major mode.
   # It keeps a limited history of the events that arrive at [on_event].
   # It also maintains a stack of the event sequences and tries to match
@@ -66,11 +71,7 @@ module VER
 
     def on_event(event)
       stack << event.sequence
-      event_history << {
-        sequence: event.sequence,
-        keysym:   event.keysym,
-        unicode:  event.unicode
-      }
+      event_history << Event.new(event.sequence, event.keysym, event.unicode)
 
       return handle_reader(event) if reader && read_amount
 
@@ -203,7 +204,7 @@ module VER
       out = ['#<Ver::WidgetMajorMode']
       { major: major.name,
         minors: minors.map{|m| m.to_sym },
-        event_history: event_history.map{|h| h[:keysym] },
+        event_history: event_history.map(&:keysym),
         stack: stack,
       }.each{|k,v| out << "#{k}=#{v.inspect}" }
       out.join(' ') << '>'

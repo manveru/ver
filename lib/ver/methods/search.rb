@@ -125,7 +125,7 @@ module VER
 
         buffer.major_mode.read 1 do |event|
           from, to = 'insert + 1 chars', 'insert lineend'
-          regexp = Regexp.new(Regexp.escape(event[:unicode]))
+          regexp = Regexp.new(Regexp.escape(event.unicode))
 
           counter = 0
           buffer.search_all regexp, from, to do |match, pos, mark|
@@ -141,7 +141,7 @@ module VER
 
         buffer.major_mode.read 1 do |event|
           from, to = 'insert', 'insert linestart'
-          regexp = Regexp.new(Regexp.escape(event[:unicode]))
+          regexp = Regexp.new(Regexp.escape(event.unicode))
 
           counter = 0
           buffer.rsearch_all regexp, from, to do |match, pos, mark|

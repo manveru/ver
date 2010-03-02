@@ -539,8 +539,8 @@ module VER
     def update_prefix_arg
       numbers = []
 
-      major_mode.event_history.reverse_each do |event|
-        break unless event[:sequence] =~ /^(\d+)$/
+      events.reverse_each do |event|
+        break unless event.sequence =~ /^(\d+)$/
         numbers << $1
       end
 

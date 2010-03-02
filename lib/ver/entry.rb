@@ -13,6 +13,14 @@ module VER
     FORWARD_WORD = /#{space}+#{word}|#{word}+#{space}+#{word}/
     BACKWARD_WORD = /#{word}+/
 
+    def events
+      major_mode.event_history
+    end
+
+    def event
+      major_mode.event_history.last
+    end
+
     ## Maintenance
     def style
       style = cget(:style)
@@ -59,9 +67,8 @@ module VER
 
     ## Insert
 
-    def insert_string
-      p major_mode.event_history
-      # insert(cursor, event.unicode)
+    def insert_string(event = self.event)
+      insert(cursor, event.unicode)
     end
 
     # Insert X selection at cursor position
