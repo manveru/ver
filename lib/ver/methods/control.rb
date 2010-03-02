@@ -47,8 +47,8 @@ module VER
         Move.start_of_line(text)
       end
 
-      def cursor_vertical_center(text)
-        insert = text.count('1.0', 'insert', :displaylines)
+      def cursor_vertical_center(text, index = :insert)
+        insert = text.count('1.0', index, :displaylines)
         last   = text.count('1.0', 'end', :displaylines)
         shown  = text.count('@0,0', "@0,#{text.winfo_height}", :displaylines)
 

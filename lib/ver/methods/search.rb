@@ -59,18 +59,18 @@ module VER
 
       def first(text)
         from, to = text.tag_nextrange(TAG, 1.0, :end)
-        text.mark_set(:insert, from) if from
+        center(text, from)
       end
 
       def last(text)
         from, to = tag_prevrange(TAG, :end, 1.0)
-        text.mark_set(:insert, from) if from
+        center(text, from)
       end
 
       def next(text, count = text.prefix_count)
         count.times do
           from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
-          text.mark_set(:insert, from) if from
+          center(text, from)
         end
 
         display_matches_count(text)
@@ -91,7 +91,7 @@ module VER
       def prev(text, count = text.prefix_count)
         count.times do
           from, to = text.tag_prevrange(TAG, 'insert - 1 chars', '1.0')
-          text.mark_set(:insert, from) if from
+          center(text, from)
         end
 
         display_matches_count(text)
@@ -153,6 +153,12 @@ module VER
         text.store(self, :last, needle)
         text.tag_all_matching(TAG, needle, HIGHLIGHT)
         text.tag_lower(TAG)
+      end
+
+      def center(text, index)
+        return unless index
+        text.mark_set(:insert, index)
+        Control.cursor_vertical_center(text, index)
       end
     end
   end
