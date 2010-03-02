@@ -76,7 +76,18 @@ module VER
       end
 
       def replace_once(buffer)
-        from, to = buffer.tag_nextrange(TAG, 'insert', 'end')
+        begin
+          from, to = buffer.tag_nextrange(TAG, 'insert', 'end')
+        rescue => ex
+          if ex.message.start_with?('bad text index ""')
+            buffer.minor_mode(:search_and_replace, :control)
+            buffer.message 'No more matches'
+            return
+          else
+            raise(ex)
+          end
+        end
+
         buffer.replace(from, to, buffer.store(self, :replacement))
         buffer.tag_all_matching(TAG, buffer.store(self, :pattern), HIGHLIGHT)
         from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
