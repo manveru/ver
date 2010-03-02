@@ -137,6 +137,7 @@ module VER
     ('0'..'9').each{|c| add(c,c,c) }
     add '<End>', 'End', ''
     add '<dollar>', 'dollar', '$'
+    add '<comma>', 'comma', ','
     add '<percent>', 'percent', '%'
     add '<Control-e>', 'e', "\x05"
     add '<Control-a>', 'a', "\x01"

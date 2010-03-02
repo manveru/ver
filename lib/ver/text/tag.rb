@@ -36,7 +36,11 @@ module VER
         code = [%(set win "#{buffer.tk_pathname}")]
 
         indices.each_slice(2) do |first, last|
-          code << "$win tag add #{name} #{first} #{last}"
+          if last
+            code << %($win tag add #{name} "#{first}" "#{last}")
+          else
+            code << %($win tag add #{name} "#{first}")
+          end
         end
 
         Tk.execute_only(Tk::TclString.new(code.join("\n")))
@@ -50,6 +54,39 @@ module VER
       # pathName tag cget tagName option 
       def cget(option)
         buffer.tag_cget(self, option)
+      end
+
+      # Comment all lines that the selection touches.
+      # Tries to maintain indent.
+      def comment
+        comment = "#{buffer.options.comment_line} "
+        indent = nil
+        lines = []
+
+        each_line do |line, fc, tc|
+          line_fc, line_tc = "#{line}.#{fc}", "#{line}.#{tc}"
+
+          next if buffer.at_end == line_tc
+
+          lines << line
+
+          next if indent == 0 # can't get lower
+
+          line = buffer.get("#{line}.#{fc}", "#{line}.#{tc}")
+
+          next unless start = line =~ /\S/
+
+          indent ||= start
+          indent = start if start < indent
+        end
+
+        indent ||= 0
+
+        buffer.undo_record do |record|
+          lines.each do |line|
+            record.insert("#{line}.#{indent}", comment)
+          end
+        end
       end
 
       # pathName tag configure tagName ?option? ?value? ?option value ...? 
@@ -112,8 +149,6 @@ module VER
             record.insert("#{y}.#{fx}", indent)
           end
         end
-
-        refresh
       end
 
       def inspect
@@ -217,6 +252,22 @@ module VER
         end
       end
 
+      def uncomment
+        comment = "#{buffer.options.comment_line} "
+        regex = /#{Regexp.escape(comment)}/
+
+        buffer.undo_record do |record|
+          each_line do |y, fx, tx|
+            from, to = "#{y}.0 linestart", "#{y}.0 lineend"
+            line = buffer.get(from, to)
+
+            if line.sub!(regex, '')
+              record.replace(from, to, line)
+            end
+          end
+        end
+      end
+
       def unindent
         indent_size = buffer.options.shiftwidth
         indent = ' ' * indent_size
@@ -230,7 +281,6 @@ module VER
         end
 
         buffer.delete(*queue)
-        refresh
       end
 
       # Convert all characters within the tag to upper-case using

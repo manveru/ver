@@ -10,6 +10,7 @@ module VER
       end
 
       attr_accessor :mode
+      attr_reader :anchor
 
       def initialize(buffer, refresh = true, mode = :select_char)
         super(buffer, :sel)
@@ -21,17 +22,19 @@ module VER
       # This is called when the minor mode changes.
       def enter(old_mode, new_mode)
         reset unless old_mode.name =~ /^select_/
-        new_mode_name = new_mode.name
+        enter_mode(new_mode.name)
+      end
 
+      def enter_mode(mode_name)
         buffer.at_sel = sel =
-          case new_mode_name
+          case mode_name
           when /^select_char/;  Char.new(buffer)
           when /^select_line/;  Line.new(buffer)
           when /^select_block/; Block.new(buffer)
           else; raise ArgumentError, "Unknown mode: %p"
           end
 
-        sel.mode = new_mode_name.to_sym
+        sel.mode = mode_name.to_sym
       end
 
       # This is called when the minor mode changes.
@@ -39,12 +42,12 @@ module VER
         return if new_mode.name =~ /^select/
         @refresh = false
         clear
-        @anchor.unset
+        anchor.unset
       end
 
       def reset
         clear
-        @anchor.index = :insert
+        anchor.index = :insert
       end
 
       def clear
@@ -78,6 +81,18 @@ module VER
         finish
       end
 
+      def comment
+        refresh
+        super
+        refresh
+      end
+
+      def uncomment
+        refresh
+        super
+        refresh
+      end
+
       def evaluate!
         super
         clear
@@ -85,12 +100,20 @@ module VER
       end
 
       def indent
+        anchor = self.anchor.index
+        insert = buffer.at_insert.index
         super
+        # self.anchor.index = anchor
+        # buffer.insert = insert + '1 chars'
         refresh
       end
 
       def unindent
+        anchor = self.anchor.index
+        insert = buffer.at_insert.index
         super
+        # self.anchor.index = anchor
+        # buffer.insert = insert + '1 chars'
         refresh
       end
 
@@ -138,7 +161,7 @@ module VER
 
         def refresh
           return unless @refresh
-          start = buffer.index("sel_anchor")
+          start  = anchor.index
           insert = buffer.at_insert
           clear
 
@@ -167,7 +190,7 @@ module VER
 
         def refresh
           return unless @refresh
-          start = buffer.index("sel_anchor")
+          start = anchor.index
           insert = buffer.at_insert
           clear
 
@@ -191,7 +214,7 @@ module VER
 
         def refresh
           return unless @refresh
-          start = buffer.index(:sel_anchor)
+          start  = anchor.index
           insert = buffer.at_insert
           clear
 
