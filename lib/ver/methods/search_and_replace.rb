@@ -16,7 +16,7 @@ module VER
         from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
         text.mark_set(:insert, from) if from
 
-        VER.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
+        text.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
       def last_pattern(text)
@@ -33,19 +33,19 @@ module VER
           when :modified
             begin
               regexp = answer_to_regex(answer)
-              VER.warn ''
-              VER.message(" => #{regexp.inspect}")
+              text.warn ''
+              text.message(" => #{regexp.inspect}")
             rescue RegexpError, SyntaxError => ex
-              VER.warn(ex.message)
+              text.warn(ex.message)
             end
           when :attempt
             begin
               regexp = answer_to_regex(answer)
-              VER.message(" => #{regexp.inspect}")
-              VER.defer{ query_attempt(text, regexp) }
+              text.message(" => #{regexp.inspect}")
+              query_attempt(text, regexp)
               :abort
             rescue RegexpError, SyntaxError => ex
-              VER.warn(ex.message)
+              text.warn(ex.message)
             end
           end
         end
@@ -81,7 +81,7 @@ module VER
         from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
         text.mark_set(:insert, from) if from
 
-        VER.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
+        text.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
       def replace_all(text)
@@ -104,14 +104,14 @@ module VER
         from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
         text.mark_set(:insert, from) if from
 
-        VER.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
+        text.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
       def prev(text)
         from, to = text.tag_prevrange(TAG, 'insert', '1.0')
         text.mark_set(:insert, from) if from
 
-        VER.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
+        text.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
     end
   end

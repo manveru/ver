@@ -147,28 +147,26 @@ module VER
     end
 
     def message(string, tag = 'info')
-      Tk::After.idle do
-        insert = index('insert')
+      insert = at_insert.index
 
+      begin
+        replace("#{tag}.first", "#{tag}.last", " #{string}", tag)
+        mark(tag, "#{tag}.first", :left)
+      rescue
         begin
-          replace("#{tag}.first", "#{tag}.last", " #{string}", tag)
-          mark(tag, "#{tag}.first", :left)
+          insert(tag, " #{string}", tag)
         rescue
-          begin
-            insert(tag, " #{string}", tag)
-          rescue
-            insert '1.0 lineend', " #{string}", tag
-          end
+          insert('1.0 lineend', " #{string}", tag)
         end
-
-        mark_set('insert', insert)
-        see "#{tag}.first"
-
-        message_expire(tag) #  if messages_expire
-        message_notify(tag) if string.to_s.strip != ''
-        adjust_size
-        # message_buffer_insert(string, tag)
       end
+
+      message_expire(tag) #  if messages_expire
+      message_notify(tag) if string.to_s.strip != ''
+      adjust_size
+      # message_buffer_insert(string, tag)
+
+      self.insert = insert
+      see "#{tag}.first"
     end
 
     def message_buffer_insert(string, tag)
