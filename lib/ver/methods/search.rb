@@ -9,40 +9,40 @@ module VER
 
       module_function
 
-      def jump(text, needle)
-        tag(text, needle)
-        self.next(text)
+      def jump(buffer, needle)
+        tag(buffer, needle)
+        self.next(buffer)
       end
 
-      def remove(text)
-        text.tag_remove(TAG, 1.0, :end)
+      def remove(buffer)
+        buffer.tag_remove(TAG, 1.0, :end)
       end
       alias clear remove
       module_function :clear
 
-      def status_next(text)
-        status_common(text, '/'){ self.next(text) }
+      def status_next(buffer)
+        status_common(buffer, '/'){ self.next(buffer) }
       end
 
-      def status_prev(text)
-        status_common(text, '?'){ prev(text) }
+      def status_prev(buffer)
+        status_common(buffer, '?'){ prev(buffer) }
       end
 
-      def status_common(text, question)
-        text.ask question do |answer, action|
+      def status_common(buffer, question)
+        buffer.ask question do |answer, action|
           case action
           when :modified
-            incremental(text, answer)
+            incremental(buffer, answer)
           when :attempt
-            incremental(text, answer, force = true)
-            prev(text)
+            incremental(buffer, answer, force = true)
+            prev(buffer)
             yield
             :abort
           end
         end
       end
 
-      def incremental(text, term, force = false)
+      def incremental(buffer, term, force = false)
         needle =
           case term
           when nil, false
@@ -50,7 +50,7 @@ module VER
           when Regexp
             needle = term
           when String
-            return if !force && term.size <= text.options.search_incremental_min
+            return if !force && term.size <= buffer.options.search_incremental_min
             return if term.empty?
             begin
               Regexp.new(term)
@@ -61,32 +61,32 @@ module VER
             raise ArgumentError
           end
 
-        tag(text, needle)
-        from, to = text.tag_nextrange(TAG, 1.0, :end)
-        text.see(from) if from
+        tag(buffer, needle)
+        from, to = buffer.tag_nextrange(TAG, 1.0, :end)
+        buffer.see(from) if from
       end
 
-      def first(text)
-        from, to = text.tag_nextrange(TAG, 1.0, :end)
-        text.mark_set(:insert, from) if from
+      def first(buffer)
+        from, to = buffer.tag_nextrange(TAG, 1.0, :end)
+        buffer.mark_set(:insert, from) if from
       end
 
-      def last(text)
+      def last(buffer)
         from, to = tag_prevrange(TAG, :end, 1.0)
-        text.mark_set(:insert, from) if from
+        buffer.mark_set(:insert, from) if from
       end
 
-      def next(text, count = text.prefix_count)
+      def next(buffer, count = buffer.prefix_count)
         count.times do
-          from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
-          text.mark_set(:insert, from) if from
+          from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
+          buffer.mark_set(:insert, from) if from
         end
 
-        display_matches_count(text)
+        display_matches_count(buffer)
       end
 
-      def display_matches_count(text)
-        total = text.tag_ranges(TAG).size
+      def display_matches_count(buffer)
+        total = buffer.tag_ranges(TAG).size
 
         if total == 1
           VER.message "1 match found"
@@ -97,71 +97,71 @@ module VER
         end
       end
 
-      def prev(text, count = text.prefix_count)
+      def prev(buffer, count = buffer.prefix_count)
         count.times do
-          from, to = text.tag_prevrange(TAG, 'insert - 1 chars', '1.0')
-          text.mark_set(:insert, from) if from
+          from, to = buffer.tag_prevrange(TAG, 'insert - 1 chars', '1.0')
+          buffer.mark_set(:insert, from) if from
         end
 
-        display_matches_count(text)
+        display_matches_count(buffer)
       end
 
-      def next_word_under_cursor(text)
-        word = text.get('insert wordstart', 'insert wordend')
+      def next_word_under_cursor(buffer)
+        word = buffer.get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
-        tag(text, word)
-        self.next(text)
+        tag(buffer, word)
+        self.next(buffer)
       end
 
-      def prev_word_under_cursor(text)
-        word = text.get('insert wordstart', 'insert wordend')
+      def prev_word_under_cursor(buffer)
+        word = buffer.get('insert wordstart', 'insert wordend')
         return if word.squeeze == ' ' # we don't want to match space
-        tag(text, word)
-        prev(text)
+        tag(buffer, word)
+        prev(buffer)
       end
 
-      def char_right(text, count = text.prefix_count)
+      def char_right(buffer, count = buffer.prefix_count)
         VER.message 'Press the character to find to the right'
 
-        text.major_mode.read 1 do |event|
+        buffer.major_mode.read 1 do |event|
           from, to = 'insert + 1 chars', 'insert lineend'
           regexp = Regexp.new(Regexp.escape(event[:unicode]))
 
           counter = 0
-          text.search_all regexp, from, to do |match, pos, mark|
-            text.mark_set :insert, pos
+          buffer.search_all regexp, from, to do |match, pos, mark|
+            buffer.mark_set :insert, pos
             counter += 1
             break if counter == count
           end
         end
       end
 
-      def char_left(text, count = text.prefix_count)
+      def char_left(buffer, count = buffer.prefix_count)
         VER.message 'Press the character to find to the left'
 
-        text.major_mode.read 1 do |event|
+        buffer.major_mode.read 1 do |event|
           from, to = 'insert', 'insert linestart'
           regexp = Regexp.new(Regexp.escape(event[:unicode]))
 
           counter = 0
-          text.rsearch_all regexp, from, to do |match, pos, mark|
-            text.mark_set(:insert, pos)
+          buffer.rsearch_all regexp, from, to do |match, pos, mark|
+            buffer.mark_set(:insert, pos)
             counter += 1
             break if counter == count
           end
         end
       end
 
-      def again(text)
-        return unless needle = text.store(self, :last)
-        tag(text, needle)
-        self.next(text)
+      def again(buffer)
+        return unless needle = buffer.store(self, :last)
+        tag(buffer, needle)
+        self.next(buffer)
       end
 
-      def tag(text, needle)
-        text.store(self, :last, needle)
-        text.tag_all_matching(TAG, needle, HIGHLIGHT)
-        text.tag_lower(TAG)
+      def tag(buffer, needle)
+        buffer.store(self, :last, needle)
+        buffer.tag_all_matching(TAG, needle, HIGHLIGHT)
+        buffer.tag_lower(TAG)
       end
     end
   end

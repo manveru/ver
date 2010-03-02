@@ -6,47 +6,47 @@ module VER
 
       module_function
 
-      def leave(text, old_mode, new_mode)
-        text.tag_remove(TAG, 1.0, :end)
+      def leave(buffer, old_mode, new_mode)
+        buffer.tag_remove(TAG, 1.0, :end)
       end
 
-      def enter(text, old_mode, new_mode)
-        pattern = text.store(self, :pattern)
-        text.tag_all_matching(TAG, pattern, HIGHLIGHT)
-        from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
-        text.mark_set(:insert, from) if from
+      def enter(buffer, old_mode, new_mode)
+        pattern = buffer.store(self, :pattern)
+        buffer.tag_all_matching(TAG, pattern, HIGHLIGHT)
+        from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
+        buffer.mark_set(:insert, from) if from
 
-        text.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
+        buffer.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
-      def last_pattern(text)
-        pattern = text.store(self, :pattern)
+      def last_pattern(buffer)
+        pattern = buffer.store(self, :pattern)
         pattern.inspect[1..-1] if pattern
       end
 
-      def query(text)
+      def query(buffer)
         question = 'Replace pattern: /'
-        value = last_pattern(text)
+        value = last_pattern(buffer)
 
-        text.ask question, value: value do |answer, action|
+        buffer.ask question, value: value do |answer, action|
           case action
           when :modified
             begin
               regexp = answer_to_regex(answer)
-              Search.incremental(text, regexp)
-              text.warn ''
-              text.message(" => #{regexp.inspect}")
+              Search.incremental(buffer, regexp)
+              buffer.warn ''
+              buffer.message(" => #{regexp.inspect}")
             rescue RegexpError, SyntaxError => ex
-              text.warn(ex.message)
+              buffer.warn(ex.message)
             end
           when :attempt
             begin
               regexp = answer_to_regex(answer)
-              text.message(" => #{regexp.inspect}")
-              query_attempt(text, regexp)
+              buffer.message(" => #{regexp.inspect}")
+              query_attempt(buffer, regexp)
               :abort
             rescue RegexpError, SyntaxError => ex
-              text.warn(ex.message)
+              buffer.warn(ex.message)
             end
           end
         end
@@ -57,62 +57,62 @@ module VER
         eval("/#{answer}")
       end
 
-      def query_attempt(text, pattern)
+      def query_attempt(buffer, pattern)
         question = "Replace %p with: " % [pattern]
-        value = text.store(self, :replacement)
-        text.ask question, value: value do |replacement, action|
+        value = buffer.store(self, :replacement)
+        buffer.ask question, value: value do |replacement, action|
           case action
           when :attempt
-            query_done(text, pattern, replacement)
+            query_done(buffer, pattern, replacement)
             :abort
           end
         end
       end
 
-      def query_done(text, pattern, replacement)
-        text.store(self, :pattern, pattern)
-        text.store(self, :replacement, replacement)
-        text.minor_mode(:control, :search_and_replace)
+      def query_done(buffer, pattern, replacement)
+        buffer.store(self, :pattern, pattern)
+        buffer.store(self, :replacement, replacement)
+        buffer.minor_mode(:control, :search_and_replace)
       end
 
-      def replace_once(text)
-        from, to = text.tag_nextrange(TAG, 'insert', 'end')
-        text.replace(from, to, text.store(self, :replacement))
-        text.tag_all_matching(TAG, text.store(self, :pattern), HIGHLIGHT)
-        from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
-        text.mark_set(:insert, from) if from
+      def replace_once(buffer)
+        from, to = buffer.tag_nextrange(TAG, 'insert', 'end')
+        buffer.replace(from, to, buffer.store(self, :replacement))
+        buffer.tag_all_matching(TAG, buffer.store(self, :pattern), HIGHLIGHT)
+        from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
+        buffer.mark_set(:insert, from) if from
 
-        text.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
+        buffer.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
-      def replace_all(text)
-        replacement = text.store(self, :replacement)
-        from, to = text.tag_nextrange(TAG, 'insert', 'end')
+      def replace_all(buffer)
+        replacement = buffer.store(self, :replacement)
+        from, to = buffer.tag_nextrange(TAG, 'insert', 'end')
         return unless from
 
-        Undo.record text do |record|
+        Undo.record buffer do |record|
           begin
             record.replace(from, to, replacement)
-            text.mark_set(:insert, from)
-            from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
+            buffer.mark_set(:insert, from)
+            from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
           end while from
         end
 
-        text.minor_mode(:search_and_replace, :control)
+        buffer.minor_mode(:search_and_replace, :control)
       end
 
-      def next(text)
-        from, to = text.tag_nextrange(TAG, 'insert + 1 chars', 'end')
-        text.mark_set(:insert, from) if from
+      def next(buffer)
+        from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
+        buffer.mark_set(:insert, from) if from
 
-        text.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
+        buffer.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
-      def prev(text)
-        from, to = text.tag_prevrange(TAG, 'insert', '1.0')
-        text.mark_set(:insert, from) if from
+      def prev(buffer)
+        from, to = buffer.tag_prevrange(TAG, 'insert', '1.0')
+        buffer.mark_set(:insert, from) if from
 
-        text.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
+        buffer.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
     end
   end
