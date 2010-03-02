@@ -15,7 +15,7 @@ module VER
 
       # FIXME: nasty hack or neccesary?
       def paste(text)
-        content = clipboard_get(text, 'STRING'){
+        content = clipboard_get(text, 'UTF8_STRING'){
           array = clipboard_get(text, 'ARRAY')
           return paste_array(text, array) if array
         }
@@ -39,7 +39,7 @@ module VER
       end
 
       def copy_string(content)
-        Tk::Clipboard.set(content, type: 'STRING')
+        VER::Clipboard.set(content)
 
         copy_message(content.count("\n") + 1, content.size)
       end
@@ -52,7 +52,7 @@ module VER
       end
 
       def copy_fallback(content)
-        Tk::Clipboard.set(content)
+        VER::Clipboard.set(content)
 
         VER.message "Copied unkown entity of class %p" % [content.class]
       end
@@ -89,8 +89,8 @@ module VER
         end
       end
 
-      def clipboard_get(text, type = 'STRING')
-        Tk::Clipboard.get(text, type)
+      def clipboard_get(text, type = 'UTF8_STRING')
+        VER::Clipboard.get(type)
       rescue RuntimeError => ex
         if ex.message =~ /form "#{type}" not defined/
           yield if block_given?

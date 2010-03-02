@@ -62,26 +62,24 @@ module VER
       end
 
       def quit(text = nil)
-        buffers = VER.buffers.values
+        buffers = VER.buffers
         pending = Array.new(buffers.size)
 
         buffers.each_with_index do |buffer, index|
           VER.defer do
-            may_close(buffer.text) do
+            may_close(buffer) do
               pending[index] = true
               # p pending
-              VER.exit if pending.all?
+              # VER.exit if pending.all?
             end
           end
         end
       end
 
       def save_all(text)
-        VER.buffers.each do |name, buffer|
+        VER.buffers.each do |buffer|
           next if buffer.symbolic?
-          buffer.show
-          buffer.focus
-          save(buffer.text)
+          save(buffer)
         end
       end
 

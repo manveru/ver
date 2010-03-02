@@ -1,7 +1,15 @@
 module VER
+  Buffer.def_delegator(:@at_insert, :tab, :insert_tab)
+  Buffer.def_delegator(:@at_insert, :newline, :insert_newline)
+  Buffer.def_delegator(:@at_insert, :selection, :insert_selection)
+
   module Methods
     module Insert
       module_function
+
+      def tab(buffer)     buffer.insert_tab end
+      def newline(buffer) buffer.insert_newline end
+      def selection(buffer) buffer.insert_selection end
 
       def file_contents(filename)
         content = read_file(filename)
@@ -10,34 +18,16 @@ module VER
         VER.error(ex)
       end
 
-      def selection(text)
-        text.insert(:insert, Tk::Selection.get)
-      end
-
-      def tab(text)
-        text.insert(:insert, "\t")
-      end
-
-      def newline(text)
-        if text.options.autoindent
-          indented_newline(text)
-        else
-          text.insert(:insert, "\n")
-        end
-      end
-
       def newline_below(text)
         Undo.record text do |record|
           if text.options.autoindent
-            # text.mark_set('insert', 'insert lineend')
-            # Indent.insert_newline(text, record)
             line = text.get('insert linestart', 'insert lineend')
 
             indent = line[/^\s*/]
-            text.mark_set(:insert, 'insert lineend')
+            text.insert = 'insert lineend'
             record.insert(:insert, "\n#{indent}")
           else
-            text.mark_set(:insert, 'insert lineend')
+            text.insert = 'insert lineend'
             record.insert(:insert, "\n")
           end
 

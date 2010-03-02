@@ -1,15 +1,16 @@
 module VER
+  # A Layout containing frames in a master and slave pane.
   class PanedLayout < Tk::Tile::LabelFrame
-    # contains the buffers in the order they are displayed
-    attr_reader :stack
+    # contains the frames in the order they are displayed
+    attr_reader :frames
 
     # contains the master and slave pane
     attr_reader :layout_pane
 
-    # contains master buffers
+    # contains master frames
     attr_reader :master_pane
 
-    # contains slave buffers
+    # contains slave frames
     attr_reader :slave_pane
 
     # options specific for the paned layout
@@ -30,7 +31,7 @@ module VER
 
       pack(fill: :both, expand: true)
 
-      @stack = []
+      @frames = []
 
       @layout_pane = Tk::Tile::PanedWindow.new(self, orient: :horizontal)
       @master_pane = Tk::Tile::PanedWindow.new(@layout_pane, orient: :vertical)
@@ -42,22 +43,22 @@ module VER
       @layout_pane.bind('<Map>'){ apply }
     end
 
-    # Add the given +buffer+ to the {stack}, apply, and focus +buffer+.
+    # Add the given +buffer+.frame to the {frames}, apply, and focus +buffer+.
     def add_buffer(buffer)
-      stack.unshift(buffer)
+      frames.unshift(buffer.frame)
       apply
       buffer.focus
     end
 
-    # Remove given +buffer+ from {stack} and apply.
+    # Remove given +buffer+ from {frames} and apply.
     def forget_buffer(buffer)
-      stack.delete(buffer)
+      frames.delete(buffer.frame)
       apply
     end
 
     # Create a new {Buffer} inside the {PanedLayout}, +options+ are passed to
     # {Buffer.new}.
-    # The new {Buffer} will be at top of the {stack}.
+    # The new {Buffer} will be at top of the {frames}.
     #
     # @see add_buffer
     def create_buffer(options = {})
@@ -72,7 +73,7 @@ module VER
     # @see forget_buffer
     def close_buffer(buffer)
       forget_buffer(buffer)
-      buffer.destroy
+      buffer.frame.destroy
 
       if previous = visible.first
         previous.focus
@@ -109,76 +110,87 @@ module VER
 
     def masters_slaves
       masters_max, slaves_max = options.values_at(:masters, :slaves)
-      stack.compact!
-      possible = stack.select{|buffer| buffer.shown? }
+      frames.compact!
+      possible = frames.select(&:shown?)
       return [*possible[0, masters_max]], [*possible[masters_max, slaves_max]]
     end
 
-    def visible?(buffer)
-      visible.index(buffer)
+    def visible?(frame)
+      visible.index(frame)
     end
 
     def visible
       masters_slaves.flatten
     end
 
-    def focus_next(buffer)
-      return unless index = visible.index(buffer)
+    def show(frame)
+      frame.shown = true
+      push_up(frame) until visible?(frame)
+      frame.focus
+    end
+
+    def hide(frame)
+      frame.shown = false
+      apply
+    end
+
+    def focus_next(frame)
+      return unless index = visible.index(frame)
 
       found = visible[index + 1] || visible[0]
       found.focus
     end
 
-    def focus_prev(buffer)
-      return unless index = visible.index(buffer)
+    def focus_prev(frame)
+      return unless index = visible.index(frame)
 
       found = visible[index - 1]
       found.focus
     end
 
-    def push_up(buffer)
-      return unless index = stack.index(buffer)
-      previous = stack[index - 1]
-      buffer.raise(previous)
-      stack[index - 1], stack[index] = buffer, previous
+    def push_up(frame)
+      return unless index = frames.index(frame)
+      previous = frames[index - 1]
+      frame.raise(previous)
+      frames[index - 1], frames[index] = frame, previous
 
       apply
-      previous.focus unless visible?(buffer)
+      previous.focus unless visible?(frame)
     end
 
-    def push_down(buffer)
-      return unless index = stack.index(buffer)
-      following = stack[index + 1] || stack[0]
-      buffer.raise(following)
-      stack[stack.index(following)], stack[index] = buffer, following
+    def push_down(frame)
+      return unless index = frames.index(frame)
+      following = frames[index + 1] || frames[0]
+      frame.raise(following)
+      frames[frames.index(following)], frames[index] = frame, following
 
       apply
-      following.focus unless visible?(buffer)
+      following.focus unless visible?(frame)
     end
 
-    def push_top(buffer)
-      stack.unshift(stack.delete(buffer))
+    def push_top(frame)
+      frames.unshift(frames.delete(frame))
       apply
     end
 
-    def push_bottom(buffer)
-      stack.push(stack.delete(buffer))
+    def push_bottom(frame)
+      frames.push(frames.delete(frame))
       apply
-      stack.last.focus unless visible?(buffer)
+      frames.last.focus unless visible?(frame)
     end
 
-    def cycle_next(buffer)
-      return unless index = stack.index(buffer)
-      stack.push(stack.shift)
+    def cycle_next(frame)
+      return unless index = frames.index(frame)
+      frames.push(frames.shift)
       apply
-      stack[index].focus
+      frames[index].focus
     end
 
-    def cycle_prev(buffer)
-      return unless index = stack.index(buffer)
-      stack.unshift(stack.pop)
+    def cycle_prev(frame)
+      return unless index = frames.index(frame)
+      frames.unshift(frames.pop)
       apply
-      stack[index].focus
+      frames[index].focus
     end
   end
 end

@@ -35,8 +35,8 @@ VER.spec do
 
       action_mode, action = mode.resolve(['d', 'w'])
       action_mode.should == mode
-      action.receiver.should == nil
-      action.method.should == :kill_word
+      action.handler.should == nil
+      action.invocation.should == :kill_word
     end
 
     it 'creates an unambigous keymap' do
@@ -45,12 +45,12 @@ VER.spec do
       mode.map(:kill_line, ['d', 'd'])
 
       action = mode.keymap['d', 'w']
-      action.method.should == :kill_word
-      action.receiver.should == nil
+      action.handler.should == nil
+      action.invocation.should == :kill_word
 
       action = mode.keymap['d', 'd']
-      action.receiver.should == nil
-      action.method.should == :kill_line
+      action.handler.should == nil
+      action.invocation.should == :kill_line
     end
 
     it 'can inherit another major mode' do
@@ -64,23 +64,23 @@ VER.spec do
 
       action_mode, action = ruby.resolve(['d', 'd'])
       action_mode.should == ruby
-      action.method.should == :kill_line
+      action.invocation.should == :kill_line
 
       action_mode, action = ruby.resolve(['d', 'w'])
       action_mode.should == ruby
-      action.method.should == :kill_word
+      action.invocation.should == :kill_word
 
       action_mode, action = ruby.resolve(['<Control-c>', '<Control-c>'])
       action_mode.should == ruby
-      action.method.should == :preview
+      action.invocation.should == :preview
 
       action_mode, action = fund.resolve(['d', 'd'])
       action_mode.should == fund
-      action.method.should == :kill_line
+      action.invocation.should == :kill_line
 
       action_mode, action = fund.resolve(['d', 'w'])
       action_mode.should == fund
-      action.method.should == :kill_word
+      action.invocation.should == :kill_word
 
       action = fund.resolve(['<Control-c>', '<Control-c>'])
       action.should.be.kind_of Keymap::Results::Impossible
@@ -93,11 +93,11 @@ VER.spec do
 
       action_mode, action = mode.resolve(['d', 'w'])
       action_mode.should == mode
-      action.method.should == :kill_word
+      action.invocation.should == :kill_word
 
       action_mode, action = mode.resolve(['f', 'o', 'o'])
       action_mode.should == mode
-      action.method.should == :insert
+      action.invocation.should == :insert
     end
 
     it 'can have minor modes' do

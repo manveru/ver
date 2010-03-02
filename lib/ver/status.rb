@@ -27,6 +27,16 @@ module VER
           Encoding.new(status),
         ]
       },
+      emacs: lambda{|status|
+        [
+          ShortFilename.new(status, weight: 1),
+          Position.new(status),
+          Percent.new(status),
+          Mode.new(status),
+          Syntax.new(status),
+          Encoding.new(status),
+        ]
+      },
       nano: lambda{|status|
         [
           NanoPosition.new(status, row: 0, column: 0, weight: 1, anchor: :center),
@@ -48,10 +58,29 @@ module VER
       }
     }
 
+    module LabelToggle
+      def toggle
+        info = grid_info
+
+        if info.empty?
+          grid_configure(@last_grid_info)
+          status.show
+          true
+        else
+          @last_grid_info = info
+          grid_forget
+          unless status.winfo_children.any?{|child| Tk::Winfo.ismapped(child) }
+            status.hide
+          end
+          false
+        end
+      end
+    end
+
     attr_accessor :buffer, :widgets, :notify
 
-    def initialize(buffer, options = {})
-      super
+    def initialize(parent, buffer, options = {})
+      super(parent, options)
       self.buffer = buffer
       self.notify = Hash.new{|hash, key| hash[key] = Set.new }
 
@@ -82,12 +111,21 @@ module VER
       events.each{|event| notify[event] << widget }
     end
 
-    def text
-      buffer.text
-    end
-
     def style=(config)
       Tk::After.idle{ @widgets.each{|widget| widget.style = config } }
+    end
+
+    def show
+      return if winfo_ismapped
+      grid_configure(@last_grid_info)
+      true
+    end
+
+    def hide
+      return unless winfo_ismapped
+      @last_grid_info = grid_info
+      grid_forget
+      true
     end
   end
 end

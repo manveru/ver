@@ -24,8 +24,8 @@ module VER
         self.tabcount = 0
         self.update_on_change = true
 
-        bind('<<Inserted>>'){|event| on_insert(event) }
-        bind('<<Deleted>>'){|event|  on_delete(event) }
+        bind('<<Inserted>>', &method(:on_insert))
+        bind('<<Deleted>>', &method(:on_delete))
       end
 
       # Called on <<Inserted>> events.
@@ -132,28 +132,28 @@ module VER
         raise NotImplementedError, "Implement in subclass"
       end
 
-      def cancel(event)
+      def cancel
         callback.destroy
       end
 
-      def next_line(event)
+      def next_line
         tree.line_down
       end
 
-      def prev_line(event)
+      def prev_line
         tree.line_up
       end
 
-      def accept_line(event)
+      def accept_line
         self.tabcount = 0
         catch(:invalid){ action(tree_selection_value) }
       end
 
-      def speed_selection(event)
+      def speed_selection
         accept_line(event)
       end
 
-      def completion(event)
+      def completion
         self.tabcount += 1
 
         if tabcount == 1

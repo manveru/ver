@@ -7,8 +7,8 @@ module VER
 
       def to_s
         "%4d,%3d" % [
-          text.count('1.0', 'insert', :lines) + 1,
-          text.count('insert linestart', 'insert', :displaychars)
+          buffer.count('1.0', 'insert', :lines) + 1,
+          buffer.count('insert linestart', 'insert', :displaychars)
         ]
       end
     end

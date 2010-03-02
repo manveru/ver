@@ -2,8 +2,8 @@ module VER
   class Status
     class Percent < Position
       def to_s
-        here = text.count(1.0, :insert, :lines)
-        total = text.count(1.0, :end, :lines)
+        here = buffer.count(1.0, :insert, :lines)
+        total = buffer.count(1.0, :end, :lines)
         percent = ((100.0 / total) * here).round
 
         case percent

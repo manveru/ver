@@ -104,39 +104,6 @@ module VER
         text.replace(from, to, chunk)
       end
 
-      REPEAT_BREAK_CMD = [
-        :repeat_command,
-        :undo,
-        :redo,
-      ]
-
-      REPEAT_BREAK_MODE = [
-        :move,
-        :search,
-      ]
-
-      def repeat_command(text, count = text.prefix_count)
-        actions = []
-        text.major_mode.action_history.reverse_each do |event, mode, action|
-          if actions.empty?
-            next if REPEAT_BREAK_CMD.include?(action.method)
-            next if REPEAT_BREAK_MODE.include?(mode.name)
-          else
-            break if REPEAT_BREAK_CMD.include?(action.method)
-            break if REPEAT_BREAK_MODE.include?(mode.name)
-          end
-
-          actions << [action, event]
-        end
-
-        actions.reverse!
-
-        actions.each do |action, event|
-          event.prefix_arg = count
-          action.call(event)
-        end
-      end
-
       # Assigns env variables used in the given command.
       # - $f: The current buffer's filename
       # - $d: The current buffer's directory
@@ -358,9 +325,10 @@ module VER
       end
 
       def line_evaluate(text)
-        content = text.get('insert linestart', 'insert lineend')
-        stdout_capture_evaluate(content, text.filename, binding) do |res,out|
-          text.insert("insert lineend", "\n%s%p" % [out, res] )
+        code = text.get('insert linestart', 'insert lineend')
+        file = (text.filename || text.uri).to_s
+        stdout_capture_evaluate(code, file, binding) do |res, out|
+          at_insert.lineend.insert("n%s%p" % [out, res])
         end
       end
 
@@ -380,12 +348,6 @@ module VER
           wr.closed? || $stdout.reopen(old_stdout) && wr.close
           rd.closed? || rd.close
         end
-      end
-
-      def eval_buffer
-        result = eval(value, TOPLEVEL_BINDING)
-      rescue Exception => exception
-        VER.error(exception)
       end
 
       def join_line_forward(text)
@@ -454,6 +416,7 @@ module VER
           end
         end
 
+        lines.pop if lines.last == indent
         lines
       end
     end

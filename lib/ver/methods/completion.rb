@@ -85,7 +85,7 @@ module VER
       def word(text)
         text.store(self, :last_used, :word)
 
-        y, x = text.index('insert').split
+        y, x = *text.index('insert')
         x = (x - 1).abs
         from, to = text.index("#{y}.#{x} wordstart"), text.index("#{y}.#{x} wordend")
 

@@ -30,6 +30,8 @@ module VER
 
       tag_configure('error', background: '#f88')
       tag_configure('backtrace', background: '#8f8')
+
+      column('line', width: 50, stretch: false, anchor: :e)
     end
 
     def setup_binds
@@ -37,7 +39,7 @@ module VER
 
       bind('<Escape>'){
         pack_forget
-        VER.buffers.values.first.focus
+        VER.layout.visible.first.show
       }
     end
 

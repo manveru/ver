@@ -12,6 +12,12 @@
     <note priority="high" time="1265357714" done="1265872869">
         ask when closing modified buffers
     </note>
+    <note priority="high" time="1265873057" done="1267211492">
+        Get ruby devs to support more oniguruma flags
+        <comment>
+            Failed, gonna port to Rubinius instead
+        </comment>
+    </note>
     <note priority="low" time="1265353851" done="1265354072">
         Sessions
         <comment>
@@ -22,6 +28,12 @@
         Move queries to global status to allow alternative widgets as text status
         <comment>
             [master ca01047] Implemented MiniBuffer
+        </comment>
+    </note>
+    <note priority="low" time="1265354898" done="1267211548">
+        major mode per bundle/language
+        <comment>
+            Turns out that we don't need that
         </comment>
     </note>
     <note priority="high" time="1265354683">
@@ -50,9 +62,6 @@
     </note>
     <note priority="high" time="1265609278">
         Add more MiniBuffer completions
-    </note>
-    <note priority="high" time="1265873057">
-        Get ruby devs to support more oniguruma flags
     </note>
     <note priority="medium" time="1265354113">
         VCS plugins
@@ -84,8 +93,11 @@
     <note priority="medium" time="1265354601">
         markdown support, fix the crazy regexp
     </note>
-    <note priority="medium" time="1265354649">
+    <note priority="medium" time="1265354649" done="1267211568">
         Support mirror and mirror transformation for snippets
+        <comment>
+            It's not perfect yet, but getting there
+        </comment>
     </note>
     <note priority="medium" time="1265354815">
         equivalent to vim ex or emacs M-x
@@ -95,8 +107,5 @@
     </note>
     <note priority="low" time="1265354828">
         dired alike
-    </note>
-    <note priority="low" time="1265354898">
-        major mode per bundle/language
     </note>
 </todo>

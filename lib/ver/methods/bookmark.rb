@@ -93,7 +93,7 @@ module VER
       end
 
       def value(text)
-        [text.filename, *text.index(:insert).split]
+        [text.filename, *text.index(:insert)]
       end
 
       def open(text, bookmark, use_col = true)
@@ -178,7 +178,7 @@ module VER
       @bm.find{|bm| needle == bm }
     end
 
-    class Bookmark < Struct.new(:name, :file, :line, :column)
+    class Bookmark < Struct.new(:name, :file, :line, :char)
       include Comparable
 
       def <=>(other)
@@ -186,11 +186,11 @@ module VER
       end
 
       def index
-        [line, column]
+        [line, char]
       end
 
       def index=(index)
-        self.line, self.column = *index
+        self.line, self.char = *index
       end
 
       def to_a

@@ -59,6 +59,9 @@ module VER
     map :save,    %w[Control-s]
     map :save_as, %w[Alt-S]
 
+    handler Methods::Open
+    map :file_open_ask, %w[Control-o]
+
     handler Methods::Layout
     map :close, %w[Control-w]
     1.upto(9){|n|

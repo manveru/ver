@@ -6,7 +6,7 @@ module VER
       end
 
       def to_s
-        format % text.syntax.name
+        format % buffer.syntax.name
       end
     end
   end

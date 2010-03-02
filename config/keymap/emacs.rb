@@ -1,10 +1,14 @@
 module VER
   major_mode :Fundamental do
+    use :fundamental
+  end
+
+  minor_mode :fundamental do
     handler Methods::Basic
     map :quit, %w[Control-x Control-c]
 
     handler Methods::Save
-    map :file_save, %w[Control-x Control-s]
+    map :save,     %w[Control-x Control-s]
     map :save_all, %w[Control-x s]
 
     handler Methods::Open
@@ -17,7 +21,7 @@ module VER
     map :undo, %w[Control-slash], %w[Control-x u], %w[Control-underscore], %w[Undo]
     map :redo, %w[Redo] # emacs redo breaks my brain... undo only for now
 
-    handler Methods::Move
+    handler :at_insert
     map :end_of_file,     %w[Control-greater]
     map :end_of_line,     %w[Control-e], %w[End]
     map :next_char,       %w[Control-f], %w[Right]

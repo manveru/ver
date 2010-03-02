@@ -3,8 +3,8 @@ module VER
     class ExBuffer < Entry
       def setup
         callback.update_on_change = true
-        @buffers = VER.buffers.map{|name, buffer|
-          [Marshal.dump(name), buffer.name.to_s]
+        @buffers = VER.buffers.map{|buffer|
+          [Marshal.dump(buffer.uri), buffer.uri.to_s]
         }
 
         tree.configure(
@@ -22,8 +22,8 @@ module VER
         item = tree.focus_item
         key, name, = item.options(:values)
         return unless key
-        name = Marshal.load(key)
-        Buffer[name].show
+        uri = Marshal.load(key)
+        Buffer[uri].show
         callback.destroy(false)
       end
     end

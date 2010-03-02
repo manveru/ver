@@ -1,6 +1,8 @@
 module VER
   class Status
     class Label < Tk::Tile::Label
+      include LabelToggle
+
       attr_reader :status, :variable, :weight, :row, :column, :sticky, :format
 
       def initialize(status, options = {})
@@ -10,7 +12,7 @@ module VER
         @column = options.delete(:column)
         @sticky = options.delete(:sticky)
         @format = options.delete(:format) || '%s'
-        options[:font] ||= options.delete(:font) || text.options.font
+        options[:font] ||= options.delete(:font) || buffer.options.font
 
         super
 
@@ -25,6 +27,10 @@ module VER
       def setup
       end
 
+      def buffer
+        status.buffer
+      end
+
       def update(event)
         variable.set(to_s)
       end
@@ -37,25 +43,8 @@ module VER
         configure(config)
       end
 
-      def text
-        status.text
-      end
-
       def to_s
         ''
-      end
-
-      def toggle
-        info = grid_info
-
-        if info.empty?
-          grid_configure(@last_grid_info)
-          true
-        else
-          @last_grid_info = info
-          grid_forget
-          false
-        end
       end
     end
   end

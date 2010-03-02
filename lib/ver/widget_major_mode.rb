@@ -1,4 +1,9 @@
 module VER
+  # A subset of Tk::Event::Data with only the properties we actually use to
+  # allow for more event history while keeping memory usage low.
+  class Event < Struct.new(:sequence, :keysym, :unicode)
+  end
+
   # The WidgetMajorMode associates a widget with a major mode.
   # It keeps a limited history of the events that arrive at [on_event].
   # It also maintains a stack of the event sequences and tries to match
@@ -17,7 +22,7 @@ module VER
     def initialize(widget, major)
       self.widget = widget
       self.major = MajorMode[major]
-      self.event_history = SizedArray.new(100)
+      self.event_history  = SizedArray.new(500) # this may be too small still
       self.action_history = SizedArray.new(100)
       self.stack = []
       self.minors = []
@@ -58,29 +63,48 @@ module VER
       self.minors -= minors.map{|name| MinorMode[name] }
     end
 
+    def fake(input)
+      input.scan(/<[\w-]+>|[[:word:]]/) do |name|
+        on_event(FakeEvent[name])
+      end
+    end
+
     def on_event(event)
       stack << event.sequence
-      event_history << {
-        sequence: event.sequence,
-        keysym: event.keysym,
-        unicode: event.unicode
-      }
+      event_history << Event.new(event.sequence, event.keysym, event.unicode)
 
       return handle_reader(event) if reader && read_amount
 
       case result = resolve(stack)
       when Incomplete
-        VER.message result.to_s
+        message result.to_s(widget)
         # don't do anything yet...
       when Impossible
-        VER.message result.to_s
+        warn result.to_s
         stack.clear
       else
         stack.clear
+        message ''
         mode, action = result
         widget_event = WidgetEvent.new(widget, event)
         action.call(widget_event)
         action_history << [widget_event, *result]
+      end
+    end
+
+    def message(*args)
+      if widget.respond_to?(:message)
+        widget.message(*args)
+      else
+        VER.message(*args)
+      end
+    end
+
+    def warn(*args)
+      if widget.respond_to?(:warn)
+        widget.warn(*args)
+      else
+        VER.warn(*args)
       end
     end
 
@@ -156,6 +180,10 @@ module VER
       major.actions + minors.map{|minor| minor.actions }.flatten
     end
 
+    def to_hash
+      [major.keymap, *minors].inject{|h, m| h.merge(m.keymap) }
+    end
+
     def name
       major.name
     end
@@ -176,7 +204,7 @@ module VER
       out = ['#<Ver::WidgetMajorMode']
       { major: major.name,
         minors: minors.map{|m| m.to_sym },
-        event_history: event_history.map{|h| h[:keysym] },
+        event_history: event_history.map(&:keysym),
         stack: stack,
       }.each{|k,v| out << "#{k}=#{v.inspect}" }
       out.join(' ') << '>'

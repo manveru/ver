@@ -25,9 +25,6 @@ module VER
     end
 
     def method_missing(method, *args, &block)
-      # ::Kernel.p([@widget, @event] => [method, args])
-      result = @widget.send(method, *args, &block)
-
       if method =~ /=/
         ::VER::WidgetEvent.class_eval(<<-RUBY, __FILE__, __LINE__)
           def #{method}(arg)
@@ -42,8 +39,11 @@ module VER
         RUBY
       end
 
-      result
+      @widget.send(method, *args, &block)
     end
-    alias send method_missing
+
+    def send(method, *args, &block)
+      @widget.send(method, *args, &block)
+    end
   end
 end

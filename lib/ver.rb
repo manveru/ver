@@ -5,10 +5,10 @@
 autoload :Benchmark, 'benchmark'
 autoload :FileUtils, 'fileutils'
 autoload :Tempfile,  'tempfile'
-autoload :Tracer,    'tracer'
 
 # eager stdlib
 require 'digest/sha1'
+require 'forwardable'
 require 'securerandom'
 require 'set'
 require 'ver/vendor/better_pp_hash'
@@ -20,7 +20,9 @@ module VER
   autoload :Action,              'ver/action'
   autoload :Bookmarks,           'ver/methods/bookmark'
   autoload :Buffer,              'ver/buffer'
+  autoload :Clipboard,           'ver/clipboard'
   autoload :Entry,               'ver/entry'
+  autoload :EvalCompleter,       'ver/vendor/eval_completer'
   autoload :ExceptionView,       'ver/exception_view'
   autoload :Executor,            'ver/executor'
   autoload :Font,                'ver/font'
@@ -41,6 +43,7 @@ module VER
   autoload :Textpow,             'ver/vendor/textpow'
   autoload :Theme,               'ver/theme'
   autoload :TilingLayout,        'ver/layout/tiling'
+  autoload :ToplevelLayout,      'ver/layout/toplevel'
   autoload :Treeview,            'ver/treeview'
   autoload :Undo,                'ver/undo'
   autoload :WidgetEvent,         'ver/widget_event'
@@ -64,8 +67,8 @@ module VER
     o "Fork off on startup to avoid dying with the terminal",
       :fork, true
 
-    o "Tracing",
-      :tracer, false
+    o "Start hidden, useful for specs",
+      :hidden, false
 
     o "Use EventMachine inside VER, at the moment only for the console",
       :eventmachine, false
@@ -75,6 +78,9 @@ module VER
 
     o "Keymap used",
       :keymap, 'vim'
+
+    o "Load personal rc.rb",
+      :load_rc, true
 
     o "Width of one tab in pixel",
       :tabs, 10
@@ -159,9 +165,13 @@ module VER
     @ctag_stack = []
     @style_name_register = []
     @style_name_pools = {}
-    @buffers = {}
+    @buffers = Set.new
 
-    load 'rc'
+    if given_options[:load_rc] != false
+      load 'rc'
+    else
+      require(options.core_conf_dir/'rc')
+    end
     @options.merge!(given_options)
   end
 
@@ -256,30 +266,21 @@ module VER
 
   def setup_widgets
     Tk::Tile.set_theme options.tk_theme
+    Tk::Tile::Style.configure('Label', font: options.font, sticky: :sw)
 
     @root = Tk.root
-    @root.wm_geometry = '160x80'
-
-    Tk::Tile::Style.configure('Label', font: options.font, sticky: :sw)
-    # Tk::Tile::Style.configure('TLabelframe', background: '#f00')
-
     setup_layout
-
     load("keymap/#{options.keymap}.rb")
+    @minibuf = MiniBuffer.new(@root)
+    @minibuf.pack expand: true, fill: :both
 
-    @minibuf = MiniBuffer.new(@layout)
-    @layout.configure(
-      labelwidget: minibuf,
-      labelanchor: :sw
-    )
-
-    [:Messages, :Scratch].each do |name|
-      defer{ Buffer[name].hide }
-    end
+    # [:Messages, :Scratch, :Completions].each do |name|
+    #   Buffer[name].hide
+    # end
   end
 
   def setup_layout
-    @layout = (layout_class || PanedLayout).new(root)
+    @layout = (layout_class || ToplevelLayout).new(root)
   end
 
   def sanitize_options
@@ -330,7 +331,7 @@ module VER
   def exit
     store_session
     @cancel_blocks.keys.each{|key| @cancel_blocks[key] = true }
-    Tk.exit rescue nil
+    Tk.exit
     EM.stop rescue nil
     Kernel.exit
   end
@@ -413,11 +414,11 @@ module VER
     session_path = loadpath.first/basename
 
     session = {buffers: [], bookmarks: []}
-    buffers.each do |name, buffer|
+    buffers.each do |buffer|
       session[:buffers] << {
-        name: name.to_s,
+        name:     buffer.name.to_s,
         filename: buffer.filename.to_s,
-        insert: buffer.text.index(:insert).split,
+        insert:   buffer.at_insert.to_a,
       }
     end
 
@@ -435,7 +436,9 @@ module VER
   end
 
   def find_or_create_buffer(file, line = nil, column = nil, &block)
-    Buffer.find_or_create(file, line, column, &block)
+    buffer = Buffer.find_or_create(file, line, column, &block)
+    buffer.show
+    buffer
   end
 
   def emergency_bindings
@@ -472,6 +475,7 @@ module VER
   end
 
   def return_style_name(style_name)
+    return unless style_name
     id, widget_name, widget_class = style_name.split('.')
     suffix = "#{widget_name}.#{widget_class}"
     style_name_pools[suffix] << style_name

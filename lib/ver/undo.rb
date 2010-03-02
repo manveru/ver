@@ -24,7 +24,12 @@ module VER
     # together.
     # It would also be handy if these operations could be identified
     # automagically (like multiple operations within one record block).
-    class Tree < Struct.new(:widget, :applied, :pending)
+    class Tree < Struct.new(:widget, :applied, :pending, :stack, :recording)
+      def initialize(widget)
+        self.widget = widget
+        self.stack = []
+      end
+
       def record_multi
         AutoSeparator.new self do |auto_separator|
           yield auto_separator
@@ -34,17 +39,27 @@ module VER
       end
 
       def record
-        current = Record.new(widget, applied)
+        if recording
+          stack << Proc.new
+        else
+          self.recording = true
+          current = Record.new(self, widget, applied)
 
-        yield current
+          yield current
 
-        applied.next = current if applied = self.applied
+          applied.next = current if applied = self.applied
 
-        self.applied = current
-        self.applied = current
-        self.pending = nil
+          self.applied = current
+          self.applied = current
+          self.pending = nil
 
-        compact!
+          compact!
+          self.recording = false
+
+          if pending = stack.shift
+            record(&pending)
+          end
+        end
       end
 
       # Undo last applied change so it becomes the next pending change.
@@ -142,11 +157,11 @@ module VER
     #
     # The applied property indicates whether or not this change has been applied
     # already.
-    class Record < Struct.new(:widget, :parent, :ctime, :childs, :applied,
-                              :undo_info, :redo_info, :separator)
+    class Record < Struct.new(:tree, :widget, :parent, :ctime, :childs,
+                              :applied, :undo_info, :redo_info, :separator)
 
-      def initialize(widget, parent = nil)
-        self.widget, self.parent = widget, parent
+      def initialize(tree, widget, parent = nil)
+        self.tree, self.widget, self.parent = tree, widget, parent
         self.ctime = Time.now
         self.childs = []
         self.applied = false
@@ -157,38 +172,50 @@ module VER
         pos = index(pos)
 
         widget.execute_only(:insert, pos, string, tag)
-        widget.touch!(pos.linestart, (pos + string.size).lineend)
+        widget.touch!(pos, "#{pos} + #{string.size} chars")
 
         self.redo_info = [:insert, pos, string, tag]
-        self.undo_info = [pos, pos + string.size, '']
+        self.undo_info = [pos, index("#{pos} + #{string.size} chars"), '']
         self.applied = true
         pos
       end
 
-      def replace(from, to, string)
+      def replace(from, to, string, tag = Tk::None)
         from, to = indices(from, to)
 
         data = widget.get(from, to)
-        widget.execute_only(:replace, from, to, string)
-        widget.touch!(from.linestart, to.lineend)
+        widget.execute_only(:replace, from, to, string, tag)
+        widget.touch!(from, to)
 
-        self.redo_info = [:replace, from, to, string]
-        self.undo_info = [from, from + string.size, data]
+        self.redo_info = [:replace, from, to, string, tag]
+        self.undo_info = [from, index("#{from} + #{string.size} chars"), data]
         self.applied = true
         from
       end
 
-      def delete(from, to)
-        from, to = indices(from, to)
+      def delete(*indices)
+        case indices.size
+        when 0
+          return
+        when 1 # pad to two
+          index = index(*indices)
+          delete(index, index + '1 chars')
+        when 2
+          first, last = indices(*indices)
 
-        data = widget.get(from, to)
-        widget.execute_only(:delete, from, to)
-        widget.touch!(from.linestart, to.lineend)
+          data = widget.get(first, last)
+          widget.execute_only(:delete, first, last)
+          widget.touch!(first, last)
 
-        self.redo_info = [:delete, from, to]
-        self.undo_info = [from, from, data]
-        self.applied = true
-        from
+          self.redo_info = [:delete, first, last]
+          self.undo_info = [first, first, data]
+          self.applied = true
+          first
+        else # sanitize and chunk into deletes
+          sanitize(*indices).map{|first, last|
+            tree.record{|rec| rec.delete(first, last) }
+          }.last
+        end
       end
 
       def undo
@@ -196,7 +223,7 @@ module VER
 
         from, to, string = undo_info
         widget.execute_only(:replace, from, to, string)
-        widget.touch!(from.linestart, to.lineend)
+        widget.touch!(from, to)
         widget.mark_set(:insert, from)
 
         self.applied = false
@@ -228,7 +255,7 @@ module VER
 
           # the records have to be consecutive so they can still be applied by a
           # single undo/redo
-          consecutive = (predo_pos + predo_string.size) == sredo_pos
+          consecutive = index("#{predo_pos} + #{predo_string.size} chars") == sredo_pos
           return parent.compact! unless consecutive
 
           redo_string = "#{predo_string}#{sredo_string}"
@@ -299,6 +326,54 @@ module VER
         else
           widget.index(given_index)
         end
+      end
+
+      # Multi-index pair case requires that we prevalidate the indices and sort
+      # from last to first so that deletes occur in the exact (unshifted) text.
+      # It also needs to handle partial and fully overlapping ranges. We have to
+      # do this with multiple passes.
+      def sanitize(*indices)
+        raise ArgumentError if indices.size % 2 != 0
+
+        # first we get the real indices
+        indices = indices.map{|index| widget.index(index) }
+
+        # pair them, to make later code easier.
+        indices = indices.each_slice(2).to_a
+
+        # then we sort the indices in increasing order
+        indices = indices.sort
+
+        # Now we eliminate ranges where end is before start.
+        indices = indices.select{|st, en| st <= en }
+
+        # And finally we merge ranges where the end is after the start of a
+        # following range.
+        final = []
+
+        while rang = indices.shift
+          if prev = final.last
+            prev_start, prev_end = prev.at(0), prev.at(1)
+            rang_start, rang_end = rang.at(0), rang.at(1)
+          else
+            final << rang
+            next
+          end
+
+          if prev_start == rang_start
+            # starts are overlapping, use longer end
+            prev[1] = [prev_end, rang_end].max
+          elsif prev_end >= rang_start
+            # prev end is overlapping rang start, use longer end
+            prev[1] = [prev_end, rang_end].max
+          elsif prev_end >= rang_end
+            # prev end is overlapping rang end, skip
+          else
+            final << rang
+          end
+        end
+
+        final.reverse
       end
 
       def inspect

@@ -7,10 +7,11 @@ module VER
 
   minor_mode :open do
     handler Methods::Open
-
     map :file_open_popup, %w[Control-o]
-    map :file_open_fuzzy, %w[Alt-o], %w[Control-m o]
     map :file_open_ask,   %w[colon o space]
+
+    handler Methods::Control
+    map [:ex, :fuzzy], %w[Alt-o], %w[Control-m o]
   end
 
   minor_mode :save do
@@ -22,8 +23,10 @@ module VER
   end
 
   minor_mode :preview do
-    handler Methods::Preview
+    map :eval_buffer,  %w[Control-R]
+    map :tags_tooltip, %w[Control-g t]
 
+    handler Methods::Preview
     map :preview, %w[F5]
   end
 
@@ -31,26 +34,40 @@ module VER
     inherits :help, :preview, :save, :open
 
     handler Methods::Basic
-    map :source_buffer,       %w[Control-R]
-    map :status_evaluate,     %w[Alt-x], %w[Control-m x]
-    map :tags_at,             %w[Control-g t]
+    map :minibuf_eval,    %w[Alt-x], %w[Control-m x]
+    map :open_terminal,   %w[F9]
+    map :open_console,    %w[Control-exclam] if defined?(::EM)
+  end
 
-    map :open_terminal,       %w[F9]
-    map :open_console,        %w[Control-exclam] if defined?(::EM)
+  minor_mode :vim_layout do
+    handler :window
+    map :split_horizontal, %w[Control-w s], %w[Control-w Control-s], %w[colon s h]
+    map :split_vertical,   %w[Control-w v], %w[Control-w Control-v], %w[colon s v]
+    map :new_horizontal,   %w[Control-w n], %w[Control-w Control-n], %w[colon n]
+    map :quit,             %w[Control-w q], %w[Control-w Control-q], %w[colon q Return]
+    map :quit!,            %w[colon q exclam]
+    map :close,            %w[Control-w c], %w[colon c l o Return]
+    map :close!,           %w[colon c l o exclam]
+    map :only,             %w[Control-w o], %w[Control-w Control-o], %w[colon o n Return]
+    map :go_below, %w[Control-w Down], %w[Control-w Control-j], %w[Control-w j]
+    map :go_above, %w[Control-w Up], %w[Control-w Control-k], %w[Control-w k]
+    map :go_left,  %w[Control-w Left], %w[Control-w BackSpace], %w[Control-w Control-h], %w[Control-w h]
+    map :go_right, %w[Control-w Right], %w[Control-w Control-l], %w[Control-w l]
   end
 
   minor_mode :layout do
     inherits :basic
     handler Methods::Layout
 
+    map :hide,          %w[0]
     map :one,           %w[1]
     map :two,           %w[2]
 
     map :slave_inc,     %w[plus]
     map :slave_dec,     %w[minus]
 
-    map :master_inc,    %w[H]
-    map :master_dec,    %w[L]
+    map :master_inc,    %w[less]
+    map :master_dec,    %w[greater]
 
     map :create,        %w[c]
     map :focus_next,    %w[j], %w[Right]
@@ -83,25 +100,29 @@ module VER
   minor_mode :move do
     inherits :prefix
 
-    handler Methods::Move
     (0..9).each{|n| map :ask_go_line, ['colon', n.to_s] }
-    map :prev_char,       %w[h], %w[Left]
-    map :prev_chunk,      %w[B]
-    map :prev_word,       %w[b], %w[Shift-Left]
-    map :start_of_line,   %w[Home]
+
+    handler Methods::Move
     map :prefix_arg_sol,  %w[0]
-    map :end_of_text,     %w[G]
+
+    handler :at_insert
+    map :end_of_buffer,   %w[G]
     map :end_of_line,     %w[dollar], %w[End]
-    map :next_char,       %w[l], %w[Right]
-    map :next_chunk,      %w[W]
-    map :next_word,       %w[w], %w[Shift-Right]
     map :go_line,         %w[g g]
     map :matching_brace,  %w[percent]
+    map :next_char,       %w[l], %w[Right]
+    map :next_chunk,      %w[W]
+    map :next_chunk_end,  %w[E]
     map :next_line,       %w[j], %w[Down], %w[Control-n]
     map :next_page,       %w[Control-f], %w[Next]
-    map :prev_page,       %w[Control-b], %w[Prior]
-    map :prev_line,       %w[k], %w[Up], %w[Control-p]
+    map :next_word,       %w[w], %w[Shift-Right]
     map :next_word_end,   %w[e]
+    map :prev_char,       %w[h], %w[Left]
+    map :prev_chunk,      %w[B]
+    map :prev_line,       %w[k], %w[Up], %w[Control-p]
+    map :prev_page,       %w[Control-b], %w[Prior]
+    map :prev_word,       %w[b], %w[Shift-Left]
+    map :start_of_line,   %w[Home]
   end
 
   minor_mode :prefix do
@@ -151,24 +172,24 @@ module VER
   end
 
   minor_mode :delete do
-    handler Methods::Delete
-
-    map :change_line,                    %w[c c]
-    map :kill_line,                      %w[d d]
-    map :kill_motion,                    ['d', :move]
-    map :change_motion,                  ['c', :move]
-    map [:change_motion, :end_of_line],  %w[C]
-    map [:change_word_right_end],        %w[c w]
-    map [:kill_motion, :prev_char],      %w[X]
-    map [:kill_motion, :end_of_line],    %w[D]
-    map [:kill_motion, :next_char],      %w[x]
+    handler :at_insert
+    map :changing,                  ['c', :move]
+    map :change_next_word_end,      %w[c w]
+    map :change_line,               %w[c c]
+    map :killing,                   ['d', :move]
+    map :kill_line,                 %w[d d]
+    map [:changing, :end_of_line],  %w[C]
+    map [:killing,  :end_of_line],  %w[D]
+    map [:killing,  :next_char],    %w[x]
+    map [:killing,  :prev_char],    %w[X]
   end
 
   minor_mode :clipboard do
-    handler Methods::Clipboard
+    handler :at_insert
+    map :copy_line,  %w[y y], %w[Y]
+    map :copying,    ['y', :move]
 
-    map :copy_line,        %w[y y], %w[Y]
-    map :copy_motion,      ['y', :move]
+    handler Methods::Clipboard
     map :paste,            %w[p]
     map :paste_above,      %w[P]
   end
@@ -187,9 +208,17 @@ module VER
     become :select_block,   %w[Control-v]
     become :select_char,    %w[v]
     become :select_line,    %w[V]
-    become :insert,         %w[i]
+    become :insert,         %w[i], %w[Insert]
     become :replace,        %w[R]
     become :replace_char,   %w[r]
+
+    map :repeat_action, %w[period]
+
+    handler :at_insert
+    map :insert_newline_above,       %w[O]
+    map :insert_newline_below,       %w[o]
+    map [:change_at, :end_of_line],  %w[A]
+    map [:change_at, :next_char],    %w[a]
 
     handler Methods::Control
     enter :enter
@@ -203,9 +232,6 @@ module VER
     map :cursor_vertical_top,               %w[z t]
     map :cursor_vertical_top_sol,           %w[z Return]
 
-    map [:insert_at, :end_of_line],         %w[A]
-    map [:insert_at, :next_char],           %w[a]
-
     map :indent_line,                       %w[greater]
     map :unindent_line,                     %w[less]
 
@@ -213,7 +239,6 @@ module VER
 
     map :open_file_under_cursor,            %w[g f]
 
-    map :repeat_command,                    %w[period]
     map :smart_evaluate,                    %w[Alt-e], %w[Control-m e]
 
     map [:insert_at, :home_of_line],        %w[I]
@@ -233,10 +258,6 @@ module VER
 
     map :toggle_case, %w[asciitilde]
     map :wrap_line, %w[g w]
-
-    handler Methods::Insert
-    map :newline_above,     %w[O]
-    map :newline_below,     %w[o]
 
     handler Methods::SearchAndReplace
     map :query, %w[Alt-percent]
@@ -277,30 +298,29 @@ module VER
     handler Methods::AutoFill
     map :auto_fill_space,          %w[space]
 
-    handler Methods::Delete
-    map [:kill_motion, :next_char],  %w[Delete], %w[Control-d]
-    map [:kill_motion, :prev_char],  %w[BackSpace]
-    map [:kill_motion, :prev_word],  %w[Control-w]
-
-    handler Methods::Move
-    map :next_line,      %w[Down], %w[Control-n]
-    map :next_page,      %w[Control-f], %w[Next], %w[Shift-Down]
-    map :prev_page,      %w[Control-b], %w[Prior], %w[Shift-Up]
-    map :prev_line,      %w[Up], %w[Control-p]
-    map :end_of_line,    %w[End], %w[Control-e]
-    map :next_char,      %w[Right], %w[Control-f]
-    map :next_word,      %w[Shift-Right], %w[Alt-f]
-    map :prev_char,      %w[Left], %w[Control-b]
-    map :prev_word,      %w[Shift-Left], %w[Alt-b]
-    map :start_of_line,  %w[Home], %w[Control-a]
+    handler :at_insert
+    map :end_of_line,            %w[End], %w[Control-e]
+    map :insert_newline,         %w[Return]
+    map :insert_selection,       %w[Shift-Insert], %w[Insert]
+    map :insert_tab,             %w[Control-v Tab], %w[Control-i]
+    map :next_char,              %w[Right], %w[Control-f]
+    map :next_line,              %w[Down], %w[Control-n]
+    map :next_page,              %w[Control-f], %w[Next], %w[Shift-Down]
+    map :next_word,              %w[Shift-Right], %w[Alt-f]
+    map :prev_char,              %w[Left], %w[Control-b]
+    map :prev_line,              %w[Up], %w[Control-p]
+    map :prev_page,              %w[Control-b], %w[Prior], %w[Shift-Up]
+    map :prev_word,              %w[Shift-Left], %w[Alt-b]
+    map :start_of_line,          %w[Home], %w[Control-a]
+    map [:killing, :next_char],  %w[Delete], %w[Control-d]
+    map [:killing, :prev_char],  %w[BackSpace]
+    map [:killing, :prev_word],  %w[Control-w]
 
     handler Methods::Control
     map :smart_evaluate,           %w[Alt-e], %w[Control-e]
+    map :unindent_line,            %w[ISO_Left_Tab]
 
     handler Methods::Insert
-    map :newline,    %w[Return]
-    map :selection,  %w[Shift-Insert]
-    map :tab,        %w[Control-v Tab], %w[Control-i]
     missing :string
   end
 
@@ -336,7 +356,7 @@ module VER
   minor_mode :select do
     inherits :basic, :move, :search
 
-    handler Methods::Selection
+    handler :at_sel
     map :comment,         %w[comma c]
     map :copy,            %w[y], %w[Y]
     map :indent,          %w[greater]
@@ -348,7 +368,6 @@ module VER
     map :upper_case,      %w[U]
     map :uncomment,       %w[comma u]
     map :unindent,        %w[less]
-    map :wrap,            %w[g w]
 
     handler Methods::Control
     map :smart_evaluate,  %w[Alt-e], %w[Control-e]
@@ -357,38 +376,40 @@ module VER
   minor_mode :select_char do
     inherits :select
 
-    become :control,      %w[Escape], %w[Control-c]
-    become :select_line,  %w[V]
-    become :select_block, %w[Control-v]
+    become :control,             %w[Escape], %w[Control-c]
+    become :select_line,         %w[V]
+    become :select_block,        %w[Control-v]
     become :select_replace_char, %w[r]
 
-    handler Methods::Selection
+    handler :at_sel
     enter :enter
     leave :leave
+    map :wrap, %w[g w]
   end
 
   minor_mode :select_line do
     inherits :select
 
-    become :control,      %w[Escape], %w[Control-c]
-    become :select_char,  %w[v]
-    become :select_block, %w[Control-v]
+    become :control,             %w[Escape], %w[Control-c]
+    become :select_char,         %w[v]
+    become :select_block,        %w[Control-v]
     become :select_replace_char, %w[r]
 
-    handler Methods::Selection
+    handler :at_sel
     enter :enter
     leave :leave
+    map :wrap, %w[g w]
   end
 
   minor_mode :select_block do
     inherits :select
 
-    become :control,     %w[Escape], %w[Control-c]
-    become :select_char, %w[v]
-    become :select_line, %w[V]
+    become :control,             %w[Escape], %w[Control-c]
+    become :select_char,         %w[v]
+    become :select_line,         %w[V]
     become :select_replace_char, %w[r]
 
-    handler Methods::Selection
+    handler :at_sel
     enter :enter
     leave :leave
   end
@@ -396,7 +417,7 @@ module VER
   minor_mode :select_replace_char do
     become :control, %w[Escape], %w[Control-c]
 
-    handler Methods::Selection
+    handler :at_sel
     map [:replace_char, "\n"], %w[Return]
     missing :replace_char
   end
@@ -428,10 +449,12 @@ module VER
   major_mode :MiniBuffer do
     use :readline
 
-    map :abort,    %w[Escape], %w[Control-c]
-    map :attempt,  %w[Return]
-    map :complete_large, %w[Double-Tab]
-    map :complete_small, %w[Tab]
+    map :abort,           %w[Escape], %w[Control-c]
+    map :attempt,         %w[Return]
+    map :complete_large,  %w[Double-Tab]
+    map :complete_small,  %w[Tab]
+    map :next_history,    %w[Down]
+    map :prev_history,    %w[Up]
   end
 
   major_mode :Completions do

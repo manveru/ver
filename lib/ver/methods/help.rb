@@ -7,8 +7,8 @@ module VER
         VER::Help::HelpForHelp.new(self)
       end
 
-      def describe_key
-        VER::Help::DescribeKey.new(self)
+      def describe_key(buffer)
+        VER::Help::DescribeKey.new(buffer)
       end
     end
   end

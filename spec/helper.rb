@@ -11,11 +11,11 @@ module VER
       instance_eval(&block)
     end
 
-    def run
+    def run(options = {})
       if context = @contexts.shift
         Tk::After.idle do
           context.run
-          run
+          run(options)
         end
       else
         Tk::After.idle{ bacon_summary }
@@ -55,11 +55,10 @@ module VER
   #       end
   #     end
   #   end
-  def self.spec(&block)
+  def self.spec(options = {}, &block)
     specs = Spec.new(&block)
+    options = {fork: false, hidden: true, load_rc: false}.merge(options)
 
-    VER.run fork: false do
-      specs.run
-    end
+    VER.run(options){ specs.run(options) }
   end
 end
