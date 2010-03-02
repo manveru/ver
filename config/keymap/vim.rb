@@ -212,6 +212,8 @@ module VER
     become :replace,        %w[R]
     become :replace_char,   %w[r]
 
+    map :repeat_action, %w[period]
+
     handler :at_insert
     map :insert_newline_above,       %w[O]
     map :insert_newline_below,       %w[o]
@@ -237,7 +239,6 @@ module VER
 
     map :open_file_under_cursor,            %w[g f]
 
-    map :repeat_command,                    %w[period]
     map :smart_evaluate,                    %w[Alt-e], %w[Control-m e]
 
     map [:insert_at, :home_of_line],        %w[I]

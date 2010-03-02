@@ -44,6 +44,17 @@ module VER
       /^(?:ver|vim?):[^:]+:/      => /^(?:ver|vim?):([^:]+):/,
     }
 
+    REPEAT_BREAK_CMD = [
+      :repeat_action,
+      :undo,
+      :redo,
+    ]
+
+    REPEAT_BREAK_MODE = [
+      :move,
+      :search,
+    ]
+
     None = Object.new
 
     def self.[](uri, line = nil, char = nil)
@@ -245,6 +256,10 @@ module VER
 
     def events
       major_mode.event_history
+    end
+
+    def actions
+      major_mode.action_history
     end
 
     def message(*args)
@@ -562,6 +577,32 @@ module VER
       count = prefix_arg || 1
       update_prefix_arg
       count
+    end
+
+    def repeat_action
+      stack = []
+
+      actions.reverse_each do |event, mode, action|
+        if stack.empty?
+          next if REPEAT_BREAK_CMD.include?(action.to_method(self).name)
+          next if REPEAT_BREAK_MODE.include?(mode.name)
+        else
+          break if REPEAT_BREAK_CMD.include?(action.to_method(self).name)
+          break if REPEAT_BREAK_MODE.include?(mode.name)
+        end
+
+        stack << [event, action]
+      end
+
+      return if stack.empty?
+
+      # make the argument the same for all called actions
+      prefix_arg = self.prefix_arg
+
+      stack.reverse_each do |event, action|
+        self.prefix_arg = prefix_arg
+        action.call(event)
+      end
     end
 
     def tag_exists?(given_path)

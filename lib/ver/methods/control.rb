@@ -104,39 +104,6 @@ module VER
         text.replace(from, to, chunk)
       end
 
-      REPEAT_BREAK_CMD = [
-        :repeat_command,
-        :undo,
-        :redo,
-      ]
-
-      REPEAT_BREAK_MODE = [
-        :move,
-        :search,
-      ]
-
-      def repeat_command(text, count = text.prefix_count)
-        actions = []
-        text.major_mode.action_history.reverse_each do |event, mode, action|
-          if actions.empty?
-            next if REPEAT_BREAK_CMD.include?(action.method)
-            next if REPEAT_BREAK_MODE.include?(mode.name)
-          else
-            break if REPEAT_BREAK_CMD.include?(action.method)
-            break if REPEAT_BREAK_MODE.include?(mode.name)
-          end
-
-          actions << [action, event]
-        end
-
-        actions.reverse!
-
-        actions.each do |action, event|
-          event.prefix_arg = count
-          action.call(event)
-        end
-      end
-
       # Assigns env variables used in the given command.
       # - $f: The current buffer's filename
       # - $d: The current buffer's directory
