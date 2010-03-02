@@ -7,11 +7,11 @@ module VER
       CHAR = /\d+$/
 
       def line
-        index[LINE].to_i
+        index.to_s[LINE].to_i
       end
 
       def char
-        index[CHAR].to_i
+        index.to_s[CHAR].to_i
       end
 
       def to_tcl

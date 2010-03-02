@@ -7,25 +7,25 @@ module VER
       include Keymapped
       attr_accessor :hover_completion
 
-      def cancel(event)
+      def cancel
         hover_completion.cancel
       end
 
-      def continue_completion(event)
+      def continue_completion
         hover_completion.continue_completion
       end
 
-      def go_down(event)
+      def go_down
         index = curselection.first + 1
         select(index) if index < size
       end
 
-      def go_up(event)
+      def go_up
         index = curselection.first - 1
         select(index) if index >= 0
       end
 
-      def submit(event)
+      def submit
         hover_completion.submit
       end
 

@@ -59,6 +59,16 @@ module VER
         buffer.dlineinfo(self)
       end
 
+      def delta(other)
+        line_diff = other.line - line
+
+        if line_diff == 0
+          (other.char - char).abs
+        else
+          line_diff.abs
+        end
+      end
+
       def dump(*options)
         buffer.dump(*options, self)
       end
