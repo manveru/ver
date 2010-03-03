@@ -14,7 +14,7 @@ module VER
         pattern = buffer.store(self, :pattern)
         buffer.tag_all_matching(TAG, pattern, HIGHLIGHT)
         from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
-        buffer.mark_set(:insert, from) if from
+        Search.go(buffer, from)
 
         buffer.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
@@ -91,7 +91,7 @@ module VER
         buffer.replace(from, to, buffer.store(self, :replacement))
         buffer.tag_all_matching(TAG, buffer.store(self, :pattern), HIGHLIGHT)
         from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
-        buffer.mark_set(:insert, from) if from
+        Search.go(buffer, from)
 
         buffer.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
@@ -114,14 +114,14 @@ module VER
 
       def next(buffer)
         from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
-        buffer.mark_set(:insert, from) if from
+        Search.go(buffer, from)
 
         buffer.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
 
       def prev(buffer)
         from, to = buffer.tag_prevrange(TAG, 'insert', '1.0')
-        buffer.mark_set(:insert, from) if from
+        Search.go(buffer, from)
 
         buffer.message 'Replace occurence (y)es (n)o (a)ll (q)uit'
       end
