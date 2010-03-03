@@ -3,71 +3,71 @@ module VER
     module Bookmark
       module_function
 
-      def ask(text)
-        text.ask 'Bookmark name: ' do |answer, action|
+      def ask(buffer)
+        buffer.ask 'Bookmark name: ' do |answer, action|
           case action
           when :modified, :attempt
             if name = answer[0]
               yield name
               :abort
             else
-              VER.message 'Need a bookmark name'
+              buffer.message 'Need a bookmark name'
             end
           end
         end
       end
 
-      def visit_char(text, name = nil)
+      def visit_char(buffer, name = nil)
         if name
-          visit_named(text, name)
+          visit_named(buffer, name)
         else
-          ask(text){|answer| visit_named(text, answer) }
+          ask(buffer){|answer| visit_named(buffer, answer) }
         end
       end
 
-      def add_char(text, name = nil)
+      def add_char(buffer, name = nil)
         if name
-          add_named(text, name)
+          add_named(buffer, name)
         else
-          ask(text){|answer| add_named(text, answer) }
+          ask(buffer){|answer| add_named(buffer, answer) }
         end
       end
 
-      def add_named(text, name = nil)
+      def add_named(buffer, name = nil)
         if name
-          bm = bookmarks.add_named(name, value(text))
-          VER.message("Added bookmark [%s|%s:%d,%d]." % bm.to_a)
+          bm = bookmarks.add_named(name, value(buffer))
+          buffer.message("Added bookmark [%s|%s:%d,%d]." % bm.to_a)
         else
-          ask(text){|answer| add_named(text, answer) }
+          ask(buffer){|answer| add_named(buffer, answer) }
         end
       end
 
-      def remove_named(text, name = nil)
+      def remove_named(buffer, name = nil)
         if name
           if bm = bookmarks.delete(name)
-            VER.message("Removed bookmark [%s|%s:%d,%d]." % bm.to_a)
+            buffer.message("Removed bookmark [%s|%s:%d,%d]." % bm.to_a)
           else
-            VER.message("No Bookmark named %p." % [name])
+            buffer.message("No Bookmark named %p." % [name])
           end
         else
-          ask(text){|answer| remove_named(text, answer) }
+          ask(buffer){|answer| remove_named(buffer, answer) }
         end
       end
 
-      def visit_named(text, name = nil)
+      def visit_named(buffer, name = nil)
         if name
           if bm = bookmarks[name]
-            open(text, bm)
+            open(buffer, bm)
           else
-            VER.message("No Bookmark named %p." % [name])
+            buffer.message("No Bookmark named %p." % [name])
           end
         else
-          ask(text){|answer| visit_named(text, answer) }
+          ask(buffer){|answer| visit_named(buffer, answer) }
         end
       end
 
-      def toggle(text)
-        pos = value(text)
+      def toggle(buffer)
+        pos = value(buffer)
 
         if bm = bookmarks.at(pos)
           bookmarks.delete(bm)
@@ -80,23 +80,23 @@ module VER
         VER.error(ex)
       end
 
-      def next(text)
-        open(text, bookmarks.next_from(value(text)))
+      def next(buffer)
+        open(buffer, bookmarks.next_from(value(buffer)))
       end
 
-      def prev(text)
-        open(text, bookmarks.prev_from(value(text)))
+      def prev(buffer)
+        open(buffer, bookmarks.prev_from(value(buffer)))
       end
 
       def bookmarks
         VER.bookmarks
       end
 
-      def value(text)
-        [text.filename, *text.index(:insert)]
+      def value(buffer)
+        [buffer.filename, *buffer.index(:insert)]
       end
 
-      def open(text, bookmark, use_col = true)
+      def open(buffer, bookmark, use_col = true)
         return unless bookmark.respond_to?(:file) && bookmark.respond_to?(:index)
 
         line, col = use_col ? bookmark.index : [bookmark.line, 0]

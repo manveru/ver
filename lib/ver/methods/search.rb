@@ -89,11 +89,11 @@ module VER
         total = buffer.tag_ranges(TAG).size
 
         if total == 1
-          VER.message "1 match found"
+          buffer.message "1 match found"
         elsif total > 1
-          VER.message "#{total} matches found"
+          buffer.message "#{total} matches found"
         else
-          VER.message "No matches found"
+          buffer.message "No matches found"
         end
       end
 
@@ -121,7 +121,7 @@ module VER
       end
 
       def char_right(buffer, count = buffer.prefix_count)
-        VER.message 'Press the character to find to the right'
+        buffer.message 'Press the character to find to the right'
 
         buffer.major_mode.read 1 do |event|
           from, to = 'insert + 1 chars', 'insert lineend'
@@ -137,7 +137,7 @@ module VER
       end
 
       def char_left(buffer, count = buffer.prefix_count)
-        VER.message 'Press the character to find to the left'
+        buffer.message 'Press the character to find to the left'
 
         buffer.major_mode.read 1 do |event|
           from, to = 'insert', 'insert linestart'

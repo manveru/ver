@@ -49,10 +49,9 @@ module VER
       end
 
       def action(id)
-        p id => @actions[id]
-        # eval("caller.#{method}")
+        caller.message @actions[id].call(caller).inspect
       rescue Exception => ex
-        VER.message ex.message
+        caller.warn ex.message
       end
 
       # TODO:

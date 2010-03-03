@@ -115,10 +115,10 @@ module VER
           text.encoding = content.encoding
           text.readonly = !text.filename.writable?
           text.insert(1.0, content)
-          VER.message "Opened #{text.short_filename}"
+          text.message "Opened #{text.short_filename}"
         rescue Errno::ENOENT
           text.clear
-          VER.message("Created #{text.short_filename}")
+          text.message("Created #{text.short_filename}")
         end
 
         after_open(text, line, column)
@@ -148,7 +148,7 @@ module VER
           after_open(text, 1, 0, Syntax.new('Plain Text'))
         end
 
-        VER.message "Created #{name}"
+        text.message "Created #{name}"
       end
 
       def open_empty(text)

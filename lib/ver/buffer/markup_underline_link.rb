@@ -17,7 +17,7 @@ module VER
           if uri
             browser = buffer.options.http_browser
             system(*browser, uri)
-            VER.message "Opening %p in %p" % [uri, browser]
+            buffer.message "Opening %p in %p" % [uri, browser]
           end
         end
       end

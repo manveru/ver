@@ -3,7 +3,7 @@ module VER
     # Eval the value of {Buffer} in toplevel binding.
     # So while hacking VER you can dynamically reload parts of it.
     def eval_buffer
-      VER.message "Source #{uri}"
+      message "Source #{uri}"
       TOPLEVEL_BINDING.eval(value.to_s)
     end
 
@@ -14,7 +14,7 @@ module VER
       index = at_insert
       value = index.tag_names.join(', ')
 
-      VER.message(value)
+      message(value)
       tooltip(value, count || 5)
     end
 
@@ -60,9 +60,9 @@ module VER
           when :attempt
             begin
               result = text.instance_eval(answer)
-              VER.message result.inspect
+              text.message result.inspect
             rescue Exception => ex
-              VER.message("#{ex.class}: #{ex}")
+              text.message("#{ex.class}: #{ex}")
             end
             :abort
           end

@@ -50,7 +50,7 @@ module VER
       rescue FFF::TooManyEntries
         setup_fff_with(@pwd)
       rescue FFF::TooManyEntries
-        VER.message "The FuzzyFileFinder is overwhelmed by the amount of files"
+        caller.message "The FuzzyFileFinder is overwhelmed by the amount of files"
         callback.destroy
         Tk.callback_break
       end

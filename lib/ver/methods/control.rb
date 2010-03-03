@@ -89,7 +89,7 @@ module VER
 
             begin
               Dir.chdir(path)
-              VER.message 'Changed working directory to %s' % [path]
+              text.message 'Changed working directory to %s' % [path]
               :abort
             rescue Errno::ENOENT => ex
               VER.warn ex
@@ -253,7 +253,7 @@ module VER
           when :attempt
             begin
               system(command)
-              VER.message("Exit code: #{$?}")
+              text.message("Exit code: #{$?}")
               :abort
             rescue => ex
               VER.warn(ex)
@@ -277,7 +277,7 @@ module VER
           end
         end
 
-        VER.message "Performed gsub on #{total} lines"
+        text.message "Performed gsub on #{total} lines"
       end
 
       # Substitute on current line
