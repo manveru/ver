@@ -68,18 +68,18 @@ module VER
 
       def first(buffer)
         from, to = buffer.tag_nextrange(TAG, 1.0, :end)
-        buffer.mark_set(:insert, from) if from
+        go(buffer, from)
       end
 
       def last(buffer)
         from, to = tag_prevrange(TAG, :end, 1.0)
-        buffer.mark_set(:insert, from) if from
+        go(buffer, from)
       end
 
       def next(buffer, count = buffer.prefix_count)
         count.times do
           from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
-          buffer.mark_set(:insert, from) if from
+          go(buffer, from)
         end
 
         display_matches_count(buffer)
@@ -100,7 +100,7 @@ module VER
       def prev(buffer, count = buffer.prefix_count)
         count.times do
           from, to = buffer.tag_prevrange(TAG, 'insert - 1 chars', '1.0')
-          buffer.mark_set(:insert, from) if from
+          go(buffer, from)
         end
 
         display_matches_count(buffer)
@@ -129,7 +129,7 @@ module VER
 
           counter = 0
           buffer.search_all regexp, from, to do |match, pos, mark|
-            buffer.mark_set :insert, pos
+            buffer.mark_set(:insert, pos)
             counter += 1
             break if counter == count
           end
@@ -162,6 +162,17 @@ module VER
         buffer.store(self, :last, needle)
         buffer.tag_all_matching(TAG, needle, HIGHLIGHT)
         buffer.tag_lower(TAG)
+      end
+
+      def go(buffer, index)
+        return unless index
+        center(buffer, index)
+        buffer.insert = index
+      end
+
+      def center(buffer, index)
+        return unless index
+        Control.cursor_vertical_center(buffer, index)
       end
     end
   end
