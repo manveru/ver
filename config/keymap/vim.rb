@@ -219,6 +219,7 @@ module VER
     map :insert_newline_below,       %w[o]
     map [:change_at, :end_of_line],  %w[A]
     map [:change_at, :next_char],    %w[a]
+    map [:change_at, :home_of_line], %w[I]
 
     handler Methods::Control
     enter :enter
@@ -231,17 +232,6 @@ module VER
     map :cursor_vertical_center_sol,        %w[z period]
     map :cursor_vertical_top,               %w[z t]
     map :cursor_vertical_top_sol,           %w[z Return]
-
-    map :indent_line,                       %w[greater]
-    map :unindent_line,                     %w[less]
-
-    map :join_line_forward,                 %w[J]
-
-    map :open_file_under_cursor,            %w[g f]
-
-    map :smart_evaluate,                    %w[Alt-e], %w[Control-m e]
-
-    map [:insert_at, :home_of_line],        %w[I]
 
     map :executor, %w[colon colon]
     map [:ex, :buffer],       %w[colon b u], %w[Alt-b], %w[Control-m b]
@@ -258,6 +248,11 @@ module VER
 
     map :toggle_case, %w[asciitilde]
     map :wrap_line, %w[g w]
+    map :indent_line,                       %w[greater]
+    map :unindent_line,                     %w[less]
+    map :join_line_forward,                 %w[J]
+    map :open_file_under_cursor,            %w[g f]
+    map :smart_evaluate,                    %w[Alt-e], %w[Control-m e]
 
     handler Methods::SearchAndReplace
     map :query, %w[Alt-percent]

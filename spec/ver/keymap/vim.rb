@@ -207,6 +207,15 @@ VER.spec keymap: 'vim' do
         insert.index.should == '1.1'
         buffer.minor_mode?(:insert).should != nil
       end
+
+      it 'changes at home of line with <I>' do
+        buffer.minor_mode?(:insert).should == nil
+        insert.index = '1.10'
+        type 'I'
+        buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 47
+        insert.index.should == '1.0'
+        buffer.minor_mode?(:insert).should != nil
+      end
     end
 
     describe 'Control mode deletion' do
