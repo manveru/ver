@@ -93,7 +93,14 @@ module VER
                 :theme_config, :matching_brace, :layout, :syntax, :minibuf
     attr_accessor :uri, :project_root, :project_repo, :undoer, :pristine,
                   :prefix_arg, :readonly, :encoding, :filename, :at_sel,
-                  :symbolic
+                  :symbolic, :locked
+
+    # Hack for smoother minibuf completion
+    public :binding, :local_variables, :global_variables
+
+    alias pristine? pristine
+    alias symbolic? symbolic
+    alias locked? locked
 
     def initialize(parent = VER.layout, given_options = {})
       @layout = parent
@@ -210,6 +217,7 @@ module VER
     def on_destroy(event)
       VER.cancel_block(@highlighter)
       VER.buffers.delete(self)
+      unlock_uri(uri)
     ensure
       VER.defer {
         VER.exit if VER.buffers.empty?
@@ -269,12 +277,6 @@ module VER
     def warn(*args)
       @minibuf.warn(*args)
     end
-
-    # Hack for smoother minibuf completion
-    public :binding, :local_variables, :global_variables
-
-    alias pristine? pristine
-    alias symbolic? symbolic
 
     def persisted?
       return false unless filename
@@ -353,21 +355,19 @@ module VER
     def open(uri, line = 1, char = 0)
       case uri
       when Symbol
-        open_symbolic(uri)
+        open_symbolic(uri, line, char)
       when Pathname
-        open_pathname(uri)
+        open_pathname(uri, line, char)
       when String, URI
-        open_uri(uri)
+        open_uri(uri, line, char)
       else
         raise ArgumentError, "Invalid uri: %p" % [uri]
       end
 
-      self.insert = "#{line || 1}.#{char || 0}"
-      VER.buffers << self
-      message "Opened #{uri}"
+      true
     end
 
-    def open_symbolic(symbol)
+    def open_symbolic(symbol, line, char)
       self.uri = symbol
       self.symbolic = true
 
@@ -394,34 +394,59 @@ module VER
         syntax = 'Plain Text'
       end
 
-      after_open(Syntax.new(syntax))
+      after_open(Syntax.new(syntax), line, char)
     end
 
-    def open_pathname(pathname)
-      self.uri = self.filename = pathname
-      self.value = content = pathname.read.chomp
-      self.encoding = content.encoding
-      self.readonly = !pathname.writable?
-      detect_project_paths
-      update_mtime
-      after_open
-    rescue Errno::ENOENT
+    def open_pathname(pathname, line, char)
+      lock_uri(pathname) do |answer|
+        begin
+          case answer
+          when :single, :shared, :read_only
+            self.uri = self.filename = pathname
+            self.value = content = pathname.read.chomp
+            self.encoding = content.encoding
+            self.readonly = answer == :read_only || !pathname.writable?
+            self.locked = answer == :single
+            detect_project_paths
+            update_mtime
+            after_open(nil, line, char)
+          when :abort
+            p :abort
+            VER.exit
+          when :quit
+            p :quit
+            VER.exit
+          else
+            p wtf: answer
+          end
+        rescue Errno::ENOENT
+          open_empty(line, char)
+        end
+      end
+    end
+
+    def open_empty(line, char)
+      self.uri = '<empty>'
       self.value = ''
       self.encoding = value.encoding
       self.readonly = false
-      after_open
+      after_open(nil, line, char)
     end
 
-    def open_uri
+    def open_uri(uri, line, char)
       self.uri = uri
       self.value = Kernel.open(uri){|io| io.read.chomp }
-      after_open
+      after_open(nil, line, char)
     end
 
-    def after_open(syntax = nil)
+    def after_open(syntax = nil, line = 1, char = 0)
       @undoer = VER::Undo::Tree.new(self)
       VER.opened_file(self)
       layout.wm_title = uri.to_s
+
+      self.insert = "#{line || 1}.#{char || 0}"
+      VER.buffers << self
+      message "Opened #{uri}"
 
       bind('<Map>') do
         VER.defer do
@@ -430,6 +455,79 @@ module VER
         end
         bind('<Map>'){ at_insert.see }
       end
+    end
+
+    def lock_uri(uri)
+      lock = uri_lockfile(uri)
+
+      if File.file?(lock) # omg, someone is using it!
+        info = Hash[File.read(lock).scan(/^(\w+):\s*(.*)$/)]
+        ctime = File.ctime(lock)
+        pid = info['pid']
+        user = info['user']
+        uri = info['uri']
+        alive = info
+
+        prompt = <<-TEXT
+Found a lock file at: #{lock}
+owned by: #{user}
+used by: #{pid}
+dated: #{ctime}
+for: #{uri}
+
+Another program may be editing the same file.
+If this is the case, be careful not to end up with two different instances of the same file when making changes.
+Close this buffer or continue with caution.
+
+[O]pen Read-Only, [E]dit anyway, [Q]uit, [A]bort: 
+        TEXT
+
+        ask(prompt) do |answer, action|
+          case action
+          when :modified
+            case answer
+            when /o/i
+              yield :read_only
+              :abort
+            when /e/i
+              yield :shared
+              :abort
+            when /q/i
+              yield :quit
+              :abort
+            when /a/i
+              yield :abort
+              :abort
+            else
+              warn('invalid answer')
+              minibuf.answer = ''
+            end
+          end
+        end
+      else
+        File.open(lock, 'w+') do |file|
+          file.puts(
+            "pid: #{Process.pid}",
+            "uid: #{Process.uid}",
+            "uri: #{uri}"
+          )
+        end
+
+        yield :single
+      end
+    end
+
+    def unlock_uri(uri = self.uri)
+      return unless locked?
+      FileUtils.rm_f(uri_lockfile(uri))
+    end
+
+    def uri_lockfile(uri = self.uri)
+      require 'tmpdir'
+      hash = Digest::SHA1.hexdigest(uri.to_s)
+      lock = File.join(Dir.tmpdir, 'ver/lock', hash)
+      FileUtils.mkdir_p(File.dirname(lock))
+      lock
     end
 
     def update_mtime
