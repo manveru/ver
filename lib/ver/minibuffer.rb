@@ -120,11 +120,10 @@ module VER
           grid_forget
         end
       else
-        height = count('1.0', 'end', 'displaylines')
+        height = count('1.0', 'end', 'displaylines') || 1
         grid_configure(@old_grid_info) if @old_grid_info
+        configure(height: height)
       end
-
-      configure height: height
     rescue
     end
 
