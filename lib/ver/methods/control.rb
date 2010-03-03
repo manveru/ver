@@ -28,9 +28,13 @@ module VER
         Open.open_file_under_cursor(text)
       end
 
-      def source_buffer(text)
-        VER.message("Source #{text.filename}")
-        load(text.filename.to_s)
+      def source_buffer(buffer)
+        if filename = buffer.filename
+          buffer.message("Source #{filename}")
+          load(filename.to_s)
+        else
+          buffer.warn("#{buffer.uri} is no file")
+        end
       end
 
       def cursor_vertical_top(text)
