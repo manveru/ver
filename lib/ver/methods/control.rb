@@ -258,19 +258,6 @@ module VER
         end
       end
 
-      def tags_at(index = :insert)
-        index = index(index)
-        tags = tag_names(index)
-        VER.message tags.inspect
-
-        require 'ver/tooltip'
-
-        tooltip = Tk::Tooltip.new(tags.inspect)
-        tooltip.show_on(self)
-
-        Tk::After.ms(5000){ tooltip.destroy }
-      end
-
       # Substitute over all lines of the buffer
       def gsub(text, regexp, with)
         total = 0
