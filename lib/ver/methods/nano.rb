@@ -5,59 +5,59 @@ module VER
       module_function
 
       # Insert the next keystroke verbatim
-      def verbatim(text, action)
-        p text.major_mode.event_history.last
-        char = text.major_mode.event_history.last[:unicode]
-        text.insert(:insert, char)
+      def verbatim(buffer, action)
+        p buffer.major_mode.event_history.last
+        char = buffer.events.last.unicode
+        buffer.insert(:insert, char)
       end
 
       # Insert the keystroke verbatim
-      def verbatim_insert(text)
+      def verbatim_insert(buffer)
       end
 
       # Noop
-      def redraw(text)
-        mumble "Redraw"
+      def redraw(buffer)
+        mumble buffer, "Redraw"
       end
 
       # Noop
-      def suspend(text)
-        mumble "Suspend"
+      def suspend(buffer)
+        mumble buffer, "Suspend"
       end
 
-      def home(text)
-        if text.store(self, :smart_home)
-          smart_home(text)
+      def home(buffer)
+        if buffer.store(self, :smart_home)
+          smart_home(buffer)
         else
-          dumb_home(text)
+          dumb_home(buffer)
         end
       end
 
-      def smart_home(text)
-        insert = text.index(:insert)
-        x = text.get(insert.linestart, insert.lineend).index(/\S/) || 0
+      def smart_home(buffer)
+        insert = buffer.index(:insert)
+        x = buffer.get(insert.linestart, insert.lineend).index(/\S/) || 0
         y = insert.y
 
         if insert.split == [y, x]
-          text.mark_set(:insert, 'insert linestart')
+          buffer.mark_set(:insert, 'insert linestart')
         else
-          text.mark_set(:insert, "#{y}.#{x}")
+          buffer.mark_set(:insert, "#{y}.#{x}")
         end
       end
 
-      def dumb_home(text)
-        text.mark_set(:insert, 'insert linestart')
+      def dumb_home(buffer)
+        buffer.mark_set(:insert, 'insert linestart')
       end
 
       # Constant cursor position display enable/disable
-      def toggle_cursor_pos(text)
-        widgets = text.status.widgets
+      def toggle_cursor_pos(buffer)
+        widgets = buffer.status.widgets
         np = widgets.find{|widget| widget.kind_of?(Status::NanoPosition) }
 
         if np.toggle
-          message "Constant cursor position display enabled"
+          message buffer, "Constant cursor position display enabled"
         else
-          message "Constant cursor position display disabled"
+          message buffer, "Constant cursor position display disabled"
         end
       end
 
@@ -68,118 +68,118 @@ module VER
       # forwards or backwards).
       # If the cursor is already at that position, it will jump to the true
       # beginning of the line.
-      def toggle_smart_home_key(text)
-        if old = text.store(self, :smart_home)
-          text.store(self, :smart_home, true)
-          message "Smart home key enabled"
+      def toggle_smart_home_key(buffer)
+        if old = buffer.store(self, :smart_home)
+          buffer.store(self, :smart_home, true)
+          message buffer, "Smart home key enabled"
         else
-          text.store(self, :smart_home, false)
-          message "Smart home key disabled"
+          buffer.store(self, :smart_home, false)
+          message buffer, "Smart home key disabled"
         end
       end
 
       # Auto indent enable/disable
       # If enabled, indent new lines to the previous line's indentation.
       # Useful when editing source code.
-      def toggle_auto_indent(text)
-        if text.options.autoindent = !text.options.autoindent
-          message "Auto indent enabled"
+      def toggle_auto_indent(buffer)
+        if buffer.options.autoindent = !buffer.options.autoindent
+          message buffer, "Auto indent enabled"
         else
-          message "Auto indent disabled"
+          message buffer, "Auto indent disabled"
         end
       end
 
       # Conversion of typed tabs to spaces enable/disable
-      def toggle_convert_typed_tabs_to_spaces(text)
-        if text.options.expandtab = !text.options.expandtab
-          message "Conversion of typed tabs to spaces enabled"
+      def toggle_convert_typed_tabs_to_spaces(buffer)
+        if buffer.options.expandtab = !buffer.options.expandtab
+          message buffer, "Conversion of typed tabs to spaces enabled"
         else
-          message "Conversion of typed tabs to spaces disabled"
+          message buffer, "Conversion of typed tabs to spaces disabled"
         end
       end
 
       # Soft line wrapping enable/disable
       # VER will attempt to display the entire contents of a line, even if it is
       # longer than the screen width.
-      def toggle_soft_line_wrapping(text)
-        if text.cget(:wrap) == :word
-          text.configure wrap: :none
-          message "Soft line wrapping disabled"
+      def toggle_soft_line_wrapping(buffer)
+        if buffer.cget(:wrap) == :word
+          buffer.configure wrap: :none
+          message buffer, "Soft line wrapping disabled"
         else
-          text.configure wrap: :word
-          message "Soft line wrapping enabled"
+          buffer.configure wrap: :word
+          message buffer, "Soft line wrapping enabled"
         end
       end
 
       # Help mode enable/disable
-      def toggle_help_mode(text)
-        widgets = text.status.widgets
+      def toggle_help_mode(buffer)
+        widgets = buffer.status.widgets
         np = widgets.find{|widget| widget.kind_of?(Status::NanoHelp) }
 
         message(np.toggle ? "Help mode enabled" : "Help mode disabled")
       end
 
       # Use of one more line for editing enable/disable
-      def toggle_one_more_line(text)
-        mumble "Toggle one more line ignored"
+      def toggle_one_more_line(buffer)
+        mumble buffer, "Toggle one more line ignored"
       end
 
       # Smooth scrolling enable/disable
-      def toggle_smooth_scrolling(text)
-        mumble "Toggle smooth scrolling"
+      def toggle_smooth_scrolling(buffer)
+        mumble buffer, "Toggle smooth scrolling"
       end
 
       # Whitespace display enable/disable
-      def toggle_whitespace_display(text)
-        mumble "Toggle whitespace display"
+      def toggle_whitespace_display(buffer)
+        mumble buffer, "Toggle whitespace display"
       end
 
       # Color syntax highlighting enable/disable
-      def toggle_color_syntax_highlighting(text)
-        mumble "Toggle color syntax highlighting"
+      def toggle_color_syntax_highlighting(buffer)
+        mumble buffer, "Toggle color syntax highlighting"
       end
 
       # Cut to end enable/disable
-      def toggle_cut_to_end(text)
-        mumble "Toggle cut to end"
+      def toggle_cut_to_end(buffer)
+        mumble buffer, "Toggle cut to end"
       end
 
       # Long line wrapping enable/disable
-      def toggle_long_line_wrapping(text)
-        mumble "Toggle long line wrapping"
+      def toggle_long_line_wrapping(buffer)
+        mumble buffer, "Toggle long line wrapping"
       end
 
       # Backup files enable/disable
-      def toggle_backup_files(text)
-        mumble "Toggle backup files"
+      def toggle_backup_files(buffer)
+        mumble buffer, "Toggle backup files"
       end
 
       # Multiple file buffers enable/disable
-      def toggle_multiple_file_buffers(text)
-        mumble "Toggle multiple file buffers"
+      def toggle_multiple_file_buffers(buffer)
+        mumble buffer, "Toggle multiple file buffers"
       end
 
       # Mouse support enable/disable
-      def toggle_mouse(text)
-        mumble "Toggle mouse support"
+      def toggle_mouse(buffer)
+        mumble buffer, "Toggle mouse support"
       end
 
       # No conversion from DOS/Mac format enable/disable
-      def toggle_dos_mac_format_conversion(text)
-        mumble "Toggle no conversion from DOS/Mac format"
+      def toggle_dos_mac_format_conversion(buffer)
+        mumble buffer, "Toggle no conversion from DOS/Mac format"
       end
 
       # Suspension enable/disable
-      def toggle_suspension(text)
-        mumble "Toggle suspension"
+      def toggle_suspension(buffer)
+        mumble buffer, "Toggle suspension"
       end
 
-      def message(string)
-        VER.message "[ #{string} ]"
+      def message(buffer, string)
+        buffer.message "[ #{string} ]"
       end
 
       def mumble(string)
-        VER.message "[ #{string} ignored, mumble mumble ]"
+        buffer.message "[ #{string} ignored, mumble mumble ]"
       end
     end
   end
