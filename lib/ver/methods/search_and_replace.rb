@@ -78,6 +78,7 @@ module VER
       def replace_once(buffer)
         begin
           from, to = buffer.tag_nextrange(TAG, 'insert', 'end')
+          return unless from && to
         rescue => ex
           if ex.message.start_with?('bad text index ""')
             buffer.minor_mode(:search_and_replace, :control)
