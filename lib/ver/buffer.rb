@@ -623,7 +623,7 @@ Close this buffer or continue with caution.
     end
 
     def touch!(*indices)
-      tag_add('ver.highlight.pending', *indices.flatten) if @syntax
+      tag_add('ver.highlight.pending', *indices.flatten)
       Tk::Event.generate(self, '<<Modified>>')
     end
 
@@ -883,7 +883,7 @@ Close this buffer or continue with caution.
         end
 
         from, to = index("#{from} linestart"), index("#{to} lineend")
-        syntax.highlight(self, from.line - 1, from, to)
+        syntax.highlight(self, from.line - 1, from, to) if syntax
         @invalid_trailing_whitespace.refresh(from: from, to: to)
         @markup_underline_link.refresh(from: from, to: to)
         tag_remove('ver.highlight.pending', from, to)
