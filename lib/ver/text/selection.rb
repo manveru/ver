@@ -70,6 +70,12 @@ module VER
         finish
       end
 
+      def copy
+        super
+        clear
+        finish
+      end
+
       def kill
         super
         clear

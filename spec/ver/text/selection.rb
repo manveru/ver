@@ -117,6 +117,15 @@ line three
         TEXT
       end
 
+      it 'finishes selection after copy' do
+        start('select_char', '1.0')
+        buffer.insert = 'end'
+        sel.copy
+        VER::Clipboard.get.should == "line one\nline two\nline three\n"
+        buffer.minor_mode?(:select_char).should.be.nil
+        sel.ranges.should.be.empty
+      end
+
       it 'indents content at start of line' do
         start('select_char', '1.0')
         buffer.insert = '1.5'
@@ -178,6 +187,15 @@ line one
 line two
 line three
         TEXT
+      end
+
+      it 'finishes selection after copy' do
+        start('select_line', '1.0')
+        buffer.insert = 'end'
+        sel.copy
+        VER::Clipboard.get.should == "line one\nline two\nline three"
+        buffer.minor_mode?(:select_line).should.be.nil
+        sel.ranges.should.be.empty
       end
 
       it 'indents content' do
@@ -268,6 +286,17 @@ line one
 line two
 line three
         TEXT
+      end
+
+      it 'finishes selection after copy' do
+        start('select_block', '1.0')
+        buffer.insert = '3.10'
+        sel.copy
+        buffer.minor_mode?(:select_block).should.be.nil
+        sel.ranges.should.be.empty
+        VER::Clipboard.get.should == "line one\nline two\nline three\n"
+        buffer.minor_mode?(:select_block).should.be.nil
+        sel.ranges.should.be.empty
       end
     end
   end
