@@ -1,6 +1,7 @@
 module VER
   class Executor
     autoload :ExFuzzyFileFinder, 'ver/executor/fuzzy_file_finder'
+    autoload :ExEncoding,        'ver/executor/encoding'
     autoload :ExGrep,            'ver/executor/grep'
     autoload :ExGrepBuffers,     'ver/executor/grep'
     autoload :ExLocate,          'ver/executor/locate'
@@ -14,6 +15,7 @@ module VER
     class ExLabel < Entry
       COMPLETERS = {
         'edit'         => :ExPath,
+        'encoding'     => :ExEncoding,
         'fuzzy'        => :ExFuzzyFileFinder,
         'grep'         => :ExGrep,
         'grep_buffers' => :ExGrepBuffers,

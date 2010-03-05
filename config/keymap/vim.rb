@@ -236,6 +236,7 @@ module VER
     map :executor, %w[colon colon]
     map [:ex, :buffer],       %w[colon b u], %w[Alt-b], %w[Control-m b]
     map [:ex, :edit],         %w[colon e space]
+    map [:ex, :encoding],     %w[colon e n space]
     map [:ex, :fuzzy],        %w[colon f]
     map [:ex, :grep],         %w[colon g]
     map [:ex, :grep_buffers], %w[colon G]
