@@ -70,6 +70,7 @@ module VER
     end
 
     def on_event(event)
+      VER.touch
       stack << event.sequence
       event_history << Event.new(event.sequence, event.keysym, event.unicode)
 

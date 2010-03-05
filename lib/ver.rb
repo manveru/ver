@@ -108,6 +108,7 @@ module VER
   end
 
   def run(given_options = {}, &block)
+    touch
     setup_tk
     run_startup(given_options)
     pp options if $DEBUG
@@ -159,6 +160,7 @@ module VER
     @startup_hooks = []
     @paths = Set.new
     @cancel_blocks = {}
+    @repeat_blocks = {}
     @load_plugins = Set.new
     @exception_view = nil
     @bookmarks = Bookmarks.new
@@ -185,25 +187,38 @@ module VER
     run_startup_hooks
   end
 
-  def when_inactive_for(ms)
+  def when_inactive_for(ms, repetitions = 1)
     block = lambda{
       if @cancel_blocks[block]
         @cancel_blocks.delete(block)
       else
-
-        if Tk.root.tk_inactive > ms
-          yield
-          Tk.root.tk_inactive('reset')
-          Tk::After.ms(ms, &block)
+        if inactive > ms
+          if @repeat_blocks[block] < repetitions
+            @repeat_blocks[block] += 1
+            yield
+            Tk::After.ms(ms, &block)
+          else
+            Tk::After.ms(ms, &block)
+          end
         else
+          @repeat_blocks[block] = 0
           Tk::After.ms(ms, &block)
         end
       end
     }
 
     @cancel_blocks[block] = false
+    @repeat_blocks[block] = 0
     Tk::After.idle(&block)
     block
+  end
+
+  def touch
+    @mtime = Time.now
+  end
+
+  def inactive
+    (Time.now - @mtime) * 1000
   end
 
   def defer
