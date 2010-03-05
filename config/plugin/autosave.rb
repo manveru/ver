@@ -11,12 +11,9 @@
 
 VER.startup_hook do
   VER.when_inactive_for 1000 do
-    VER.buffers.each do |name, buffer|
-      text = buffer.text
-
-      next if !text.filename || text.pristine? || text.persisted?
-
-      VER::Methods::Save.save(text)
+    VER.buffers.each do |buffer|
+      next if !buffer.filename || buffer.pristine? || buffer.persisted?
+      buffer.save
     end
   end
 end
