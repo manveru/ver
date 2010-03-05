@@ -103,6 +103,11 @@ module VER
       end
 
       bind('<Configure>', &method(:adjust_size))
+      bind('<Destroy>', &method(:on_destroy))
+    end
+
+    def on_destroy(event)
+      @lock = true
     end
 
     def type(string)
@@ -249,7 +254,7 @@ module VER
     def abort(event = nil)
       self.prompt = ''
       self.answer = ''
-      completion_buffer.place_forget
+      completion_buffer.place_forget rescue nil
       @asking = false
 
       if ask_stack.empty?

@@ -21,7 +21,7 @@ module VER
 
       # Close the given +buffer+
       def close(buffer)
-        buffer.layout.close_buffer(buffer)
+        buffer.close
       end
 
       # Hide the given +buffer+

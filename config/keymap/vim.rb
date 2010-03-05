@@ -15,11 +15,9 @@ module VER
   end
 
   minor_mode :save do
-    handler Methods::Save
     map :save,     %w[Control-s], %w[colon w Return]
     map :save_as,  %w[Control-S], %w[colon w space]
     map :save_all, %w[colon w a]
-    map :quit,     %w[colon q a], %w[Z Z]
   end
 
   minor_mode :preview do
@@ -40,14 +38,15 @@ module VER
   end
 
   minor_mode :vim_layout do
+    # map :quit!,            %w[colon q exclam]
+    map :quit,             %w[Control-w q], %w[Control-w Control-q], %w[colon q Return]
+    map :close,            %w[Control-w c], %w[colon c l o Return]
+    # map :close!,           %w[colon c l o exclam]
+
     handler :window
     map :split_horizontal, %w[Control-w s], %w[Control-w Control-s], %w[colon s h]
     map :split_vertical,   %w[Control-w v], %w[Control-w Control-v], %w[colon s v]
     map :new_horizontal,   %w[Control-w n], %w[Control-w Control-n], %w[colon n]
-    map :quit,             %w[Control-w q], %w[Control-w Control-q], %w[colon q Return]
-    map :quit!,            %w[colon q exclam]
-    map :close,            %w[Control-w c], %w[colon c l o Return]
-    map :close!,           %w[colon c l o exclam]
     map :only,             %w[Control-w o], %w[Control-w Control-o], %w[colon o n Return]
     map :go_below, %w[Control-w Down], %w[Control-w Control-j], %w[Control-w j]
     map :go_above, %w[Control-w Up], %w[Control-w Control-k], %w[Control-w k]
@@ -94,7 +93,6 @@ module VER
     map :focus_prev, %w[Control-Shift-Tab], %w[Control-ISO_Left_Tab]
     map :cycle_next, %w[Alt-Tab], %w[colon b n]
     map :cycle_prev, %w[Alt-Shift-Tab], %w[Alt-ISO_Left_Tab], %w[colon b p]
-    map :close,      %w[colon q Return], %w[colon x]
   end
 
   minor_mode :move do
@@ -213,6 +211,8 @@ module VER
     become :replace_char,   %w[r]
 
     map :repeat_action, %w[period]
+    map :quit,          %w[colon q a], %w[Z Z]
+    map :close,         %w[colon q Return], %w[colon x]
 
     handler :at_insert
     map :insert_newline_above,       %w[O]

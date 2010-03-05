@@ -7,26 +7,26 @@ module VER
   # welcome.
   class ToplevelLayout < Tk::Frame
     class Toplevel < Tk::Toplevel
-     attr_accessor :buffer
+      attr_accessor :buffer
 
       def hide
         wm_withdraw
       end
 
       def show
+        @really_destroy = false
         return if buffer.options.hidden
 
-        if buffer.winfo_ismapped
-          buffer.focus
-          return
-        end
+        buffer.focus
+        return if buffer.winfo_ismapped
 
         buffer.frame.pack expand: true, fill: :both
         wm_withdraw
-        bind('<FocusIn>'){
-          buffer.focus
-          bind('<FocusIn>'){}
-          Tk.callback_break
+
+        # catch destroy requests from the WM before it's too late.
+        wm_protocol('WM_DELETE_WINDOW'){
+          buffer.close unless @really_destroy
+          Tk::OK # don't forget about those...
         }
         Tk.eval('update')
         wm_deiconify
@@ -47,7 +47,7 @@ module VER
     end
 
     def create_buffer(options = {})
-      toplevel = Toplevel.new(self)
+      toplevel = Toplevel.new(self, takefocus: false)
       buffer = Buffer.new(toplevel, options)
       toplevel.buffer = buffer
       yield buffer if block_given?
@@ -55,7 +55,7 @@ module VER
     end
 
     def close_buffer(buffer)
-      buffer.layout.destroy
+      buffer.layout.close
     end
   end
 end

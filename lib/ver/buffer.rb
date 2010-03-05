@@ -215,13 +215,13 @@ module VER
     end
 
     def on_destroy(event)
+      @lock = true
+      frame.destroy
       VER.cancel_block(@highlighter)
       VER.buffers.delete(self)
       unlock_uri(uri)
     ensure
-      VER.defer {
-        VER.exit if VER.buffers.empty?
-      }
+      VER.defer{ VER.exit if VER.buffers.empty? }
     end
 
     def sync_mode_status
@@ -403,16 +403,18 @@ module VER
           case answer
           when :single, :shared, :read_only
             self.uri = self.filename = pathname
-            self.value = content = pathname.read.chomp
-            self.encoding = content.encoding
+
+            content, encoding = pathname.read_encoded_file
+            self.encoding = encoding
+            self.value = content.chomp
             self.readonly = answer == :read_only || !pathname.writable?
             self.locked = answer == :single
             detect_project_paths
             update_mtime
             after_open(nil, line, char)
           when :abort
-            p :abort
-            VER.exit
+            close
+            :abort
           when :quit
             p :quit
             VER.exit
@@ -619,7 +621,7 @@ Close this buffer or continue with caution.
     end
 
     def close
-      layout.close
+      may_close{ layout.destroy }
     end
 
     def touch!(*indices)
@@ -639,6 +641,8 @@ Close this buffer or continue with caution.
     def undo_record(&block)
       VER.warn "Buffer is Read-only" if readonly
       undoer ? undoer.record_multi(&block) : yield(self)
+    ensure
+      self.pristine = false
     end
 
     def store(namespace, key, value = None)

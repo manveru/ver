@@ -1,200 +1,209 @@
 module VER
-  module Methods
-    # TODO: we _must_ write backup files, VER can corrupt files on a system
-    #       crash for some reason.
-    module Save
-      module_function
+  # Some strategies are discussed at:
+  #
+  # http://bitworking.org/news/390/text-editor-saving-routines
+  #
+  # I try another, "wasteful" approach, copying the original file to a
+  # temporary location, overwriting the contents in the copy, then moving the
+  # file to the location of the original file.
+  #
+  # This way all permissions should be kept identical without any effort, but
+  # it will take up additional disk space.
+  #
+  # If there is some failure during the normal saving procedure, we will
+  # simply overwrite the original file in place, make sure you have good insurance ;)
+  #
+  # TODO: we _must_ write backup files, VER can corrupt files on a system
+  #       crash for some reason.
+  class Buffer
+    # Close one buffer after another, wait when one needs user input.
+    def quit
+      buffers = VER.buffers.each
+      closer = lambda{
+        begin
+          buffers.next.close(&closer)
+        rescue StopIteration
+        end
+      }
+      closer.call
+    end
 
-      def may_close(text)
-        return yield if text.pristine?
-        return yield if text.persisted?
+    # Save all buffers in ordered fashion, take into account that some buffers
+    # might require user interaction.
+    def save_all
+      buffers = VER.buffers.each
+      closer = lambda{
+        begin
+          buffers.next.save(&closer)
+        rescue StopIteration
+        end
+      }
+      closer.call
+    end
 
-        question = "Save buffer #{text.buffer.name} " \
-                   "before closing? [y]es [n]o [c]ancel: "
+    # Try to copy the file we want to save to a temp dir, trying to preserve
+    # permissions.
+    # Once it's there, we overwrite the contents with the buffer contents.
+    # If that worked, we move it to the original location.
+    #
+    # On sshfs mounts we might face chown issues, so we ignore them.
+    # If this all fails for some reason, we resort to {save_dumb}
+    #
+    # When save was successful overall, we call the given +block+.
+    def save_atomic(from, to, &block)
+      require 'tmpdir'
+      sha1 = Digest::SHA1.hexdigest([from, to].join)
+      temp_path = File.join(Dir.tmpdir, 'ver/save', sha1)
+      temp_dir = File.dirname(temp_path)
 
-        text.ask question, value: 'y' do |answer, action|
-          case action
-          when :attempt
-            case answer[0]
-            when /y/i
-              yield if save(text)
-              VER.message 'Saved'
-              :abort
-            when /n/i
-              yield
-              VER.message 'Closing without saving'
-              :abort
-            else
-              VER.warn "Cancel closing"
-              :abort
-            end
+      FileUtils.mkdir_p(temp_dir)
+      FileUtils.copy_file(from, temp_path, preserve = true)
+      save_dumb(temp_path) && FileUtils.mv(temp_path, to)
+
+      success("Saved to #{to}", &block)
+    rescue Errno::EACCES => ex
+      # sshfs-mounts raise error but save correctly.
+      if ex.backtrace[0].match(/chown\'$/)
+        success("Saved to #{to} (chown issue)", &block)
+      else
+        warn(ex)
+        false
+      end
+    rescue Errno::ENOENT
+      save_dumb(to, &block)
+    end
+
+    def save_dumb(to, &block)
+      File.open(to, 'w+') do |io|
+        io.set_encoding(self.encoding)
+        io.write(self.value)
+      end
+
+      success("Saved to #{to}", &block)
+    rescue Exception => ex
+      VER.error(ex)
+      return false
+    end
+
+    def success(message)
+      self.message(message)
+      self.pristine = true
+      update_mtime
+      yield if block_given?
+      true
+    end
+
+    def save_popup(options = {}, &block)
+      options = options.dup
+      options[:filetypes] ||= [
+        ['ALL Files',  '*'    ],
+        ['Text Files', '*.txt'],
+      ]
+
+      options[:initialfile]      ||= filename.basename
+      options[:defaultextension] ||= filename.extname
+      options[:initialdir]       ||= filename.dirname
+
+      fpath = Tk.get_save_file(options)
+      return unless fpath
+      save_to(fpath, &block)
+    end
+
+    def save(filename = self.filename, &block)
+      if filename
+        save_to(filename, &block)
+      else
+        save_as(&block)
+      end
+    end
+
+    def save_to(to, &block)
+      may_save{ save_atomic(filename, to, &block) }
+    rescue => exception
+      VER.error(exception)
+      may_save{ save_dumb(to, &block) }
+    end
+
+    def save_as
+      if filename = self.filename
+        dir = filename.dirname.to_s + '/'
+      else
+        dir = Dir.pwd + '/'
+      end
+
+      message = "Save #{uri} as: "
+
+      ask message, value: dir do |answer, action|
+        case action
+        when :complete
+          Pathname(answer + '*').expand_path.glob.map{|f|
+            File.directory?(f) ? "#{f}/" : f
+          }
+        when :attempt
+          begin
+            save_to(Pathname(answer).expand_path)
+            yield if block_given?
+            :abort
+          rescue => exception
+            warn exception
           end
         end
       end
+    end
 
-      def may_save(text, as = nil)
-        last = text.store(:stat, :mtime)
-        current = text.filename.mtime rescue nil
+    def may_close
+      return yield if pristine? || persisted?
 
-        if last && current
-          if last == current
+      question = "Save buffer #{uri} before closing? " \
+                 "[y]es [n]o [c]ancel: "
+
+      ask question, value: 'y' do |answer, action|
+        case action
+        when :attempt
+          case answer[0]
+          when /y/i
+            may_save{ yield if save }
+            VER.message 'Saved'
+            :abort
+          when /n/i
             yield
+            VER.message 'Closing without saving'
+            :abort
           else
-            question = "The buffer #{text.buffer.name} " \
-                       "has changed since last save, overwrite? [y]es [n]o: "
-            text.ask question, value: 'n' do |answer, action|
-              case action
-              when :attempt
-                case answer[0]
-                when /y/i
-                  yield
-                  :abort
-                else
-                  VER.warn "Save aborted"
-                  :abort
-                end
-              end
-            end
-          end
-        else
-          yield
-        end
-      end
-
-      def quit(text = nil)
-        buffers = VER.buffers
-        pending = Array.new(buffers.size)
-
-        buffers.each_with_index do |buffer, index|
-          VER.defer do
-            may_close(buffer) do
-              pending[index] = true
-              # p pending
-              # VER.exit if pending.all?
-            end
+            VER.warn "Cancel closing"
+            :abort
           end
         end
       end
+    end
 
-      def save_all(text)
-        VER.buffers.each do |buffer|
-          next if buffer.symbolic?
-          save(buffer)
-        end
+    def may_save(as = nil)
+      last    = store(:stat, :mtime)
+      current = filename.mtime rescue nil
+
+      # if we have two mtimes
+      if last && current
+        # save if they're the same
+        return yield if last == current
+      else
+         # save since there is no previous one
+        return yield
       end
 
-      def save(text, filename = text.filename)
-        if filename
-          save_to(text, filename)
-        else
-          save_as(text)
-        end
-      end
-
-      def save_as(text)
-        if filename = text.filename
-          dir = filename.dirname.to_s + '/'
-        else
-          dir = Dir.pwd + '/'
-        end
-
-        message = "Save #{text.name} as: "
-
-        text.ask message, value: dir do |answer, action|
-          case action
-          when :complete
-            Pathname(answer + '*').expand_path.glob.map{|f|
-              File.directory?(f) ? "#{f}/" : f
-            }
-          when :attempt
-            begin
-              save_to(text, Pathname(answer).expand_path)
-              :abort
-            rescue => exception
-              VER.warn exception
-            end
+      question = "The buffer #{uri} has changed since last save, " \
+                 "overwrite? [y]es [n]o: "
+      ask question, value: 'n' do |answer, action|
+        case action
+        when :attempt
+          case answer[0]
+          when /y/i
+            yield
+            :abort
+          else
+            warn "Save aborted"
+            :abort
           end
         end
-      end
-
-      def file_save_popup(text, options = {})
-        options = options.dup
-        options[:filetypes] ||= [
-          ['ALL Files',  '*'    ],
-          ['Text Files', '*.txt'],
-        ]
-
-        filename = text.filename
-        options[:initialfile]      ||= ::File.basename(filename)
-        options[:defaultextension] ||= ::File.extname(filename)
-        options[:initialdir]       ||= ::File.dirname(filename)
-
-        fpath = Tk.get_save_file(options)
-
-        return unless fpath
-
-        save_to(text, fpath)
-      end
-
-      # Some strategies are discussed at:
-      #
-      # http://bitworking.org/news/390/text-editor-saving-routines
-      #
-      # I try another, "wasteful" approach, copying the original file to a
-      # temporary location, overwriting the contents in the copy, then moving the
-      # file to the location of the original file.
-      #
-      # This way all permissions should be kept identical without any effort, but
-      # it will take up additional disk space.
-      #
-      # If there is some failure during the normal saving procedure, we will
-      # simply overwrite the original file in place, make sure you have good insurance ;)
-      def save_to(text, to)
-        may_save(text){ save_atomic(text, text.filename, to) }
-      rescue => exception
-        VER.error(exception)
-        may_save(text){ save_dumb(text, to) }
-      end
-
-      def save_atomic(text, from, to)
-        require 'tmpdir'
-        sha1 = Digest::SHA1.hexdigest([from, to].join)
-        temp_path = File.join(Dir.tmpdir, 'ver', sha1)
-        temp_dir = File.dirname(temp_path)
-
-        FileUtils.mkdir_p(temp_dir)
-        FileUtils.copy_file(from, temp_path, preserve = true)
-        save_dumb(text, temp_path) && FileUtils.mv(temp_path, to)
-
-        success(text, "Saved to #{to}")
-      rescue Errno::EACCES => ex
-        # sshfs-mounts raise error but save correctly.
-        if ex.backtrace[0].match(/chown\'$/)
-          success(text, "Saved to #{to} (chown issue)")
-        else
-          VER.warn ex
-          false
-        end
-      rescue Errno::ENOENT
-        save_dumb(text, to)
-      end
-
-      def save_dumb(text, to)
-        File.open(to, 'w+') do |io|
-          io.write(text.value)
-        end
-
-        success(text, "Saved to #{to}")
-      rescue Exception => ex
-        VER.error(ex)
-        return false
-      end
-
-      def success(text, message)
-        VER.message message
-        text.pristine = true
-        Open.update_mtime(text)
-        true
       end
     end
   end

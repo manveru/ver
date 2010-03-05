@@ -8,6 +8,7 @@ module VER
       def initialize(parent, buffer, options = {})
         @buffer = buffer
         options = options.dup
+        options[:takefocus] ||= false
         # options[:style] ||= VER.obtain_style_name('Buffer', 'TFrame')
         # options[:padding] ||= 2
         # options[:relief] ||= :solid

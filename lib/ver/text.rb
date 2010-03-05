@@ -11,6 +11,24 @@ module VER
     autoload :Insert,    'ver/text/insert'
     autoload :End,       'ver/text/end'
 
+    attr_reader :lock
+
+    def execute(*args, &block)
+      super unless lock
+    end
+
+    def execute_only(*args, &block)
+      super unless lock
+    end
+
+    def focus(*args)
+      super unless lock
+    end
+
+    def place_forget(*args)
+      super unless lock
+    end
+
     def inspect
       "#<VER::Text %p>" % [tk_pathname]
     end
