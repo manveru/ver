@@ -58,9 +58,12 @@ module VER
 
       FileUtils.mkdir_p(temp_dir)
       FileUtils.copy_file(from, temp_path, preserve = true)
-      save_dumb(temp_path) && FileUtils.mv(temp_path, to)
-
-      success("Saved to #{to}", &block)
+      if save_dumb(temp_path)
+        FileUtils.mv(temp_path, to)
+        success("Saved to #{to}", &block)
+      else
+        false
+      end
     rescue Errno::EACCES => ex
       # sshfs-mounts raise error but save correctly.
       if ex.backtrace[0].match(/chown\'$/)
@@ -76,11 +79,23 @@ module VER
     def save_dumb(to, &block)
       File.open(to, 'w+') do |io|
         io.set_encoding(self.encoding)
-        io.write(self.value)
+
+        begin
+          io.write(self.value)
+        rescue Encoding::UndefinedConversionError => ex
+          # this might happen when trying to save UTF-8 as US-ASCII
+          # so just warn, try to save as UTF-8 instead.
+          warn("Saving as UTF-8 because of: #{ex.class}: #{ex}")
+          io.rewind
+          io.set_encoding(Encoding::UTF_8)
+          io.write(self.value)
+          self.encoding = Encoding::UTF_8
+        end
       end
 
       success("Saved to #{to}", &block)
     rescue Exception => ex
+      warn(ex)
       VER.error(ex)
       return false
     end

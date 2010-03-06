@@ -30,6 +30,7 @@ class Pathname
   ]
 
   alias / join
+  alias rm unlink
 
   def cp(dest)
     FileUtils.copy_file(expand_path.to_s, dest.to_s, preserve = true)
@@ -51,24 +52,25 @@ class Pathname
     to_s.shellescape
   end
 
+  def self.tmpdir
+    new(Dir.tmpdir)
+  end
+
   def read_encoded_file
-    File.open(to_s, 'r:BINARY') do |io|
-      begin
-        require 'ver/vendor/open3'
-        out, status = Open3.capture2('rchardet', stdin_data: io.read, binmode: true)
-        encoding = out.strip
-        io.rewind
-        io.set_encoding(encoding)
-        return io.read, io.external_encoding
-      rescue Errno::ENOENT # rchardet missing?
-        io.rewind
-        binary = io.read
-        GUESS_ENCODING_ORDER.find{|enc|
-          binary.force_encoding(enc)
-          binary.valid_encoding?
-        }
-        return binary, binary.encoding
-      end
-    end
+    content = read
+    content.force_encoding('BINARY')
+
+    require 'ver/vendor/open3'
+    encoding, status = Open3.capture2('rchardet', to_s)
+    content.force_encoding(encoding.strip)
+
+    return content, content.encoding
+  rescue Errno::ENOENT # rchardet missing?
+    GUESS_ENCODING_ORDER.find{|enc|
+      content.force_encoding(enc)
+      content.valid_encoding?
+    }
+
+    return content, content.encoding
   end
 end

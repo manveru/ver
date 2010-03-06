@@ -416,12 +416,10 @@ module VER
             close
             :abort
           when :quit
-            p :quit
             VER.exit
-          else
-            p wtf: answer
           end
-        rescue Errno::ENOENT
+        rescue Errno::ENOENT => ex
+          VER.error(ex)
           open_empty(line, char)
         end
       end
@@ -459,15 +457,16 @@ module VER
       end
     end
 
-    def lock_uri(uri)
+    def lock_uri(uri, &block)
       lock = uri_lockfile(uri)
 
-      if File.file?(lock) # omg, someone is using it!
-        info = Hash[File.read(lock).scan(/^(\w+):\s*(.*)$/)]
-        ctime = File.ctime(lock)
-        pid = info['pid']
-        user = info['user']
-        uri = info['uri']
+      if lock.file? # omg, someone is using it!
+        l lock => true
+        info  = Hash[lock.read.scan(/^(\w+):\s*(.*)$/)]
+        ctime = lock.ctime
+        pid   = info['pid']
+        user  = info['user']
+        uri   = info['uri']
         alive = info
 
         prompt = <<-TEXT
@@ -481,7 +480,7 @@ Another program may be editing the same file.
 If this is the case, be careful not to end up with two different instances of the same file when making changes.
 Close this buffer or continue with caution.
 
-[O]pen Read-Only, [E]dit anyway, [Q]uit, [A]bort: 
+[O]pen Read-Only, [E]dit anyway, [D]elete lock, [Q]uit, [A]bort: 
         TEXT
 
         ask(prompt) do |answer, action|
@@ -499,6 +498,12 @@ Close this buffer or continue with caution.
               :abort
             when /a/i
               yield :abort
+              :abort
+            when /d/i
+              VER.defer do
+                lock.rm
+                lock_uri(uri, &block)
+              end
               :abort
             else
               warn('invalid answer')
@@ -521,14 +526,14 @@ Close this buffer or continue with caution.
 
     def unlock_uri(uri = self.uri)
       return unless locked?
-      FileUtils.rm_f(uri_lockfile(uri))
+      uri_lockfile(uri).rm
     end
 
     def uri_lockfile(uri = self.uri)
       require 'tmpdir'
       hash = Digest::SHA1.hexdigest(uri.to_s)
-      lock = File.join(Dir.tmpdir, 'ver/lock', hash)
-      FileUtils.mkdir_p(File.dirname(lock))
+      lock = Pathname.tmpdir/'ver/lock'/hash
+      lock.dirname.mkpath
       lock
     end
 
