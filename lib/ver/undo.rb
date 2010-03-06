@@ -315,9 +315,9 @@ module VER
       end
 
       def indices(*given_indices)
-        given_indices.map do |index|
+        given_indices.map{|index|
           index.respond_to?(:to_index) ? index.to_index : widget.index(index)
-        end
+        }.sort
       end
 
       def index(given_index)
