@@ -38,8 +38,8 @@ module VER
       def aspell(text)
         text.store(self, :last_used, :aspell)
 
-        pos = text.index('insert - 1 chars')
-        from, to = pos.wordstart, pos.wordend
+        from = text.index('insert - 1 chars wordstart')
+        to   = text.index('insert - 1 chars wordend')
         word = text.get(from, to)
 
         complete text do
