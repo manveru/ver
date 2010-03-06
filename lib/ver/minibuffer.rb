@@ -91,7 +91,7 @@ module VER
 
       self.major_mode = :MiniBuffer
       self.messages_expire = false
-      self.messages_pending = 0
+      self.messages_pending = Hash.new(0)
       self.char_width = VER.options.font.measure('0')
       self.ask_stack = []
       self.at_insert = mark(:insert)
@@ -150,6 +150,17 @@ module VER
       get_displaychars('answer', 'answer.last')
     end
 
+    def warn(object)
+      case object
+      when Exception
+        message("#{object.class}: #{object}", 'warn')
+      when Symbol, String
+        message(object.to_s, 'warn')
+      else
+        message(object.to_str, 'warn')
+      end
+    end
+
     def message(string, tag = 'info')
       insert = at_insert.index
 
@@ -164,24 +175,14 @@ module VER
         end
       end
 
-      message_expire(tag) #  if messages_expire
-      message_notify(tag) if string.to_s.strip != ''
+      if string.to_s.strip != ''
+        message_expire(tag) #  if messages_expire
+        message_notify(tag)
+      end
       adjust_size
-      # message_buffer_insert(string, tag)
 
       self.insert = insert
       see "#{tag}.first"
-    end
-
-    def message_buffer_insert(string, tag)
-      string = "#{string}\n" unless string.end_with?("\n")
-      buffer = Buffer[:Messages]
-      mark = buffer.at_end
-      mark.insert(string, tag)
-
-      # last_focus = Tk::Focus.focus # for some reason
-      # mark.see                     # this changes focus to the text
-      # Tk::Focus.focus(last_focus)  # so we restore it here
     end
 
     def message_notify(tag, timeout = 500)
@@ -196,11 +197,11 @@ module VER
     end
 
     def message_expire(tag, timeout = 5000)
-      self.messages_pending += 1
+      self.messages_pending[tag] += 1
 
       Tk::After.ms timeout.to_int do
-        self.messages_pending -= 1
-        if messages_pending == 0
+        self.messages_pending[tag] -= 1
+        if messages_pending[tag] == 0
           delete("#{tag}.first", "#{tag}.last") rescue nil
           adjust_size
         end
@@ -214,17 +215,6 @@ module VER
 
     def release_focus
       bind('<FocusOut>'){ }
-    end
-
-    def warn(object)
-      case object
-      when Exception
-        message("#{object.class}: #{object}", 'warn')
-      when Symbol, String
-        message(object.to_s, 'warn')
-      else
-        message(object.to_str, 'warn')
-      end
     end
 
     def ask(prompt, options = {}, action = nil, &block)
