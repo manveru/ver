@@ -61,12 +61,13 @@ class Pathname
         io.set_encoding(encoding)
         return io.read, io.external_encoding
       rescue Errno::ENOENT # rchardet missing?
+        io.rewind
         binary = io.read
         GUESS_ENCODING_ORDER.find{|enc|
           binary.force_encoding(enc)
           binary.valid_encoding?
         }
-        return binary
+        return binary, binary.encoding
       end
     end
   end
