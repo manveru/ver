@@ -79,7 +79,7 @@ module VER
           @battery_value = battery_build(format)
         end
       rescue => ex
-        puts ex, *ex.backtrace
+        VER.error(ex)
         ex.message
       end
 

@@ -6,7 +6,6 @@ module VER
 
       # Insert the next keystroke verbatim
       def verbatim(buffer, action)
-        p buffer.major_mode.event_history.last
         char = buffer.events.last.unicode
         buffer.insert(:insert, char)
       end

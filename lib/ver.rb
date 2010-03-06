@@ -16,6 +16,23 @@ require 'ver/vendor/better_pp_hash'
 require 'ver/vendor/pathname'
 require 'ver/vendor/sized_array'
 
+# Small helper method that equivalent to Kernel#p but writes to log.
+# Please use this for debugging, log is at /tmp/ver/log/all.log.
+#
+# Returns the arguments given just like Kernel#p.
+#
+# Logger takes care of calling #inspect on everything that's not a String.
+# We use debug level for this.
+def l(arg = nil, *args)
+  if args.empty?
+    VER.log.debug(arg)
+    arg
+  else
+    VER.log.debug(arg, *args)
+    [arg, *args]
+  end
+end
+
 # This is the doc for VER
 module VER
   autoload :Action,              'ver/action'
@@ -60,7 +77,7 @@ module VER
     attr_reader(:ctag_stack, :keymap, :style_name_pools, :style_name_register,
                 :bookmarks, :buffers, :layout, :options, :paths, :root, :status,
                 :minibuf)
-    attr_accessor :layout_class
+    attr_accessor :layout_class, :log
   end
 
   # the rest of the options are in config/rc.rb
@@ -126,7 +143,14 @@ module VER
     return yield unless options.fork
 
     fork do
-      trap(:HUP){ 'terminal disconnected' }
+      [$stdout, $stderr].each{|io| io.reopen('/dev/null') }
+      require 'logger'
+      # we fork, redirect all output to log files.
+      log_dir = Pathname.tmpdir/'ver/log'
+      log_dir.mkpath
+
+      self.log = Logger.new(log_dir/'all.log', 10, 1 << 20)
+      trap(:HUP){ l('terminal lost') }
       yield
     end
   end
@@ -407,7 +431,7 @@ module VER
     begin
       session = eval(File.read(file))
     rescue SyntaxError => ex
-      puts "#{ex.class}: #{ex}", *ex.backtrace
+      error(ex)
       return
     end
 
@@ -518,21 +542,28 @@ module VER
     end
   end
 
-  def error(exception)
-    @status.value = exception.message if @status
-    exception_view(exception) if @root
-    $stderr.puts("#{exception.class}: #{exception}", *exception.backtrace)
-  rescue Errno::EIO
-    # The original terminal has disappeared, the $stderr pipe was closed on the
-    # other side.
-    [$stderr, $stdout, $stdin].each(&:close)
-  rescue IOError
-    # Our pipes are closed, maybe put some output to a file logger here, or display
-    # in a nicer way, maybe let it bubble up to Tk handling.
+  # low-level information for developers
+  def debug(*args)
+    log.debug(*args)
   end
 
-  def exception_view(exception)
-    @exception_view ||= ExceptionView.new(root)
-    @exception_view.show(exception)
+  # generic (useful) information about system operation
+  def info(*args)
+    log.info(*args)
+  end
+
+  # a warning
+  def warn(*args)
+    log.warn(*args)
+  end
+
+  # a handleable error condition
+  def error(*args)
+    log.error(*args)
+  end
+
+  # an unhandleable error that results in a program crash
+  def fatal(*args)
+    log.error(*args)
   end
 end

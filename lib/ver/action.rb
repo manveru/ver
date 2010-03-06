@@ -13,9 +13,8 @@ module VER
         raise ArgumentError
       end
     rescue => ex
-      require 'pp'
-      puts self
-      pp ex, ex.backtrace
+      VER.error("Exception from %p" % [self])
+      VER.error(ex)
     end
 
     def combine(action)

@@ -342,7 +342,7 @@ module VER
         insert(:insert, string, @answer)
         invoke(:modified)
       else
-        p string
+        l insert_string: string
       end
     end
 
@@ -420,12 +420,12 @@ module VER
 
     def prev_history
       history = HISTORY[@prompt.get]
-      p history
+      l prev_history: history
     end
 
     def next_history
       history = HISTORY[@prompt.get]
-      p history
+      l next_history: history
     end
   end
 end

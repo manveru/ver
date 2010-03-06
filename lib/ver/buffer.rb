@@ -461,7 +461,6 @@ module VER
       lock = uri_lockfile(uri)
 
       if lock.file? # omg, someone is using it!
-        l lock => true
         info  = Hash[lock.read.scan(/^(\w+):\s*(.*)$/)]
         ctime = lock.ctime
         pid   = info['pid']

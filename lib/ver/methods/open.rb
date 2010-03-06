@@ -333,7 +333,7 @@ module VER
         when /(?:ft|filetype)=(\w+)/
           set text, :filetype, $1
         else
-          p unknown_modeline_option: option
+          l unknown_modeline_option: option
         end
       end
 
