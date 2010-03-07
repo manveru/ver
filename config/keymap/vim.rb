@@ -48,10 +48,11 @@ module VER
     map :split_vertical,   %w[Control-w v], %w[Control-w Control-v], %w[colon s v]
     map :new_horizontal,   %w[Control-w n], %w[Control-w Control-n], %w[colon n]
     map :only,             %w[Control-w o], %w[Control-w Control-o], %w[colon o n Return]
-    map :go_below, %w[Control-w Down], %w[Control-w Control-j], %w[Control-w j]
-    map :go_above, %w[Control-w Up], %w[Control-w Control-k], %w[Control-w k]
-    map :go_left,  %w[Control-w Left], %w[Control-w BackSpace], %w[Control-w Control-h], %w[Control-w h]
-    map :go_right, %w[Control-w Right], %w[Control-w Control-l], %w[Control-w l]
+    map :go_below,         %w[Control-w j], %w[Control-w Control-j], %w[Control-w Down]
+    map :go_above,         %w[Control-w k], %w[Control-w Control-k], %w[Control-w Up]
+    map :go_left,          %w[Control-w h], %w[Control-w Control-h], %w[Control-w Left],
+                           %w[Control-w BackSpace]
+    map :go_right,         %w[Control-w l], %w[Control-w Control-l], %w[Control-w Right]
   end
 
   minor_mode :layout do
@@ -278,6 +279,7 @@ module VER
     map :start_of_line,     %w[Home], %w[Control-a]
     map :transpose_chars,   %w[Control-t]
 
+    # TODO
     map :sel_prev_char,     %w[Shift-Left]
     map :sel_next_char,     %w[Shift-Right]
     map :sel_prev_word,     %w[Shift-Control-Left]

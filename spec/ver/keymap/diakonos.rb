@@ -115,6 +115,27 @@ VER.spec keymap: 'diakonos' do
       insert.index.should == '1.0'
     end
 
+    should 'insert newline with <Return>' do
+      insert.index = '1.6'
+      type '<Return>'
+      insert.index.should == '2.0'
+      buffer.get('1.0', '1.0 lineend').should == 'Fugiat'
+      buffer.get('2.0', '2.0 lineend').should == "eos voluptatum officia fugit ad sit qui."
+    end
+
+    should 'insert characters for anything not mapped' do
+      buffer.value = ''
+      typed = []
+      (0..255).map{|c| c.chr }.grep(/[[:print:]]/).each do |char|
+        event = VER::FakeEvent[char]
+        typed << char
+        type event.sequence
+      end
+
+      insert.index.should == '1.95'
+      buffer.value.chomp.should == typed.join
+    end
+
 =begin
     map :next_page,       %w[Next]
     map :prev_page,       %w[Prior]

@@ -68,11 +68,10 @@ module VER
     1.upto(9){|n|
       map([:focus, n], ["Alt-KeyPress-#{n}"], ["Escape", n.to_s]) }
 
-    handler Methods::Insert
-    map :newline,    %w[Return]
-    map :selection,  %w[Shift-Insert]
-    map :tab,        %w[Control-t]
-    missing :string
+    handler :at_insert
+    map :insert_newline,    %w[Return]
+    map :insert_selection,  %w[Shift-Insert]
+    map :insert_tab,        %w[Control-t]
 
     handler Methods::Control
     map :indent_line,                   %w[Alt-i], %w[Escape i]
@@ -127,6 +126,9 @@ module VER
     map :clear,       %w[Control-Alt-u]
     # TODO: this doesn't work, investiate.
     map :prev,        %w[Shift-F3]
+
+    handler Methods::Insert
+    missing :string
   end
 
   minor_mode :select do
@@ -171,6 +173,7 @@ module VER
     map :start_of_line,     %w[Home], %w[Control-a]
     map :transpose_chars,   %w[Control-t]
 
+    # TODO
     map :sel_prev_char,     %w[Shift-Left]
     map :sel_next_char,     %w[Shift-Right]
     map :sel_prev_word,     %w[Shift-Control-Left]

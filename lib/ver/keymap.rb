@@ -90,7 +90,7 @@ module VER
 
       while key = sequence.shift
         if key.respond_to?(:to_str)
-          canonical = key_to_canonical(key.to_str)
+          canonical = FakeEvent[key.to_str].sequence
           self.keys << canonical
         else
           canonical = key

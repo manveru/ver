@@ -5,8 +5,8 @@ module VER
   # At first I wanted to put them into a simple Hash, but there is no
   # straight-forward way to store triples in ruby, and I found that both
   # sequence and keysym are needed, and unicode is mandatory.
-  # So now it's stored in two hashes, one for sequence->event and one for
-  # unicode->event to optimize the most common usage.
+  # So now it's stored in three hashes, one for each property of FakeEvent.
+  # Since they share the values, the memory usage shouldn't be that much higher.
   #
   # There are still issues with this approach, namely that one unicode char may
   # be associated with may sequences.
@@ -14,6 +14,7 @@ module VER
     # A propably incomplete listing of keysyms to fake events.
     SEQUENCE = {}
     UNICODE  = Hash.new{|h,k| h[k] = Set.new }
+    KEYSYM   = Hash.new{|h,k| h[k] = Set.new }
 
     def self.each(&block)
       SEQUENCE.values.each(&block)
@@ -23,6 +24,7 @@ module VER
       event = new(sequence, keysym, unicode)
       SEQUENCE[event.sequence] = event
       UNICODE[event.unicode] << event
+      KEYSYM[event.keysym] << event
       event
     end
 
@@ -31,8 +33,10 @@ module VER
     def self.[](string)
       if string =~ /^<.*>$/
         SEQUENCE.fetch(string)
-      else
+      elsif string.size == 1
         UNICODE.fetch(string).min_by{|event| event.sequence.size }
+      else
+        KEYSYM.fetch(string).min_by{|event| event.sequence.size }
       end
     rescue KeyError => ex
       raise(KeyError, "#{ex}: %p" % [string])
