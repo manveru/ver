@@ -9,9 +9,10 @@ autoload :Tempfile,  'tempfile'
 # eager stdlib
 require 'digest/sha1'
 require 'forwardable'
+require 'logger'
 require 'securerandom'
-require 'tmpdir'
 require 'set'
+require 'tmpdir'
 require 'ver/vendor/better_pp_hash'
 require 'ver/vendor/pathname'
 require 'ver/vendor/sized_array'
@@ -126,6 +127,12 @@ module VER
   end
 
   def run(given_options = {}, &block)
+    # we fork, redirect all output to log files.
+    log_dir = Pathname.tmpdir/'ver/log'
+    log_dir.mkpath
+
+    self.log = Logger.new(log_dir/'all.log', 10, 1 << 20)
+
     touch
     setup_tk
     run_startup(given_options)
@@ -135,7 +142,7 @@ module VER
       options.eventmachine ? run_em(&block) : run_noem(&block)
     end
   rescue => exception
-    VER.error(exception)
+    error(exception)
     exit
   end
 
@@ -144,12 +151,6 @@ module VER
 
     fork do
       [$stdout, $stderr].each{|io| io.reopen('/dev/null') }
-      require 'logger'
-      # we fork, redirect all output to log files.
-      log_dir = Pathname.tmpdir/'ver/log'
-      log_dir.mkpath
-
-      self.log = Logger.new(log_dir/'all.log', 10, 1 << 20)
       trap(:HUP){ l('terminal lost') }
       yield
     end
@@ -251,7 +252,7 @@ module VER
       begin
         yield
       rescue Exception => ex
-        VER.error(ex)
+        error(ex)
       end
     end
   end
@@ -564,6 +565,6 @@ module VER
 
   # an unhandleable error that results in a program crash
   def fatal(*args)
-    log.error(*args)
+    log.fatal(*args)
   end
 end
