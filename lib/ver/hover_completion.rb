@@ -49,7 +49,12 @@ module VER
     end
 
     def setup_widgets
-      @list = Listbox.new(parent, borderwidth: 0, selectmode: :single)
+      @list = Listbox.new(
+        parent,
+        borderwidth: 0,
+        selectmode: :single,
+        font: parent.options.font
+      )
       @list.hover_completion = self
       @list.major_mode = :HoverCompletion
       @list.focus
