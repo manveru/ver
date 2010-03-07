@@ -6,7 +6,7 @@ module VER
       end
 
       def to_s
-        text.filename.to_s
+        buffer.filename.to_s
       end
     end
   end
