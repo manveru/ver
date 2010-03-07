@@ -1,121 +1,41 @@
 module VER
-  # A Hash containing the Tk keysyms.
-  # The key is the ascii character, the value is the name as used in tk binds.
-  KEYSYMS = {
-    " "  => "<space>",
-    "!"  => "<exclam>",
-    "#"  => "<numbersign>",
-    "$"  => "<dollar>",
-    "%"  => "<percent>",
-    "&"  => "<ampersand>",
-    "'"  => "<quoteright>",
-    "("  => "<parenleft>",
-    ")"  => "<parenright>",
-    "*"  => "<asterisk>",
-    "+"  => "<plus>",
-    ","  => "<comma>",
-    "-"  => "<minus>",
-    "."  => "<period>",
-    "/"  => "<slash>",
-    ":"  => "<colon>",
-    ";"  => "<semicolon>",
-    "<"  => "<less>",
-    "="  => "<equal>",
-    ">"  => "<greater>",
-    "?"  => "<question>",
-    "@"  => "<at>",
-    "["  => "<bracketleft>",
-    "\\" => "<backslash>",
-    "]"  => "<bracketright>",
-    "^"  => "<asciicircum>",
-    "_"  => "<underscore>",
-    "`"  => "<quoteleft>",
-    "{"  => "<braceleft>",
-    "|"  => "<bar>",
-    "}"  => "<braceright>",
-    "~"  => "<asciitilde>",
-    '"'  => "<quotedbl>",
-    '0' => '0',
-    '1' => '1',
-    '2' => '2',
-    '3' => '3',
-    '4' => '4',
-    '5' => '5',
-    '6' => '6',
-    '7' => '7',
-    '8' => '8',
-    '9' => '9',
-    'A' => 'A',
-    'B' => 'B',
-    'C' => 'C',
-    'D' => 'D',
-    'E' => 'E',
-    'F' => 'F',
-    'G' => 'G',
-    'H' => 'H',
-    'I' => 'I',
-    'J' => 'J',
-    'K' => 'K',
-    'L' => 'L',
-    'M' => 'M',
-    'N' => 'N',
-    'O' => 'O',
-    'P' => 'P',
-    'Q' => 'Q',
-    'R' => 'R',
-    'S' => 'S',
-    'T' => 'T',
-    'U' => 'U',
-    'V' => 'V',
-    'W' => 'W',
-    'X' => 'X',
-    'Y' => 'Y',
-    'Z' => 'Z',
-    'a' => 'a',
-    'b' => 'b',
-    'c' => 'c',
-    'd' => 'd',
-    'e' => 'e',
-    'f' => 'f',
-    'g' => 'g',
-    'h' => 'h',
-    'i' => 'i',
-    'j' => 'j',
-    'k' => 'k',
-    'l' => 'l',
-    'm' => 'm',
-    'n' => 'n',
-    'o' => 'o',
-    'p' => 'p',
-    'q' => 'q',
-    'r' => 'r',
-    's' => 's',
-    't' => 't',
-    'u' => 'u',
-    'v' => 'v',
-    'w' => 'w',
-    'x' => 'x',
-    'y' => 'y',
-    'z' => 'z',
-  }
-
-  # Inversion of KEYSYMS for fast lookup in {WidgetMajorMode}
-  SYMKEYS = KEYSYMS.invert
-
   # This can be used in specs or other code to fake events.
   # It also represents the minimum required properties for events.
+  #
+  # At first I wanted to put them into a simple Hash, but there is no
+  # straight-forward way to store triples in ruby, and I found that both
+  # sequence and keysym are needed, and unicode is mandatory.
+  # So now it's stored in two hashes, one for sequence->event and one for
+  # unicode->event to optimize the most common usage.
+  #
+  # There are still issues with this approach, namely that one unicode char may
+  # be associated with may sequences.
   class FakeEvent < Struct.new(:sequence, :keysym, :unicode)
     # A propably incomplete listing of keysyms to fake events.
-    LIST = {}
+    SEQUENCE = {}
+    UNICODE  = Hash.new{|h,k| h[k] = Set.new }
 
-    def self.add(sequence, *args)
-      LIST[sequence] = new(sequence, *args)
+    def self.each(&block)
+      SEQUENCE.values.each(&block)
     end
 
-    def self.[](sequence)
-      LIST.fetch(sequence)
+    def self.add(sequence, keysym, unicode)
+      event = new(sequence, keysym, unicode)
+      SEQUENCE[event.sequence] = event
+      UNICODE[event.unicode] << event
+      event
+    end
+
+    # given a <sequence>, this returns the event for this sequence.
+    # given a unicode char, returns the event with shortest sequence.
+    def self.[](string)
+      if string =~ /^<.*>$/
+        SEQUENCE.fetch(string)
+      else
+        UNICODE.fetch(string).min_by{|event| event.sequence.size }
+      end
     rescue KeyError => ex
-      raise(KeyError, "#{ex}: %p" % [sequence])
+      raise(KeyError, "#{ex}: %p" % [string])
     end
 
     def initialize(sequence, keysym = nil, unicode = nil)
@@ -125,38 +45,610 @@ module VER
     end
 
     def sequence_to_keysym(sequence)
-      raise sequence
+      raise ArgumentError, "keysym for %p not given" % [sequence]
     end
 
     def sequence_to_unicode(sequence)
-      raise sequence
+      raise ArgumentError, "unicode for %p not given" % [sequence]
     end
 
-    ('a'..'z').each{|c| add(c,c,c) }
-    ('A'..'Z').each{|c| add(c,c,c) }
-    ('0'..'9').each{|c| add(c,c,c) }
-    add '<Alt-greater>', 'greater', '>'
-    add '<Alt-less>', 'less', '<'
-    add '<Control-a>', 'a', "\x01"
-    add '<Control-b>', 'b', "\x02"
-    add '<Control-e>', 'e', "\x05"
-    add '<Control-f>', 'f', "\x06"
-    add '<Control-n>', 'n', "\x0E"
-    add '<Control-p>', 'p', "\x10"
-    add '<Control-v>', 'v', "\x16"
-    add '<Control-x>', 'x', "\x18"
-    add '<Down>', 'Down', ''
-    add '<End>', 'End', ''
-    add '<Home>', 'Home', ""
-    add '<Left>', 'Left', ''
-    add '<Next>', 'Next', ""
-    add '<Prior>', 'Prior', ''
-    add '<Right>', 'Right', ''
-    add '<Shift-Left>', '', ''
-    add '<Shift-Right>', '', ''
-    add '<Up>', 'Up', ''
-    add '<comma>', 'comma', ','
-    add '<dollar>', 'dollar', '$'
-    add '<percent>', 'percent', '%'
+    add "<0>", "0", "0"
+    add "<1>", "1", "1"
+    add "<2>", "2", "2"
+    add "<3>", "3", "3"
+    add "<4>", "4", "4"
+    add "<5>", "5", "5"
+    add "<6>", "6", "6"
+    add "<7>", "7", "7"
+    add "<8>", "8", "8"
+    add "<9>", "9", "9"
+    add "<A>", "A", "A"
+    add "<Alt-0>", "0", "0"
+    add "<Alt-A>", "A", "A"
+    add "<Alt-Alt-Muhenkan>", "Muhenkan", ""
+    add "<Alt-Alt-Super_L>", "Super_L", ""
+    add "<Alt-Alt-a>", "a", "a"
+    add "<Alt-B>", "B", "B"
+    add "<Alt-BackSpace>", "BackSpace", "\b"
+    add "<Alt-Break>", "Break", ""
+    add "<Alt-C>", "C", "C"
+    add "<Alt-Caps_Lock>", "Caps_Lock", ""
+    add "<Alt-Control_L>", "Control_L", ""
+    add "<Alt-Control_R>", "Control_R", ""
+    add "<Alt-D>", "D", "D"
+    add "<Alt-Delete>", "Delete", "\x7F"
+    add "<Alt-Down>", "Down", ""
+    add "<Alt-E>", "E", "E"
+    add "<Alt-Eisu_toggle>", "Eisu_toggle", ""
+    add "<Alt-End>", "End", ""
+    add "<Alt-Escape>", "Escape", "\e"
+    add "<Alt-F>", "F", "F"
+    add "<Alt-G>", "G", "G"
+    add "<Alt-H>", "H", "H"
+    add "<Alt-Henkan_Mode>", "Henkan_Mode", ""
+    add "<Alt-Home>", "Home", ""
+    add "<Alt-I>", "I", "I"
+    add "<Alt-ISO_Left_Tab>", "ISO_Left_Tab", ""
+    add "<Alt-Insert>", "Insert", ""
+    add "<Alt-J>", "J", "J"
+    add "<Alt-K>", "K", "K"
+    add "<Alt-KP_Add>", "KP_Add", "+"
+    add "<Alt-KP_Begin>", "KP_Begin", "5"
+    add "<Alt-KP_Delete>", "KP_Delete", "."
+    add "<Alt-KP_Divide>", "KP_Divide", "/"
+    add "<Alt-KP_Down>", "KP_Down", "2"
+    add "<Alt-KP_End>", "KP_End", "1"
+    add "<Alt-KP_Enter>", "KP_Enter", "\r"
+    add "<Alt-KP_Home>", "KP_Home", "7"
+    add "<Alt-KP_Insert>", "KP_Insert", "0"
+    add "<Alt-KP_Left>", "KP_Left", "4"
+    add "<Alt-KP_Multiply>", "KP_Multiply", "*"
+    add "<Alt-KP_Next>", "KP_Next", "3"
+    add "<Alt-KP_Prior>", "KP_Prior", "9"
+    add "<Alt-KP_Right>", "KP_Right", "6"
+    add "<Alt-KP_Subtract>", "KP_Subtract", "-"
+    add "<Alt-KP_Up>", "KP_Up", "8"
+    add "<Alt-Kanji>", "Kanji", ""
+    add "<Alt-Key>", "a", "a"
+    add "<Alt_L>", "Alt_L", ""
+    add "<Alt-L>", "L", "L"
+    add "<Alt-Left>", "Left", ""
+    add "<Alt-M>", "M", "M"
+    add "<Alt-Menu>", "Menu", ""
+    add "<Alt-Muhenkan>", "Muhenkan", ""
+    add "<Alt-N>", "N", "N"
+    add "<Alt-Next>", "Next", ""
+    add "<Alt-O>", "O", "O"
+    add "<Alt-P>", "P", "P"
+    add "<Alt-Pointer_EnableKeys>", "Pointer_EnableKeys", ""
+    add "<Alt-Print>", "Print", ""
+    add "<Alt-Prior>", "Prior", ""
+    add "<Alt-Q>", "Q", "Q"
+    add "<Alt-R>", "R", "R"
+    add "<Alt-Return>", "Return", "\r"
+    add "<Alt-Right>", "Right", ""
+    add "<Alt-Romaji>", "Romaji", ""
+    add "<Alt-S>", "S", "S"
+    add "<Alt-Scroll_Lock>", "Scroll_Lock", ""
+    add "<Alt-Shift_L>", "Shift_L", ""
+    add "<Alt-Shift_R>", "Shift_R", ""
+    add "<Alt-Super_L>", "Super_L", ""
+    add "<Alt-T>", "T", "T"
+    add "<Alt-Tab>", "Tab", "\t"
+    add "<Alt-U>", "U", "U"
+    add "<Alt-Up>", "Up", ""
+    add "<Alt-V>", "V", "V"
+    add "<Alt-W>", "W", "W"
+    add "<Alt-X>", "X", "X"
+    add "<Alt-XF86_Switch_VT_1>", "XF86_Switch_VT_1", ""
+    add "<Alt-XF86_Switch_VT_10>", "XF86_Switch_VT_10", ""
+    add "<Alt-XF86_Switch_VT_11>", "XF86_Switch_VT_11", ""
+    add "<Alt-XF86_Switch_VT_12>", "XF86_Switch_VT_12", ""
+    add "<Alt-XF86_Switch_VT_2>", "XF86_Switch_VT_2", ""
+    add "<Alt-XF86_Switch_VT_3>", "XF86_Switch_VT_3", ""
+    add "<Alt-XF86_Switch_VT_4>", "XF86_Switch_VT_4", ""
+    add "<Alt-XF86_Switch_VT_5>", "XF86_Switch_VT_5", ""
+    add "<Alt-XF86_Switch_VT_6>", "XF86_Switch_VT_6", ""
+    add "<Alt-XF86_Switch_VT_7>", "XF86_Switch_VT_7", ""
+    add "<Alt-XF86_Switch_VT_8>", "XF86_Switch_VT_8", ""
+    add "<Alt-XF86_Switch_VT_9>", "XF86_Switch_VT_9", ""
+    add "<Alt-Y>", "Y", "Y"
+    add "<Alt-Z>", "Z", "z"
+    add "<Alt-Zenkaku_Hankaku>", "Zenkaku_Hankaku", ""
+    add "<Alt-a>", "a", "a"
+    add "<Alt-ampersand>", "ampersand", "&"
+    add "<Alt-apostrophe>", "apostrophe", "'"
+    add "<Alt-asciitilde>", "asciitilde", "~"
+    add "<Alt-asterisk>", "asterisk", "*"
+    add "<Alt-at>", "at", "@"
+    add "<Alt-b>", "b", "b"
+    add "<Alt-backslash>", "backslash", "\\"
+    add "<Alt-bar>", "bar", "|"
+    add "<Alt-braceleft>", "braceleft", "{"
+    add "<Alt-braceright>", "braceright", "}"
+    add "<Alt-bracketleft>", "bracketleft", "["
+    add "<Alt-bracketright>", "bracketright", "]"
+    add "<Alt-c>", "c", "c"
+    add "<Alt-colon>", "colon", ":"
+    add "<Alt-comma>", "comma", ","
+    add "<Alt-d>", "d", "d"
+    add "<Alt-dollar>", "dollar", "$"
+    add "<Alt-e>", "e", "e"
+    add "<Alt-equal>", "equal", "="
+    add "<Alt-exclam>", "exclam", "!"
+    add "<Alt-f>", "f", "f"
+    add "<Alt-g>", "g", "g"
+    add "<Alt-grave>", "grave", "`"
+    add "<Alt-greater>", "greater", ">"
+    add "<Alt-h>", "h", "h"
+    add "<Alt-i>", "i", "i"
+    add "<Alt-j>", "j", "j"
+    add "<Alt-k>", "k", "k"
+    add "<Alt-l>", "l", "l"
+    add "<Alt-less>", "less", "<"
+    add "<Alt-m>", "m", "m"
+    add "<Alt-n>", "n", "n"
+    add "<Alt-numbersign>", "numbersign", "#"
+    add "<Alt-o>", "o", "o"
+    add "<Alt-p>", "p", "p"
+    add "<Alt-parenleft>", "parenleft", "("
+    add "<Alt-parenright>", "parenright", ")"
+    add "<Alt-percent>", "percent", "%"
+    add "<Alt-period>", "period", "."
+    add "<Alt-plus>", "plus", "+"
+    add "<Alt-q>", "q", "q"
+    add "<Alt-question>", "question", "?"
+    add "<Alt-quotedbl>", "quotedbl", "\""
+    add "<Alt-r>", "r", "r"
+    add "<Alt-s>", "s", "s"
+    add "<Alt-semicolon>", "semicolon", ";"
+    add "<Alt-slash>", "slash", "/"
+    add "<Alt-space>", "space", " "
+    add "<Alt-t>", "t", "t"
+    add "<Alt-u>", "u", "u"
+    add "<Alt-underscore>", "underscore", "_"
+    add "<Alt-v>", "v", "v"
+    add "<Alt-w>", "w", "w"
+    add "<Alt-x>", "x", "x"
+    add "<Alt-y>", "y", "y"
+    add "<Alt-z>", "z", "z"
+    add "<B>", "B", "B"
+    add "<BackSpace>", "BackSpace", "\b"
+    add "<Break>", "Break", ""
+    add "<C>", "C", "C"
+    add "<Caps_Lock>", "Caps_Lock", ""
+    add "<Control-0>", "0", "0"
+    add "<Control-6>", "6", "\x1E"
+    add "<Control-7>", "7", "\x1F"
+    add "<Control-8>", "8", "\x7F"
+    add "<Control-9>", "9", "9"
+    add "<Control-Alt-0>", "0", "0"
+    add "<Control-Alt-6>", "6", "\x1E"
+    add "<Control-Alt-7>", "7", "\x1F"
+    add "<Control-Alt-8>", "8", "\x7F"
+    add "<Control-Alt-9>", "9", "9"
+    add "<Control-Alt-A>", "A", "\x01"
+    add "<Control-Alt-B>", "B", "\x02"
+    add "<Control-Alt-BackSpace>", "BackSpace", "\b"
+    add "<Control-Alt-Break>", "Break", ""
+    add "<Control-Alt-C>", "C", "\x03"
+    add "<Control-Alt-Control-Alt-H>", "H", "\b"
+    add "<Control-Alt-Control-Alt-Kanji>", "Kanji", ""
+    add "<Control-Alt-Control-Alt-Romaji>", "Romaji", ""
+    add "<Control-Alt-Control-Alt-asciitilde>", "asciitilde", "\x1E"
+    add "<Control-Alt-Control-Alt-bar>", "bar", "\x1C"
+    add "<Control-Alt-Control_R>", "Control_R", ""
+    add "<Control-Alt-D>", "D", "\x04"
+    add "<Control-Alt-Delete>", "Delete", "\x7F"
+    add "<Control-Alt-Down>", "Down", ""
+    add "<Control-Alt-E>", "E", "\x05"
+    add "<Control-Alt-Eisu_toggle>", "Eisu_toggle", ""
+    add "<Control-Alt-Escape>", "Escape", "\e"
+    add "<Control-Alt-F>", "F", "\x06"
+    add "<Control-Alt-G>", "G", "\a"
+    add "<Control-Alt-H>", "H", "\b"
+    add "<Control-Alt-Henkan_Mode>", "Henkan_Mode", ""
+    add "<Control-Alt-Hiragana_Katakana>", "Hiragana_Katakana", ""
+    add "<Control-Alt-I>", "I", "\t"
+    add "<Control-Alt-Insert>", "Insert", ""
+    add "<Control-Alt-J>", "J", "\n"
+    add "<Control-Alt-K>", "K", "\v"
+    add "<Control-Alt-KP_0>", "KP_0", ""
+    add "<Control-Alt-KP_1>", "KP_1", ""
+    add "<Control-Alt-KP_2>", "KP_2", ""
+    add "<Control-Alt-KP_3>", "KP_3", ""
+    add "<Control-Alt-KP_4>", "KP_4", ""
+    add "<Control-Alt-KP_5>", "KP_5", ""
+    add "<Control-Alt-KP_6>", "KP_6", ""
+    add "<Control-Alt-KP_7>", "KP_7", ""
+    add "<Control-Alt-KP_8>", "KP_8", ""
+    add "<Control-Alt-KP_9>", "KP_9", ""
+    add "<Control-Alt-KP_Begin>", "KP_Begin", "\x1D"
+    add "<Control-Alt-KP_Decimal>", "KP_Decimal", ""
+    add "<Control-Alt-KP_Delete>", "KP_Delete", "."
+    add "<Control-Alt-KP_Down>", "KP_Down", ""
+    add "<Control-Alt-KP_End>", "KP_End", "1"
+    add "<Control-Alt-KP_Enter>", "KP_Enter", "\r"
+    add "<Control-Alt-KP_Home>", "KP_Home", "\x1F"
+    add "<Control-Alt-KP_Insert>", "KP_Insert", "0"
+    add "<Control-Alt-KP_Left>", "KP_Left", "\x1C"
+    add "<Control-Alt-KP_Next>", "KP_Next", "\e"
+    add "<Control-Alt-KP_Prior>", "KP_Prior", "9"
+    add "<Control-Alt-KP_Right>", "KP_Right", "\x1E"
+    add "<Control-Alt-KP_Up>", "KP_Up", "\x7F"
+    add "<Control-Alt-Kanji>", "Kanji", ""
+    add "<Control-Alt-Key>", "1", "1"
+    add "<Control-Alt_L>", "Alt_L", ""
+    add "<Control-Alt-L>", "L", "\f"
+    add "<Control-Alt-Left>", "Left", ""
+    add "<Control-Alt-M>", "M", "\r"
+    add "<Control-Alt-Menu>", "Menu", ""
+    add "<Control-Alt-Muhenkan>", "Muhenkan", ""
+    add "<Control-Alt-N>", "N", "\x0E"
+    add "<Control-Alt-O>", "O", "\x0F"
+    add "<Control-Alt-P>", "P", "\x10"
+    add "<Control-Alt-Pointer_EnableKeys>", "Pointer_EnableKeys", ""
+    add "<Control-Alt-Q>", "Q", "\x11"
+    add "<Control-Alt-R>", "R", "\x12"
+    add "<Control-Alt-Return>", "Return", "\r"
+    add "<Control-Alt-Right>", "Right", ""
+    add "<Control-Alt-Romaji>", "Romaji", ""
+    add "<Control-Alt-S>", "S", "\x13"
+    add "<Control-Alt-Shift_L>", "Shift_L", ""
+    add "<Control-Alt-Shift_R>", "Shift_R", ""
+    add "<Control-Alt-Super_L>", "Super_L", ""
+    add "<Control-Alt-T>", "T", "\x14"
+    add "<Control-Alt-Tab>", "Tab", "\t"
+    add "<Control-Alt-U>", "U", "\x15"
+    add "<Control-Alt-Up>", "Up", ""
+    add "<Control-Alt-V>", "V", "\x16"
+    add "<Control-Alt-W>", "W", "\x17"
+    add "<Control-Alt-X>", "X", "\x18"
+    add "<Control-Alt-Y>", "Y", "\x19"
+    add "<Control-Alt-Z>", "Z", "\x1A"
+    add "<Control-Alt-Zenkaku_Hankaku>", "Zenkaku_Hankaku", ""
+    add "<Control-Alt-a>", "a", "\x01"
+    add "<Control-Alt-ampersand>", "ampersand", "&"
+    add "<Control-Alt-apostrophe>", "apostrophe", "'"
+    add "<Control-Alt-asciicircum>", "asciicircum", "\x1E"
+    add "<Control-Alt-asciitilde>", "asciitilde", "\x1E"
+    add "<Control-Alt-asterisk>", "asterisk", "*"
+    add "<Control-Alt-at>", "at", ""
+    add "<Control-Alt-b>", "b", "\x02"
+    add "<Control-Alt-backslash>", "backslash", "\x1C"
+    add "<Control-Alt-bar>", "bar", "\x1C"
+    add "<Control-Alt-braceleft>", "braceleft", "\e"
+    add "<Control-Alt-braceright>", "braceright", "\x1D"
+    add "<Control-Alt-bracketleft>", "bracketleft", "\e"
+    add "<Control-Alt-bracketright>", "bracketright", "\x1D"
+    add "<Control-Alt-c>", "c", "\x03"
+    add "<Control-Alt-colon>", "colon", ":"
+    add "<Control-Alt-comma>", "comma", ","
+    add "<Control-Alt-d>", "d", "\x04"
+    add "<Control-Alt-dollar>", "dollar", "$"
+    add "<Control-Alt-e>", "e", "\x05"
+    add "<Control-Alt-equal>", "equal", "="
+    add "<Control-Alt-exclam>", "exclam", "!"
+    add "<Control-Alt-f>", "f", "\x06"
+    add "<Control-Alt-g>", "g", "\a"
+    add "<Control-Alt-grave>", "grave", ""
+    add "<Control-Alt-greater>", "greater", ">"
+    add "<Control-Alt-h>", "h", "\b"
+    add "<Control-Alt-i>", "i", "\t"
+    add "<Control-Alt-j>", "j", "\n"
+    add "<Control-Alt-k>", "k", "\v"
+    add "<Control-Alt-l>", "l", "\f"
+    add "<Control-Alt-less>", "less", "<"
+    add "<Control-Alt-m>", "m", "\r"
+    add "<Control-Alt-minus>", "minus", "-"
+    add "<Control-Alt-n>", "n", "\x0E"
+    add "<Control-Alt-numbersign>", "numbersign", "#"
+    add "<Control-Alt-o>", "o", "\x0F"
+    add "<Control-Alt-p>", "p", "\x10"
+    add "<Control-Alt-parenleft>", "parenleft", "("
+    add "<Control-Alt-parenright>", "parenright", ")"
+    add "<Control-Alt-percent>", "percent", "%"
+    add "<Control-Alt-period>", "period", "."
+    add "<Control-Alt-plus>", "plus", "+"
+    add "<Control-Alt-q>", "q", "\x11"
+    add "<Control-Alt-question>", "question", "?"
+    add "<Control-Alt-quotedbl>", "quotedbl", "\""
+    add "<Control-Alt-r>", "r", "\x12"
+    add "<Control-Alt-s>", "s", "\x13"
+    add "<Control-Alt-semicolon>", "semicolon", ";"
+    add "<Control-Alt-slash>", "slash", "\x1F"
+    add "<Control-Alt-space>", "space", ""
+    add "<Control-Alt-t>", "t", "\x14"
+    add "<Control-Alt-u>", "u", "\x15"
+    add "<Control-Alt-underscore>", "underscore", "\x1F"
+    add "<Control-Alt-v>", "v", "\x16"
+    add "<Control-Alt-w>", "w", "\x17"
+    add "<Control-Alt-x>", "x", "\x18"
+    add "<Control-Alt-y>", "y", "\x19"
+    add "<Control-Alt-z>", "z", "\x1A"
+    add "<Control-BackSpace>", "BackSpace", "\b"
+    add "<Control-Control-Alt_L>", "Alt_L", ""
+    add "<Control-Control-Control-Alt_L>", "Alt_L", ""
+    add "<Control-Control-Control_R>", "Control_R", ""
+    add "<Control-Control-Menu>", "Menu", ""
+    add "<Control-Control_R>", "Control_R", ""
+    add "<Control-Delete>", "Delete", "\x7F"
+    add "<Control-Down>", "Down", ""
+    add "<Control-Eisu_toggle>", "Eisu_toggle", ""
+    add "<Control-Escape>", "Escape", "\e"
+    add "<Control-F1>", "F1", ""
+    add "<Control-F10>", "F10", ""
+    add "<Control-F11>", "F11", ""
+    add "<Control-F12>", "F12", ""
+    add "<Control-F2>", "F2", ""
+    add "<Control-F3>", "F3", ""
+    add "<Control-F4>", "F4", ""
+    add "<Control-F5>", "F5", ""
+    add "<Control-F6>", "F6", ""
+    add "<Control-F7>", "F7", ""
+    add "<Control-F8>", "F8", ""
+    add "<Control-F9>", "F9", ""
+    add "<Control-Henkan_Mode>", "Henkan_Mode", ""
+    add "<Control-Hiragana_Katakana>", "Hiragana_Katakana", ""
+    add "<Control-Insert>", "Insert", ""
+    add "<Control-KP_0>", "KP_0", ""
+    add "<Control-KP_1>", "KP_1", ""
+    add "<Control-KP_2>", "KP_2", ""
+    add "<Control-KP_3>", "KP_3", ""
+    add "<Control-KP_4>", "KP_4", ""
+    add "<Control-KP_5>", "KP_5", ""
+    add "<Control-KP_6>", "KP_6", ""
+    add "<Control-KP_7>", "KP_7", ""
+    add "<Control-KP_8>", "KP_8", ""
+    add "<Control-KP_9>", "KP_9", ""
+    add "<Control-KP_Add>", "KP_Add", "+"
+    add "<Control-KP_Begin>", "KP_Begin", "\x1D"
+    add "<Control-KP_Decimal>", "KP_Decimal", ""
+    add "<Control-KP_Delete>", "KP_Delete", "."
+    add "<Control-KP_Divide>", "KP_Divide", "/"
+    add "<Control-KP_Down>", "KP_Down", ""
+    add "<Control-KP_End>", "KP_End", "1"
+    add "<Control-KP_Enter>", "KP_Enter", "\r"
+    add "<Control-KP_Home>", "KP_Home", "\x1F"
+    add "<Control-KP_Insert>", "KP_Insert", "0"
+    add "<Control-KP_Left>", "KP_Left", "\x1C"
+    add "<Control-KP_Multiply>", "KP_Multiply", "*"
+    add "<Control-KP_Next>", "KP_Next", "\e"
+    add "<Control-KP_Prior>", "KP_Prior", "9"
+    add "<Control-KP_Right>", "KP_Right", "\x1E"
+    add "<Control-KP_Subtract>", "KP_Subtract", "-"
+    add "<Control-KP_Up>", "KP_Up", "\x7F"
+    add "<Control-Key>", "1", "1"
+    add "<Control_L>", "Control_L", ""
+    add "<Control-Left>", "Left", ""
+    add "<Control-Menu>", "Menu", ""
+    add "<Control-Meta_L>", "Meta_L", ""
+    add "<Control-Muhenkan>", "Muhenkan", ""
+    add "<Control-Num_Lock>", "Num_Lock", ""
+    add "<Control-Pause>", "Pause", ""
+    add "<Control_R>", "Control_R", ""
+    add "<Control-Return>", "Return", "\r"
+    add "<Control-Right>", "Right", ""
+    add "<Control-Shift_L>", "Shift_L", ""
+    add "<Control-Shift_R>", "Shift_R", ""
+    add "<Control-Super_L>", "Super_L", ""
+    add "<Control-Tab>", "Tab", "\t"
+    add "<Control-Up>", "Up", ""
+    add "<Control-XF86_ClearGrab>", "XF86_ClearGrab", "*"
+    add "<Control-XF86_Next_VMode>", "XF86_Next_VMode", "+"
+    add "<Control-XF86_Prev_VMode>", "XF86_Prev_VMode", "-"
+    add "<Control-XF86_Ungrab>", "XF86_Ungrab", "/"
+    add "<Control-Z>", "Z", "\x1A"
+    add "<Control-Zenkaku_Hankaku>", "Zenkaku_Hankaku", ""
+    add "<Control-a>", "a", "\x01"
+    add "<Control-asciicircum>", "asciicircum", "\x1E"
+    add "<Control-at>", "at", ""
+    add "<Control-b>", "b", "\x02"
+    add "<Control-backslash>", "backslash", "\x1C"
+    add "<Control-bracketleft>", "bracketleft", "\e"
+    add "<Control-bracketright>", "bracketright", "\x1D"
+    add "<Control-c>", "c", "\x03"
+    add "<Control-colon>", "colon", ":"
+    add "<Control-comma>", "comma", ","
+    add "<Control-d>", "d", "\x04"
+    add "<Control-e>", "e", "\x05"
+    add "<Control-f>", "f", "\x06"
+    add "<Control-g>", "g", "\a"
+    add "<Control-h>", "h", "\b"
+    add "<Control-i>", "i", "\t"
+    add "<Control-j>", "j", "\n"
+    add "<Control-k>", "k", "\v"
+    add "<Control-l>", "l", "\f"
+    add "<Control-m>", "m", "\r"
+    add "<Control-minus>", "minus", "-"
+    add "<Control-n>", "n", "\x0E"
+    add "<Control-o>", "o", "\x0F"
+    add "<Control-p>", "p", "\x10"
+    add "<Control-period>", "period", "."
+    add "<Control-q>", "q", "\x11"
+    add "<Control-r>", "r", "\x12"
+    add "<Control-s>", "s", "\x13"
+    add "<Control-semicolon>", "semicolon", ";"
+    add "<Control-slash>", "slash", "\x1F"
+    add "<Control-space>", "space", ""
+    add "<Control-t>", "t", "\x14"
+    add "<Control-u>", "u", "\x15"
+    add "<Control-underscore>", "underscore", "\x1F"
+    add "<Control-v>", "v", "\x16"
+    add "<Control-w>", "w", "\x17"
+    add "<Control-x>", "x", "\x18"
+    add "<Control-y>", "y", "\x19"
+    add "<Control-z>", "z", "\x1A"
+    add "<D>", "D", "D"
+    add "<Delete>", "Delete", "\x7F"
+    add "<Down>", "Down", ""
+    add "<E>", "E", "E"
+    add "<Eisu_toggle>", "Eisu_toggle", ""
+    add "<End>", "End", ""
+    add "<Escape>", "Escape", "\e"
+    add "<F>", "F", "F"
+    add "<F1>", "F1", ""
+    add "<F10>", "F10", ""
+    add "<F11>", "F11", ""
+    add "<F12>", "F12", ""
+    add "<F2>", "F2", ""
+    add "<F3>", "F3", ""
+    add "<F4>", "F4", ""
+    add "<F5>", "F5", ""
+    add "<F6>", "F6", ""
+    add "<F7>", "F7", ""
+    add "<F8>", "F8", ""
+    add "<F9>", "F9", ""
+    add "<G>", "G", "G"
+    add "<H>", "H", "H"
+    add "<Henkan_Mode>", "Henkan_Mode", ""
+    add "<Hiragana_Katakana>", "Hiragana_Katakana", ""
+    add "<Home>", "Home", ""
+    add "<I>", "I", "I"
+    add "<ISO_Left_Tab>", "ISO_Left_Tab", ""
+    add "<Insert>", "Insert", ""
+    add "<J>", "J", "J"
+    add "<K>", "K", "K"
+    add "<KP_0>", "KP_0", ""
+    add "<KP_1>", "KP_1", ""
+    add "<KP_2>", "KP_2", ""
+    add "<KP_3>", "KP_3", ""
+    add "<KP_4>", "KP_4", ""
+    add "<KP_5>", "KP_5", ""
+    add "<KP_6>", "KP_6", ""
+    add "<KP_7>", "KP_7", ""
+    add "<KP_8>", "KP_8", ""
+    add "<KP_9>", "KP_9", ""
+    add "<KP_Add>", "KP_Add", "+"
+    add "<KP_Begin>", "KP_Begin", "5"
+    add "<KP_Decimal>", "KP_Decimal", ""
+    add "<KP_Delete>", "KP_Delete", "."
+    add "<KP_Divide>", "KP_Divide", "/"
+    add "<KP_Down>", "KP_Down", "2"
+    add "<KP_End>", "KP_End", "1"
+    add "<KP_Enter>", "KP_Enter", "\r"
+    add "<KP_Home>", "KP_Home", "7"
+    add "<KP_Insert>", "KP_Insert", "0"
+    add "<KP_Left>", "KP_Left", "4"
+    add "<KP_Multiply>", "KP_Multiply", "*"
+    add "<KP_Next>", "KP_Next", "3"
+    add "<KP_Prior>", "KP_Prior", "9"
+    add "<KP_Right>", "KP_Right", "6"
+    add "<KP_Subtract>", "KP_Subtract", "-"
+    add "<KP_Up>", "KP_Up", "8"
+    add "<Kanji>", "Kanji", ""
+    add "<Key>", "XF86_Next_VMode", "+"
+    add "<L>", "L", "L"
+    add "<Left>", "Left", ""
+    add "<M>", "M", "M"
+    add "<Menu>", "Menu", ""
+    add "<Meta_L>", "Meta_L", ""
+    add "<Muhenkan>", "Muhenkan", ""
+    add "<N>", "N", "N"
+    add "<Next>", "Next", ""
+    add "<Num_Lock>", "Num_Lock", ""
+    add "<O>", "O", "O"
+    add "<P>", "P", "P"
+    add "<Pause>", "Pause", ""
+    add "<Pointer_EnableKeys>", "Pointer_EnableKeys", ""
+    add "<Print>", "Print", ""
+    add "<Prior>", "Prior", ""
+    add "<Q>", "Q", "Q"
+    add "<R>", "R", "R"
+    add "<Return>", "Return", "\r"
+    add "<Right>", "Right", ""
+    add "<Romaji>", "Romaji", ""
+    add "<S>", "S", "S"
+    add "<Scroll_Lock>", "Scroll_Lock", ""
+    add "<Shift_L>", "Shift_L", ""
+    add "<Shift-Left>", "", ""
+    add "<Shift_R>", "Shift_R", ""
+    add "<Shift-Right>", "", ""
+    add "<Super_L>", "Super_L", ""
+    add "<T>", "T", "T"
+    add "<Tab>", "Tab", "\t"
+    add "<U>", "U", "U"
+    add "<Up>", "Up", ""
+    add "<V>", "V", "V"
+    add "<W>", "W", "W"
+    add "<X>", "X", "X"
+    add "<XF86_ClearGrab>", "XF86_ClearGrab", "*"
+    add "<XF86_Next_VMode>", "XF86_Next_VMode", "+"
+    add "<XF86_Prev_VMode>", "XF86_Prev_VMode", "-"
+    add "<XF86_Switch_VT_1>", "XF86_Switch_VT_1", ""
+    add "<XF86_Switch_VT_10>", "XF86_Switch_VT_10", ""
+    add "<XF86_Switch_VT_11>", "XF86_Switch_VT_11", ""
+    add "<XF86_Switch_VT_12>", "XF86_Switch_VT_12", ""
+    add "<XF86_Switch_VT_2>", "XF86_Switch_VT_2", ""
+    add "<XF86_Switch_VT_3>", "XF86_Switch_VT_3", ""
+    add "<XF86_Switch_VT_4>", "XF86_Switch_VT_4", ""
+    add "<XF86_Switch_VT_5>", "XF86_Switch_VT_5", ""
+    add "<XF86_Switch_VT_6>", "XF86_Switch_VT_6", ""
+    add "<XF86_Switch_VT_7>", "XF86_Switch_VT_7", ""
+    add "<XF86_Switch_VT_8>", "XF86_Switch_VT_8", ""
+    add "<XF86_Switch_VT_9>", "XF86_Switch_VT_9", ""
+    add "<XF86_Ungrab>", "XF86_Ungrab", "/"
+    add "<Y>", "Y", "Y"
+    add "<Z>", "Z", "Z"
+    add "<Zenkaku_Hankaku>", "Zenkaku_Hankaku", ""
+    add "<a>", "a", "a"
+    add "<ampersand>", "ampersand", "&"
+    add "<apostrophe>", "apostrophe", "'"
+    add "<asciicircum>", "asciicircum", "^"
+    add "<asciitilde>", "asciitilde", "~"
+    add "<asterisk>", "asterisk", "*"
+    add "<at>", "at", "@"
+    add "<b>", "b", "b"
+    add "<backslash>", "backslash", "\\"
+    add "<bar>", "bar", "|"
+    add "<braceleft>", "braceleft", "{"
+    add "<braceright>", "braceright", "}"
+    add "<bracketleft>", "bracketleft", "["
+    add "<bracketright>", "bracketright", "]"
+    add "<c>", "c", "c"
+    add "<colon>", "colon", ":"
+    add "<comma>", "comma", ","
+    add "<d>", "d", "d"
+    add "<dollar>", "dollar", "$"
+    add "<e>", "e", "e"
+    add "<equal>", "equal", "="
+    add "<exclam>", "exclam", "!"
+    add "<f>", "f", "f"
+    add "<g>", "g", "g"
+    add "<grave>", "grave", "`"
+    add "<greater>", "greater", ">"
+    add "<h>", "h", "h"
+    add "<i>", "i", "i"
+    add "<j>", "j", "j"
+    add "<k>", "k", "k"
+    add "<l>", "l", "l"
+    add "<less>", "less", "<"
+    add "<m>", "m", "m"
+    add "<minus>", "minus", "-"
+    add "<n>", "n", "n"
+    add "<numbersign>", "numbersign", "#"
+    add "<o>", "o", "o"
+    add "<p>", "p", "p"
+    add "<parenleft>", "parenleft", "("
+    add "<parenright>", "parenright", ")"
+    add "<percent>", "percent", "%"
+    add "<period>", "period", "."
+    add "<plus>", "plus", "+"
+    add "<q>", "q", "q"
+    add "<question>", "question", "?"
+    add "<quotedbl>", "quotedbl", "\""
+    add "<r>", "r", "r"
+    add "<s>", "s", "s"
+    add "<semicolon>", "semicolon", ";"
+    add "<slash>", "slash", "/"
+    add "<space>", "space", " "
+    add "<t>", "t", "t"
+    add "<u>", "u", "u"
+    add "<underscore>", "underscore", "_"
+    add "<v>", "v", "v"
+    add "<w>", "w", "w"
+    add "<x>", "x", "x"
+    add "<y>", "y", "y"
+    add "<z>", "z", "z"
   end
 end

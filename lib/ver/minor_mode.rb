@@ -109,8 +109,11 @@ module VER
     def missing(invocation, &block)
       action = Action.new(invocation, receiver)
       self.fallback_action = action
-      (KEYSYMS.values - keymap.keys.to_a).each do |name|
-        keymap[name] = action
+
+      bound = keymap.keys.to_a
+      FakeEvent.each do |event|
+        sequence = event.sequence
+        keymap[sequence] = action unless bound.include?(sequence)
       end
     end
 
