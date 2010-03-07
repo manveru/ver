@@ -117,6 +117,9 @@ module VER
 
     o "Name under which the session is stored (nil means to keep no session)",
       :session, nil
+
+    o "Open welcome file on startup without parameters",
+      :welcome, true
   end
 
   module_function
@@ -417,6 +420,7 @@ module VER
   end
 
   def open_welcome
+    return unless options.welcome
     if welcome = find_in_loadpath('welcome')
       find_or_create_buffer(welcome)
       true

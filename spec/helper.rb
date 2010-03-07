@@ -57,7 +57,12 @@ module VER
   #   end
   def self.spec(options = {}, &block)
     specs = Spec.new(&block)
-    options = {fork: false, hidden: true, load_rc: false}.merge(options)
+    options = {
+      fork:    false,
+      hidden:  false,
+      load_rc: false,
+      welcome: false
+    }.merge(options)
 
     VER.run(options){ specs.run(options) }
   end
