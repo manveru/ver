@@ -28,6 +28,12 @@ module VER
           buffer.close unless @really_destroy
           Tk::OK # don't forget about those...
         }
+        bind('<FocusIn>'){|event|
+          if event.window_path == self.tk_pathname
+            buffer.focus
+            Tk.callback_break
+          end
+        }
         Tk.eval('update')
         wm_deiconify
       end
@@ -35,6 +41,7 @@ module VER
 
     def initialize(*args)
       super
+      configure takefocus: false
       VER.root.wm_withdraw
     end
 
