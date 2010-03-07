@@ -34,7 +34,7 @@ module VER
             Tk.callback_break
           end
         }
-        Tk.eval('update')
+        Tk.update
         wm_deiconify
       end
     end
