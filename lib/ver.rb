@@ -549,25 +549,30 @@ module VER
   # low-level information for developers
   def debug(*args)
     log.debug(*args)
+    p(*args)
   end
 
   # generic (useful) information about system operation
   def info(*args)
     log.info(*args)
+    p(:info, *args)
   end
 
   # a warning
   def warn(*args)
     log.warn(*args)
+    p(:warn, *args)
   end
 
   # a handleable error condition
   def error(*args)
     log.error(*args)
+    p(:error, *args)
   end
 
   # an unhandleable error that results in a program crash
   def fatal(*args)
     log.fatal(*args)
+    p(:fatal, *args)
   end
 end
