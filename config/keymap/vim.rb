@@ -203,12 +203,13 @@ module VER
     inherits :basic, :move, :delete, :undo, :layout_control, :search, :ctags,
              :bookmark, :clipboard
 
-    become :select_block,   %w[Control-v]
-    become :select_char,    %w[v]
-    become :select_line,    %w[V]
     become :insert,         %w[i], %w[Insert]
     become :replace,        %w[R]
     become :replace_char,   %w[r]
+    become :select_block,   %w[Control-v]
+    become :select_char,    %w[v]
+    become :select_line,    %w[V]
+    become :control,        %w[Escape]
 
     map :repeat_action, %w[period]
     map :quit,          %w[colon q a], %w[Z Z]
