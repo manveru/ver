@@ -358,7 +358,6 @@ module VER
     map :copy,            %w[y], %w[Y]
     map :indent,          %w[greater]
     map :kill,            %w[d], %w[D], %w[x], %w[BackSpace], %w[Delete]
-    map :pipe,            %w[exclam]
     map :lower_case,      %w[u]
     map :replace_string,  %w[c]
     map :toggle_case,     %w[asciitilde]
@@ -368,6 +367,9 @@ module VER
 
     handler Methods::Control
     map :smart_evaluate,  %w[Alt-e], %w[Control-e]
+
+    handler Methods::Selection
+    map :pipe,            %w[exclam]
   end
 
   minor_mode :select_char do

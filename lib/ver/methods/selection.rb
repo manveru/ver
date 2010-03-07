@@ -3,29 +3,28 @@ module VER
     module Selection
       module_function
 
-      def enter(text, old_mode, new_mode)
-        unless old_mode.name =~ /^select/
-          text.mark_set(:sel_anchor, :insert)
-        end
+      def pipe(buffer)
+        paths = ENV['PATH'].split(':').map{|path| Pathname(path).expand_path }
 
-        # text.store(self, :mode, new_mode)
-        # text.store(self, :refresh, true)
-        # Undo.separator(text)
-        # refresh(text)
-      end
-
-      def leave(text, old_mode, new_mode)
-        return if new_mode.name =~ /^select/
-
-        # text.store(self, :mode, new_mode)
-        # text.store(self, :refresh, false)
-        # Undo.separator(text)
-        # clear(text)
-      end
-
-      def select_mode(text)
-        if mode = text.store(self, :mode)
-          mode.to_sym
+        buffer.ask 'Pipe command: ' do |answer, action|
+          case action
+          when :complete
+            current = answer.split.last
+            paths.map{|path|
+              (path/"*#{current}*").glob.select{|file|
+                begin
+                  file = File.readlink(file) if File.symlink?(file)
+                  stat = File.stat(file)
+                  stat.file? && stat.executable?
+                rescue Errno::ENOENT
+                end
+              }
+            }.flatten.compact
+          when :attempt
+            buffer.at_sel.pipe!(answer)
+            buffer.at_sel.finish
+            :abort
+          end
         end
       end
     end
@@ -192,30 +191,6 @@ __END__
         finish(text)
       end
 
-      def pipe(text)
-        paths = ENV['PATH'].split(':').map{|path| Pathname(path).expand_path }
-
-        text.ask 'Pipe command: ' do |answer, action|
-          case action
-          when :complete
-            current = answer.split.last
-            paths.map{|path|
-              (path/"*#{current}*").glob.select{|file|
-                begin
-                  file = File.readlink(file) if File.symlink?(file)
-                  stat = File.stat(file)
-                  stat.file? && stat.executable?
-                rescue Errno::ENOENT
-                end
-              }
-            }.flatten.compact
-          when :attempt
-            pipe_execute(text, answer)
-            finish(text)
-            :abort
-          end
-        end
-      end
 
       def comment(text)
         comment = "#{text.options.comment_line} "
