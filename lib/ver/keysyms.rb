@@ -135,26 +135,28 @@ module VER
     ('a'..'z').each{|c| add(c,c,c) }
     ('A'..'Z').each{|c| add(c,c,c) }
     ('0'..'9').each{|c| add(c,c,c) }
-    add '<End>', 'End', ''
-    add '<dollar>', 'dollar', '$'
-    add '<comma>', 'comma', ','
-    add '<percent>', 'percent', '%'
-    add '<Control-e>', 'e', "\x05"
+    add '<Alt-greater>', 'greater', '>'
+    add '<Alt-less>', 'less', '<'
     add '<Control-a>', 'a', "\x01"
-    add '<Control-x>', 'x', "\x18"
     add '<Control-b>', 'b', "\x02"
-    add '<Control-p>', 'p', "\x10"
-    add '<Control-n>', 'n', "\x0E"
+    add '<Control-e>', 'e', "\x05"
     add '<Control-f>', 'f', "\x06"
+    add '<Control-n>', 'n', "\x0E"
+    add '<Control-p>', 'p', "\x10"
     add '<Control-v>', 'v', "\x16"
+    add '<Control-x>', 'x', "\x18"
+    add '<Down>', 'Down', ''
+    add '<End>', 'End', ''
+    add '<Home>', 'Home', ""
+    add '<Left>', 'Left', ''
     add '<Next>', 'Next', ""
+    add '<Prior>', 'Prior', ''
+    add '<Right>', 'Right', ''
     add '<Shift-Left>', '', ''
     add '<Shift-Right>', '', ''
-    add '<Prior>', 'Prior', ''
     add '<Up>', 'Up', ''
-    add '<Right>', 'Right', ''
-    add '<Left>', 'Left', ''
-    add '<Down>', 'Down', ''
-    add '<Home>', 'Home', ""
+    add '<comma>', 'comma', ','
+    add '<dollar>', 'dollar', '$'
+    add '<percent>', 'percent', '%'
   end
 end

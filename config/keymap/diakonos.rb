@@ -1,6 +1,6 @@
 module VER
-  PanedLayout::OPTIONS[:slaves] = 0
-  layout.options[:slaves] = 0
+  # PanedLayout::OPTIONS[:slaves] = 0
+  # layout.options[:slaves] = 0
 
   major_mode :Fundamental do
     use :control
@@ -31,22 +31,22 @@ module VER
   end
 
   minor_mode :move do
-    handler Methods::Move
+    handler :at_insert
     map :ask_go_line,     %w[Control-g]
-    map :end_of_line,     %w[End], %w[Control-e]
-    map :end_of_text,     %w[Alt-greater]
-    map :next_char,       %w[Right], %w[Control-f]
-    map :next_line,       %w[Down], %w[Control-n]
-    map :next_page,       %w[Next]
-    map :next_word,       %w[Shift-Right], %w[Alt-f]
-    map :prev_char,       %w[Left], %w[Control-b]
-    map :prev_line,       %w[Up], %w[Control-p]
-    map :prev_page,       %w[Prior]
-    map :prev_word,       %w[Shift-Left], %w[Alt-b]
-    map :start_of_line,   %w[Home], %w[Control-a]
-    map :start_of_text,   %w[Alt-less]
-    map :forward_scroll,  %w[Alt-n]
     map :backward_scroll, %w[Alt-p]
+    map :end_of_buffer,   %w[Alt-greater]
+    map :end_of_line,     %w[End], %w[Control-e]
+    map :forward_scroll,  %w[Alt-n]
+    map :next_char,       %w[Right]
+    map :next_line,       %w[Down]
+    map :next_page,       %w[Next]
+    map :next_word,       %w[Shift-Right]
+    map :prev_char,       %w[Left]
+    map :prev_line,       %w[Up]
+    map :prev_page,       %w[Prior]
+    map :prev_word,       %w[Shift-Left]
+    map :start_of_buffer, %w[Alt-less]
+    map :start_of_line,   %w[Home]
   end
 
   minor_mode :control do
@@ -55,9 +55,10 @@ module VER
     become :select_char, %w[Control-space]
     become :select_line, %w[Escape Control-space], %w[Control-Alt-space]
 
-    handler Methods::Save
     map :save,    %w[Control-s]
     map :save_as, %w[Alt-S]
+    map :undo,    %w[Control-z]
+    map :redo,    %w[Control-y]
 
     handler Methods::Open
     map :file_open_ask, %w[Control-o]
@@ -90,15 +91,11 @@ module VER
     handler Methods::Clipboard
     map :paste, %w[Control-v]
 
-    handler Methods::Undo
-    map :undo, %w[Control-z]
-    map :redo, %w[Control-y]
-
-    handler Methods::Delete
-    map :kill_line,                      %w[Control-k], %w[Control-d Control-d]
-    map [:delete_motion, :end_of_line],  %w[Control-Alt-k], %w[Control-d dollar]
-    map [:delete_motion, :prev_char],    %w[BackSpace]
-    map [:delete_motion, :next_char],    %w[Delete]
+    handler :at_insert
+    map :kill_line,                 %w[Control-k], %w[Control-d Control-d]
+    map [:deleting, :end_of_line],  %w[Control-Alt-k], %w[Control-d dollar]
+    map [:deleting, :prev_char],    %w[BackSpace]
+    map [:deleting, :next_char],    %w[Delete]
 
     handler Methods::Bookmark
     map :add_named,    %w[Alt-b Alt-a]
@@ -108,11 +105,11 @@ module VER
     map :toggle,       %w[Alt-b Alt-b]
     map :visit_named,  %w[Alt-b Alt-g]
     # these are only valid on US keymap, don't know a better way.
-    map [:add_named, '1'],   %w[Alt-b Alt-exclam]
-    map [:add_named, '2'],   %w[Alt-b Alt-at]
-    map [:add_named, '3'],   %w[Alt-b Alt-numbersign]
-    map [:add_named, '4'],   %w[Alt-b Alt-dollar]
-    map [:add_named, '5'],   %w[Alt-b Alt-percent]
+    map [:add_named,   '1'], %w[Alt-b Alt-exclam]
+    map [:add_named,   '2'], %w[Alt-b Alt-at]
+    map [:add_named,   '3'], %w[Alt-b Alt-numbersign]
+    map [:add_named,   '4'], %w[Alt-b Alt-dollar]
+    map [:add_named,   '5'], %w[Alt-b Alt-percent]
     map [:visit_named, '1'], %w[Alt-b Alt-1]
     map [:visit_named, '2'], %w[Alt-b Alt-2]
     map [:visit_named, '3'], %w[Alt-b Alt-3]
