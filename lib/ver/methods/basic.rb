@@ -51,7 +51,7 @@ module VER
       end
 
       def quit(text)
-        Save.quit(text)
+        text.quit
       end
 
       def status_evaluate(text)
