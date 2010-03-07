@@ -22,6 +22,7 @@ module VER
 
     attr_accessor :messages_expire, :messages_pending, :char_width, :ask_stack,
                   :at_insert, :completion_buffer
+    attr_reader :asking
 
     def initialize(*args)
       super

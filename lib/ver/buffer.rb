@@ -205,8 +205,13 @@ module VER
     end
 
     def on_focus_in(event)
-      Dir.chdir(filename.dirname.to_s) if filename && options.auto_chdir
-      on_movement(event)
+      if @minibuf.asking
+        @minibuf.focus
+      else
+        Dir.chdir(filename.dirname.to_s) if filename && options.auto_chdir
+        on_movement(event)
+      end
+
       Tk.callback_break
     end
 
