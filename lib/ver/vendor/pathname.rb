@@ -56,6 +56,18 @@ class Pathname
     new(Dir.tmpdir)
   end
 
+  def readonly?
+    if file?
+      if writable?
+        false
+      else
+        true
+      end
+    else
+      false
+    end
+  end
+
   def read_encoded_file
     content = read
     content.force_encoding('BINARY')
@@ -65,12 +77,16 @@ class Pathname
     content.force_encoding(encoding.strip)
 
     return content, content.encoding
-  rescue Errno::ENOENT # rchardet missing?
-    GUESS_ENCODING_ORDER.find{|enc|
-      content.force_encoding(enc)
-      content.valid_encoding?
-    }
+  rescue Errno::ENOENT # file or rchardet missing?
+    if content
+      GUESS_ENCODING_ORDER.find{|enc|
+        content.force_encoding(enc)
+        content.valid_encoding?
+      }
 
-    return content, content.encoding
+      return content, content.encoding
+    else
+      return '', Encoding::UTF_8
+    end
   end
 end

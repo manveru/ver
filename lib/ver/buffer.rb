@@ -407,7 +407,7 @@ module VER
             content, encoding = pathname.read_encoded_file
             self.encoding = encoding
             self.value = content.chomp
-            self.readonly = answer == :read_only || !pathname.writable?
+            self.readonly = answer == :read_only || pathname.readonly?
             self.locked = answer == :single
             detect_project_paths
             update_mtime
