@@ -473,7 +473,7 @@ module VER
         uri   = info['uri']
         alive = info
 
-        prompt = <<-TEXT
+        prompt = <<-TEXT.chomp
 Found a lock file at: #{lock}
 owned by: #{user}
 used by: #{pid}
