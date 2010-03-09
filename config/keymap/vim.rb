@@ -153,7 +153,7 @@ module VER
     handler Methods::Bookmark
 
     map :add_char,    %w[m]
-    map :visit_char,  %w[quoteleft]
+    map :visit_char,  %w[grave]
     # vim also has quoteright to jump to the start of the line, but who
     # needs that *_*
   end
