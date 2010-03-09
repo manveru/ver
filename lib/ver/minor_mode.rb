@@ -111,7 +111,7 @@ module VER
       self.fallback_action = action
 
       bound = keymap.keys.to_a
-      FakeEvent.each do |event|
+      Event.each do |event|
         sequence = event.sequence
         keymap[sequence] = action unless bound.include?(sequence)
       end

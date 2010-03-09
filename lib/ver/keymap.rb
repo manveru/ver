@@ -6,7 +6,7 @@ module VER
       # Indicate that no result can and will be found in the keymap
       class Impossible < Struct.new(:sequence)
         def to_s
-          stack = sequence.map{|seq| FakeEvent[seq].keysym }.join(' - ')
+          stack = sequence.map{|seq| Event[seq].keysym }.join(' - ')
           "#{stack} is undefined"
         end
       end
@@ -19,7 +19,7 @@ module VER
         end
 
         def to_s(handler)
-          stack = sequence.map{|seq| FakeEvent[seq].keysym }.join
+          stack = sequence.map{|seq| Event[seq].keysym }.join
 
           follow = choices.map{|key, action|
             case action
@@ -90,7 +90,7 @@ module VER
 
       while key = sequence.shift
         if key.respond_to?(:to_str)
-          canonical = FakeEvent[key.to_str].sequence
+          canonical = Event[key.to_str].sequence
           self.keys << canonical
         else
           canonical = key

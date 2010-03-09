@@ -44,7 +44,7 @@ module VER
   autoload :EvalCompleter,       'ver/vendor/eval_completer'
   autoload :ExceptionView,       'ver/exception_view'
   autoload :Executor,            'ver/executor'
-  autoload :FakeEvent,           'ver/keysyms'
+  autoload :Event,           'ver/keysyms'
   autoload :Font,                'ver/font'
   autoload :Help,                'ver/help'
   autoload :HoverCompletion,     'ver/hover_completion'

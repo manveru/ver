@@ -65,7 +65,7 @@ module VER
 
     def fake(input)
       input.scan(/<[\w-]+>|[^<>]/) do |name|
-        on_event(FakeEvent[name])
+        on_event(Event[name])
       end
     end
 

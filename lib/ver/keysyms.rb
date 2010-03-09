@@ -1,20 +1,16 @@
 module VER
-  # This can be used in specs or other code to fake events.
+  # This is used to represent events.
   # It also represents the minimum required properties for events.
   #
-  # At first I wanted to put them into a simple Hash, but there is no
-  # straight-forward way to store triples in ruby, and I found that both
-  # sequence and keysym are needed, and unicode is mandatory.
-  # So now it's stored in three hashes, one for each property of FakeEvent.
-  # Since they share the values, the memory usage shouldn't be that much higher.
-  #
-  # There are still issues with this approach, namely that one unicode char may
-  # be associated with may sequences.
-  class FakeEvent < Struct.new(:sequence, :keysym, :unicode)
-    # A propably incomplete listing of keysyms to fake events.
+  # The reason we don't use the default Tk::Event::Data is to compensate for
+  # differences of platforms and to have correct values for the event even if
+  # we generate them in specs.
+  class Event < Struct.new(:sequence, :keysym, :unicode)
     SEQUENCE = {}
     UNICODE  = Hash.new{|h,k| h[k] = Set.new }
     KEYSYM   = Hash.new{|h,k| h[k] = Set.new }
+
+    WINDOWING_SYSTEM = Tk::TkCmd.windowingsystem
 
     def self.each(&block)
       SEQUENCE.values.each(&block)
@@ -43,17 +39,39 @@ module VER
     end
 
     def initialize(sequence, keysym = nil, unicode = nil)
-      self.sequence = sequence
-      self.keysym   = keysym  || sequence_to_keysym(sequence)
-      self.unicode  = unicode || sequence_to_unicode(sequence)
+      self.sequence = convert_sequence(sequence)
+      self.keysym   = convert_keysym(keysym)
+      self.unicode  = convert_unicode(unicode)
     end
 
-    def sequence_to_keysym(sequence)
-      raise ArgumentError, "keysym for %p not given" % [sequence]
+    # Adjust
+    def convert_sequence(sequence)
+      sequence
     end
 
-    def sequence_to_unicode(sequence)
-      raise ArgumentError, "unicode for %p not given" % [sequence]
+    def convert_keysym(keysm)
+      keysym
+    end
+
+    def convert_unicode(unicode)
+      unicode
+    end
+
+    case WINDOWING_SYSTEM
+    when :x11
+      SEQUENCE['<Control-Shift-Tab>'] = add("<Control-ISO_Left_Tab>", "ISO_Left_Tab", "")
+      SEQUENCE['<Alt-Shift-Tab>'] = add("<Alt-ISO_Left_Tab>", "ISO_Left_Tab", "")
+      SEQUENCE['<Shift-Tab>'] = add("<ISO_Left_Tab>", "ISO_Left_Tab", "")
+    when :aqua
+      add("<Control-Shift-Tab>", "Tab", "\t")
+      add("<Alt-Shift-Tab>", "Tab", "\t")
+      add("<Shift-Tab>", "Tab", "\t")
+    when :win32
+      add("<Control-Shift-Tab>", "Tab", "\t")
+      add("<Alt-Shift-Tab>", "Tab", "\t")
+      add("<Shift-Tab>", "Tab", "\t")
+    else
+      raise "Unknown windowing system: %p" % [WINDOWING_SYSTEM]
     end
 
     add "<0>", "0", "0"
@@ -71,9 +89,6 @@ module VER
     add "<Alt-0>", "0", "0"
     add "<Alt-A>", "A", "A"
     add "<Alt-a>", "a", "a"
-    add "<Alt-Alt-a>", "a", "a"
-    add "<Alt-Alt-Muhenkan>", "Muhenkan", ""
-    add "<Alt-Alt-Super_L>", "Super_L", ""
     add "<Alt-ampersand>", "ampersand", "&"
     add "<Alt-apostrophe>", "apostrophe", "'"
     add "<Alt-asciitilde>", "asciitilde", "~"
@@ -121,13 +136,11 @@ module VER
     add "<Alt-I>", "I", "I"
     add "<Alt-i>", "i", "i"
     add "<Alt-Insert>", "Insert", ""
-    add "<Alt-ISO_Left_Tab>", "ISO_Left_Tab", ""
     add "<Alt-J>", "J", "J"
     add "<Alt-j>", "j", "j"
     add "<Alt-K>", "K", "K"
     add "<Alt-k>", "k", "k"
     add "<Alt-Kanji>", "Kanji", ""
-    add "<Alt-Key>", "a", "a"
     add "<Alt-KP_Add>", "KP_Add", "+"
     add "<Alt-KP_Begin>", "KP_Begin", "5"
     add "<Alt-KP_Delete>", "KP_Delete", "."
@@ -307,7 +320,6 @@ module VER
     add "<Control-Alt-K>", "K", "\v"
     add "<Control-Alt-k>", "k", "\v"
     add "<Control-Alt-Kanji>", "Kanji", ""
-    add "<Control-Alt-Key>", "1", "1"
     add "<Control-Alt-KP_0>", "KP_0", ""
     add "<Control-Alt-KP_1>", "KP_1", ""
     add "<Control-Alt-KP_2>", "KP_2", ""
@@ -410,38 +422,6 @@ module VER
     add "<Control-Caps_Lock>", "Caps_Lock", ""
     add "<Control-colon>", "colon", ":"
     add "<Control-comma>", "comma", ","
-    add "<Control-Control-A>", "A", "\x01"
-    add "<Control-Control-Alt_L>", "Alt_L", ""
-    add "<Control-Control-BackSpace>", "BackSpace", "\b"
-    add "<Control-Control-Control-Alt_L>", "Alt_L", ""
-    add "<Control-Control-Control-Control_R>", "Control_R", ""
-    add "<Control-Control-Control-Menu>", "Menu", ""
-    add "<Control-Control-Control-Shift_L>", "Shift_L", ""
-    add "<Control-Control-Control_R>", "Control_R", ""
-    add "<Control-Control-D>", "D", "\x04"
-    add "<Control-Control-Delete>", "Delete", "\x7F"
-    add "<Control-Control-Down>", "Down", ""
-    add "<Control-Control-Escape>", "Escape", "\e"
-    add "<Control-Control-F>", "F", "\x06"
-    add "<Control-Control-G>", "G", "\a"
-    add "<Control-Control-H>", "H", "\b"
-    add "<Control-Control-Henkan_Mode>", "Henkan_Mode", ""
-    add "<Control-Control-Insert>", "Insert", ""
-    add "<Control-Control-Key>", "XF86MonBrightnessDown", ""
-    add "<Control-Control-Left>", "Left", ""
-    add "<Control-Control-Menu>", "Menu", ""
-    add "<Control-Control-Meta_L>", "Meta_L", ""
-    add "<Control-Control-Muhenkan>", "Muhenkan", ""
-    add "<Control-Control-Return>", "Return", "\r"
-    add "<Control-Control-Right>", "Right", ""
-    add "<Control-Control-S>", "S", "\x13"
-    add "<Control-Control-s>", "s", "\x13"
-    add "<Control-Control-Shift_L>", "Shift_L", ""
-    add "<Control-Control-Shift_R>", "Shift_R", ""
-    add "<Control-Control-space>", "space", ""
-    add "<Control-Control-Super_L>", "Super_L", ""
-    add "<Control-Control-underscore>", "underscore", "\x1F"
-    add "<Control-Control-Up>", "Up", ""
     add "<Control-Control-Z>", "Z", "\x1A"
     add "<Control-Control_R>", "Control_R", ""
     add "<Control-D>", "D", "\x04"
@@ -482,13 +462,11 @@ module VER
     add "<Control-I>", "I", "\t"
     add "<Control-i>", "i", "\t"
     add "<Control-Insert>", "Insert", ""
-    add "<Control-ISO_Left_Tab>", "ISO_Left_Tab", ""
     add "<Control-J>", "J", "\n"
     add "<Control-j>", "j", "\n"
     add "<Control-K>", "K", "\v"
     add "<Control-k>", "k", "\v"
     add "<Control-Kanji>", "Kanji", ""
-    add "<Control-Key>", "1", "1"
     add "<Control-KP_0>", "KP_0", ""
     add "<Control-KP_1>", "KP_1", ""
     add "<Control-KP_2>", "KP_2", ""
@@ -636,13 +614,11 @@ module VER
     add "<I>", "I", "I"
     add "<i>", "i", "i"
     add "<Insert>", "Insert", ""
-    add "<ISO_Left_Tab>", "ISO_Left_Tab", ""
     add "<J>", "J", "J"
     add "<j>", "j", "j"
     add "<K>", "K", "K"
     add "<k>", "k", "k"
     add "<Kanji>", "Kanji", ""
-    add "<Key>", "XF86_Next_VMode", "+"
     add "<KP_0>", "KP_0", ""
     add "<KP_1>", "KP_1", ""
     add "<KP_2>", "KP_2", ""

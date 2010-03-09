@@ -50,7 +50,7 @@ module VER
       self.bound_keys = Set.new
       self.tag = Tk::BindTag.new("#{name}-mode")
 
-      FakeEvent.each{|event| bind_key(event.sequence) }
+      Event.each{|event| bind_key(event.sequence) }
       bind_key('<Escape>')
     end
 

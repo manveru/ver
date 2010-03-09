@@ -91,9 +91,9 @@ module VER
     handler Methods::Layout
     map :change,     ['Control-w', :layout]
     map :focus_next, %w[Control-Tab]
-    map :focus_prev, %w[Control-Shift-Tab], %w[Control-ISO_Left_Tab]
+    map :focus_prev, %w[Control-Shift-Tab]
     map :cycle_next, %w[Alt-Tab], %w[colon b n]
-    map :cycle_prev, %w[Alt-Shift-Tab], %w[Alt-ISO_Left_Tab], %w[colon b p]
+    map :cycle_prev, %w[Alt-Shift-Tab], %w[colon b p]
   end
 
   minor_mode :move do
