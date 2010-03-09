@@ -319,7 +319,7 @@ module VER
         code = text.get('insert linestart', 'insert lineend')
         file = (text.filename || text.uri).to_s
         stdout_capture_evaluate(code, file, binding) do |res, out|
-          at_insert.lineend.insert("n%s%p" % [out, res])
+          text.at_insert.lineend.insert("\n%s%p" % [out, res])
         end
       end
 
