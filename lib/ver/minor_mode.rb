@@ -57,13 +57,13 @@ module VER
       MODES[self.name] = self
     end
 
-    # recursively try to find the sequence in the minor mode and its parents.
-    def resolve(sequence)
-      case found = keymap[sequence]
+    # recursively try to find the pattern in the minor mode and its parents.
+    def resolve(pattern)
+      case found = keymap[pattern]
       when Incomplete
         parents.each do |parent|
           next if parent == self
-          case resolved = parent.resolve(sequence)
+          case resolved = parent.resolve(pattern)
           when Incomplete
             found.merge!(resolved)
           end
@@ -71,7 +71,7 @@ module VER
       when Impossible
         parents.find do |parent|
           next if parent == self
-          found = parent.resolve(sequence)
+          found = parent.resolve(pattern)
           !found.kind_of?(Impossible)
         end
       else
@@ -96,14 +96,14 @@ module VER
       parents.uniq!
     end
 
-    def become(other, *sequences)
+    def become(other, *patterns)
       action = Action.new([:minor_mode, self, other], receiver)
-      sequences.each{|sequence| keymap[sequence] = action }
+      patterns.each{|pattern| keymap[pattern] = action }
     end
 
-    def map(invocation, *sequences)
+    def map(invocation, *patterns)
       action = Action.new(invocation, receiver)
-      sequences.each{|sequence| keymap[sequence] = action }
+      patterns.each{|pattern| keymap[pattern] = action }
     end
 
     def missing(invocation, &block)
@@ -112,8 +112,8 @@ module VER
 
       bound = keymap.keys.to_a
       Event.each do |event|
-        sequence = event.sequence
-        keymap[sequence] = action unless bound.include?(sequence)
+        pattern = event.pattern
+        keymap[pattern] = action unless bound.include?(pattern)
       end
     end
 

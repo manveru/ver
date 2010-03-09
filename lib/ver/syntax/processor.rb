@@ -45,7 +45,7 @@ module VER
         # cannot be closed because the contents of the textarea changed since
         # the last highlight was issued.
         # this will cause Tk to raise an error that doesn't have a message and
-        #  is of no major consequences.
+        #  is of no major conpatterns.
         # We swallow that exception to avoid confusion.
         raise exception unless exception.message.empty?
       end

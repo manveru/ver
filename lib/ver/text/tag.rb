@@ -46,7 +46,7 @@ module VER
         Tk.execute_only(Tk::TclString.new(code.join("\n")))
       end
 
-      # pathName tag bind tagName ?sequence? ?script? 
+      # pathName tag bind tagName ?pattern? ?script? 
       def bind(*args, &block)
         buffer.tag_bind(to_tcl, *args, &block)
       end

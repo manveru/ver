@@ -1,12 +1,7 @@
 module VER
-  # A subset of Tk::Event::Data with only the properties we actually use to
-  # allow for more event history while keeping memory usage low.
-  class Event < Struct.new(:sequence, :keysym, :unicode)
-  end
-
   # The WidgetMajorMode associates a widget with a major mode.
   # It keeps a limited history of the events that arrive at [on_event].
-  # It also maintains a stack of the event sequences and tries to match
+  # It also maintains a stack of the event patterns and tries to match
   # against the keymaps of the major and minor modes.
   #
   # This class has its own list of minor modes, which can be modified and may
@@ -40,9 +35,9 @@ module VER
       major.bound_keys
     end
 
-    # Shortcut to bind a sequence on the associated widget.
-    def bind(sequence, &block)
-      widget.bind(sequence, &block)
+    # Shortcut to bind a pattern on the associated widget.
+    def bind(pattern, &block)
+      widget.bind(pattern, &block)
     end
 
     def bind_key(key)
@@ -71,8 +66,8 @@ module VER
 
     def on_event(event)
       VER.touch
-      stack << event.sequence
-      event_history << Event.new(event.sequence, event.keysym, event.unicode)
+      stack << event.pattern
+      event_history << Event.new(event.pattern, event.keysym, event.unicode)
 
       return handle_reader(event) if reader && read_amount
 
@@ -129,8 +124,8 @@ module VER
       self.reader = reader
     end
 
-    def resolve(sequence)
-      major.resolve(sequence, minors)
+    def resolve(pattern)
+      major.resolve(pattern, minors)
     end
 
     def replaces(other)

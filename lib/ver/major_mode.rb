@@ -12,7 +12,7 @@ module VER
   # specialize it.
   # The inherited keymap is duplicated upon inheritance and the original will
   # not be modified, the duplicate is merged in a manner that will not replace
-  # existing sequences.
+  # existing patterns.
   #
   # The bound_keys property acts as a cache of the keys bound to the tag, so we
   # don't have to query the tag, as the bound proc is the same for all keys.
@@ -50,7 +50,7 @@ module VER
       self.bound_keys = Set.new
       self.tag = Tk::BindTag.new("#{name}-mode")
 
-      Event.each{|event| bind_key(event.sequence) }
+      Event.each{|event| bind_key(event.pattern) }
       bind_key('<Escape>')
     end
 
@@ -63,9 +63,9 @@ module VER
       self.receiver = object
     end
 
-    def map(invocation, *sequences)
+    def map(invocation, *patterns)
       action = Action.new(invocation, receiver)
-      sequences.each{|sequence| keymap[sequence] = action }
+      patterns.each{|pattern| keymap[pattern] = action }
     end
 
     def missing(invocation)
@@ -105,20 +105,20 @@ module VER
       self.minors -= minors.map{|name| MinorMode[name] }
     end
 
-    # recursively try to find the sequence in the major mode and its minor
+    # recursively try to find the pattern in the major mode and its minor
     # modes.
-    def resolve(sequence, minors = [])
-      case found = keymap[sequence]
+    def resolve(pattern, minors = [])
+      case found = keymap[pattern]
       when Incomplete
         minors.each do |minor|
-          case resolved = minor.resolve(sequence)
+          case resolved = minor.resolve(pattern)
           when Incomplete
             found.merge!(resolved)
           end
         end
       when Impossible
         minors.find do |minor|
-          found = minor.resolve(sequence)
+          found = minor.resolve(pattern)
           !found.kind_of?(Impossible)
         end
       else

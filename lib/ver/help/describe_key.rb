@@ -35,8 +35,8 @@ Click on result opens the location of the associated action.
         @label.bind('<Destroy>'){ @parent.focus }
       end
 
-      def lookup(sequence)
-        @full << sequence
+      def lookup(pattern)
+        @full << pattern
 
         case found = @parent.major_mode.resolve(@full)
         when Incomplete

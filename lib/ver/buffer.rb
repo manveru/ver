@@ -666,7 +666,7 @@ Close this buffer or continue with caution.
       numbers = []
 
       events.reverse_each do |event|
-        break unless event.sequence =~ /^(\d+)$/
+        break unless event.pattern =~ /^(\d+)$/
         numbers << $1
       end
 

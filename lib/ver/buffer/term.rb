@@ -99,7 +99,7 @@ class VER::Buffer::Terminal
   ANSI_CODES[46] = :on_cyan
   ANSI_CODES[47] = :on_white
 
-  # Trying to build a little dictionary of escape sequences:
+  # Trying to build a little dictionary of escape patterns:
   #
   # | Sequence       | Meaning         |
   # | \e]0;          | reset fg/bg     |

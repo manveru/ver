@@ -4,22 +4,22 @@ module VER
   class Keymap < Struct.new(:keymap, :keys)
     module Results
       # Indicate that no result can and will be found in the keymap
-      class Impossible < Struct.new(:sequence)
+      class Impossible < Struct.new(:pattern)
         def to_s
-          stack = sequence.map{|seq| Event[seq].keysym }.join(' - ')
+          stack = pattern.map{|seq| Event[seq].keysym }.join(' - ')
           "#{stack} is undefined"
         end
       end
 
       # Indicate that no result could be found yet.
-      class Incomplete < Struct.new(:sequence, :choices)
+      class Incomplete < Struct.new(:pattern, :choices)
         def merge!(incomplete)
-          return unless sequence == incomplete.sequence
+          return unless pattern == incomplete.pattern
           choices.deep_merge!(incomplete.choices)
         end
 
         def to_s(handler)
-          stack = sequence.map{|seq| Event[seq].keysym }.join
+          stack = pattern.map{|seq| Event[seq].keysym }.join
 
           follow = choices.map{|key, action|
             case action
@@ -84,19 +84,19 @@ module VER
       self.keys = keys
     end
 
-    def []=(*sequence, action)
-      sequence = [*sequence].flatten
+    def []=(*pattern, action)
+      pattern = [*pattern].flatten
       top = sub = MapHash.new
 
-      while key = sequence.shift
+      while key = pattern.shift
         if key.respond_to?(:to_str)
-          canonical = Event[key.to_str].sequence
+          canonical = Event[key.to_str].pattern
           self.keys << canonical
         else
           canonical = key
         end
 
-        if sequence.empty?
+        if pattern.empty?
           sub[canonical] = action
         else
           sub = sub[canonical] = MapHash.new
@@ -106,9 +106,9 @@ module VER
       keymap.replace(keymap.merge(top, &MERGER))
     end
 
-    def [](*sequence)
-      sequence = [*sequence].flatten
-      remaining = sequence.dup
+    def [](*pattern)
+      pattern = [*pattern].flatten
+      remaining = pattern.dup
 
       current = keymap
       while key = remaining.shift
@@ -131,13 +131,13 @@ module VER
             end
           end
 
-          return Impossible.new(sequence)
+          return Impossible.new(pattern)
         end
       end
 
       case current
       when MapHash # incomplete
-        Incomplete.new(sequence, current)
+        Incomplete.new(pattern, current)
       else
         current
       end

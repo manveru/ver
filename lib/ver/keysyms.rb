@@ -5,20 +5,20 @@ module VER
   # The reason we don't use the default Tk::Event::Data is to compensate for
   # differences of platforms and to have correct values for the event even if
   # we generate them in specs.
-  class Event < Struct.new(:sequence, :keysym, :unicode)
-    SEQUENCE = {}
+  class Event < Struct.new(:pattern, :keysym, :unicode)
+    PATTERN = {}
     UNICODE  = Hash.new{|h,k| h[k] = Set.new }
     KEYSYM   = Hash.new{|h,k| h[k] = Set.new }
 
     WINDOWING_SYSTEM = Tk::TkCmd.windowingsystem
 
     def self.each(&block)
-      SEQUENCE.values.each(&block)
+      PATTERN.values.each(&block)
     end
 
     def self.add(*args)
       event = new(*args)
-      SEQUENCE[event.sequence] = event
+      PATTERN[event.pattern] = event
       UNICODE[event.unicode] << event
       KEYSYM[event.keysym] << event
       event
@@ -26,32 +26,32 @@ module VER
 
     def self.let(source, target)
       event = self[target].dup
-      SEQUENCE[source] = event
+      PATTERN[source] = event
     end
 
-    # given a <sequence>, this returns the event for this sequence.
-    # given a unicode char, returns the event with shortest sequence.
+    # given a <pattern>, this returns the event for this pattern.
+    # given a unicode char, returns the event with shortest pattern.
     def self.[](string)
       if string =~ /^<.*>$/
-        SEQUENCE.fetch(string)
+        PATTERN.fetch(string)
       elsif string.size == 1
-        UNICODE.fetch(string).min_by{|event| event.sequence.size }
-      else # it may be keysym, but let's try to make it sequence instead
-        SEQUENCE.fetch("<#{string}>")
+        UNICODE.fetch(string).min_by{|event| event.pattern.size }
+      else # it may be keysym, but let's try to make it pattern instead
+        PATTERN.fetch("<#{string}>")
       end
     rescue KeyError => ex
       raise(KeyError, "#{ex}: %p" % [string])
     end
 
-    def initialize(sequence, keysym = nil, unicode = nil)
-      self.sequence = convert_sequence(sequence)
+    def initialize(pattern, keysym = nil, unicode = nil)
+      self.pattern = convert_pattern(pattern)
       self.keysym   = convert_keysym(keysym)
       self.unicode  = convert_unicode(unicode)
     end
 
     # Adjust
-    def convert_sequence(sequence)
-      sequence
+    def convert_pattern(pattern)
+      pattern
     end
 
     def convert_keysym(keysm)
@@ -64,9 +64,9 @@ module VER
 
     case WINDOWING_SYSTEM
     when :x11
-      SEQUENCE['<Control-Shift-Tab>'] = add("<Control-ISO_Left_Tab>", "ISO_Left_Tab", "")
-      SEQUENCE['<Alt-Shift-Tab>'] = add("<Alt-ISO_Left_Tab>", "ISO_Left_Tab", "")
-      SEQUENCE['<Shift-Tab>'] = add("<ISO_Left_Tab>", "ISO_Left_Tab", "")
+      PATTERN['<Control-Shift-Tab>'] = add("<Control-ISO_Left_Tab>", "ISO_Left_Tab", "")
+      PATTERN['<Alt-Shift-Tab>'] = add("<Alt-ISO_Left_Tab>", "ISO_Left_Tab", "")
+      PATTERN['<Shift-Tab>'] = add("<ISO_Left_Tab>", "ISO_Left_Tab", "")
     when :aqua
       add("<Control-Shift-Tab>", "Tab", "\t")
       add("<Alt-Shift-Tab>", "Tab", "\t")
