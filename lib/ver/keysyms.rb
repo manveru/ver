@@ -24,11 +24,6 @@ module VER
       event
     end
 
-    def self.let(source, target)
-      event = self[target].dup
-      PATTERN[source] = event
-    end
-
     # given a <pattern>, this returns the event for this pattern.
     # given a unicode char, returns the event with shortest pattern.
     def self.[](string)
@@ -77,31 +72,6 @@ module VER
       add("<Shift-Tab>", "Tab", "\t")
     else
       raise "Unknown windowing system: %p" % [WINDOWING_SYSTEM]
-    end
-
-    # Add a couple of aliases, on X11 Shift-Tab is ISO_Left_Tab or
-    # ISO_Right_Tab, but mapping that raises on win32 and aqua.
-    case Tk::TkCmd.windowingsystem
-    when :x11
-      add "<ISO_Left_Tab>", "ISO_Left_Tab"
-      let "<Shift-Tab>", "<ISO_Left_Tab>"
-
-      add "<Control-ISO_Left_Tab>", "ISO_Left_Tab"
-      let "<Control-Shift-Tab>", "<Control-ISO_Left_Tab>"
-
-      add "<Alt-ISO_Left_Tab>", "ISO_Left_Tab"
-      let "<Alt-Shift-Tab>", "<Alt-ISO_Left_Tab>"
-    when :win32, :aqua
-      add "<Shift-Tab>", "Tab"
-      let "<ISO_Left_Tab>", "<Shift-Tab>"
-
-      add "<Control-Shift-Tab>", "Tab"
-      let "<Control-ISO_Left_Tab>", "<Control-Shift-Tab>"
-
-      add "<Alt-Shift-Tab>", "Tab"
-      let "<Alt-ISO_Left_Tab>", "<Alt-Shift-Tab>"
-    else
-      raise "Unknown windowingsystem: #{Tk.windowingsystem}"
     end
 
     add "<0>", "0", "0"
