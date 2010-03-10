@@ -103,7 +103,7 @@ module VER
     end
 
     def []=(*pattern, action)
-      pattern = pattern_to_patterns(*[*pattern])
+      pattern = pattern_to_patterns(*pattern)
       top = sub = MapHash.new
 
       while key = pattern.shift
@@ -174,7 +174,7 @@ module VER
     def pattern_to_patterns(*patterns)
       result = []
 
-      patterns.each do |pattern|
+      patterns.flatten.each do |pattern|
         if pattern.respond_to?(:scan)
           pattern.scan(/<<[^>]+>>|<[^>]+>|(?!\s<)[[:print:]]/) do
             result << Event[$&.gsub('<Alt', '<M1')].pattern
