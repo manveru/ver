@@ -138,10 +138,10 @@ module VER
     touch
     setup_tk
     run_startup(given_options)
-    Event.load!
     pp options if $DEBUG
 
     run_maybe_forking do
+      Event.load!
       options.eventmachine ? run_em(&block) : run_noem(&block)
     end
   rescue => exception
