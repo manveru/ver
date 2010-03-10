@@ -11,23 +11,59 @@ module VER
     KEYSYM   = Hash.new{|h,k| h[k] = Set.new }
 
     WINDOWING_SYSTEM = Tk::TkCmd.windowingsystem
+    MODIFIERS = %w[
+      Control
+      Meta M
+      Mod1 M1 Command
+      Mod2 M2 Option
+      Mod3 M3
+      Mod4 M4
+      Mod5 M5
+      Alt
+      Shift
+      Lock
+      Extended
+      Button1 B1
+      Button2 B2
+      Button3 B3
+      Button4 B4
+      Button5 B5
+      Double
+      Triple
+      Quadruple
+    ]
 
     def self.each(&block)
       PATTERN.values.each(&block)
     end
 
-    def self.add(*args)
-      event = new(*args)
+    def self.keysym(keysym, unicode = '')
+      event = pattern("<#{keysym}>", keysym, unicode)
+      MODIFIERS.each{|mod| pattern("<#{mod}-#{keysym}>", keysym, unicode) }
+      event
+    end
+
+    def self.literal(keysym, unicode = keysym)
+    end
+
+    def self.pattern(pattern, keysym, unicode)
+      event = new(pattern, keysym, unicode)
       PATTERN[event.pattern] = event
       UNICODE[event.unicode] << event
       KEYSYM[event.keysym] << event
       event
     end
 
+    def self.fake(alias_pattern, keysym, unicode = '')
+      event = pattern("<#{alias_pattern}>", keysym, unicode)
+      MODIFIERS.each{|mod| pattern("<#{mod}-#{alias_pattern}>", keysym, unicode) }
+      event
+    end
+
     # given a <pattern>, this returns the event for this pattern.
     # given a unicode char, returns the event with shortest pattern.
     def self.[](string)
-      if string =~ /^<.*>$/
+      if string =~ /^<(.*)>$/
         PATTERN.fetch(string)
       elsif string.size == 1
         UNICODE.fetch(string).min_by{|event| event.pattern.size }
@@ -38,10 +74,10 @@ module VER
       raise(KeyError, "#{ex}: %p" % [string])
     end
 
-    def initialize(pattern, keysym = nil, unicode = nil)
+    def initialize(pattern, keysym = '', unicode = '')
       self.pattern = convert_pattern(pattern)
-      self.keysym   = convert_keysym(keysym)
-      self.unicode  = convert_unicode(unicode)
+      self.keysym  = convert_keysym(keysym)
+      self.unicode = convert_unicode(unicode)
     end
 
     # Adjust
@@ -59,53 +95,62 @@ module VER
 
     case WINDOWING_SYSTEM
     when :x11
-      PATTERN['<Control-Shift-Tab>'] = add("<Control-ISO_Left_Tab>", "ISO_Left_Tab", "")
-      PATTERN['<Alt-Shift-Tab>'] = add("<Alt-ISO_Left_Tab>", "ISO_Left_Tab", "")
-      PATTERN['<Shift-Tab>'] = add("<ISO_Left_Tab>", "ISO_Left_Tab", "")
+      fake('Shift-Tab', 'ISO_Left_Tab', "\t")
+
+      keysym "XF86_Switch_VT_1"
+      keysym "XF86_Switch_VT_2"
+      keysym "XF86_Switch_VT_3"
+      keysym "XF86_Switch_VT_4"
+      keysym "XF86_Switch_VT_5"
+      keysym "XF86_Switch_VT_6"
+      keysym "XF86_Switch_VT_7"
+      keysym "XF86_Switch_VT_8"
+      keysym "XF86_Switch_VT_9"
+      keysym "XF86_Switch_VT_10"
+      keysym "XF86_Switch_VT_11"
+      keysym "XF86_Switch_VT_12"
+      keysym "XF86_ClearGrab", "*"
+      keysym "XF86_Next_VMode", "+"
+      keysym "XF86_Prev_VMode", "-"
+      keysym "XF86MonBrightnessDown"
+      keysym "XF86_Ungrab", "/"
     when :aqua
-      add("<Control-Shift-Tab>", "Tab", "\t")
-      add("<Alt-Shift-Tab>", "Tab", "\t")
-      add("<Shift-Tab>", "Tab", "\t")
+      fake 'ISO_Left_Tab', 'Shift-Tab', "\t"
     when :win32
-      add("<Control-Shift-Tab>", "Tab", "\t")
-      add("<Alt-Shift-Tab>", "Tab", "\t")
-      add("<Shift-Tab>", "Tab", "\t")
+      fake 'ISO_Left_Tab', 'Shift-Tab', "\t"
     else
       raise "Unknown windowing system: %p" % [WINDOWING_SYSTEM]
     end
 
-    add "<0>", "0", "0"
-    add "<1>", "1", "1"
-    add "<2>", "2", "2"
-    add "<3>", "3", "3"
-    add "<4>", "4", "4"
-    add "<5>", "5", "5"
-    add "<6>", "6", "6"
-    add "<7>", "7", "7"
-    add "<8>", "8", "8"
-    add "<9>", "9", "9"
-    add "<A>", "A", "A"
-    add "<a>", "a", "a"
-    add "<Alt-0>", "0", "0"
-    add "<Alt-A>", "A", "A"
-    add "<Alt-a>", "a", "a"
-    add "<Alt-ampersand>", "ampersand", "&"
-    add "<Alt-apostrophe>", "apostrophe", "'"
-    add "<Alt-asciitilde>", "asciitilde", "~"
-    add "<Alt-asterisk>", "asterisk", "*"
-    add "<Alt-at>", "at", "@"
-    add "<Alt-B>", "B", "B"
-    add "<Alt-b>", "b", "b"
-    add "<Alt-backslash>", "backslash", "\\"
-    add "<Alt-BackSpace>", "BackSpace", "\b"
-    add "<Alt-bar>", "bar", "|"
-    add "<Alt-braceleft>", "braceleft", "{"
-    add "<Alt-braceright>", "braceright", "}"
-    add "<Alt-bracketleft>", "bracketleft", "["
-    add "<Alt-bracketright>", "bracketright", "]"
-    add "<Alt-Break>", "Break"
-    add "<Alt-C>", "C", "C"
-    add "<Alt-c>", "c", "c"
+    [*'0'..'9', *'a'..'Z', *'A'..'Z'].each{|sym| keysym(sym, sym) }
+
+    keysym 'ampersand', '&'
+    keysym 'apostrophe', "'"
+    keysym 'asciitilde', '~'
+    keysym 'asterisk', '*'
+    keysym "at", "@"
+    keysym "backslash", "\\"
+    keysym "BackSpace", "\b"
+    keysym "bar", "|"
+    keysym "braceleft", "{"
+    keysym "braceright", "}"
+    keysym "bracketleft", "["
+    keysym "bracketright", "]"
+
+    def self.add(seq, sym, uni = nil)
+      return unless uni
+      case uni
+      when /^[a-zA-Z0-9]$/
+        if uni == sym
+          puts "    literal %p" % [sym]
+        else
+          puts "    keysym %p, %p" % [sym, uni]
+        end
+      else
+        puts "    pattern %p, %p, %p" % [seq, sym, uni]
+      end
+    end
+
     add "<Alt-Caps_Lock>", "Caps_Lock"
     add "<Alt-colon>", "colon", ":"
     add "<Alt-comma>", "comma", ","
@@ -212,18 +257,6 @@ module VER
     add "<Alt-w>", "w", "w"
     add "<Alt-X>", "X", "X"
     add "<Alt-x>", "x", "x"
-    add "<Alt-XF86_Switch_VT_10>", "XF86_Switch_VT_10"
-    add "<Alt-XF86_Switch_VT_11>", "XF86_Switch_VT_11"
-    add "<Alt-XF86_Switch_VT_12>", "XF86_Switch_VT_12"
-    add "<Alt-XF86_Switch_VT_1>", "XF86_Switch_VT_1"
-    add "<Alt-XF86_Switch_VT_2>", "XF86_Switch_VT_2"
-    add "<Alt-XF86_Switch_VT_3>", "XF86_Switch_VT_3"
-    add "<Alt-XF86_Switch_VT_4>", "XF86_Switch_VT_4"
-    add "<Alt-XF86_Switch_VT_5>", "XF86_Switch_VT_5"
-    add "<Alt-XF86_Switch_VT_6>", "XF86_Switch_VT_6"
-    add "<Alt-XF86_Switch_VT_7>", "XF86_Switch_VT_7"
-    add "<Alt-XF86_Switch_VT_8>", "XF86_Switch_VT_8"
-    add "<Alt-XF86_Switch_VT_9>", "XF86_Switch_VT_9"
     add "<Alt-Y>", "Y", "Y"
     add "<Alt-y>", "y", "y"
     add "<Alt-Z>", "Z", "z"
@@ -552,23 +585,6 @@ module VER
     add "<Control-w>", "w", "\x17"
     add "<Control-X>", "X", "\x18"
     add "<Control-x>", "x", "\x18"
-    add "<Control-XF86MonBrightnessDown>", "XF86MonBrightnessDown"
-    add "<Control-XF86_ClearGrab>", "XF86_ClearGrab", "*"
-    add "<Control-XF86_Next_VMode>", "XF86_Next_VMode", "+"
-    add "<Control-XF86_Prev_VMode>", "XF86_Prev_VMode", "-"
-    add "<Control-XF86_Switch_VT_10>", "XF86_Switch_VT_10"
-    add "<Control-XF86_Switch_VT_11>", "XF86_Switch_VT_11"
-    add "<Control-XF86_Switch_VT_12>", "XF86_Switch_VT_12"
-    add "<Control-XF86_Switch_VT_1>", "XF86_Switch_VT_1"
-    add "<Control-XF86_Switch_VT_2>", "XF86_Switch_VT_2"
-    add "<Control-XF86_Switch_VT_3>", "XF86_Switch_VT_3"
-    add "<Control-XF86_Switch_VT_4>", "XF86_Switch_VT_4"
-    add "<Control-XF86_Switch_VT_5>", "XF86_Switch_VT_5"
-    add "<Control-XF86_Switch_VT_6>", "XF86_Switch_VT_6"
-    add "<Control-XF86_Switch_VT_7>", "XF86_Switch_VT_7"
-    add "<Control-XF86_Switch_VT_8>", "XF86_Switch_VT_8"
-    add "<Control-XF86_Switch_VT_9>", "XF86_Switch_VT_9"
-    add "<Control-XF86_Ungrab>", "XF86_Ungrab", "/"
     add "<Control-Y>", "Y", "\x19"
     add "<Control-y>", "y", "\x19"
     add "<Control-Z>", "Z", "\x1A"
@@ -717,22 +733,6 @@ module VER
     add "<w>", "w", "w"
     add "<X>", "X", "X"
     add "<x>", "x", "x"
-    add "<XF86_ClearGrab>", "XF86_ClearGrab", "*"
-    add "<XF86_Next_VMode>", "XF86_Next_VMode", "+"
-    add "<XF86_Prev_VMode>", "XF86_Prev_VMode", "-"
-    add "<XF86_Switch_VT_10>", "XF86_Switch_VT_10"
-    add "<XF86_Switch_VT_11>", "XF86_Switch_VT_11"
-    add "<XF86_Switch_VT_12>", "XF86_Switch_VT_12"
-    add "<XF86_Switch_VT_1>", "XF86_Switch_VT_1"
-    add "<XF86_Switch_VT_2>", "XF86_Switch_VT_2"
-    add "<XF86_Switch_VT_3>", "XF86_Switch_VT_3"
-    add "<XF86_Switch_VT_4>", "XF86_Switch_VT_4"
-    add "<XF86_Switch_VT_5>", "XF86_Switch_VT_5"
-    add "<XF86_Switch_VT_6>", "XF86_Switch_VT_6"
-    add "<XF86_Switch_VT_7>", "XF86_Switch_VT_7"
-    add "<XF86_Switch_VT_8>", "XF86_Switch_VT_8"
-    add "<XF86_Switch_VT_9>", "XF86_Switch_VT_9"
-    add "<XF86_Ungrab>", "XF86_Ungrab", "/"
     add "<Y>", "Y", "Y"
     add "<y>", "y", "y"
     add "<Z>", "Z", "Z"
