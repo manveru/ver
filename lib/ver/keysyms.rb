@@ -10,8 +10,6 @@ module VER
     UNICODE  = Hash.new{|h,k| h[k] = Set.new }
     KEYSYM   = Hash.new{|h,k| h[k] = Set.new }
 
-    WINDOWING_SYSTEM = Tk::TkCmd.windowingsystem
-
     def self.each(&block)
       PATTERN.values.each(&block)
     end
@@ -139,13 +137,5 @@ module VER
 
     ('a'..'z').each{|chr| pattern(chr, chr, chr) }
     ('A'..'Z').each{|chr| pattern(chr, chr, chr) }
-
-    case WINDOWING_SYSTEM
-    when :x11
-    when :aqua
-    when :win32
-    else
-      raise "Unknown windowing system: %p" % [WINDOWING_SYSTEM]
-    end
   end
 end
