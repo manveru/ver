@@ -151,15 +151,15 @@ module VER
   minor_mode :ctags do
     handler Methods::CTags
 
-    map :find_current,  '<M2-bracketright>' # C-]
-    map :prev,          '<M2-bracketleft>'  # C-[
+    #map :find_current,  '<M2-bracketright>' # C-]
+    #map :prev,          '<M2-bracketleft>'  # C-[
   end
 
   minor_mode :bookmark do
     handler Methods::Bookmark
 
     map :add_char,    'm'
-    map :visit_char,  '`'
+    #map :visit_char,  '`'
     # vim also has quoteright to jump to the start of the line, but who
     # needs that *_*
   end
@@ -255,7 +255,7 @@ module VER
     map [:ex, :theme],        ':t'
     # map [:ex, :write],        ':w'
 
-    map :toggle_case, '~'
+    #map :toggle_case, '~'
     map :wrap_line,   'gw'
     map :indent_line,                       '>'
     map :unindent_line,                     '<less>'
@@ -372,7 +372,7 @@ module VER
     map :kill,            'd', 'D', 'x', '<BackSpace>', '<Delete>'
     map :lower_case,      'u'
     map :replace_string,  'c'
-    map :toggle_case,     '<asciitilde>'
+    #map :toggle_case,     '<asciitilde>'
     map :upper_case,      'U'
     map :uncomment,       ',u'
     map :unindent,        '<less>'
