@@ -120,8 +120,8 @@ module VER
           KEYSYM[event.keysym] << event
         }
       }
-    rescue => ex
-      l ex
+    rescue Errno::ENOENT
+      # Harmless, the .events file isn't created yet.
     end
 
     def initialize(pattern, keysym, unicode)
