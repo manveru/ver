@@ -2,27 +2,27 @@ module VER
   minor_mode :help do
     handler Methods::Help
 
-    map :describe_key, '<M2-h>k'
+    map :describe_key, '<Control-h>k'
   end
 
   minor_mode :open do
     handler Methods::Open
-    map :file_open_popup, '<M2-o>'
+    map :file_open_popup, '<Control-o>'
     map :file_open_ask,   ':o<space>'
 
     handler Methods::Control
-    map [:ex, :fuzzy], '<M1-o>', '<M2-m>o'
+    map [:ex, :fuzzy], '<M1-o>', '<Control-m>o'
   end
 
   minor_mode :save do
-    map :save,     '<M2-s>', ':w<Return>'
-    map :save_as,  '<M2-S>', ':w<space>'
+    map :save,     '<Control-s>', ':w<Return>'
+    map :save_as,  '<Control-S>', ':w<space>'
     map :save_all, ':wa'
   end
 
   minor_mode :preview do
-    map :eval_buffer,  '<M2-R>'
-    map :tags_tooltip, '<M2-g>t'
+    map :eval_buffer,  '<Control-R>'
+    map :tags_tooltip, '<Control-g>t'
 
     handler Methods::Preview
     map :preview, '<F5>'
@@ -32,26 +32,26 @@ module VER
     inherits :help, :preview, :save, :open
 
     handler Methods::Basic
-    map :minibuf_eval,    '<M1-x>', '<M2-m>x'
+    map :minibuf_eval,    '<M1-x>', '<Control-m>x'
     map :open_terminal,   '<F9>'
-    map :open_console,    '<M2-exlam>' if defined?(::EM)
+    map :open_console,    '<Control-exlam>' if defined?(::EM)
   end
 
   minor_mode :vim_layout do
     # map :quit!,            ':q!'
-    map :quit,             '<M2-w>q', '<M2-w><M2-q>', ':q<Return>'
-    map :close,            '<M2-w>c', ':clo<Return>'
+    map :quit,             '<Control-w>q', '<Control-w><Control-q>', ':q<Return>'
+    map :close,            '<Control-w>c', ':clo<Return>'
     # map :close!,           ':clo!'
 
     handler :window
-    map :split_horizontal, '<M2-w>s', '<M2-w><M2-s>', ':sh'
-    map :split_vertical,   '<M2-w>v', '<M2-w><M2-v>', ':sv'
-    map :new_horizontal,   '<M2-w>n', '<M2-w><M2-n>', ':n'
-    map :only,             '<M2-w>o', '<M2-w><M2-o>', ':on<Return>'
-    map :go_below,         '<M2-w>j', '<M2-w><M2-j>', '<M2-w><Down>'
-    map :go_above,         '<M2-w>k', '<M2-w><M2-k>', '<M2-w><Up>'
-    map :go_left,          '<M2-w>h', '<M2-w><M2-h>', '<M2-w><Left>', '<M2-w><BackSpace>'
-    map :go_right,         '<M2-w>l', '<M2-w><M2-l>', '<M2-w><Right>'
+    map :split_horizontal, '<Control-w>s', '<Control-w><Control-s>', ':sh'
+    map :split_vertical,   '<Control-w>v', '<Control-w><Control-v>', ':sv'
+    map :new_horizontal,   '<Control-w>n', '<Control-w><Control-n>', ':n'
+    map :only,             '<Control-w>o', '<Control-w><Control-o>', ':on<Return>'
+    map :go_below,         '<Control-w>j', '<Control-w><Control-j>', '<Control-w><Down>'
+    map :go_above,         '<Control-w>k', '<Control-w><Control-k>', '<Control-w><Up>'
+    map :go_left,          '<Control-w>h', '<Control-w><Control-h>', '<Control-w><Left>', '<Control-w><BackSpace>'
+    map :go_right,         '<Control-w>l', '<Control-w><Control-l>', '<Control-w><Right>'
   end
 
   minor_mode :layout do
@@ -85,18 +85,18 @@ module VER
   end
 
   minor_mode :layout_control do
-    become :layout, '<M2-w>r'
+    become :layout, '<Control-w>r'
 
     handler Methods::Layout
-    map :change,     ['<M2-w>', :layout]
-    map :focus_next, '<M2-Tab>'
+    map :change,     ['<Control-w>', :layout]
+    map :focus_next, '<Control-Tab>'
     map :cycle_next, '<M1-Tab>', ':bn'
 
     if x11?
-      map :focus_prev, '<M2-ISO_Left_Tab>'
+      map :focus_prev, '<Control-ISO_Left_Tab>'
       map :cycle_prev, '<M1-ISO_Left_Tab>', ':bp'
     else
-      map :focus_prev, '<M2-Shift-Tab>'
+      map :focus_prev, '<Control-Shift-Tab>'
       map :cycle_prev, '<M1-Shift-Tab>', ':bp'
     end
   end
@@ -117,14 +117,14 @@ module VER
     map :next_char,       'l', '<Right>'
     map :next_chunk,      'W'
     map :next_chunk_end,  'E'
-    map :next_line,       'j', '<Down>', '<M2-n>'
-    map :next_page,       '<M2-f>', '<Next>'
+    map :next_line,       'j', '<Down>', '<Control-n>'
+    map :next_page,       '<Control-f>', '<Next>'
     map :next_word,       'w', '<Shift-Right>'
     map :next_word_end,   'e'
     map :prev_char,       'h', '<Left>'
     map :prev_chunk,      'B'
-    map :prev_line,       'k', '<Up>', '<M2-p>'
-    map :prev_page,       '<M2-b>', '<Prior>'
+    map :prev_line,       'k', '<Up>', '<Control-p>'
+    map :prev_page,       '<Control-b>', '<Prior>'
     map :prev_word,       'b', '<Shift-Left>'
     map :start_of_line,   '<Home>'
   end
@@ -151,8 +151,8 @@ module VER
   minor_mode :ctags do
     handler Methods::CTags
 
-    #map :find_current,  '<M2-bracketright>' # C-]
-    #map :prev,          '<M2-bracketleft>'  # C-[
+    map :find_current,  '<Control-bracketright>' # C-]
+    map :prev,          '<Control-bracketleft>'  # C-[
   end
 
   minor_mode :bookmark do
@@ -167,12 +167,12 @@ module VER
   minor_mode :complete do
     handler Methods::Completion
 
-    map :aspell,     '<M2-x><M2-a>'
-    map :contextual, '<M2-x><M2-x>'
-    map :file,       '<M2-x><M2-f>'
-    map :line,       '<M2-x><M2-l>'
-    map :snippet,    '<M2-x><M2-s>'
-    map :word,       '<M2-x><M2-w>'
+    map :aspell,     '<Control-x><Control-a>'
+    map :contextual, '<Control-x><Control-x>'
+    map :file,       '<Control-x><Control-f>'
+    map :line,       '<Control-x><Control-l>'
+    map :snippet,    '<Control-x><Control-s>'
+    map :word,       '<Control-x><Control-w>'
     map :smart_tab,  '<Tab>'
   end
 
@@ -202,7 +202,7 @@ module VER
   minor_mode :undo do
     handler Methods::Undo
 
-    map :redo, '<M2-r>'
+    map :redo, '<Control-r>'
     map :undo, 'u'
   end
 
@@ -213,7 +213,7 @@ module VER
     become :insert,         'i', '<Insert>'
     become :replace,        'R'
     become :replace_char,   'r'
-    become :select_block,   '<M2-v>'
+    become :select_block,   '<Control-v>'
     become :select_char,    'v'
     become :select_line,    'V'
     become :control,        '<Escape>'
@@ -242,7 +242,7 @@ module VER
     map :cursor_vertical_top_sol,           'z<Return>'
 
     map :executor, '::'
-    map [:ex, :buffer],       ':bu', '<M1-b>', '<M2-m>b'
+    map [:ex, :buffer],       ':bu', '<M1-b>', '<Control-m>b'
     map [:ex, :edit],         ':e<space>'
     map [:ex, :encoding],     ':en<space>'
     map [:ex, :fuzzy],        ':f'
@@ -261,7 +261,7 @@ module VER
     map :unindent_line,                     '<less>'
     map :join_line_forward,                 'J'
     map :open_file_under_cursor,            'gf'
-    map :smart_evaluate,                    '<M1-e>', '<M2-m>e'
+    map :smart_evaluate,                    '<M1-e>', '<Control-m>e'
 
     handler Methods::SearchAndReplace
     map :query, '<M1-percent>'
@@ -270,26 +270,26 @@ module VER
   minor_mode :readline do
     map :accept_line,       '<Return>'
 
-    map :end_of_line,       '<End>', '<M2-e>'
+    map :end_of_line,       '<End>', '<Control-e>'
     map :insert_selection,  '<Shift-Insert>'
-    map :insert_tab,        '<M2-v><Tab>', '<M2-i>'
-    map :kill_end_of_line,  '<M2-k>'
-    map :kill_next_char,    '<M2-d>', '<Delete>'
+    map :insert_tab,        '<Control-v><Tab>', '<Control-i>'
+    map :kill_end_of_line,  '<Control-k>'
+    map :kill_next_char,    '<Control-d>', '<Delete>'
     map :kill_next_word,    '<M1-d>'
     map :kill_prev_char,    '<BackSpace>'
-    map :kill_prev_word,    '<M2-w>'
-    map :next_char,         '<Right>', '<M2-f>'
+    map :kill_prev_word,    '<Control-w>'
+    map :next_char,         '<Right>', '<Control-f>'
     map :next_word,         '<Shift-Right>', '<M1-f>'
-    map :prev_char,         '<Left>', '<M2-b>'
+    map :prev_char,         '<Left>', '<Control-b>'
     map :prev_word,         '<Shift-Left>', '<M1-b>'
-    map :start_of_line,     '<Home>', '<M2-a>'
-    map :transpose_chars,   '<M2-t>'
+    map :start_of_line,     '<Home>', '<Control-a>'
+    map :transpose_chars,   '<Control-t>'
 
     # TODO
     map :sel_prev_char,     '<Shift-Left>'
     map :sel_next_char,     '<Shift-Right>'
-    map :sel_prev_word,     '<Shift-M2-Left>'
-    map :sel_next_word,     '<Shift-M2-Right>'
+    map :sel_prev_word,     '<Shift-Control-Left>'
+    map :sel_next_word,     '<Shift-Control-Right>'
     map :sel_start_of_line, '<Shift-Home>'
     map :sel_end_of_line,   '<Shift-End>'
 
@@ -298,35 +298,35 @@ module VER
 
   minor_mode :insert do
     inherits :basic, :layout_control, :complete
-    become :control, '<Escape>', '<M2-c>'
+    become :control, '<Escape>', '<Control-c>'
 
     handler Methods::AutoFill
     map :auto_fill_space,          '<space>'
 
     handler :at_insert
-    map :end_of_line,            '<End>', '<M2-e>'
+    map :end_of_line,            '<End>', '<Control-e>'
     map :insert_newline,         '<Return>'
     map :insert_selection,       '<Shift-Insert>', '<Insert>'
-    map :insert_tab,             '<M2-v><Tab>', '<M2-i>'
-    map :next_char,              '<Right>', '<M2-f>'
-    map :next_line,              '<Down>', '<M2-n>'
-    map :next_page,              '<M2-f>', '<Next>', '<Shift-Down>'
+    map :insert_tab,             '<Control-v><Tab>', '<Control-i>'
+    map :next_char,              '<Right>', '<Control-f>'
+    map :next_line,              '<Down>', '<Control-n>'
+    map :next_page,              '<Control-f>', '<Next>', '<Shift-Down>'
     map :next_word,              '<Shift-Right>', '<M1-f>'
-    map :prev_char,              '<Left>', '<M2-b>'
-    map :prev_line,              '<Up>', '<M2-p>'
-    map :prev_page,              '<M2-b>', '<Prior>', '<Shift-Up>'
+    map :prev_char,              '<Left>', '<Control-b>'
+    map :prev_line,              '<Up>', '<Control-p>'
+    map :prev_page,              '<Control-b>', '<Prior>', '<Shift-Up>'
     map :prev_word,              '<Shift-Left>', '<M1-b>'
-    map :start_of_line,          '<Home>', '<M2-a>'
-    map [:killing, :next_char],  '<Delete>', '<M2-d>'
+    map :start_of_line,          '<Home>', '<Control-a>'
+    map [:killing, :next_char],  '<Delete>', '<Control-d>'
     map [:killing, :prev_char],  '<BackSpace>'
-    map [:killing, :prev_word],  '<M2-w>'
+    map [:killing, :prev_word],  '<Control-w>'
 
     handler Methods::Control
-    map :smart_evaluate,           '<M1-e>', '<M2-e>'
+    map :smart_evaluate,           '<M1-e>', '<Control-e>'
     if x11?
-      map :unindent_line,            '<ISO_Left_Tab>'
+      map :unindent_line,          '<ISO_Left_Tab>'
     else
-      map :unindent_line,            '<Shift-Tab>'
+      map :unindent_line,          '<Shift-Tab>'
     end
 
     handler Methods::Insert
@@ -334,7 +334,7 @@ module VER
   end
 
   minor_mode :replace do
-    become :control, '<Escape>', '<M2-c>'
+    become :control, '<Escape>', '<Control-c>'
 
     handler Methods::Insert
     map [:replace_string, "\n"], '<Return>'
@@ -342,7 +342,7 @@ module VER
   end
 
   minor_mode :replace_char do
-    become :control, '<Escape>', '<M2-c>'
+    become :control, '<Escape>', '<Control-c>'
 
     handler Methods::Insert
     map [:replace_char, "\n"], '<Return>'
@@ -350,7 +350,7 @@ module VER
   end
 
   minor_mode :search_and_replace do
-    become :control, '<Escape>', '<M2-c>', 'q'
+    become :control, '<Escape>', '<Control-c>', 'q'
 
     handler Methods::SearchAndReplace
     enter :enter
@@ -358,8 +358,8 @@ module VER
 
     map :replace_all,  'a', '<exclam>'
     map :replace_once, 'y'
-    map :next,         'n', 's', 'j', '<M2-n>'
-    map :prev,         'k', '<M2-p>'
+    map :next,         'n', 's', 'j', '<Control-n>'
+    map :prev,         'k', '<Control-p>'
   end
 
   minor_mode :select do
@@ -378,7 +378,7 @@ module VER
     map :unindent,        '<less>'
 
     handler Methods::Control
-    map :smart_evaluate,  '<M1-e>', '<M2-e>'
+    map :smart_evaluate,  '<M1-e>', '<Control-e>'
 
     handler Methods::Selection
     map :pipe,            '<exclam>'
@@ -387,9 +387,9 @@ module VER
   minor_mode :select_char do
     inherits :select
 
-    become :control,             '<Escape>', '<M2-c>'
+    become :control,             '<Escape>', '<Control-c>'
     become :select_line,         'V'
-    become :select_block,        '<M2-v>'
+    become :select_block,        '<Control-v>'
     become :select_replace_char, 'r'
 
     handler :at_sel
@@ -401,9 +401,9 @@ module VER
   minor_mode :select_line do
     inherits :select
 
-    become :control,             '<Escape>', '<M2-c>'
+    become :control,             '<Escape>', '<Control-c>'
     become :select_char,         'v'
-    become :select_block,        '<M2-v>'
+    become :select_block,        '<Control-v>'
     become :select_replace_char, 'r'
 
     handler :at_sel
@@ -415,7 +415,7 @@ module VER
   minor_mode :select_block do
     inherits :select
 
-    become :control,             '<Escape>', '<M2-c>'
+    become :control,             '<Escape>', '<Control-c>'
     become :select_char,         'v'
     become :select_line,         'V'
     become :select_replace_char, 'r'
@@ -426,7 +426,7 @@ module VER
   end
 
   minor_mode :select_replace_char do
-    become :control, '<Escape>', '<M2-c>'
+    become :control, '<Escape>', '<Control-c>'
 
     handler :at_sel
     map [:replace_char, "\n"], '<Return>'
@@ -447,7 +447,7 @@ module VER
     inherits :readline
 
     handler Methods::Snippet
-    map :cancel, '<Escape>', '<M2-c>'
+    map :cancel, '<Escape>', '<Control-c>'
     map :jump,   '<Tab>'
 
     missing :insert_string
@@ -460,7 +460,7 @@ module VER
   major_mode :MiniBuffer do
     use :readline
 
-    map :abort,           '<Escape>', '<M2-c>'
+    map :abort,           '<Escape>', '<Control-c>'
     map :attempt,         '<Return>'
     map :complete_large,  '<Tab><Tab>'
     map :complete_small,  '<Tab>'
@@ -482,8 +482,8 @@ module VER
 
     map :completion, '<Tab>'
     map :cancel,     '<Escape>'
-    map :next_line,  '<Down>', '<M2-j>', '<M2-n>'
-    map :prev_line,  '<Up>', '<M2-k>', '<M2-p>'
+    map :next_line,  '<Down>', '<Control-j>', '<Control-n>'
+    map :prev_line,  '<Up>', '<Control-k>', '<Control-p>'
   end
 
   minor_mode :executor_label do
