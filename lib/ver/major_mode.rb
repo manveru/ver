@@ -53,6 +53,7 @@ module VER
       self.tag = Tk::BindTag.new("#{name}-mode")
 
       Event.each{|event| bind_key(event.pattern) }
+      bind_key('<colon>')
       bind_key('<Escape>')
     end
 
