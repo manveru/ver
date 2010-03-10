@@ -105,21 +105,25 @@ module VER
       @toplevel = @entry = @label = @progress = nil
     end
 
+    def self.persist_location
+      VER.options.home_conf_dir/'.events'
+    end
+
     def self.persist!
-      path = Pathname('~/.config/ver/.events').expand_path
-      path.open('w+:BINARY'){|io| io.write(Marshal.dump(PATTERN)) }
+      persist_location.open 'w+:BINARY' do |io|
+        io.write(Marshal.dump(PATTERN))
+      end
     end
 
     def self.load!
-      path = Pathname('~/.config/ver/.events').expand_path
-      path.open('r:BINARY'){|io|
+      persist_location.open('r:BINARY') do |io|
         pattern = Marshal.load(io.read)
-        pattern.each{|sym, event|
+        pattern.each do |sym, event|
           PATTERN[event.pattern] = event
           UNICODE[event.unicode] << event
           KEYSYM[event.keysym] << event
-        }
-      }
+        end
+      end
     rescue Errno::ENOENT
       # Harmless, the .events file isn't created yet.
     end
