@@ -25,6 +25,11 @@ module VER
       establish_tag
       use(*self.major.minors)
       listen
+
+      # in case we had some keymap updates, they must have been registered by
+      # now, since otherwise we wouldn't be here.
+      # This will be called around 3 times per startup.
+      Event.done_yet?
     end
 
     def listen

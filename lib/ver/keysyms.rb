@@ -57,44 +57,52 @@ module VER
     end
 
     def self.capture(pattern)
-      @entry ||=
-        begin
-          @toplevel = Tk::Toplevel.new
-          @counter = 5
-          label = Tk::Tile::Label.new(
-            @toplevel, text: 'Synchronizing keymap to events...')
-          label.pack
-          entry = Tk::Entry.new(@toplevel)
-          entry.pack
-          entry.bind('<Map>'){ entry.focus }
-          countdown = lambda{
-            label.configure(text: "Synchronizing keymap to events... #@counter")
-            if @counter <= 0
-              persist!
-              @toplevel.destroy
-              @toplevel = @entry = nil
-            else
-              @counter -= 1
-              Tk::After.ms(1000, &countdown)
-            end
-          }
-          Tk::After.ms(500, &countdown)
-          entry
-        end
+      @entry ||= setup_capture
+      @pending += 1
 
       @entry.bind(pattern){|event|
         pattern(event.pattern, event.keysym, event.unicode)
+        @progress.step
         Tk.callback_break
       }
 
       until self.key?(pattern)
-        @counter = 3
         Tk.update
         Tk::Event.generate(@entry, pattern, when: :now)
         Tk.update
       end
 
+      @pending -= 1
       self[pattern]
+    end
+
+    def self.setup_capture
+      @toplevel = Tk::Toplevel.new
+      @label = Tk::Tile::Label.new(
+        @toplevel,
+        text: "Detected updates to keymap, this may take a few seconds..."
+      )
+      @entry = Tk::Entry.new(@toplevel)
+      @progress = Tk::Tile::Progressbar.new(
+        @toplevel,
+        orient: :horizontal,
+        mode: :indeterminate
+      )
+      @progress.start
+
+      @pending = 0
+      @label.pack
+      @progress.pack
+      @entry.pack
+      @entry.bind('<Map>'){ @entry.focus }
+      @entry
+    end
+
+    def self.done_yet?
+      return if !@toplevel || @pending > 0
+      persist!
+      @toplevel.destroy
+      @toplevel = @entry = @label = @progress = nil
     end
 
     def self.persist!
