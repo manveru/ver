@@ -20,6 +20,8 @@ module VER
                                :fallback_action, :tag, :bound_keys)
 
     include Keymap::Results
+    include Keymap::Platform
+
     MODES = {}
 
     def self.[](name)
@@ -140,8 +142,9 @@ module VER
 
     def bind_key(key)
       return if bound_keys.include?(key)
+      pattern = Event[key].pattern
 
-      tag.bind(key) do |event|
+      tag.bind(pattern) do |event|
         event.widget.major_mode.on_event(event)
         Tk.callback_break
       end

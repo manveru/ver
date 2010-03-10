@@ -2,6 +2,24 @@ require 'set'
 
 module VER
   class Keymap < Struct.new(:keymap, :keys)
+    module Platform
+      def x11?
+        windowingsystem == :x11
+      end
+
+      def win32?
+        windowingsystem == :win32
+      end
+
+      def aqua?
+        windowingsystem == :aqua
+      end
+
+      def windowingsystem
+        @windowingsystem ||= Tk::TkCmd.windowingsystem
+      end
+    end
+
     module Results
       # Indicate that no result can and will be found in the keymap
       class Impossible < Struct.new(:pattern)
@@ -85,21 +103,16 @@ module VER
     end
 
     def []=(*pattern, action)
-      pattern = [*pattern].flatten
+      pattern = pattern_to_patterns(*[*pattern])
       top = sub = MapHash.new
 
       while key = pattern.shift
-        if key.respond_to?(:to_str)
-          canonical = Event[key.to_str].pattern
-          self.keys << canonical
-        else
-          canonical = key
-        end
+        self.keys << key if key.respond_to?(:keysym)
 
         if pattern.empty?
-          sub[canonical] = action
+          sub[key] = action
         else
-          sub = sub[canonical] = MapHash.new
+          sub = sub[key] = MapHash.new
         end
       end
 
@@ -158,15 +171,20 @@ module VER
       keymap.deep_each.map{|key, value| value }
     end
 
-    def key_to_canonical(key)
-      case key
-      when /^[a-zA-Z0-9]$/
-        key
-      when /^</
-        key
-      else
-        "<#{key}>"
+    def pattern_to_patterns(*patterns)
+      result = []
+
+      patterns.each do |pattern|
+        if pattern.respond_to?(:scan)
+          pattern.scan(/<<[^>]+>>|<[^>]+>|(?!\s<)[[:print:]]/) do
+            result << Event[$&.gsub('<Alt', '<M1')].pattern
+          end
+        else
+          result << pattern
+        end
       end
+
+      result
     end
   end
 end

@@ -44,7 +44,7 @@ module VER
   autoload :EvalCompleter,       'ver/vendor/eval_completer'
   autoload :ExceptionView,       'ver/exception_view'
   autoload :Executor,            'ver/executor'
-  autoload :Event,           'ver/keysyms'
+  autoload :Event,               'ver/keysyms'
   autoload :Font,                'ver/font'
   autoload :Help,                'ver/help'
   autoload :HoverCompletion,     'ver/hover_completion'
@@ -138,6 +138,7 @@ module VER
     touch
     setup_tk
     run_startup(given_options)
+    Event.load!
     pp options if $DEBUG
 
     run_maybe_forking do
@@ -567,7 +568,17 @@ module VER
   # a handleable error condition
   def error(*args)
     log.error(*args)
-    p(:error, *args)
+    if args.size == 1
+      arg = args.first
+      case arg
+      when Exception
+        puts "#{arg.class}: #{arg}", *arg.backtrace
+      else
+        p(:error, *args)
+      end
+    else
+      p(:error, *args)
+    end
   end
 
   # an unhandleable error that results in a program crash

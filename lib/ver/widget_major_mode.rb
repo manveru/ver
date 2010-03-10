@@ -71,7 +71,8 @@ module VER
 
       return handle_reader(event) if reader && read_amount
 
-      case result = resolve(stack)
+      result = resolve(stack)
+      case result
       when Incomplete
         message result.to_s(widget)
         # don't do anything yet...

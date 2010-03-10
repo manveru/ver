@@ -22,6 +22,7 @@ module VER
   class MinorMode < Struct.new(:name, :parents, :keymap, :receiver,
                                :fallback_action, :enter_action, :leave_action)
     include Keymap::Results
+    include Keymap::Platform
 
     MODES = {}
 
@@ -109,12 +110,6 @@ module VER
     def missing(invocation, &block)
       action = Action.new(invocation, receiver)
       self.fallback_action = action
-
-      bound = keymap.keys.to_a
-      Event.each do |event|
-        pattern = event.pattern
-        keymap[pattern] = action unless bound.include?(pattern)
-      end
     end
 
     def enter(invocation, &block)
