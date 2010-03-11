@@ -127,7 +127,7 @@ module VER
     handler Methods::Bookmark
 
     map :add_char,    'm'
-    #map :visit_char,  '`'
+    map :visit_char,  '`'
     # vim also has quoteright to jump to the start of the line, but who
     # needs that *_*
   end
