@@ -46,12 +46,10 @@ module VER
         Tk.execute_only(Tk::TclString.new(code.join("\n")))
       end
 
-      # pathName tag bind tagName ?pattern? ?script? 
       def bind(*args, &block)
         buffer.tag_bind(to_tcl, *args, &block)
       end
 
-      # pathName tag cget tagName option 
       def cget(option)
         buffer.tag_cget(self, option)
       end
@@ -89,17 +87,15 @@ module VER
         end
       end
 
-      # pathName tag configure tagName ?option? ?value? ?option value ...? 
       def configure(*options)
         buffer.tag_configure(self, *options)
       end
 
       def copy
         chunks = ranges.map{|range| range.get }
-        Methods::Clipboard.copy(buffer, chunks.size == 1 ? chunks.first : chunks)
+        Methods::Clipboard.copy(buffer, chunks.at(1) ? chunks : chunks.first)
       end
 
-      # pathName tag delete tagName ?tagName ...? 
       def delete
         buffer.tag_delete(self)
       end
@@ -157,11 +153,15 @@ module VER
 
       def kill
         indices = []
+
         chunks = ranges.map{|range|
           indices << range.first << range.last
           range.get
         }
-        Methods::Clipboard.copy(buffer, chunks.size == 1 ? chunks.first : chunks)
+
+        # A bit of duplication, but if we use copy here we have to iterate the
+        # ranges again.
+        Methods::Clipboard.copy(buffer, chunks.at(1) ? chunks : chunks.first)
         buffer.delete(*indices)
       end
 
@@ -224,7 +224,6 @@ module VER
         buffer.tag_ranges(self)
       end
 
-      # pathName tag remove tagName index1 ?index2 index1 index2 ...?
       def remove(index, *indices)
         buffer.tag_remove(self, index, *indices)
       end

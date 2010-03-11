@@ -15,12 +15,15 @@ module VER
 
       # FIXME: nasty hack or neccesary?
       def paste(text)
-        content = clipboard_get(text, 'UTF8_STRING'){
-          array = clipboard_get(text, 'ARRAY')
-          return paste_array(text, array) if array
-        }
+        return unless content = VER::Clipboard.dwim
 
-        paste_continous(text, content.to_s) if content
+        if content.respond_to?(:to_str)
+          paste_continous(text, content.to_str)
+        elsif content.respond_to?(:to_ary)
+          paste_array(text, content.to_ary)
+        else
+          raise "Don't know how to handle %p" % [content]
+        end
       end
 
       def paste_above(text)
@@ -30,39 +33,23 @@ module VER
 
       def copy(text, content)
         if content.respond_to?(:to_str)
-          copy_string(content.to_str)
+          VER::Clipboard.string = string = content.to_str
+          copy_message(text, string.count("\n") + 1, string.size)
         elsif content.respond_to?(:to_ary)
-          copy_array(content.to_ary)
+          VER::Clipboard.marshal = array = content.to_ary
+          copy_message(text, array.size, array.reduce(0){|s,v| s + v.size })
         else
-          copy_fallback(content)
+          VER::Clipboard.dwim = content
+          text.message "Copied unkown entity of class %p" % [content.class]
         end
       end
 
-      def copy_string(content)
-        VER::Clipboard.set(content)
-
-        copy_message(content.count("\n") + 1, content.size)
-      end
-
-      def copy_array(content)
-        marshal = [Marshal.dump(content)].pack('m')
-        Tk::Clipboard.set(marshal, type: 'ARRAY')
-
-        copy_message content.size, content.reduce(0){|s,v| s + v.size }
-      end
-
-      def copy_fallback(content)
-        VER::Clipboard.set(content)
-
-        VER.message "Copied unkown entity of class %p" % [content.class]
-      end
-
-      def copy_message(lines, chars)
+      def copy_message(text, lines, chars)
         lines_desc = lines == 1 ? 'line' : 'lines'
         chars_desc = chars == 1 ? 'character' : 'characters'
 
         msg = "copied %d %s of %d %s" % [lines, lines_desc, chars, chars_desc]
-        VER.message(msg)
+        text.message(msg)
       end
 
       def paste_continous(text, content)
@@ -78,24 +65,13 @@ module VER
         end
       end
 
-      def paste_array(text, marshal_array)
-        array = Marshal.load(marshal_array.unpack('m').first)
-        insert_y, insert_x = text.index(:insert).split
+      def paste_array(text, array)
+        insert_y, insert_x = *text.index(:insert)
 
         Undo.record text do |record|
           array.each_with_index do |line, index|
             record.insert("#{insert_y + index}.#{insert_x}", line)
           end
-        end
-      end
-
-      def clipboard_get(text, type = 'UTF8_STRING')
-        VER::Clipboard.get(type)
-      rescue RuntimeError => ex
-        if ex.message =~ /form "#{type}" not defined/
-          yield if block_given?
-        else
-          VER.error(ex)
         end
       end
     end

@@ -3,6 +3,7 @@ require_relative '../../helper'
 shared :with_selection do
   before do
     @buffer ||= VER::Buffer.new
+    Tk::Clipboard.clear
   end
 
   def buffer
@@ -63,14 +64,14 @@ VER.spec do
         buffer.value = 'line one'
         sel.add('1.0', '1.9')
         sel.copy
-        VER::Clipboard.get.should == 'line one'
+        VER::Clipboard.dwim.should == 'line one'
       end
 
       it 'copies content over multiple lines' do
         buffer.value = "line one\nline two\nline three\n"
         sel.add('1.0', '4.0')
         sel.copy
-        VER::Clipboard.get.should == "line one\nline two\nline three\n"
+        VER::Clipboard.dwim.should == "line one\nline two\nline three\n"
       end
 
       it 'evaluates content' do
@@ -87,7 +88,6 @@ VER.spec do
         sel.pipe!('rev')
         buffer.value.should == "eno\nowt\neerht\n"
         sel.ranges.should.be.empty
-        buffer.minor_mode?(:select_char).should.be.nil
       end
 
       it 'wraps content' do
@@ -121,8 +121,7 @@ line three
         start('select_char', '1.0')
         buffer.insert = 'end'
         sel.copy
-        VER::Clipboard.get.should == "line one\nline two\nline three\n"
-        buffer.minor_mode?(:select_char).should.be.nil
+        VER::Clipboard.dwim.should == "line one\nline two\nline three\n"
         sel.ranges.should.be.empty
       end
 
@@ -193,8 +192,7 @@ line three
         start('select_line', '1.0')
         buffer.insert = 'end'
         sel.copy
-        VER::Clipboard.get.should == "line one\nline two\nline three"
-        buffer.minor_mode?(:select_line).should.be.nil
+        VER::Clipboard.dwim.should == "line one\nline two\nline three"
         sel.ranges.should.be.empty
       end
 
@@ -292,11 +290,25 @@ line three
         start('select_block', '1.0')
         buffer.insert = '3.10'
         sel.copy
-        buffer.minor_mode?(:select_block).should.be.nil
+        VER::Clipboard.dwim.should == ["line one", "line two", "line three"]
         sel.ranges.should.be.empty
-        VER::Clipboard.get.should == "line one\nline two\nline three\n"
-        buffer.minor_mode?(:select_block).should.be.nil
-        sel.ranges.should.be.empty
+      end
+
+      it 'replaces contents with another string' do
+        start('select_block', '1.4')
+        buffer.insert = '3.4'
+        sel.replace_with_string('><', false)
+        buffer.value.should == <<-TEXT
+line><one
+line><two
+line><three
+        TEXT
+        VER::Clipboard.dwim.should == nil
+        sel.ranges.should == [
+          buffer.range('1.4', '1.6'),
+          buffer.range('2.4', '2.6'),
+          buffer.range('3.4', '3.6'),
+        ]
       end
     end
   end

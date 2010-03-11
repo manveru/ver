@@ -129,7 +129,66 @@ module VER
         finish
       end
 
+      # Replace every character in the selection with the character entered.
+      def replace_char(char = buffer.events.last.unicode)
+        replace_with_string(char, expand = true)
+        buffer.minor_mode(:select_replace_char, mode_name)
+      end
+
+      # Ask for a string that every chunk of the selection should be replaced with
+      def replace_string
+        buffer.ask 'Replace selection with: ', do |answer, action|
+          case action
+          when :attempt
+            if answer.size > 0
+              replace_with_string(answer, expand = false)
+              buffer.message "replaced #{answer.size} chars"
+              :abort
+            else
+              buffer.warn "replacement required"
+            end
+          end
+        end
+      end
+
+      def replace_with_clipboard
+        return unless string = VER::Clipboard.string
+        ranges = buffer.tag_ranges(:sel)
+        from, to = ranges.first.first, ranges.last.last
+        replace(from, to, string)
+        finish
+        buffer.mark_set :insert, from
+      end
+
+      def replace_with_string(string, expand)
+        insert = buffer.index(:insert)
+        anchor = self.anchor.index
+
+        buffer.undo_record do |record|
+          if expand
+            each_range do |range|
+              current = range.count(:displaychars)
+              record.replace(*range, string * current)
+            end
+          else
+            each_line do |y, fx, tx|
+              record.replace("#{y}.#{fx}", "#{y}.#{tx}", string)
+            end
+
+            offset = (anchor.char + string.size) - 1
+            buffer.insert = insert.linestart + "#{offset} chars"
+          end
+        end
+
+        self.anchor.index = anchor
+        refresh
+      end
+
       class Char < Selection
+        def mode_name
+          :select_char
+        end
+
         # For every chunk selected, this yields the corresponding coordinates as
         # [from_y, from_x, to_y, to_x].
         # It takes into account the current selection mode.
@@ -180,6 +239,10 @@ module VER
       end
 
       class Line < Selection
+        def mode_name
+          :select_line
+        end
+
         def each
           return Enumerator.new(self, :each) unless block_given?
 
@@ -209,6 +272,10 @@ module VER
       end
 
       class Block < Selection
+        def mode_name
+          :select_block
+        end
+
         def each
           return Enumerator.new(self, :each) unless block_given?
 
