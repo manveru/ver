@@ -2,6 +2,10 @@ module VER
   class MiniBuffer < Text
     HISTORY = Hash.new{|h,k| h[k] = SizedArray.new(50) }
 
+    # NOTE:
+    #   {Text#dump} on a peer text widget causes segfault, I've reported the
+    #   issue to the tk maintainers and they are working on it.
+    #   All tcl/tk versions are affected AFAIK, take care.
     class Peer < MiniBuffer
       def initialize(text, parent, options = {})
         @tk_parent = parent
@@ -133,7 +137,6 @@ module VER
     rescue
     end
 
-    PROMPT_MISSING = %(text doesn't contain any characters tagged with "prompt")
     def prompt=(value)
       replace('prompt', 'prompt.last', value, 'prompt')
     end
@@ -142,7 +145,6 @@ module VER
       get_displaychars('prompt', 'prompt.last')
     end
 
-    ANSWER_MISSING = %(text doesn't contain any characters tagged with "answer")
     def answer=(value)
       replace('answer', 'answer.last', value, 'answer')
     end
@@ -315,6 +317,7 @@ module VER
 
     def invoke(action, *args)
       Tk::Event.generate(self, "<<#{action.capitalize}>>")
+
       case result = @action.call(answer, action, *args)
       when :abort
         abort
@@ -330,7 +333,7 @@ module VER
     def insert_string
       case string = events.last[:unicode]
       when /^([[:word:][:ascii:]]| )+$/
-        insert(:insert, string, @answer)
+        insert(:insert, string, 'answer')
         invoke(:modified)
       else
         l insert_string: string
