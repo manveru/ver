@@ -49,6 +49,10 @@ module VER
     def dwim=(object)
       if object.respond_to?(:to_str)
         self.string = object.to_str
+      elsif object.respond_to?(:to_ary)
+        array = object.to_ary
+        self.string = array.join("\n")
+        self.marshal = object
       else
         self.marshal = object
       end
