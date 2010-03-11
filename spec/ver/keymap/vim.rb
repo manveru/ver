@@ -38,11 +38,11 @@ Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
   end
 
   def clipboard
-    VER::Clipboard.get
+    VER::Clipboard.dwim
   end
 
   def clipboard_set(string)
-    VER::Clipboard.set(string)
+    VER::Clipboard.dwim = string
   end
 end
 
