@@ -61,7 +61,16 @@ module VER
       @pending += 1
 
       @entry.bind(pattern){|event|
-        pattern(event.pattern, event.keysym, event.unicode)
+        pattern, keysym, unicode = event.pattern, event.keysym, event.unicode
+
+        if pattern =~ /^<(.*)>$/
+          pattern(pattern, keysym, unicode)
+        elsif pattern.size == 1
+          pattern("<#{keysym}>", keysym, unicode)
+        else
+          raise "Don't know how to handle: %p" % [event]
+        end
+
         @progress.step
         Tk.callback_break
       }
