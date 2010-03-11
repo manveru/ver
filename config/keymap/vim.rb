@@ -8,16 +8,14 @@ module VER
   minor_mode :open do
     handler Methods::Open
     map :file_open_popup, '<Control-o>'
-    map :file_open_ask,   ':o<space>'
 
     handler Methods::Control
     map [:ex, :fuzzy], '<M1-o>', '<Control-m>o'
   end
 
   minor_mode :save do
-    map :save,     '<Control-s>', ':w<Return>'
-    map :save_as,  '<Control-S>', ':w<space>'
-    map :save_all, ':wa'
+    map :save,     '<Control-s>'
+    map :save_as,  '<Control-S>'
   end
 
   minor_mode :preview do
@@ -59,28 +57,8 @@ module VER
     handler Methods::Layout
 
     map :hide,          '<Key-0>'
-    map :one,           '<Key-1>'
-    map :two,           '<Key-2>'
-
-    map :slave_inc,     '+'
-    map :slave_dec,     '-'
-
-    map :master_inc,    '<less>'
-    map :master_dec,    '>'
-
     map :create,        'c'
-    map :focus_next,    'j', '<Right>'
-    map :focus_prev,    'k', '<Left>'
-    map :push_down,     'J', '<Down>'
-    map :push_up,       'K', '<Up>'
     map :close,         'w'
-    map :push_top,      '<Return>'
-    map :push_bottom,   '<BackSpace>'
-
-    map :master_shrink, 'h'
-    map :master_grow,   'l'
-    map :master_equal,  '='
-
     map :peer,          'p'
   end
 
@@ -89,16 +67,6 @@ module VER
 
     handler Methods::Layout
     map :change,     ['<Control-w>', :layout]
-    map :focus_next, '<Control-Tab>'
-    map :cycle_next, '<M1-Tab>', ':bn'
-
-    if x11?
-      map :focus_prev, '<Control-ISO_Left_Tab>'
-      map :cycle_prev, '<M1-ISO_Left_Tab>', ':bp'
-    else
-      map :focus_prev, '<Control-Shift-Tab>'
-      map :cycle_prev, '<M1-Shift-Tab>', ':bp'
-    end
   end
 
   minor_mode :move do
@@ -221,6 +189,7 @@ module VER
     map :repeat_action, '.'
     map :quit,          ':qa', 'ZZ'
     map :close,         ':q<Return>', ':x'
+    map :file_open_ask,   ':o<space>'
 
     handler :at_insert
     map :insert_newline_above,       'O'
@@ -232,7 +201,11 @@ module VER
     handler Methods::Control
     enter :enter
     leave :leave
+
     map :chdir,                             'gc'
+    map :save,     ':w<Return>'
+    map :save_as,  ':w<space>'
+    map :save_all, ':wa'
 
     map :cursor_vertical_bottom,            'zb'
     map :cursor_vertical_bottom_sol,        'z-'
