@@ -8,6 +8,10 @@ module VER
   module Clipboard
     module_function
 
+    def clear
+      Tk::Clipboard.clear(VER.root)
+    end
+
     def get(type)
       Tk::Clipboard.get(VER.root, type)
     end
