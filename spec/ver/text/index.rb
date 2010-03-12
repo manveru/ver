@@ -97,24 +97,24 @@ VER.spec do
 
       it 'copies line at position' do
         @buffer.insert '1.0', 'one line'
-        VER::Clipboard.set 'foo'
+        VER::Clipboard.clear
         @buffer.index('1.0').copy_line
-        VER::Clipboard.get.should == "one line\n"
+        VER::Clipboard.dwim.should == "one line\n"
       end
 
       it 'deletes line at position' do
         @buffer.insert '1.0', 'one line'
-        VER::Clipboard.set 'foo'
+        VER::Clipboard.clear
         @buffer.index('1.0').delete_line
-        VER::Clipboard.get.should == "foo"
+        VER::Clipboard.dwim.should.be.nil
         @buffer.value.should == "\n"
       end
 
       it 'kills line at position' do
         @buffer.insert '1.0', 'one line'
-        VER::Clipboard.set 'foo'
+        VER::Clipboard.clear
         @buffer.index('1.0').kill_line
-        VER::Clipboard.get.should == "one line\n"
+        VER::Clipboard.dwim.should == "one line\n"
         @buffer.value.should == "\n"
       end
     end

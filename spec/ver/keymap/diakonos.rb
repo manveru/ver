@@ -56,7 +56,7 @@ shared :control_mode do
   end
 end
 
-VER.spec keymap: 'diakonos' do
+VER.spec keymap: 'diakonos', hidden: false do
   describe 'Diakonos keymap' do
     behaves_like :control_mode
 

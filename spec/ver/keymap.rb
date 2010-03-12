@@ -2,6 +2,7 @@ require 'bacon'
 Bacon.summary_on_exit
 
 require_relative '../../lib/ver/keymap'
+require_relative '../../lib/ver/keysyms'
 
 describe Keymap = VER::Keymap do
   it 'maps objects to a key' do

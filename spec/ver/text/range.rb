@@ -25,16 +25,16 @@ VER.spec do
 
     it 'deletes contents' do
       @range.delete
-      VER::Clipboard.set 'foo'
+      VER::Clipboard.clear
       @buffer.value.should == "line  two\n"
-      VER::Clipboard.get.should == 'foo'
+      VER::Clipboard.dwim.should.be.nil
     end
 
     it 'kills contents' do
-      VER::Clipboard.set 'foo'
+      VER::Clipboard.clear
       @range.kill
       @buffer.value.should == "line  two\n"
-      VER::Clipboard.get.should == "one\nline"
+      VER::Clipboard.dwim.should == "one\nline"
     end
 
     it 'replaces contents' do
@@ -52,9 +52,9 @@ VER.spec do
     end
 
     it 'copies contents' do
-      VER::Clipboard.set 'foo'
+      VER::Clipboard.clear
       @range.copy
-      VER::Clipboard.get.should == "one\nline"
+      VER::Clipboard.dwim.should == "one\nline"
     end
 
     it 'dumps contents' do
