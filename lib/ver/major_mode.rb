@@ -52,13 +52,14 @@ module VER
       self.bound_keys = Set.new
       self.tag = Tk::BindTag.new("#{name}-mode")
 
-      Event.each{|event| bind_key(event.pattern) }
-
       # make sure those are available no matter what.
       [ '<Escape>', "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+",
         ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]",
         "^", "_", "`", "{", "|", "}", "~",
       ].each{|chr| bind_key(chr) }
+
+      # and now register all we didn't have yet.
+      Event.each{|event| bind_key(event.pattern) }
     end
 
     def destroy
@@ -146,15 +147,15 @@ module VER
     end
 
     def bind_key(key)
-      return if bound_keys.include?(key)
       pattern = Event[key].pattern
+      return if bound_keys.include?(pattern)
 
       tag.bind(pattern) do |event|
         event.widget.major_mode.on_event(event)
         Tk.callback_break
       end
 
-      bound_keys << key
+      bound_keys << pattern
     end
 
     def actions
