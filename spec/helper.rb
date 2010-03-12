@@ -18,7 +18,7 @@ module VER
           run(options)
         end
       else
-        Tk::After.idle{ bacon_summary }
+        bacon_summary
       end
     end
 
@@ -27,6 +27,7 @@ module VER
     end
 
     def bacon_summary
+      Tk.update # finish all pending events first
       Bacon.handle_summary
 
       if $!
@@ -38,6 +39,7 @@ module VER
       end
     ensure
       $stdout.flush
+      $stderr.flush
       Tk.exit
     end
   end
@@ -59,11 +61,17 @@ module VER
     specs = Spec.new(&block)
     options = {
       fork:    false,
-      hidden:  false,
+      hidden:  true,
       load_rc: false,
       welcome: false
     }.merge(options)
 
     VER.run(options){ specs.run(options) }
+  end
+
+  # this is called when no buffers are left, make sure we finish all pending
+  # events and output the summary first.
+  def self.exit
+    Tk.update
   end
 end
