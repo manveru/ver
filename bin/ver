@@ -176,6 +176,7 @@ op = OptionParser.new{|o|
     options[:tracer] = true
   }
 }
+$0 = ['ver', *ARGV].join(' ')
 op.parse!(ARGV)
 
 VER.require_and_run(options)
