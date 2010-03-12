@@ -26,7 +26,7 @@ module VER
 
       def query(buffer)
         question = 'Replace pattern: /'
-        value = last_pattern(buffer)
+        value = last_pattern(buffer).to_s
 
         buffer.ask question, value: value do |answer, action|
           case action
@@ -35,14 +35,14 @@ module VER
               regexp = answer_to_regex(answer)
               Search.incremental(buffer, regexp)
               buffer.warn ''
-              buffer.message(" => #{regexp.inspect}")
+              buffer.message("=> #{regexp.inspect}")
             rescue RegexpError, SyntaxError => ex
               buffer.warn(ex.message)
             end
           when :attempt
             begin
               regexp = answer_to_regex(answer)
-              buffer.message(" => #{regexp.inspect}")
+              buffer.message("=> #{regexp.inspect}")
               query_attempt(buffer, regexp)
               :abort
             rescue RegexpError, SyntaxError => ex
