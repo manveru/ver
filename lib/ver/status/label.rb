@@ -20,8 +20,19 @@ module VER
         name = self.class.name[/::([^:]+)$/, 1]
         @variable = Tk::Variable.new("#{name}_#{id}")
         configure(textvariable: @variable)
+        @destroyed = false
+
+        bind('<Destroy>', &method(:on_destroy))
 
         setup
+      end
+
+      def destroyed?
+        @destroyed
+      end
+
+      def on_destroy
+        @destroyed = true
       end
 
       def setup
@@ -32,7 +43,7 @@ module VER
       end
 
       def update(event)
-        variable.set(to_s)
+        variable.set(to_s) unless destroyed?
       end
 
       def register(*events)
@@ -40,7 +51,7 @@ module VER
       end
 
       def style=(config)
-        configure(config)
+        configure(config) unless destroyed?
       end
 
       def to_s
