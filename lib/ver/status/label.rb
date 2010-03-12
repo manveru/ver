@@ -31,7 +31,7 @@ module VER
         @destroyed
       end
 
-      def on_destroy
+      def on_destroy(event)
         @destroyed = true
       end
 
