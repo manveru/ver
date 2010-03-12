@@ -31,12 +31,17 @@ module VER
     # given a <pattern>, this returns the event for this pattern.
     # given a unicode char, returns the event with shortest pattern.
     def self.[](string)
-      if string =~ /^<(.*)>$/
+      case string
+      when /^<(.*)>$/
         PATTERN.fetch(string)
-      elsif string.size == 1
+      when ' ' # exception of the single-char rule
+        PATTERN.fetch(string = '<space>')
+      when '<' # exception of the single-char rule
+        PATTERN.fetch(string = '<less>')
+      when /^.$/ # single unicode char
         UNICODE.fetch(string).min_by{|event| event.pattern.size }
       else # it may be keysym, but let's try to make it pattern instead
-        PATTERN.fetch("<#{string}>")
+        PATTERN.fetch(string = "<#{string}>")
       end
     rescue KeyError => ex
       capture(string)
@@ -56,11 +61,11 @@ module VER
       false
     end
 
-    def self.capture(pattern)
+    def self.capture(capture_pattern)
       @entry ||= setup_capture
       @pending += 1
 
-      @entry.bind(pattern){|event|
+      @entry.bind(capture_pattern){|event|
         pattern, keysym, unicode = event.pattern, event.keysym, event.unicode
 
         if pattern =~ /^<(.*)>$/
@@ -75,14 +80,23 @@ module VER
         Tk.callback_break
       }
 
-      until self.key?(pattern)
+      counter = 0
+      until self.key?(capture_pattern)
         Tk.update
-        Tk::Event.generate(@entry, pattern, when: :now)
+        Tk::Event.generate(@entry, capture_pattern, when: :now)
         Tk.update
+        counter += 1
+
+        # just try a couple of times before annoying the user.
+        if counter == 10
+          @entry.value = "Please press %p" % [capture_pattern]
+        end
       end
 
+      @entry.value = ""
+
       @pending -= 1
-      self[pattern]
+      self[capture_pattern]
     end
 
     def self.setup_capture
