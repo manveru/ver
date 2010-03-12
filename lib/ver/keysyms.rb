@@ -38,6 +38,10 @@ module VER
         PATTERN.fetch(string = '<space>')
       when '<' # exception of the single-char rule
         PATTERN.fetch(string = '<less>')
+      when '%' # weird behaviour...
+        PATTERN.fetch(string = '<percent>')
+      when /^\d$/ # numbers may collide with mouse buttons
+        PATTERN.fetch(string = "<Key-#{string}>")
       when /^.$/ # single unicode char
         UNICODE.fetch(string).min_by{|event| event.pattern.size }
       else # it may be keysym, but let's try to make it pattern instead
@@ -76,9 +80,10 @@ module VER
           raise "Don't know how to handle: %p" % [event]
         end
 
-        @progress.step
         Tk.callback_break
       }
+
+      @entry.value = ""
 
       counter = 0
       until self.key?(capture_pattern)
@@ -90,11 +95,11 @@ module VER
         # just try a couple of times before annoying the user.
         if counter == 10
           @entry.value = "Please press %p" % [capture_pattern]
+          @entry.focus
         end
       end
 
-      @entry.value = ""
-
+      @progress.step
       @pending -= 1
       self[capture_pattern]
     end
@@ -111,12 +116,11 @@ module VER
         orient: :horizontal,
         mode: :indeterminate
       )
-      @progress.start
 
       @pending = 0
-      @label.pack
-      @progress.pack
-      @entry.pack
+      @label.pack fill: :x
+      @progress.pack fill: :x
+      @entry.pack fill: :x
       @entry.bind('<Map>'){ @entry.focus }
       @entry
     end
