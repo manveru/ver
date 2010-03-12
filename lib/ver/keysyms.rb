@@ -137,13 +137,13 @@ module VER
     end
 
     def self.persist!
-      persist_location.open 'w+:BINARY' do |io|
+      persist_location.open 'wb+' do |io|
         io.write(Marshal.dump(PATTERN))
       end
     end
 
     def self.load!
-      persist_location.open('r:BINARY') do |io|
+      persist_location.open 'rb' do |io|
         pattern = Marshal.load(io.read)
         pattern.each do |sym, event|
           PATTERN[event.pattern] = event
