@@ -169,7 +169,7 @@ module VER
 
       begin
         replace("#{tag}.first", "#{tag}.last", " #{string}", tag)
-        mark(tag, "#{tag}.first", :left)
+        # mark(tag, "#{tag}.first", :left)
       rescue
         begin
           insert(tag, " #{string}", tag)
@@ -180,7 +180,7 @@ module VER
 
       if string.to_s.strip != ''
         message_expire(tag) #  if messages_expire
-        message_notify(tag)
+        # message_notify(tag)
       end
       adjust_size
 
@@ -317,13 +317,8 @@ module VER
 
     def invoke(action, *args)
       Tk::Event.generate(self, "<<#{action.capitalize}>>")
-
-      case result = @action.call(answer, action, *args)
-      when :abort
-        abort
-      else
-        result
-      end
+      result = @action.call(answer, action, *args)
+      result == :abort ? abort : result
     end
 
     def events
@@ -331,8 +326,8 @@ module VER
     end
 
     def insert_string
-      case string = events.last[:unicode]
-      when /^([[:word:][:ascii:]]| )+$/
+      case string = events.last.unicode
+      when /^[^\n\r[:cntrl:]]+$/
         insert(:insert, string, 'answer')
         invoke(:modified)
       else
@@ -361,7 +356,8 @@ module VER
     end
 
     def kill_next_char(event = nil)
-      delete('insert')
+      return unless line = get_displaychars('insert', 'answer.last')
+      delete('insert') unless line == ''
       invoke(:modified)
     end
 
