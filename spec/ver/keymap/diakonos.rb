@@ -40,11 +40,11 @@ Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
   end
 
   def clipboard
-    VER::Clipboard.get
+    VER::Clipboard.dwim
   end
 
   def clipboard_set(string)
-    VER::Clipboard.set(string)
+    VER::Clipboard.dwim = string
   end
 end
 
@@ -65,8 +65,8 @@ VER.spec keymap: 'diakonos' do
       insert.index.should == '1.0 lineend'
     end
 
-    should 'go to end of buffer with <Alt-greater>' do
-      type '<Alt-greater>'
+    should 'go to end of buffer with <M1-greater>' do
+      type '<M1-greater>'
       insert.index.should == 'end - 1 chars'
     end
 
@@ -103,9 +103,9 @@ VER.spec keymap: 'diakonos' do
       insert.index.should == '1.46'
     end
 
-    should 'go to start of buffer with <Alt-less>' do
+    should 'go to start of buffer with <M1-less>' do
       insert.index = '5.5'
-      type '<Alt-less>'
+      type '<M1-less>'
       insert.index.should == '1.0'
     end
 
@@ -127,9 +127,9 @@ VER.spec keymap: 'diakonos' do
       buffer.value = ''
       typed = []
       (0..255).map{|c| c.chr }.grep(/[[:print:]]/).each do |char|
-        event = VER::FakeEvent[char]
+        event = VER::Event[char]
         typed << char
-        type event.sequence
+        type event.pattern
       end
 
       insert.index.should == '1.95'

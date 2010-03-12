@@ -1,7 +1,4 @@
 module VER
-  # PanedLayout::OPTIONS[:slaves] = 0
-  # layout.options[:slaves] = 0
-
   major_mode :Fundamental do
     use :control
   end
@@ -9,123 +6,128 @@ module VER
   major_mode :MiniBuffer do
     use :basic, :readline
 
-    map :abort,          %w[Escape], %w[Control-c]
-    map :attempt,        %w[Return]
-    map :complete_large, %w[Double-Tab]
-    map :complete_small, %w[Tab]
+    map :abort,          '<Escape>', '<Control-c>'
+    map :attempt,        '<Return>'
+    map :complete_large, '<Tab><Tab>'
+    map :complete_small, '<Tab>'
   end
 
   major_mode :HoverCompletion do
     use :basic
 
-    map :cancel,              %w[Escape], %w[BackSpace]
-    map :continue_completion, %w[Right], %w[Tab]
-    map :go_down,             %w[Down], %w[Control-p]
-    map :go_up,               %w[Up], %w[Control-n]
-    map :submit,              %w[Return]
+    map :cancel,              '<Escape>', '<BackSpace>'
+    map :continue_completion, '<Right>', '<Tab>'
+    map :go_down,             '<Down>', '<Control-p>'
+    map :go_up,               '<Up>', '<Control-n>'
+    map :submit,              '<Return>'
   end
 
   minor_mode :basic do
     handler Methods::Basic
-    map :quit, %w[Control-q]
+    map :quit, '<Control-q>'
   end
 
   minor_mode :move do
     handler :at_insert
-    map :ask_go_line,     %w[Control-g]
-    map :backward_scroll, %w[Alt-p]
-    map :end_of_buffer,   %w[Alt-greater]
-    map :end_of_line,     %w[End], %w[Control-e]
-    map :forward_scroll,  %w[Alt-n]
-    map :next_char,       %w[Right]
-    map :next_line,       %w[Down]
-    map :next_page,       %w[Next]
-    map :next_word,       %w[Shift-Right]
-    map :prev_char,       %w[Left]
-    map :prev_line,       %w[Up]
-    map :prev_page,       %w[Prior]
-    map :prev_word,       %w[Shift-Left]
-    map :start_of_buffer, %w[Alt-less]
-    map :start_of_line,   %w[Home]
+    map :ask_go_line,     '<Control-g>'
+    map :backward_scroll, '<Alt-p>'
+    map :end_of_buffer,   '<Alt-greater>'
+    map :end_of_line,     '<End>', '<Control-e>'
+    map :forward_scroll,  '<Alt-n>'
+    map :next_char,       '<Right>'
+    map :next_line,       '<Down>'
+    map :next_page,       '<Next>'
+    map :next_word,       '<Shift-Right>'
+    map :prev_char,       '<Left>'
+    map :prev_line,       '<Up>'
+    map :prev_page,       '<Prior>'
+    map :prev_word,       '<Shift-Left>'
+    map :start_of_buffer, '<Alt-less>'
+    map :start_of_line,   '<Home>'
   end
 
   minor_mode :control do
     inherits :basic, :move
 
-    become :select_char, %w[Control-space]
-    become :select_line, %w[Escape Control-space], %w[Control-Alt-space]
+    become :select_char, '<Control-space>'
+    become :select_line, '<Escape><Control-space>', '<Control-Alt-space>'
 
-    map :save,    %w[Control-s]
-    map :save_as, %w[Alt-S]
-    map :undo,    %w[Control-z]
-    map :redo,    %w[Control-y]
+    map :save,    '<Control-s>'
+    map :save_as, '<Alt-S>'
+    map :undo,    '<Control-z>'
+    map :redo,    '<Control-y>'
 
     handler Methods::Open
-    map :file_open_ask, %w[Control-o]
+    map :file_open_ask, '<Control-o>'
 
     handler Methods::Layout
-    map :close, %w[Control-w]
-    1.upto(9){|n|
-      map([:focus, n], ["Alt-KeyPress-#{n}"], ["Escape", n.to_s]) }
+    map :close, '<Control-w>'
+    1.upto 9 do |n|
+      map [:focus, n], "<Alt-Key-#{n}>", "<Escape><Key-#{n}>"
+    end
 
     handler :at_insert
-    map :insert_newline,    %w[Return]
-    map :insert_selection,  %w[Shift-Insert]
-    map :insert_tab,        %w[Control-t]
+    map :insert_newline,    '<Return>'
+    map :insert_selection,  '<Shift-Insert>'
+    map :insert_tab,        '<Control-t>'
 
     handler Methods::Control
-    map :indent_line,                   %w[Alt-i], %w[Escape i]
-    map :unindent_line,                 %w[Alt-I], %w[Escape I]
-    map :exec_into_new,                 %w[F2]
-    map :exec_into_void,                %w[F8]
-    map [:exec_into_new, 'ruby -c $f'], %w[Control-Alt-c]
-    map :cursor_vertical_top,           %w[Alt-comma], %w[Escape comma]
-    map :cursor_vertical_bottom,        %w[Alt-period], %w[Escape period]
-    map :join_line_forward,             %w[Alt-j], %w[Escape j]
-    map :join_line_backward,            %w[Alt-J], %w[Escape J]
+    map :indent_line,                   '<Alt-i>', '<Escape>i'
+    map :unindent_line,                 '<Alt-I>', '<Escape>I'
+    map :exec_into_new,                 '<F2>'
+    map :exec_into_void,                '<F8>'
+    map [:exec_into_new, 'ruby -c $f'], '<Control-Alt-c>'
+    map :cursor_vertical_top,           '<Alt-comma>', '<Escape>,'
+    map :cursor_vertical_bottom,        '<Alt-period>', '<Escape>.'
+    map :join_line_forward,             '<Alt-j>', '<Escape>j'
+    map :join_line_backward,            '<Alt-J>', '<Escape>J'
 
     handler Methods::Completion
-    map :word, %w[Alt-e], %w[Escape e]
+    map :word, '<Alt-e>', '<Escape>e'
 
     handler Methods::Clipboard
-    map :paste, %w[Control-v]
+    map :paste, '<Control-v>'
 
     handler :at_insert
-    map :kill_line,                 %w[Control-k], %w[Control-d Control-d]
-    map [:deleting, :end_of_line],  %w[Control-Alt-k], %w[Control-d dollar]
-    map [:deleting, :prev_char],    %w[BackSpace]
-    map [:deleting, :next_char],    %w[Delete]
+    map :kill_line,                 '<Control-k>', '<Control-d><Control-d>'
+    map [:deleting, :end_of_line],  '<Control-Alt-k>', '<Control-d>$'
+    map [:deleting, :prev_char],    '<BackSpace>'
+    map [:deleting, :next_char],    '<Delete>'
 
     handler Methods::Bookmark
-    map :add_named,    %w[Alt-b Alt-a]
-    map :next,         %w[Alt-b Alt-n]
-    map :prev,         %w[Alt-b Alt-p]
-    map :remove_named, %w[Alt-b Alt-r]
-    map :toggle,       %w[Alt-b Alt-b]
-    map :visit_named,  %w[Alt-b Alt-g]
+    map :add_named,    '<Alt-b><Alt-a>'
+    map :next,         '<Alt-b><Alt-n>'
+    map :prev,         '<Alt-b><Alt-p>'
+    map :remove_named, '<Alt-b><Alt-r>'
+    map :toggle,       '<Alt-b><Alt-b>'
+    map :visit_named,  '<Alt-b><Alt-g>'
     # these are only valid on US keymap, don't know a better way.
-    map [:add_named,   '1'], %w[Alt-b Alt-exclam]
-    map [:add_named,   '2'], %w[Alt-b Alt-at]
-    map [:add_named,   '3'], %w[Alt-b Alt-numbersign]
-    map [:add_named,   '4'], %w[Alt-b Alt-dollar]
-    map [:add_named,   '5'], %w[Alt-b Alt-percent]
-    map [:visit_named, '1'], %w[Alt-b Alt-1]
-    map [:visit_named, '2'], %w[Alt-b Alt-2]
-    map [:visit_named, '3'], %w[Alt-b Alt-3]
-    map [:visit_named, '4'], %w[Alt-b Alt-4]
-    map [:visit_named, '5'], %w[Alt-b Alt-5]
+    map [:add_named,   '1'], '<Alt-b><Alt-exclam>'
+    map [:add_named,   '2'], '<Alt-b><Alt-at>'
+    map [:add_named,   '3'], '<Alt-b><Alt-numbersign>'
+    map [:add_named,   '4'], '<Alt-b><Alt-dollar>'
+    map [:add_named,   '5'], '<Alt-b><Alt-percent>'
+    map [:visit_named, '1'], '<Alt-b><Alt-Key-1>'
+    map [:visit_named, '2'], '<Alt-b><Alt-Key-2>'
+    map [:visit_named, '3'], '<Alt-b><Alt-Key-3>'
+    map [:visit_named, '4'], '<Alt-b><Alt-Key-4>'
+    map [:visit_named, '5'], '<Alt-b><Alt-Key-5>'
 
     handler Methods::CTags
-    map :go,           %w[Alt-t]
-    map :find_current, %w[Alt-parenright]
-    map :prev,         %w[Alt-parenleft]
+    map :go,           '<Alt-t>'
+    map :find_current, '<Alt-parenright>'
+    map :prev,         '<Alt-parenleft>'
 
     handler Methods::Search
-    map :status_next, %w[Control-f]
-    map :next,        %w[F3]
-    map :clear,       %w[Control-Alt-u]
-    # TODO: this doesn't work, investiate.
-    map :prev,        %w[Shift-F3]
+    map :status_next, '<Control-f>'
+    map :next,        '<F3>'
+    map :clear,       '<Control-Alt-u>'
+
+    if x11?
+      map :prev, '<XF86_Switch_VT_3>'
+    else
+      map :prev, '<Shift-F3>'
+    end
 
     handler Methods::Insert
     missing :string
@@ -133,15 +135,15 @@ module VER
 
   minor_mode :select do
     handler Methods::Selection
-    map :copy,                   %w[Control-c]
-    map :kill,                   %w[Control-x]
-    map :delete,                 %w[BackSpace], %w[Delete]
-    map :replace_with_clipboard, %w[Control-v]
+    map :copy,                   '<Control-c>'
+    map :kill,                   '<Control-x>'
+    map :delete,                 '<BackSpace>', '<Delete>'
+    map :replace_with_clipboard, '<Control-v>'
   end
 
   minor_mode :select_char do
     inherits :move, :select
-    become :control, %w[Escape]
+    become :control, '<Escape>'
     handler Methods::Selection
     enter :enter
     leave :leave
@@ -149,37 +151,37 @@ module VER
 
   minor_mode :select_line do
     inherits :move, :select
-    become :control, %w[Escape]
+    become :control, '<Escape>'
     handler Methods::Selection
     enter :enter
     leave :leave
   end
 
   minor_mode :readline do
-    map :accept_line,       %w[Return]
+    map :accept_line,       '<Return>'
 
-    map :end_of_line,       %w[End], %w[Control-e]
-    map :insert_selection,  %w[Shift-Insert]
-    map :insert_tab,        %w[Control-v Tab]
-    map :kill_end_of_line,  %w[Control-k]
-    map :kill_next_char,    %w[Control-d], %w[Delete]
-    map :kill_next_word,    %w[Alt-d]
-    map :kill_prev_char,    %w[BackSpace]
-    map :kill_prev_word,    %w[Control-w]
-    map :next_char,         %w[Right], %w[Control-f]
-    map :next_word,         %w[Shift-Right], %w[Alt-f]
-    map :prev_char,         %w[Left], %w[Control-b]
-    map :prev_word,         %w[Shift-Left], %w[Alt-b]
-    map :start_of_line,     %w[Home], %w[Control-a]
-    map :transpose_chars,   %w[Control-t]
+    map :end_of_line,       '<End>', '<Control-e>'
+    map :insert_selection,  '<Shift-Insert>'
+    map :insert_tab,        '<Control-v><Tab>'
+    map :kill_end_of_line,  '<Control-k>'
+    map :kill_next_char,    '<Control-d>', '<Delete>'
+    map :kill_next_word,    '<Alt-d>'
+    map :kill_prev_char,    '<BackSpace>'
+    map :kill_prev_word,    '<Control-w>'
+    map :next_char,         '<Right>', '<Control-f>'
+    map :next_word,         '<Shift-Right>', '<Alt-f>'
+    map :prev_char,         '<Left>', '<Control-b>'
+    map :prev_word,         '<Shift-Left>', '<Alt-b>'
+    map :start_of_line,     '<Home>', '<Control-a>'
+    map :transpose_chars,   '<Control-t>'
 
     # TODO
-    map :sel_prev_char,     %w[Shift-Left]
-    map :sel_next_char,     %w[Shift-Right]
-    map :sel_prev_word,     %w[Shift-Control-Left]
-    map :sel_next_word,     %w[Shift-Control-Right]
-    map :sel_start_of_line, %w[Shift-Home]
-    map :sel_end_of_line,   %w[Shift-End]
+    map :sel_prev_char,     '<Shift-Left>'
+    map :sel_next_char,     '<Shift-Right>'
+    map :sel_prev_word,     '<Shift-Control-Left>'
+    map :sel_next_word,     '<Shift-Control-Right>'
+    map :sel_start_of_line, '<Shift-Home>'
+    map :sel_end_of_line,   '<Shift-End>'
 
     missing :insert_string
   end
