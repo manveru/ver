@@ -40,17 +40,13 @@ module VER
       end
 
       def preview_ruby(buffer)
-        save(buffer)
+        buffer.save
         spawn_rxvt(<<-SHELL)
 ruby #{buffer.filename.shellescape}
 echo "\nPreview finished, press <Return> to return to VER"
 read
 exit
         SHELL
-      end
-
-      def save(buffer)
-        Save.save(buffer)
       end
 
       # Open a new urxvt term in the background, this is not kept inside VER
