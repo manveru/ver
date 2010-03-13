@@ -530,7 +530,7 @@ Close this buffer or continue with caution.
 
     def unlock_uri(uri = self.uri)
       return unless locked?
-      uri_lockfile(uri).rm
+      uri_lockfile(uri).rm_f
     end
 
     def uri_lockfile(uri = self.uri)

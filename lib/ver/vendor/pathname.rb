@@ -32,6 +32,13 @@ class Pathname
   alias / join
   alias rm unlink
 
+  def rm_f
+    rm
+  rescue Errno::ENOENT
+  rescue => ex
+    VER.error(ex)
+  end
+
   def cp(dest)
     FileUtils.copy_file(expand_path.to_s, dest.to_s, preserve = true)
   end
