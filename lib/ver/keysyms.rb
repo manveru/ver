@@ -194,6 +194,8 @@ module VER
         'bar'          => '|',
         'braceright'   => '}',
         'asciitilde'   => '~',
+
+        # Now a couple of basic keys that don't change across platforms
         'BackSpace'    => "\b",
         'Delete'       => "\x7F",
         'Down'         => '',
@@ -212,7 +214,12 @@ module VER
         pattern("<#{keysym}>", keysym, unicode)
       end
 
+      # F1-F12
       1.upto(12).each{|n| pattern("<F#{n}>", "F#{n}", '') }
+
+      # Something for german keyboards
+      pattern('<Control-bracketleft>', 'bracketleft', '[')
+      pattern('<Control-bracketright>', 'bracketright', ']')
     end
 
     def initialize(pattern, keysym, unicode)
