@@ -221,24 +221,5 @@ module VER
       pattern('<Control-bracketleft>', 'bracketleft', '[')
       pattern('<Control-bracketright>', 'bracketright', ']')
     end
-
-    def initialize(pattern, keysym, unicode)
-      self.pattern = convert_pattern(pattern)
-      self.keysym  = convert_keysym(keysym)
-      self.unicode = convert_unicode(unicode)
-    end
-
-    # Adjust
-    def convert_pattern(pattern)
-      pattern
-    end
-
-    def convert_keysym(keysym)
-      keysym
-    end
-
-    def convert_unicode(unicode)
-      unicode
-    end
   end
 end
