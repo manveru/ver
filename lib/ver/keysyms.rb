@@ -69,6 +69,8 @@ module VER
       @entry ||= setup_capture
       @pending += 1
 
+      capture_pattern = capture_pattern.gsub(/\bAlt\b/, 'M1')
+
       @entry.bind(capture_pattern){|event|
         pattern, keysym, unicode = event.pattern, event.keysym, event.unicode
 

@@ -177,7 +177,7 @@ module VER
       patterns.flatten.each do |pattern|
         if pattern.respond_to?(:scan)
           pattern.scan(/<<[^>]+>>|<[^>]+>|(?!\s<)[[:print:]]/) do
-            result << Event[$&.gsub('<Alt', '<M1')].pattern
+            result << Event[$&].pattern
           end
         else
           result << pattern

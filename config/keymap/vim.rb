@@ -10,7 +10,7 @@ module VER
     map :file_open_popup, '<Control-o>'
 
     handler Methods::Control
-    map [:ex, :fuzzy], '<M1-o>', '<Control-m>o'
+    map [:ex, :fuzzy], '<Alt-o>', '<Control-m>o'
   end
 
   minor_mode :save do
@@ -30,7 +30,7 @@ module VER
     inherits :help, :preview, :save, :open
 
     handler Methods::Basic
-    map :minibuf_eval,    '<M1-x>', '<Control-m>x'
+    map :minibuf_eval,    '<Alt-x>', '<Control-m>x'
     map :open_terminal,   '<F9>'
     map :open_console,    '<Control-exlam>' if defined?(::EM)
   end
@@ -215,7 +215,7 @@ module VER
     map :cursor_vertical_top_sol,           'z<Return>'
 
     map :executor, '::'
-    map [:ex, :buffer],       ':bu', '<M1-b>', '<Control-m>b'
+    map [:ex, :buffer],       ':bu', '<Alt-b>', '<Control-m>b'
     map [:ex, :edit],         ':e<space>'
     map [:ex, :encoding],     ':en<space>'
     map [:ex, :fuzzy],        ':f'
@@ -234,10 +234,10 @@ module VER
     map :unindent_line,                     '<less>'
     map :join_line_forward,                 'J'
     map :open_file_under_cursor,            'gf'
-    map :smart_evaluate,                    '<M1-e>', '<Control-m>e'
+    map :smart_evaluate,                    '<Alt-e>', '<Control-m>e'
 
     handler Methods::SearchAndReplace
-    map :query, '<M1-percent>'
+    map :query, '<Alt-percent>'
   end
 
   minor_mode :readline do
@@ -248,13 +248,13 @@ module VER
     map :insert_tab,        '<Control-v><Tab>', '<Control-i>'
     map :kill_end_of_line,  '<Control-k>'
     map :kill_next_char,    '<Control-d>', '<Delete>'
-    map :kill_next_word,    '<M1-d>'
+    map :kill_next_word,    '<Alt-d>'
     map :kill_prev_char,    '<BackSpace>'
     map :kill_prev_word,    '<Control-w>'
     map :next_char,         '<Right>', '<Control-f>'
-    map :next_word,         '<Shift-Right>', '<M1-f>'
+    map :next_word,         '<Shift-Right>', '<Alt-f>'
     map :prev_char,         '<Left>', '<Control-b>'
-    map :prev_word,         '<Shift-Left>', '<M1-b>'
+    map :prev_word,         '<Shift-Left>', '<Alt-b>'
     map :start_of_line,     '<Home>', '<Control-a>'
     map :transpose_chars,   '<Control-t>'
 
@@ -284,18 +284,18 @@ module VER
     map :next_char,              '<Right>', '<Control-f>'
     map :next_line,              '<Down>', '<Control-n>'
     map :next_page,              '<Control-f>', '<Next>', '<Shift-Down>'
-    map :next_word,              '<Shift-Right>', '<M1-f>'
+    map :next_word,              '<Shift-Right>', '<Alt-f>'
     map :prev_char,              '<Left>', '<Control-b>'
     map :prev_line,              '<Up>', '<Control-p>'
     map :prev_page,              '<Control-b>', '<Prior>', '<Shift-Up>'
-    map :prev_word,              '<Shift-Left>', '<M1-b>'
+    map :prev_word,              '<Shift-Left>', '<Alt-b>'
     map :start_of_line,          '<Home>', '<Control-a>'
     map [:killing, :next_char],  '<Delete>', '<Control-d>'
     map [:killing, :prev_char],  '<BackSpace>'
     map [:killing, :prev_word],  '<Control-w>'
 
     handler Methods::Control
-    map :smart_evaluate,           '<M1-e>', '<Control-e>'
+    map :smart_evaluate,           '<Alt-e>', '<Control-e>'
     if x11?
       map :unindent_line,          '<ISO_Left_Tab>'
     else
@@ -351,7 +351,7 @@ module VER
     map :unindent,        '<less>'
 
     handler Methods::Control
-    map :smart_evaluate,  '<M1-e>', '<Control-e>'
+    map :smart_evaluate,  '<Alt-e>', '<Control-e>'
 
     handler Methods::Selection
     map :pipe,            '<exclam>'
