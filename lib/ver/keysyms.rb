@@ -31,12 +31,15 @@ module VER
     # given a <pattern>, this returns the event for this pattern.
     # given a unicode char, returns the event with shortest pattern.
     def self.[](string)
+      # l string: string
       case string
       when /^<(.*)>$/ # an actual or virtual pattern
         PATTERN.fetch(pattern = string)
       when /^[^-]{2,}$/ # keysym
+        pattern = "<#{string}>"
         KEYSYM.fetch(string)
       when /^.$/ # single unicode char
+        pattern = "<#{string}>"
         UNICODE.fetch(string).min_by{|event| event.pattern.size }
       end
     rescue KeyError => ex
