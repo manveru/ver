@@ -7,17 +7,17 @@
   tabTrigger: "private0",
   uuid: "DBFDEDF5-7F59-11D9-BA7A-000A95DAA580"},
  {content: 
-   "\t:- public(${1:Functor}/0).\n\t:- mode(${1:Functor}, ${2:Solutions}).\n\t:- info(${1:Functor}/0, [\n\t\tcomment is '${3:Description}']).\n\n$0",
-  name: "    (with no arguments)",
-  scope: "source.logtalk",
-  tabTrigger: "public0",
-  uuid: "D96B0926-7F56-11D9-BA7A-000A95DAA580"},
- {content: 
    "\t:- protected(${1:Functor}/0).\n\t:- mode(${1:Functor}, ${2:Solutions}).\n\t:- info(${1:Functor}/0, [\n\t\tcomment is '${3:Description}']).\n\n$0",
   name: "    (with no arguments)",
   scope: "source.logtalk",
   tabTrigger: "protected0",
   uuid: "4A25F29C-7F59-11D9-BA7A-000A95DAA580"},
+ {content: 
+   "\t:- public(${1:Functor}/0).\n\t:- mode(${1:Functor}, ${2:Solutions}).\n\t:- info(${1:Functor}/0, [\n\t\tcomment is '${3:Description}']).\n\n$0",
+  name: "    (with no arguments)",
+  scope: "source.logtalk",
+  tabTrigger: "public0",
+  uuid: "D96B0926-7F56-11D9-BA7A-000A95DAA580"},
  {content: 
    "\n:- category(${1:Category},\n\timplements(${2:Protocol})).\n\n\t:- info([\n\t\tversion is 1.0,\n\t\tauthor is '$TM_FULLNAME',\n\t\tdate is `date +%Y/%m/%d`,\n\t\tcomment is '${3:Description}']).\n\n$0\n\n:- end_category.\n",
   name: "    Category with protocol",

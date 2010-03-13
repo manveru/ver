@@ -11,17 +11,17 @@
   tabTrigger: "/**",
   uuid: "3F9A5A64-0E7B-4DD5-B683-9ADB93A13B81"},
  {content: 
-   "/** \\brief  ${3:undocumented class}\n\t\n\t${4:undocumented class}\n\t\n© Copyright `date +%Y` $TM_ORGANIZATION_NAME - ${TM_AUTHOR:$TM_FULLNAME}. All Rights Reserved.\n\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\author \\$LastChangedBy\\$\n\t\\date `date +%Y-%m-%d`\n\t\\date \\$LastChangedDate\\$\n\t\\version \\$Rev\\$\t\\sa\n**/",
-  name: "Class",
-  scope: "source.objc, source.objc++, source.c, source.c++",
-  tabTrigger: "dxc",
-  uuid: "6206D909-7D5B-4401-966F-7B5077944D92"},
- {content: 
    "/** \\brief  ${3:undocumented class}\n\t\n\t${4:undocumented class}\n\t\n© Copyright `date +%Y` $TM_ORGANIZATION_NAME - ${TM_AUTHOR:$TM_FULLNAME}. All Rights Reserved.\n\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\author \\$LastChangedBy\\$\n\t\\date `date +%Y-%m-%d`\n\t\\date \\$LastChangedDate\\$\n\t\\version \\$Rev\\$\n\t\\sa\n**/\n$1class $2 {\n\t$5var \\$${6:var}; //!< ${7:undocumented class variable}\n\n\t/** \n\t\\brief class $2 constructor\n\t\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\date `date +%Y-%m-%d`\n\t\\param $8 ${9:description of parameter}\n\t\n\t\\return\n\t\\sa\n\t**/\n\t$1function $2 ($8) {$0\n\t} // END $1function $2\n\n\t\n} // END $1class $2\n\n",
   name: "Class",
   scope: "source.php",
   tabTrigger: "dxc",
   uuid: "7DD602B8-C3E0-11D9-BDD3-001124776DD2"},
+ {content: 
+   "/** \\brief  ${3:undocumented class}\n\t\n\t${4:undocumented class}\n\t\n© Copyright `date +%Y` $TM_ORGANIZATION_NAME - ${TM_AUTHOR:$TM_FULLNAME}. All Rights Reserved.\n\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\author \\$LastChangedBy\\$\n\t\\date `date +%Y-%m-%d`\n\t\\date \\$LastChangedDate\\$\n\t\\version \\$Rev\\$\t\\sa\n**/",
+  name: "Class",
+  scope: "source.objc, source.objc++, source.c, source.c++",
+  tabTrigger: "dxc",
+  uuid: "6206D909-7D5B-4401-966F-7B5077944D92"},
  {bundlePath: 
    "/Users/kumar/Library/Application Support/TextMate/Bundles/PHPDoc.tmbundle",
   content: 
@@ -42,17 +42,17 @@
   tabTrigger: "dxv",
   uuid: "4FA08FFD-F89D-4782-8C69-C7D462BA6350"},
  {content: 
-   "/** \\brief ${4:undocumented function}\n\t${5:\n\t\tlonger description\n\t}\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\date `date +%Y-%m-%d`\n\t\\param $2 ${3:description of parameter}\n\t\n\t\\return ${6:description of return value}\n\t\\sa\n**/\nfunction $1 (\\$$2) {\n\t$0\n} // END function $1\n\n",
-  name: "Function",
-  scope: "source.php",
-  tabTrigger: "dxf",
-  uuid: "65ECD57C-C3E1-11D9-BDD3-001124776DD2"},
- {content: 
    "/** \\brief ${4:undocumented function}\n\t${5:\n\t\tlonger description\n\t}\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\date `date +%Y-%m-%d`\n\t\\param $2 ${3:description of parameter}\n\t${7:\\param $8 ${9:description of parameter}}$0\n\t\\return ${6:description of return value}\n\t\\sa\n**/",
   name: "Function",
   scope: "source.objc, source.objc++, source.c, source.c++",
   tabTrigger: "dxf",
   uuid: "9F7C8A36-D569-4A7A-BCB6-2CC0220E493B"},
+ {content: 
+   "/** \\brief ${4:undocumented function}\n\t${5:\n\t\tlonger description\n\t}\n\t\\author ${TM_AUTHOR:$TM_FULLNAME} $TM_ORGANIZATION_NAME\n\t\\date `date +%Y-%m-%d`\n\t\\param $2 ${3:description of parameter}\n\t\n\t\\return ${6:description of return value}\n\t\\sa\n**/\nfunction $1 (\\$$2) {\n\t$0\n} // END function $1\n\n",
+  name: "Function",
+  scope: "source.php",
+  tabTrigger: "dxf",
+  uuid: "65ECD57C-C3E1-11D9-BDD3-001124776DD2"},
  {content: 
    "/** \\name ${1:nameOfGroup} ${2\n${3:description}\n}**/\n//@{\n$TM_SELECTED_TEXT\n//@}",
   name: "Group",

@@ -22,16 +22,6 @@
   uuid: "39A74FF2-46EF-4178-9E3A-7D4DB3968E05"},
  {beforeRunningCommand: "nop",
   command: 
-   "# This command works well when you use the TextMate service from a \n# web-log editor like Ecto or MarsEdit.  You can write in markdown\n# and then convert back to html before save and close.\n\nHTML4=$([ -n \"$TM_XHTML\" ] || echo '--html4tags')\n\"${TM_MARKDOWN:-Markdown.pl}\" $HTML4|\"${TM_SMARTYPANTS:-SmartyPants.pl}\"|perl -pe '\n\t# make <h1>Header</h1> into <h1 id=\"header\">Header</h1>\n\t# so that we can link to page#header\n\tif(($tag, $title) = /<(h[1-6])>(.*?)<\\/\\1>/) {\n\t\t$_ = $title;\n\t\ts/<[^>]+>|&\\w+;//g;\t# remove tag and entities\n\t\ts/[^-_ \\/\\w]//g;\t\t# remove all but word and separators\n\t\ts/[-_ \\/]+/_/g;\t\t# collapse all separators into _\n\t\t$_ = \"<$tag id=\\\"\" . (lc $_) . \"\\\">$title</$tag>\\n\";\n\t}'\n",
-  fallbackInput: "document",
-  input: "selection",
-  keyEquivalent: "^H",
-  name: "Convert Document / Selection to HTML",
-  output: "replaceSelectedText",
-  scope: "text.html.markdown",
-  uuid: "966B0E57-799A-4B91-84B4-75695A78F7B8"},
- {beforeRunningCommand: "nop",
-  command: 
    "InsertFormatHeader.rb|MultiMarkdown.pl|\"${TM_SMARTYPANTS:-SmartyPants.pl}\"",
   fallbackInput: "document",
   input: "selection",
@@ -40,6 +30,16 @@
   output: "openAsNewDocument",
   scope: "text.html.markdown.multimarkdown",
   uuid: "9F73CBC1-E9C0-41A4-891F-B2879A1852F7"},
+ {beforeRunningCommand: "nop",
+  command: 
+   "# This command works well when you use the TextMate service from a \n# web-log editor like Ecto or MarsEdit.  You can write in markdown\n# and then convert back to html before save and close.\n\nHTML4=$([ -n \"$TM_XHTML\" ] || echo '--html4tags')\n\"${TM_MARKDOWN:-Markdown.pl}\" $HTML4|\"${TM_SMARTYPANTS:-SmartyPants.pl}\"|perl -pe '\n\t# make <h1>Header</h1> into <h1 id=\"header\">Header</h1>\n\t# so that we can link to page#header\n\tif(($tag, $title) = /<(h[1-6])>(.*?)<\\/\\1>/) {\n\t\t$_ = $title;\n\t\ts/<[^>]+>|&\\w+;//g;\t# remove tag and entities\n\t\ts/[^-_ \\/\\w]//g;\t\t# remove all but word and separators\n\t\ts/[-_ \\/]+/_/g;\t\t# collapse all separators into _\n\t\t$_ = \"<$tag id=\\\"\" . (lc $_) . \"\\\">$title</$tag>\\n\";\n\t}'\n",
+  fallbackInput: "document",
+  input: "selection",
+  keyEquivalent: "^H",
+  name: "Convert Document / Selection to HTML",
+  output: "replaceSelectedText",
+  scope: "text.html.markdown",
+  uuid: "966B0E57-799A-4B91-84B4-75695A78F7B8"},
  {beforeRunningCommand: "nop",
   command: 
    "InsertFormatHeader.rb|MultiMarkdown.pl|SmartyPants.pl|xsltproc -novalid -nonet \"$TM_BUNDLE_SUPPORT/xhtml2article.xslt\"  -",
