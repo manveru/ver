@@ -79,7 +79,12 @@ module VER
     # Use this method on *nix if possible, most modern applications query for
     # this type first.
     def utf8=(string)
-      set(string.encode!('UTF-8'), 'UTF8_STRING')
+      case Tk::TkCmd.windowingsystem
+      when :x11
+        set(string.encode!('UTF-8'), 'UTF8_STRING')
+      else
+        set(string.encode!('UTF-8'), 'STRING')
+      end
     end
 
     # Note that this will encode string without making a copy, so only pass
