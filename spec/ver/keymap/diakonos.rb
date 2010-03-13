@@ -20,7 +20,6 @@ Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
 
   after do
     Tk.update
-    @buffer.value = ''
   end
 
   def buffer
@@ -65,7 +64,7 @@ VER.spec keymap: 'diakonos', hidden: false do
       insert.index.should == '1.0 lineend'
     end
 
-    should 'go to end of buffer with <M1-greater>' do
+    should 'go to end of buffer with <Alt-greater>' do
       type '<M1-greater>'
       insert.index.should == 'end - 1 chars'
     end
@@ -103,7 +102,7 @@ VER.spec keymap: 'diakonos', hidden: false do
       insert.index.should == '1.46'
     end
 
-    should 'go to start of buffer with <M1-less>' do
+    should 'go to start of buffer with <Alt-less>' do
       insert.index = '5.5'
       type '<M1-less>'
       insert.index.should == '1.0'

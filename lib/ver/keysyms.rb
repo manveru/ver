@@ -64,7 +64,7 @@ module VER
 
       @entry.bind(pattern){|event|
         keysym, unicode = event.keysym, event.unicode
-        l "Received: %p" % [pattern, keysym, unicode]
+        l "Received: %p" % [[pattern, keysym, unicode]]
 
         if pattern =~ /^<(.*)>$/
           pattern(pattern, keysym, unicode)

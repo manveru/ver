@@ -64,7 +64,13 @@ module VER
             when Action
               method = action.to_method(handler)
               args = [*action.invocation][1..-1]
-              signature = "#{method.receiver}.#{method.name}"
+
+              case receiver = method.receiver
+              when Class, Module
+                signature = "#{receiver}.#{method.name}"
+              else
+                signature = "#{method.receiver.class}.#{method.name}"
+              end
 
               unless args.empty?
                 signature << '(' << args.map(&:inspect).join(', ') << ')'
