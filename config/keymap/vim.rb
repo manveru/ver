@@ -186,10 +186,13 @@ module VER
     become :select_line,    'V'
     become :control,        '<Escape>'
 
+    handler nil # whatever the widget happens to be
     map :repeat_action, '.'
     map :quit,          ':qa', 'ZZ'
     map :close,         ':q<Return>', ':x'
-    map :file_open_ask,   ':o<space>'
+
+    handler Methods::Open
+    map :file_open_ask, ':o<space>'
 
     handler :at_insert
     map :insert_newline_above,       'O'
