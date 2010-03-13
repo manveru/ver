@@ -20,7 +20,6 @@ Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
 
   after do
     Tk.update
-    @buffer.value = ''
   end
 
   def buffer
@@ -63,6 +62,30 @@ VER.spec keymap: 'nano', hidden: false do
     should 'go to end of line with <End>' do
       type '<End>'
       insert.index.should == '1.0 lineend'
+    end
+
+    should 'use <BackSpace> to delete previous char' do
+      insert.index = '1.2'
+      type '<BackSpace>'
+      insert.get('linestart', 'linestart + 5 chars').should == 'Fgiat'
+    end
+
+    should 'use <Delete> to delete next char' do
+      insert.index = '1.2'
+      type '<Delete>'
+      insert.get('linestart', 'linestart + 5 chars').should == 'Fuiat'
+    end
+
+    should 'use <Alt-t> to delete to end of buffer' do
+      insert.index = '1.6'
+      type '<Alt-t>'
+      buffer.value.should == "Fugiat\n"
+    end
+
+    should 'use <Alt-braceleft> to unindent a line' do
+      buffer.value = "  some line"
+      type '<Alt-braceleft>'
+      buffer.value.should == "some line\n"
     end
   end
 end

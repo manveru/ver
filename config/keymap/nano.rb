@@ -20,7 +20,6 @@ module VER
 
     map :abort,          '<Escape>', '<Control-c>', '<Control-x>'
     map :attempt,        '<Return>'
-    map :complete_large, '<Tab><Tab>'
     map :complete_small, '<Tab>'
   end
 
@@ -52,13 +51,6 @@ module VER
     map :start_of_line,     '<Home>', '<Control-a>'
     map :transpose_chars,   '<Control-t>'
 
-    map :sel_prev_char,     '<Shift-Left>'
-    map :sel_next_char,     '<Shift-Right>'
-    map :sel_prev_word,     '<Shift-Control-Left>'
-    map :sel_next_word,     '<Shift-Control-Right>'
-    map :sel_start_of_line, '<Shift-Home>'
-    map :sel_end_of_line,   '<Shift-End>'
-
     missing :insert_string
   end
 
@@ -84,11 +76,11 @@ module VER
     map :focus_next,  '<Alt-greater>', '<Alt-period>'
 
     handler Methods::Control
-    map :wrap_line, '<Control-j>', '<F4>'
+    map :wrap_line,      '<Control-j>', '<F4>'
+    map :unindent_line,  '<Alt-braceleft>'
 
     handler Methods::Insert
-    map :file, '<Control-w>', '<F6>'
-    map :newline, '<Return>', '<Control-m>'
+    map :file, '<Control-r>', '<F5>'
     missing :string
 
     handler Methods::Search
@@ -98,7 +90,7 @@ module VER
     handler :at_insert
     map :ask_go_line,                 '<Control-underscore>', aliases['<F13>']
     map :backward_scroll,             '<Alt-minus>', '<Alt-underscore>'
-    map :end_of_file,                 '<Alt-slash>', '<Alt-question>'
+    map :end_of_buffer,               '<Alt-slash>', '<Alt-question>'
     map :end_of_line,                 '<End>', '<Control-e>'
     map :forward_scroll,              '<Alt-plus>', '<Alt-equal>'
     map :indent_line,                 '<Alt-bracketright>'
@@ -107,15 +99,16 @@ module VER
     map :next_char,                   '<Right>', '<Control-f>'
     map :next_line,                   '<Control-n>', '<Down>'
     map :next_page,                   '<Control-v>', '<F8>'
-    map :next_word,                   '<Shift-Right>', '<Alt-f>', '<Control-space>'
+    map :next_word,                   '<Shift-Right>', '<Control-space>'
     map :prev_char,                   '<Left>', '<Control-b>'
     map :prev_line,                   '<Control-p>', '<Up>'
     map :prev_page,                   '<Control-y>', '<F7>'
-    map :prev_word,                   '<Shift-Left>', '<Alt-b>', '<Alt-space>'
-    map :start_of_file,               '<Alt-backslash>', '<Alt-bar>'
-    map :start_of_line,               '<Home>', '<Control-a>'
-    map :unindent_line,               '<Alt-braceleft>'
-    map [:kill_motion, :end_of_file], '<Alt-t>'
+    map :prev_word,                   '<Shift-Left>', '<Alt-space>'
+    map :start_of_buffer,             '<Alt-backslash>', '<Alt-bar>'
+    map [:killing, :end_of_buffer],   '<Alt-t>'
+    map [:killing, :prev_char],       '<BackSpace>'
+    map [:killing, :next_char],       '<Delete>'
+    map :newline,                     '<Return>', '<Control-m>'
 
     # M-(     (M-9)           Go to beginning of paragraph; then of previous paragraph
     map :start_of_paragraph, '<Control-braceleft>', '<Alt-Key-9>'
@@ -131,7 +124,7 @@ module VER
 
     handler Methods::Nano
     map :verbatim, ['<Alt-v>', :verbatim]
-    map :home, '<Home>'
+    map :home, '<Home>', '<Control-a>'
     map :suspend, '<Control-z>'
     map :redraw, '<Control-l>'
     map :toggle_help_mode, '<Alt-x>'
@@ -163,15 +156,8 @@ module VER
   minor_mode :verbatim do
     handler Methods::Nano
 
-    # try mapping all possible combinations.
-    mods = %w[Alt Control Control-Alt]
-    (0..255).each do |ord|
-      chr = ord.chr
-      next unless chr =~ /[[:print:]]/
-      keysym = VER::Event[chr].keysym
-      map :verbatim_insert, "<#{keysym}>", *mods.map{|mod| "<#{mod}-#{keysym}>" }
-    end
-
+    # try mapping all possible Control-Key combinations.
+    map :verbatim_insert, "<Control-Key>"
     missing :verbatim_insert
   end
 end
