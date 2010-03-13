@@ -298,7 +298,7 @@ module VER
     map [:killing, :prev_word],  '<Control-w>'
 
     handler Methods::Control
-    map :smart_evaluate,           '<Alt-e>', '<Control-e>'
+    map :smart_evaluate,           '<Alt-e>'
     if x11?
       map :unindent_line,          '<ISO_Left_Tab>'
     else
