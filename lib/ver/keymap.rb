@@ -18,6 +18,26 @@ module VER
       def windowingsystem
         @windowingsystem ||= Tk::TkCmd.windowingsystem
       end
+
+      def bsd?
+        FFI::Platform.bsd?
+      end
+
+      def windows?
+        FFI::Platform.windows?
+      end
+
+      def mac?
+        FFI::Platform.mac?
+      end
+
+      def unix?
+        FFI::Platform.unix?
+      end
+
+      def operatingsystem
+        FFI::Platform::OS
+      end
     end
 
     module Results
