@@ -66,6 +66,7 @@ module VER
   autoload :Undo,                'ver/undo'
   autoload :WidgetEvent,         'ver/widget_event'
   autoload :WidgetMajorMode,     'ver/widget_major_mode'
+  autoload :Struct,              'ver/struct'
 
   require 'ver/major_mode'
   require 'ver/minor_mode'
