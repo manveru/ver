@@ -19,8 +19,8 @@ module VER
   class MajorMode < Struct.new(:name, :minors, :keymap, :receiver,
                                :fallback_action, :tag, :bound_keys)
 
+    include Platform
     include Keymap::Results
-    include Keymap::Platform
 
     MODES = {}
 

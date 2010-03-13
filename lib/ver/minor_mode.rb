@@ -21,8 +21,8 @@ module VER
   # part of the tree of minors of this major mode.
   class MinorMode < Struct.new(:name, :parents, :keymap, :receiver,
                                :fallback_action, :enter_action, :leave_action)
+    include Platform
     include Keymap::Results
-    include Keymap::Platform
 
     MODES = {}
 
