@@ -32,20 +32,12 @@ module VER
     # given a unicode char, returns the event with shortest pattern.
     def self.[](string)
       case string
-      when /^<(.*)>$/
-        PATTERN.fetch(string)
-      when ' ' # exception of the single-char rule
-        PATTERN.fetch(string = '<space>')
-      when '<' # exception of the single-char rule
-        PATTERN.fetch(string = '<less>')
-      when '%' # weird behaviour...
-        PATTERN.fetch(string = '<percent>')
-      when /^\d$/ # numbers may collide with mouse buttons
-        PATTERN.fetch(string = "<Key-#{string}>")
+      when /^<(.*)>$/ # an actual or virtual pattern
+        PATTERN.fetch(pattern = string)
+      when /^[^-]{2,}$/ # keysym
+        KEYSYM.fetch(string)
       when /^.$/ # single unicode char
         UNICODE.fetch(string).min_by{|event| event.pattern.size }
-      else # it may be keysym, but let's try to make it pattern instead
-        PATTERN.fetch(string = "<#{string}>")
       end
     rescue KeyError => ex
       capture(string)
@@ -65,14 +57,14 @@ module VER
       false
     end
 
-    def self.capture(capture_pattern)
+    def self.capture(pattern)
+      l "capturing %p" % [pattern]
       @entry ||= setup_capture
       @pending += 1
 
-      capture_pattern = capture_pattern.gsub(/\bAlt\b/, 'M1')
-
-      @entry.bind(capture_pattern){|event|
-        pattern, keysym, unicode = event.pattern, event.keysym, event.unicode
+      @entry.bind(pattern){|event|
+        keysym, unicode = event.keysym, event.unicode
+        l "Received: %p" % [pattern, keysym, unicode]
 
         if pattern =~ /^<(.*)>$/
           pattern(pattern, keysym, unicode)
@@ -87,23 +79,23 @@ module VER
 
       @entry.value = ""
 
+      send_pattern = pattern.gsub(/\bAlt\b/, 'M1')
       counter = 0
-      until self.key?(capture_pattern)
-        Tk.update
-        Tk::Event.generate(@entry, capture_pattern, when: :now)
+      until self.key?(pattern)
+        Tk::Event.generate(@entry, send_pattern, when: :now)
         Tk.update
         counter += 1
 
         # just try a couple of times before annoying the user.
         if counter == 10
-          @entry.value = "Please press %p" % [capture_pattern]
+          @entry.value = "Please press %p" % [pattern]
           @entry.focus
         end
       end
 
       @progress.step
       @pending -= 1
-      self[capture_pattern]
+      self[pattern]
     end
 
     def self.setup_capture
@@ -139,13 +131,18 @@ module VER
     end
 
     def self.persist!
-      persist_location.open 'wb+' do |io|
+      path = persist_location
+      l "Persisting event patterns to #{path}"
+      path.open 'wb+' do |io|
         io.write(Marshal.dump(PATTERN))
       end
     end
 
     def self.load!
-      persist_location.open 'rb' do |io|
+      path = persist_location
+      l "Attempt to load event patterns from #{path}"
+
+      path.open 'rb' do |io|
         pattern = Marshal.load(io.read)
         pattern.each do |sym, event|
           PATTERN[event.pattern] = event
@@ -153,8 +150,69 @@ module VER
           KEYSYM[event.keysym] << event
         end
       end
+
+      l "Event patterns loaded"
     rescue Errno::ENOENT
-      # Harmless, the .events file isn't created yet.
+      # Mostly harmless, the .events file isn't created yet.
+      l "Attempt to load event patterns failed"
+
+      # To make creation easier, we define well-known patterns for ASCII here.
+      # The rest is still to be defined by actual events.
+      ('0'..'9').each{|chr| pattern("<Key-#{chr}>", chr, chr) }
+      ('A'..'Z').each{|chr| pattern(chr, chr, chr) }
+      ('a'..'z').each{|chr| pattern(chr, chr, chr) }
+      { 'space'        => ' ',
+        'exclam'       => '!',
+        'quotedbl'     => '"',
+        'numbersign'   => '#',
+        'dollar'       => '$',
+        'percent'      => '%',
+        'ampersand'    => '&',
+        'apostrophe'   => "'",
+        'parenleft'    => '(',
+        'parenright'   => ')',
+        'asterisk'     => '*',
+        'plus'         => '+',
+        'comma'        => ',',
+        'minus'        => '-',
+        'period'       => '.',
+        'slash'        => '/',
+        'colon'        => ':',
+        'semicolon'    => ';',
+        'less'         => '<',
+        'equal'        => '=',
+        'greater'      => '>',
+        'question'     => '?',
+        'at'           => '@',
+        'bracketleft'  => '[',
+        'backslash'    => '\\',
+        'bracketright' => ']',
+        'asciicircum'  => '^',
+        'underscore'   => '_',
+        'grave'        => '`',
+        'braceleft'    => '{',
+        'bar'          => '|',
+        'braceright'   => '}',
+        'asciitilde'   => '~',
+        'BackSpace'    => "\b",
+        'Delete'       => "\x7F",
+        'Down'         => '',
+        'End'          => '',
+        'Escape'       => "\e",
+        'Home'         => '',
+        'Insert'       => '',
+        'Left'         => '',
+        'Next'         => '',
+        'Prior'        => '',
+        'Return'       => "\n",
+        'Right'        => '',
+        'Tab'          => "\t",
+        'Up'           => '',
+      }.each do |keysym, unicode|
+        pattern("<#{keysym}>", keysym, unicode)
+      end
+
+      1.upto(12).each{|n| pattern("<F#{n}>", "F#{n}", '') }
     end
 
     def initialize(pattern, keysym, unicode)
@@ -175,8 +233,5 @@ module VER
     def convert_unicode(unicode)
       unicode
     end
-
-    ('a'..'z').each{|chr| pattern(chr, chr, chr) }
-    ('A'..'Z').each{|chr| pattern(chr, chr, chr) }
   end
 end

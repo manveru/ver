@@ -52,14 +52,8 @@ module VER
       self.bound_keys = Set.new
       self.tag = Tk::BindTag.new("#{name}-mode")
 
-      # make sure those are available no matter what.
-      [ '<Escape>', "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+",
-        ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]",
-        "^", "_", "`", "{", "|", "}", "~",
-      ].each{|chr| bind_key(chr) }
-
       # and now register all we didn't have yet.
-      Event.each{|event| bind_key(event.pattern) }
+      Event.each{|event| bind_key(event) }
     end
 
     def destroy
@@ -147,7 +141,15 @@ module VER
     end
 
     def bind_key(key)
-      pattern = Event[key].pattern
+      case key
+      when Event
+        pattern = key.pattern
+      when String
+        pattern = Event[key].pasttern
+      else
+        raise ArgumentError, "Invalid key: %p" % [key]
+      end
+
       return if bound_keys.include?(pattern)
 
       tag.bind(pattern) do |event|
