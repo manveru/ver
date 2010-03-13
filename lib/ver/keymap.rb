@@ -130,6 +130,15 @@ module VER
 
     def []=(*pattern, action)
       pattern = pattern_to_patterns(*pattern)
+
+      case existing = self[pattern]
+      when Action
+        VER.warn "Redefining %p bound to %p with %p" % [existing, pattern, action]
+      when Incomplete
+        VER.warn "%p shadows other actions bound to %p" % [action, pattern]
+      when Impossible
+      end
+
       top = sub = MapHash.new
 
       while key = pattern.shift
