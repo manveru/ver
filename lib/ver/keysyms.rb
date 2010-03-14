@@ -34,7 +34,8 @@ module VER
       # l string: string
       case string
       when /^<(.*)>$/ # an actual or virtual pattern
-        PATTERN.fetch(pattern = string)
+        pattern = expand_pattern(string)
+        PATTERN.fetch(pattern)
       when /^[^-]{2,}$/ # keysym
         pattern = "<#{string}>"
         KEYSYM.fetch(string)
@@ -58,6 +59,42 @@ module VER
       true
     rescue KeyError
       false
+    end
+
+    MODIFIERS = %w[
+      Control Mod1 M1 Command Alt Mod2 M2 Option Shift Mod3 M3 Lock Mod4 M4
+      Extended Mod5 M5 Button1 B1 Meta M Button2 B2 Double Button3 B3 Triple
+      Button4 B4 Quadruple Button5 B5 ]
+
+    DETAILS = %w[
+      Activate Destroy Map ButtonPress Button Enter MapRequest ButtonRelease
+      Expose Motion Circulate FocusIn MouseWheel CirculateRequest FocusOut
+      Property Colormap Gravity Reparent Configure KeyPress Key ResizeRequest
+      ConfigureRequest KeyRelease Unmap Create Leave Visibility Deactivate ]
+
+    require 'abbrev'
+    MODIFIERS_ABBREV = MODIFIERS.abbrev
+    DETAILS_ABBREV = DETAILS.abbrev
+
+    # because Control is used a lot more than Command.
+    MODIFIERS_ABBREV['C'] = 'Control'
+
+    # pattern has the form of <modifier-modifier-type-detail>
+    # This may be shortened down to <detail>.
+    # Here we expand short forms of modifier and type.
+    # Short modifiers take precedence over short types, as they are way more
+    # used.
+    def self.expand_pattern(pattern)
+      *parts, detail = pattern[1..-2].split('-')
+      if parts.empty?
+        pattern
+      else
+        parts.map! do |part|
+          MODIFIERS_ABBREV[part] || DETAILS_ABBREV[part] || part
+        end
+        inner = (parts << detail).join('-')
+        "<#{inner}>"
+      end
     end
 
     def self.capture(pattern)
