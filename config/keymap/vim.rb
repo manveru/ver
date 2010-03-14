@@ -146,11 +146,11 @@ module VER
 
   minor_mode :delete do
     handler :at_insert
-    map :changing,                  ['c', :move]
     map :change_next_word_end,      'cw'
     map :change_line,               'cc'
-    map :killing,                   ['d', :move]
+    map :changing,                  ['c', :move]
     map :kill_line,                 'dd'
+    map :killing,                   ['d', :move]
     map [:changing, :end_of_line],  'C'
     map [:killing,  :end_of_line],  'D'
     map [:killing,  :next_char],    'x'
@@ -262,9 +262,6 @@ module VER
     map :transpose_chars,   '<Control-t>'
 
     # TODO
-    map :sel_prev_char,     '<Shift-Left>'
-    map :sel_next_char,     '<Shift-Right>'
-    map :sel_prev_word,     '<Shift-Control-Left>'
     map :sel_next_word,     '<Shift-Control-Right>'
     map :sel_start_of_line, '<Shift-Home>'
     map :sel_end_of_line,   '<Shift-End>'
@@ -284,11 +281,11 @@ module VER
     map :insert_newline,         '<Return>'
     map :insert_selection,       '<Shift-Insert>', '<Insert>'
     map :insert_tab,             '<Control-v><Tab>', '<Control-i>'
-    map :next_char,              '<Right>', '<Control-f>'
+    map :next_char,              '<Right>'
     map :next_line,              '<Down>', '<Control-n>'
     map :next_page,              '<Control-f>', '<Next>', '<Shift-Down>'
     map :next_word,              '<Shift-Right>', '<Alt-f>'
-    map :prev_char,              '<Left>', '<Control-b>'
+    map :prev_char,              '<Left>'
     map :prev_line,              '<Up>', '<Control-p>'
     map :prev_page,              '<Control-b>', '<Prior>', '<Shift-Up>'
     map :prev_word,              '<Shift-Left>', '<Alt-b>'
@@ -438,7 +435,7 @@ module VER
 
     map :abort,           '<Escape>', '<Control-c>'
     map :attempt,         '<Return>'
-    map :complete_large,  '<Tab><Tab>'
+    map :complete_large,  '<Control-d>'
     map :complete_small,  '<Tab>'
     map :next_history,    '<Down>'
     map :prev_history,    '<Up>'
