@@ -250,21 +250,17 @@ module VER
     map :insert_selection,  '<Shift-Insert>'
     map :insert_tab,        '<Control-v><Tab>', '<Control-i>'
     map :kill_end_of_line,  '<Control-k>'
-    map :kill_next_char,    '<Control-d>', '<Delete>'
-    map :kill_next_word,    '<Alt-d>'
-    map :kill_prev_char,    '<BackSpace>'
-    map :kill_prev_word,    '<Control-w>'
+    map :delete_next_char,  '<Control-d>', '<Delete>'
+    map :delete_next_word,  '<Alt-d>'
+    map :delete_prev_char,  '<BackSpace>'
+    map :delete_prev_word,  '<Control-w>'
     map :next_char,         '<Right>', '<Control-f>'
     map :next_word,         '<Shift-Right>', '<Alt-f>'
     map :prev_char,         '<Left>', '<Control-b>'
     map :prev_word,         '<Shift-Left>', '<Alt-b>'
     map :start_of_line,     '<Home>', '<Control-a>'
     map :transpose_chars,   '<Control-t>'
-
-    # TODO
-    map :sel_next_word,     '<Shift-Control-Right>'
-    map :sel_start_of_line, '<Shift-Home>'
-    map :sel_end_of_line,   '<Shift-End>'
+    map :paste,             '<Control-y>'
 
     missing :insert_string
   end

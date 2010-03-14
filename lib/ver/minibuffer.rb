@@ -351,31 +351,32 @@ module VER
     end
 
     def kill_end_of_line(event = nil)
+      content = get_displaychars('insert', 'answer.last')
+      copy(content) if content =~ /\S/
       delete('insert', 'answer.last')
       invoke(:modified)
     end
 
-    def kill_next_char(event = nil)
+    def delete_next_char(event = nil)
       return unless line = get_displaychars('insert', 'answer.last')
       delete('insert') unless line == ''
       invoke(:modified)
     end
 
-    def kill_next_word(event = nil)
+    def delete_next_word(event = nil)
       line = get_displaychars('insert', 'answer.last')
       return unless word = line[/^\s*(?:\w+|[^\w\s]+)\s*/]
       delete('insert', "insert + #{word.size} chars")
       invoke(:modified)
     end
 
-    def kill_prev_char(event = nil)
-      if compare('insert', '>', 'answer')
-        delete('insert - 1 display chars')
-        invoke(:modified)
-      end
+    def delete_prev_char(event = nil)
+      return unless compare('insert', '>', 'answer')
+      delete('insert - 1 display chars')
+      invoke(:modified)
     end
 
-    def kill_prev_word(event = nil)
+    def delete_prev_word(event = nil)
       line = get_displaychars('answer', 'insert').reverse
       return unless word = line[/^\s*(?:\w+|[^\w\s]+)\s*/]
       delete("insert - #{word.size} display chars", 'insert')
@@ -405,6 +406,16 @@ module VER
       line[0, 2] = line[0, 2].reverse
       replace('insert', 'answer.last', line, 'answer')
       mark_set('insert', insert)
+      invoke(:modified)
+    end
+
+    def copy(string)
+      Clipboard.dwim = string
+    end
+
+    def paste(event = nil)
+      return unless content = Clipboard.dwim
+      insert(:insert, content, 'answer')
       invoke(:modified)
     end
 
