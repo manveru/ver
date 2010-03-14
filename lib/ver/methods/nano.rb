@@ -14,6 +14,35 @@ module VER
       def verbatim_insert(buffer)
       end
 
+      def ascii_enter(buffer, old, new)
+        buffer.store(self, :ascii_digit, [])
+      end
+
+      def ascii_leave(buffer, old, new)
+        buffer.store(self, :ascii_digit, nil)
+      end
+
+      def ascii(buffer)
+        unicode = buffer.events.last.unicode
+        if unicode =~ /^\d+$/
+          digits = buffer.store(self, :ascii_digit)
+          digits << unicode.to_i
+        else
+          # do nothing?
+          return
+        end
+
+        return if digits.size < 3
+
+        ord = digits.join.to_i
+        buffer.at_insert.insert(ord.chr)
+      rescue => ex
+        VER.error(ex)
+        buffer.minor_mode(:ascii_digit, :control)
+      else
+        buffer.minor_mode(:ascii_digit, :control)
+      end
+
       # Noop
       def redraw(buffer)
         mumble buffer, "Redraw"

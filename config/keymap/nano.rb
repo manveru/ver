@@ -61,6 +61,8 @@ module VER
   minor_mode :control do
     inherits :basic
 
+    become :ascii_digit, '<Escape><Escape>'
+
     map :start_select_char_mode, '<Control-asciicircum>'
 
     map :undo, '<Alt-u>'
@@ -159,5 +161,13 @@ module VER
     # try mapping all possible Control-Key combinations.
     map :verbatim_insert, "<Control-Key>"
     missing :verbatim_insert
+  end
+
+  minor_mode :ascii_digit do
+    handler Methods::Nano
+    enter :ascii_enter
+    leave :ascii_leave
+
+    map :ascii, *('<Key-0>'..'<Key-9>')
   end
 end

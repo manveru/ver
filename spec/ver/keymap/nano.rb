@@ -87,5 +87,27 @@ VER.spec keymap: 'nano', hidden: false do
       type '<Alt-braceleft>'
       buffer.value.should == "some line\n"
     end
+
+    should 'insert verbatim character with <Alt-v> prefix' do
+      buffer.value = ''
+      type '<Alt-v><Control-j>'
+      buffer.value.should == "\n\n"
+    end
+
+    should 'insert corresponding ascii character for <Escape><Escape>\d\d\d' do
+      buffer.value = ''
+      buffer.minor_mode?(:ascii_digit).should.be.nil
+      type '<Escape><Escape>'
+      buffer.minor_mode?(:ascii_digit).should.not.be.nil
+      type '0'
+      buffer.minor_mode?(:ascii_digit).should.not.be.nil
+      buffer.value.should == "\n"
+      type '4'
+      buffer.minor_mode?(:ascii_digit).should.not.be.nil
+      buffer.value.should == "\n"
+      type '2'
+      buffer.minor_mode?(:ascii_digit).should.be.nil
+      buffer.value.should == "*\n"
+    end
   end
 end
