@@ -38,15 +38,15 @@ module VER
     minor_mode :git do
       handler Methods::Git
 
-      map :git_blame,                  %w[g i t b]
-      map [:spawn_rxvt, 'git add -p'], %w[g i t a]
-      map [:spawn_rxvt, 'git commit'], %w[g i t c]
-      map [:spawn_rxvt, 'git diff'  ], %w[g i t d]
-      map [:spawn_rxvt, 'git pull'  ], %w[g i t p u l]
-      map [:spawn_rxvt, 'git push'  ], %w[g i t p u s]
-      map [:spawn_rxvt, 'git status'], %w[g i t s]
-      map [:spawn_rxvt, 'tig'],        %w[g i t t]
-      map [:spawn_cmd,  'gitk --all'], %w[g i t k]
+      map :git_blame,                  'gitb'
+      map [:spawn_rxvt, 'git add -p'], 'gita'
+      map [:spawn_rxvt, 'git commit'], 'gitc'
+      map [:spawn_rxvt, 'git diff'  ], 'gitd'
+      map [:spawn_rxvt, 'git pull'  ], 'gitpul'
+      map [:spawn_rxvt, 'git push'  ], 'gitpus'
+      map [:spawn_rxvt, 'git status'], 'gitst'
+      map [:spawn_rxvt, 'tig'],        'gitt'
+      map [:spawn_cmd,  'gitk --all'], 'gitk'
     end
   end
 end

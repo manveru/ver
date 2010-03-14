@@ -40,7 +40,7 @@ module VER
   when 'vim'
     minor_mode :soma do
       handler Methods::Soma
-      map :soma_buffer, %w[Control-c Control-c]
+      map :soma_buffer, '<Control-c><Control-c>'
     end
 
     minor_mode :control do
