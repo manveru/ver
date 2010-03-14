@@ -20,9 +20,9 @@ end
 # NOTE: do _not_ remove trailing whitespace in this file, it's essential.
 
 VER.spec do
-  require 'config/plugin/smart_autoindent'
+  describe 'VER::Methods::SmartAutoindent' do
+    require 'config/plugin/smart_autoindent'
 
-  describe VER::Methods::SmartAutoindent do
     describe 'insert indented newline' do
       Indent = VER::Methods::SmartAutoindent
 
