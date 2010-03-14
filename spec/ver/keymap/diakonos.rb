@@ -65,7 +65,7 @@ VER.spec keymap: 'diakonos', hidden: false do
     end
 
     should 'go to end of buffer with <Alt-greater>' do
-      type '<M1-greater>'
+      type '<Alt-greater>'
       insert.index.should == 'end - 1 chars'
     end
 
@@ -104,7 +104,7 @@ VER.spec keymap: 'diakonos', hidden: false do
 
     should 'go to start of buffer with <Alt-less>' do
       insert.index = '5.5'
-      type '<M1-less>'
+      type '<Alt-less>'
       insert.index.should == '1.0'
     end
 

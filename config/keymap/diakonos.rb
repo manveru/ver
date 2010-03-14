@@ -8,7 +8,7 @@ module VER
 
     map :abort,          '<Escape>', '<Control-c>'
     map :attempt,        '<Return>'
-    map :complete_large, '<Tab><Tab>'
+    map :complete_large, '<Control-d>'
     map :complete_small, '<Tab>'
   end
 
@@ -174,14 +174,7 @@ module VER
     map :prev_word,         '<Shift-Left>', '<Alt-b>'
     map :start_of_line,     '<Home>', '<Control-a>'
     map :transpose_chars,   '<Control-t>'
-
-    # TODO
-    map :sel_prev_char,     '<Shift-Left>'
-    map :sel_next_char,     '<Shift-Right>'
-    map :sel_prev_word,     '<Shift-Control-Left>'
-    map :sel_next_word,     '<Shift-Control-Right>'
-    map :sel_start_of_line, '<Shift-Home>'
-    map :sel_end_of_line,   '<Shift-End>'
+    map :paste, '<Control-y>'
 
     missing :insert_string
   end
