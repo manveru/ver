@@ -140,7 +140,7 @@ module VER
 
       # TODO: use filename_under_cursor, that should be much more accurate.
       def file_completions(text, from, to)
-        y = text.index(from).y
+        lineno = text.index(from).line
         line = text.get(from, to)
 
         return [] unless match = line.match(/(?<pre>.*?)(?<path>\/[^\s"'{}()\[\]]*)(?<post>.*?)/)
@@ -156,7 +156,7 @@ module VER
           item.sub(path, '/')
         end
 
-        return "#{y}.#{to - 1}", "#{y}.#{to}", list
+        return "#{lineno}.#{to - 1}", "#{lineno}.#{to}", list
       end
 
       def word_completions(text, from, to)
