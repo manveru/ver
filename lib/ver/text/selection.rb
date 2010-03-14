@@ -236,6 +236,45 @@ module VER
             add(insert, start + '1 chars')
           end
         end
+
+        # we assume char selection is always continuous, so no need to check the
+        # ranges.
+        def replace_with_clipboard
+          return unless content = Clipboard.dwim
+
+          start = buffer.index('sel.first')
+
+          case content
+          when Array
+            replace(content.join("\n"))
+          when String
+            replace(content)
+          else
+            raise "Unknown kind of clipboard content: %p" % [content]
+          end
+
+          finish
+          buffer.insert = start
+        end
+
+        def replace_with_string(string, expand)
+          insert = buffer.index(:insert)
+          anchor = self.anchor.index
+
+          from, to = buffer.index('sel.first'), buffer.index('sel.last')
+
+          buffer.undo_record do |record|
+            if expand
+              length = buffer.count(from, to, :displaychars)
+              record.replace(from, to, string * length)
+            else
+              record.replace(from, to, string)
+            end
+          end
+
+          self.anchor.index = anchor
+          refresh
+        end
       end
 
       class Line < Selection
