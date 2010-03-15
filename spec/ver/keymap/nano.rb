@@ -109,5 +109,27 @@ VER.spec keymap: 'nano', hidden: false do
       buffer.minor_mode?(:ascii_digit).should.be.nil
       buffer.value.should == "*\n"
     end
+
+    should 'go line down with <Down>' do
+      type '<Down>'
+      insert.index.should == '2.0'
+    end
+
+    should 'go line up with <Up>' do
+      insert.index = '2.0'
+      type '<Up>'
+      insert.index.should == '1.0'
+    end
+
+    should 'go to next character with <Right>' do
+      type '<Right>'
+      insert.index.should == '1.1'
+    end
+
+    should 'go to previous character with <Left>' do
+      insert.index = '1.1'
+      type '<Left>'
+      insert.index.should == '1.0'
+    end
   end
 end

@@ -320,6 +320,21 @@ VER.spec keymap: 'vim', hidden: false do
         # first match, so no movement
         insert.index.should == ranges.first.first
       end
+
+      it 'removes the search tag with <g><slash>' do
+        tag = buffer.tag(VER::Methods::Search::TAG)
+        tag.ranges.should.be.empty
+        type '/officiis<Return>'
+        tag.ranges.should.not.be.empty
+        type 'g/'
+        tag.ranges.should.be.empty
+      end
+
+      it 'searches the next word under the cursor with <asterisk>' do
+        insert.index = '1.25'
+        type '*'
+        insert.index.should == '5.5'
+      end
     end
 
     describe 'Matching brace related' do
