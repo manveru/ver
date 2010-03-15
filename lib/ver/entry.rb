@@ -81,6 +81,11 @@ module VER
       insert(cursor, "\t")
     end
 
+    def paste
+      return unless content = VER::Clipboard.get
+      insert(cursor, content)
+    end
+
     def transpose_chars
       char = get[cursor]
       delete(cursor)
@@ -223,8 +228,6 @@ module VER
       @history_index = 0
       self.value = @history[@history_index]
     end
-
-    ## Asking questions
 
     # Accept the line regardless of where the cursor is.
     # If this line is non-empty, it will be added to the history list.
