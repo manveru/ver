@@ -42,7 +42,7 @@ module VER
   autoload :Clipboard,           'ver/clipboard'
   autoload :Entry,               'ver/entry'
   autoload :EvalCompleter,       'ver/vendor/eval_completer'
-  autoload :Event,               'ver/keysyms'
+  autoload :Event,               'ver/event'
   autoload :ExceptionView,       'ver/exception_view'
   autoload :Executor,            'ver/executor'
   autoload :Font,                'ver/font'
