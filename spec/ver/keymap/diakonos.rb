@@ -2,9 +2,7 @@ require_relative '../../helper'
 
 shared :with_buffer do
   before do
-    @buffer ||= VER.layout.create_buffer
-    VER.layout.add_buffer(@buffer)
-    @buffer.value = <<-TEXT.chomp
+    buffer.value = <<-TEXT.chomp
 Fugiat eos voluptatum officia fugit ad sit qui.
 Alias et voluptas sapiente sed.
 Unde ut qui esse repellendus sunt dolorum officia.
@@ -13,9 +11,10 @@ Nesciunt repellendus et recusandae dolorum quis repudiandae ad minima.
 Ducimus quo et ea.
 Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
     TEXT
-    @buffer.insert = '1.0'
-    @buffer.major_mode = VER::MajorMode[:Fundamental]
-    @insert = @buffer.at_insert
+    buffer.insert = '1.0'
+    buffer.major_mode = VER::MajorMode[:Fundamental]
+    @insert = buffer.at_insert
+    Tk.update
   end
 
   after do
@@ -23,7 +22,12 @@ Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
   end
 
   def buffer
-    @buffer
+    $ver_spec_buffer ||=
+      begin
+        buffer = VER.layout.create_buffer
+        VER.layout.add_buffer(buffer)
+        buffer
+      end
   end
 
   def insert
