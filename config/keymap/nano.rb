@@ -6,13 +6,6 @@ module VER
 
   major_mode :Fundamental do
     use :control
-
-    # Still have to check what this is on other platforms
-    if x11?
-      aliases['<F13>'] = '<XF86_Switch_VT_1>'
-      aliases['<F14>'] = '<XF86_Switch_VT_2>'
-      aliases['<F16>'] = '<XF86_Switch_VT_4>'
-    end
   end
 
   major_mode :MiniBuffer do
@@ -87,10 +80,10 @@ module VER
 
     handler Methods::Search
     map :status_next, '<Control-w>', '<F6>'
-    map :again,       '<Alt-w>', aliases['<F16>']
+    map :again,       '<Alt-w>', '<F16>'
 
     handler :at_insert
-    map :ask_go_line,                 '<Control-underscore>', aliases['<F13>']
+    map :ask_go_line,                 '<Control-underscore>', '<F13>'
     map :backward_scroll,             '<Alt-minus>', '<Alt-underscore>'
     map :end_of_buffer,               '<Alt-slash>', '<Alt-question>'
     map :end_of_line,                 '<End>', '<Control-e>'
@@ -118,7 +111,7 @@ module VER
     map :end_of_paragraph, '<Control-braceright>', '<Alt-Key-0>'
 
     handler Methods::SearchAndReplace
-    map :query, '<Control-backslash>', aliases['<F14>'], '<Alt-r>'
+    map :query, '<Control-backslash>', '<F14>', '<Alt-r>'
 
     handler Methods::Clipboard
     map :paste, '<Control-u>', '<F10>'

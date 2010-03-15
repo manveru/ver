@@ -32,9 +32,12 @@ module VER
     # given a unicode char, returns the event with shortest pattern.
     def self.[](string)
       # l string: string
+      pattern = nil
+
       case string
       when /^<(.*)>$/ # an actual or virtual pattern
         pattern = expand_pattern(string)
+        l pattern: pattern
         PATTERN.fetch(pattern)
       when /^[^-]{2,}$/ # keysym
         pattern = "<#{string}>"
@@ -44,7 +47,8 @@ module VER
         UNICODE.fetch(string).min_by{|event| event.pattern.size }
       end
     rescue KeyError => ex
-      capture(string)
+      l pattern: pattern, string: string
+      capture(pattern || string)
     end
 
     def self.key?(string)
@@ -79,22 +83,31 @@ module VER
     # because Control is used a lot more than Command.
     MODIFIERS_ABBREV['C'] = 'Control'
 
+    PATTERN_ALIAS = {}
+
     # pattern has the form of <modifier-modifier-type-detail>
     # This may be shortened down to <detail>.
     # Here we expand short forms of modifier and type.
     # Short modifiers take precedence over short types, as they are way more
     # used.
-    def self.expand_pattern(pattern)
-      *parts, detail = pattern[1..-2].split('-')
+    def self.expand_pattern(given_pattern)
+      *parts, detail = given_pattern[1..-2].split('-')
+
       if parts.empty?
-        pattern
+        pattern = given_pattern
       else
         parts.map! do |part|
           MODIFIERS_ABBREV[part] || DETAILS_ABBREV[part] || part
         end
-        inner = (parts << detail).join('-')
-        "<#{inner}>"
+
+        aliased_detail = PATTERN_ALIAS.fetch(detail, detail)
+        inner = (parts << aliased_detail).join('-')
+        pattern = "<#{inner}>"
       end
+
+      aliased_pattern = PATTERN_ALIAS.fetch(pattern, given_pattern)
+      l given_pattern: given_pattern, aliased_pattern: aliased_pattern
+      return aliased_pattern
     end
 
     def self.capture(pattern)
@@ -255,11 +268,36 @@ module VER
       end
 
       # F1-F12
-      1.upto(12).each{|n| pattern("<F#{n}>", "F#{n}", '') }
+      1.upto(12){|n| pattern("<F#{n}>", "F#{n}", '') }
 
       # Something for german keyboards
       pattern('<Control-bracketleft>', 'bracketleft', '[')
       pattern('<Control-bracketright>', 'bracketright', ']')
+
+      # return # FIXME
+
+      # Compatibility between windowingsystems
+      if Platform.unix? && Platform.x11?
+        l :x11_and_unix
+
+        # Shift-Fn is handled differently, we alias them to F12+n
+        # So if you map <F13>, it works, do not use <Shift-F1> or
+        # <XF86_Switch_VT_1> in the keymap itself.
+        1.upto 12 do |n|
+          vsym = "XF86_Switch_VT_#{n}"
+          fpat = "<F#{12 + n}>"
+          event = pattern("<#{vsym}>", vsym, '')
+          PATTERN_ALIAS[fpat] = event.pattern
+        end
+      else
+        # Here we map all Shift-Fn keys to a F12+n pattern.
+        1.upto 12 do |n|
+          vsym = "F#{n}"
+          fpat = "<F#{12 + n}>"
+          event = pattern("<Shift-#{vsym}>", vsym, '')
+          PATTERNS[fpat] = event.pattern
+        end
+      end
     end
   end
 end
