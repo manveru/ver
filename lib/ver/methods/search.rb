@@ -129,7 +129,7 @@ module VER
 
           counter = 0
           buffer.search_all regexp, from, to do |match, pos, mark|
-            buffer.mark_set(:insert, pos)
+            buffer.insert = pos
             counter += 1
             break if counter == count
           end
@@ -145,7 +145,7 @@ module VER
 
           counter = 0
           buffer.rsearch_all regexp, from, to do |match, pos, mark|
-            buffer.mark_set(:insert, pos)
+            buffer.insert = pos
             counter += 1
             break if counter == count
           end
