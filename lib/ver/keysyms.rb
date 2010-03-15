@@ -31,13 +31,11 @@ module VER
     # given a <pattern>, this returns the event for this pattern.
     # given a unicode char, returns the event with shortest pattern.
     def self.[](string)
-      # l string: string
       pattern = nil
 
       case string
       when /^<(.*)>$/ # an actual or virtual pattern
         pattern = expand_pattern(string)
-        l pattern: pattern
         PATTERN.fetch(pattern)
       when /^[^-]{2,}$/ # keysym
         pattern = "<#{string}>"
@@ -47,7 +45,6 @@ module VER
         UNICODE.fetch(string).min_by{|event| event.pattern.size }
       end
     rescue KeyError => ex
-      l pattern: pattern, string: string
       capture(pattern || string)
     end
 
@@ -106,7 +103,6 @@ module VER
       end
 
       aliased_pattern = PATTERN_ALIAS.fetch(pattern, given_pattern)
-      l given_pattern: given_pattern, aliased_pattern: aliased_pattern
       return aliased_pattern
     end
 
@@ -278,8 +274,6 @@ module VER
 
       # Compatibility between windowingsystems
       if Platform.unix? && Platform.x11?
-        l :x11_and_unix
-
         # Shift-Fn is handled differently, we alias them to F12+n
         # So if you map <F13>, it works, do not use <Shift-F1> or
         # <XF86_Switch_VT_1> in the keymap itself.
