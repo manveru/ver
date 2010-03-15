@@ -1,6 +1,6 @@
 require_relative '../../helper'
 
-BUFFER_VALUE = <<'VALUE'.freeze
+BUFFER_VALUE = <<'VALUE'.chomp.freeze
 Inventore voluptatibus dolorem assumenda.
 Voluptates officiis quidem nemo est.
 Qui similique quia voluptatem.
@@ -80,6 +80,10 @@ shared :with_buffer do
 
   def minibuf
     buffer.minibuf
+  end
+
+  def range(*args)
+    buffer.range(*args)
   end
 
   def clipboard
@@ -278,6 +282,44 @@ VER.spec keymap: 'vim', hidden: false do
         type 'Fv'
         insert.index.should == '1.10'
       end
+
+      it 'searches expression forward with <slash>' do
+        type '/officiis<Return>'
+
+        # Make sure input is handled correctly.
+        # If the MiniBuffer wasn't invoked, we'll have garbage in the Buffer.
+        buffer.value.chomp.should == BUFFER_VALUE
+
+        # all matches should be tagged.
+        ranges = buffer.tag(VER::Methods::Search::TAG).ranges
+        ranges.should == [
+          range( '2.11',  '2.19'),
+          range('13.15', '13.23'),
+          range('18.19', '18.27'),
+          range('28.14', '28.22'),
+        ]
+
+        # must be at position of first match.
+        insert.index.should == ranges.first.first
+
+        # find all successive matches
+        ranges.each do |range|
+          insert.index.should == range.first
+          type 'n'
+        end
+
+        # last match, so no movement
+        insert.index.should == ranges.last.first
+
+        # go back again through all matches
+        ranges.reverse_each do |range|
+          insert.index.should == range.first
+          type 'N'
+        end
+
+        # first match, so no movement
+        insert.index.should == ranges.first.first
+      end
     end
 
     describe 'Matching brace related' do
@@ -313,7 +355,7 @@ VER.spec keymap: 'vim', hidden: false do
       it 'changes a line with <c><c>' do
         type 'cc'
         clipboard.should == "Inventore voluptatibus dolorem assumenda.\n"
-        buffer.count('1.0', 'end', :lines).should == 41
+        buffer.count('1.0', 'end', :lines).should == 40
         buffer.minor_mode?(:insert).should != nil
         insert.index.should == '1.0'
       end
@@ -330,7 +372,7 @@ VER.spec keymap: 'vim', hidden: false do
       it 'kills a line with <d><d>' do
         type 'dd'
         clipboard.should == "Inventore voluptatibus dolorem assumenda.\n"
-        buffer.count('1.0', 'end', :lines).should == 41
+        buffer.count('1.0', 'end', :lines).should == 40
         buffer.minor_mode?(:insert).should == nil
         insert.index.should == '1.0'
       end

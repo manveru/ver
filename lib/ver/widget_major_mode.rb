@@ -65,7 +65,16 @@ module VER
 
     def fake(input)
       input.scan(/<[\w-]+>|[^<>]/) do |name|
-        on_event(Event[name])
+        # get the widget that currently has focus, this might not be self.
+        path = Tk::Focus.focus
+        widget = Tk.pathname_to_widget(path)
+
+        if widget == self.widget
+          on_event(Event[name])
+          Tk.update
+        else
+          widget.type(name)
+        end
       end
     end
 
