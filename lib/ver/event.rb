@@ -102,8 +102,7 @@ module VER
         pattern = "<#{inner}>"
       end
 
-      aliased_pattern = PATTERN_ALIAS.fetch(pattern, given_pattern)
-      return aliased_pattern
+      PATTERN_ALIAS.fetch(pattern, given_pattern)
     end
 
     def self.capture(pattern)
@@ -200,11 +199,16 @@ module VER
         end
       end
 
+      load_aliases
       l "Event patterns loaded"
     rescue Errno::ENOENT
       # Mostly harmless, the .events file isn't created yet.
       l "Attempt to load event patterns failed"
+      load_default
+      load_aliases
+    end
 
+    def load_default
       # To make creation easier, we define well-known patterns for ASCII here.
       # The rest is still to be defined by actual events.
       ('0'..'9').each{|chr| pattern("<Key-#{chr}>", chr, chr) }
@@ -269,29 +273,36 @@ module VER
       # Something for german keyboards
       pattern('<Control-bracketleft>', 'bracketleft', '[')
       pattern('<Control-bracketright>', 'bracketright', ']')
+    end
 
-      # return # FIXME
-
-      # Compatibility between windowingsystems
+    # Compatibility between windowingsystems
+    def self.load_aliases
       if Platform.unix? && Platform.x11?
         # Shift-Fn is handled differently, we alias them to F12+n
         # So if you map <F13>, it works, do not use <Shift-F1> or
         # <XF86_Switch_VT_1> in the keymap itself.
         1.upto 12 do |n|
-          vsym = "XF86_Switch_VT_#{n}"
-          fpat = "<F#{12 + n}>"
-          event = pattern("<#{vsym}>", vsym, '')
-          PATTERN_ALIAS[fpat] = event.pattern
+          add_alias(fsym: "F#{12 + n}", tsym: "XF86_Switch_VT_#{n}")
         end
       else
         # Here we map all Shift-Fn keys to a F12+n pattern.
         1.upto 12 do |n|
-          vsym = "F#{n}"
-          fpat = "<F#{12 + n}>"
-          event = pattern("<Shift-#{vsym}>", vsym, '')
-          PATTERNS[fpat] = event.pattern
+          add_alias(fsym: "F#{12 + n}", tsym: "F#{n}", tpat: "<Shift-F#{n}>")
         end
       end
+    end
+
+    def self.add_alias(from, to = {})
+      fsym = from[:keysym] || from[:fsym] || raise(ArgumentError, "Need keysym")
+      tsym = to[  :keysym] || from[:tsym] || raise(ArgumentError, "Need keysym")
+      fpat = from[:pattern] || from[:fpat] || "<#{fsym}>"
+      tpat = to[  :pattern] || from[:tpat] || "<#{tsym}>"
+      unicode = from[:unicode] || to[:unicode] || ''
+
+      event = pattern(tpat, tsym, unicode)
+      PATTERN[fpat] = event
+      KEYSYM[fsym] << event
+      PATTERN_ALIAS[fpat] = tpat
     end
   end
 end
