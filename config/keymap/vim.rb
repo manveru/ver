@@ -187,9 +187,10 @@ module VER
     become :control,        '<Escape>'
 
     handler nil # whatever the widget happens to be
-    map :repeat_action, '.'
-    map :quit,          ':qa', 'ZZ'
-    map :close,         ':q<Return>', ':x'
+    map :repeat_action,           '.'
+    map :quit,                    ':qa', 'ZZ'
+    map :close,                   ':q<Return>', ':x'
+    map [:touch!, '1.0', 'end'],  '<Control-l>'
 
     handler Methods::Open
     map :file_open_ask, ':o<space>'
