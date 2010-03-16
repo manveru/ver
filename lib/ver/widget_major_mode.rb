@@ -140,7 +140,7 @@ module VER
     end
 
     def resolve(pattern)
-      major.resolve(pattern, minors)
+      major.resolve(pattern, nil, minors)
     end
 
     def replaces(other)

@@ -109,26 +109,28 @@ module VER
 
     # recursively try to find the pattern in the major mode and its minor
     # modes.
-    def resolve(pattern, minors = [])
+    def resolve(pattern, fallback = nil, minors = [])
+      fallback ||= [self, fallback_action] if fallback_action
+
       case found = keymap[pattern]
       when Incomplete
         minors.each do |minor|
-          case resolved = minor.resolve(pattern)
+          case resolved = minor.resolve(pattern, fallback)
           when Incomplete
             found.merge!(resolved)
           end
         end
       when Impossible
         minors.find do |minor|
-          found = minor.resolve(pattern)
+          found = minor.resolve(pattern, fallback)
           !found.kind_of?(Impossible)
         end
       else
         found = [self, found]
       end
 
-      if found.kind_of?(Impossible) && fa = self.fallback_action
-        return self, fa
+      if found.kind_of?(Impossible) && fallback
+        return fallback
       else
         return found
       end
