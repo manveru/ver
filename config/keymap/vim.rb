@@ -440,7 +440,7 @@ module VER
 
   major_mode :Completions do
     handler MiniBuffer
-    map :answer_from, '<Button-1>'
+    # map :answer_from, '<Button-1>'
   end
 
   major_mode :Executor do
