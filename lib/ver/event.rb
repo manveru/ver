@@ -208,7 +208,7 @@ module VER
       load_aliases
     end
 
-    def load_default
+    def self.load_default
       # To make creation easier, we define well-known patterns for ASCII here.
       # The rest is still to be defined by actual events.
       ('0'..'9').each{|chr| pattern("<Key-#{chr}>", chr, chr) }
