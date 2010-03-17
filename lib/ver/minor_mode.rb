@@ -22,6 +22,7 @@ module VER
   class MinorMode < Struct.new(:name, :parents, :keymap, :receiver,
                                :fallback_action, :enter_action, :leave_action)
     include Platform
+    include ModeResolving
     include Keymap::Results
 
     MODES = {}
@@ -59,33 +60,8 @@ module VER
     end
 
     # recursively try to find the pattern in the minor mode and its parents.
-    def resolve(pattern, fallback = nil)
-      fallback ||= [self, fallback_action] if fallback_action
-
-      case found = keymap[pattern]
-      when Incomplete
-        parents.each do |parent|
-          next if parent == self
-          case resolved = parent.resolve(pattern, fallback)
-          when Incomplete
-            found.merge!(resolved)
-          end
-        end
-      when Impossible
-        parents.find do |parent|
-          next if parent == self
-          found = parent.resolve(pattern, fallback)
-          !found.kind_of?(Impossible)
-        end
-      else
-        found = [self, found]
-      end
-
-      if found.kind_of?(Impossible) && fallback
-        return fallback
-      else
-        return found
-      end
+    def resolve(pattern)
+      super(pattern, parents)
     end
 
     # Add a parent for this minor mode.
@@ -100,27 +76,27 @@ module VER
     end
 
     def become(other, *patterns)
-      action = Action.new([:minor_mode, self, other], receiver)
+      action = Action.new([:minor_mode, self, other], receiver, self)
       patterns.each{|pattern| keymap[pattern] = action }
     end
 
     def map(invocation, *patterns)
-      action = Action.new(invocation, receiver)
+      action = Action.new(invocation, receiver, self)
       patterns.each{|pattern| keymap[pattern] = action }
     end
 
     def missing(invocation, &block)
-      action = Action.new(invocation, receiver)
+      action = Fallback.new(invocation, receiver, self)
       self.fallback_action = action
     end
 
     def enter(invocation, &block)
-      action = Action.new(invocation, receiver)
+      action = Action.new(invocation, receiver, self)
       self.enter_action = action
     end
 
     def leave(invocation, &block)
-      action = Action.new(invocation, receiver)
+      action = Action.new(invocation, receiver, self)
       self.leave_action = action
     end
 

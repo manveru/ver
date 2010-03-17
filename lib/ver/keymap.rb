@@ -137,7 +137,8 @@ module VER
             when Impossible
               false
             else
-              return cvalue.combine(resolved.last)
+              mode, action = *resolved
+              return cvalue.combine(action)
             end
           end
 

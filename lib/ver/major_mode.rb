@@ -20,6 +20,7 @@ module VER
                                :fallback_action, :tag, :bound_keys)
 
     include Platform
+    include ModeResolving
     include Keymap::Results
 
     MODES = {}
@@ -66,25 +67,24 @@ module VER
     end
 
     def map(invocation, *patterns)
-      action = Action.new(invocation, receiver)
+      action = Action.new(invocation, receiver, self)
       patterns.each{|pattern| keymap[pattern] = action }
     end
 
     def missing(invocation)
-      action = Action.new(invocation, receiver)
+      action = Fallback.new(invocation, receiver, self)
       self.fallback_action = action
-      keymap['<Key>'] = action
     end
 
     def enter(invocation)
-      action = Action.new(invocation, receiver)
+      action = Action.new(invocation, receiver, self)
       tag.bind "<<EnterMajorMode#{to_camel_case}>>" do |event|
         action.call(WidgetEvent.new(event.widget, event))
       end
     end
 
     def leave(invocation)
-      action = Action.new(invocation, receiver)
+      action = Action.new(invocation, receiver, self)
       tag.bind "<<LeaveMajorMode#{to_camel_case}>>" do |event|
         action.call(WidgetEvent.new(event.widget, event))
       end
@@ -107,33 +107,9 @@ module VER
       self.minors -= minors.map{|name| MinorMode[name] }
     end
 
-    # recursively try to find the pattern in the major mode and its minor
-    # modes.
-    def resolve(pattern, fallback = nil, minors = [])
-      fallback ||= [self, fallback_action] if fallback_action
-
-      case found = keymap[pattern]
-      when Incomplete
-        minors.each do |minor|
-          case resolved = minor.resolve(pattern, fallback)
-          when Incomplete
-            found.merge!(resolved)
-          end
-        end
-      when Impossible
-        minors.find do |minor|
-          found = minor.resolve(pattern, fallback)
-          !found.kind_of?(Impossible)
-        end
-      else
-        found = [self, found]
-      end
-
-      if found.kind_of?(Impossible) && fallback
-        return fallback
-      else
-        return found
-      end
+    # recursively try to find the pattern in the major mode and its minors.
+    def resolve(pattern, minors = [])
+      super
     end
 
     def replace_minor(old, new)

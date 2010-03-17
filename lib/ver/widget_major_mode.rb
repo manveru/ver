@@ -96,7 +96,7 @@ module VER
       else
         stack.clear
         message ''
-        mode, action = result
+        mode, action = *result
         widget_event = WidgetEvent.new(widget, event)
         action.call(widget_event)
         action_history << [widget_event, *result]
@@ -140,7 +140,7 @@ module VER
     end
 
     def resolve(pattern)
-      major.resolve(pattern, nil, minors)
+      major.resolve(pattern, minors)
     end
 
     def replaces(other)

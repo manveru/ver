@@ -53,6 +53,7 @@ module VER
   autoload :Levenshtein,         'ver/vendor/levenshtein'
   autoload :Methods,             'ver/methods'
   autoload :MiniBuffer,          'ver/minibuffer'
+  autoload :ModeResolving,       'ver/mode_resolving'
   autoload :NotebookLayout,      'ver/layout/notebook'
   autoload :PanedLayout,         'ver/layout/paned'
   autoload :Platform,            'ver/platform'

@@ -8,11 +8,10 @@ shared :mode_spec do
 end
 
 module SpecHandler
-  def spec_handler(*args)
-    @got = args
-  end
-
-  attr_reader :got
+  def alpha_missing; end
+  def alpha_action; end
+  def beta_missing; end
+  def beta_action; end
 
   extend self
 end
@@ -49,7 +48,7 @@ VER.spec do
         missing :alpha_missing
       }
 
-      got_mode, got_action = mode.resolve(VER::Event['a'])
+      got_mode, got_action = *mode.resolve(VER::Event['a'])
       got_mode.should == mode
       got_action.invocation.should == :alpha_missing
       got_action.handler.should == SpecHandler
@@ -67,14 +66,32 @@ VER.spec do
         missing :beta_missing
       }
 
-      got_mode, got_action = alpha.resolve(VER::Event['a'])
+      got_mode, got_action = *alpha.resolve(VER::Event['a'])
       got_mode.should == alpha
       got_action.invocation.should == :alpha_missing
       got_action.handler.should == SpecHandler
 
-      got_mode, got_action = beta.resolve(VER::Event['a'])
+      got_mode, got_action = *beta.resolve(VER::Event['a'])
       got_mode.should == beta
       got_action.invocation.should == :beta_missing
+      got_action.handler.should == SpecHandler
+    end
+
+    it 'resolves action correctly even with missing-handler' do
+      alpha = VER.minor_mode(:alpha){
+        handler SpecHandler
+      	map :alpha_action, '<End>'
+        missing :alpha_missing
+      }
+
+      got_mode, got_action = *alpha.resolve('<End>')
+      got_mode.should == alpha
+      got_action.invocation.should == :alpha_action
+      got_action.handler.should == SpecHandler
+
+      got_mode, got_action = *alpha.resolve('<Home>')
+      got_mode.should == alpha
+      got_action.invocation.should == :alpha_missing
       got_action.handler.should == SpecHandler
     end
   end

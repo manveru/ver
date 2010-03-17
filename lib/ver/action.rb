@@ -1,5 +1,5 @@
 module VER
-  class Action < Struct.new(:invocation, :handler)
+  class Action < Struct.new(:invocation, :handler, :mode)
     def call(widget, *given_args)
       case handler
       when Symbol
@@ -41,5 +41,12 @@ module VER
         raise ArgumentError
       end
     end
+
+    def to_a
+      [mode, self]
+    end
+  end
+
+  class Fallback < Action
   end
 end
