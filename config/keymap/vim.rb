@@ -342,13 +342,16 @@ module VER
     map :kill,            'd', 'D', 'x', '<BackSpace>', '<Delete>'
     map :lower_case,      'u'
     map :replace_string,  'c'
-    #map :toggle_case,     '<asciitilde>'
+    # map :toggle_case,     '<asciitilde>'
     map :upper_case,      'U'
     map :uncomment,       ',u'
     map :unindent,        '<less>'
+    map :string_operation, '<F19>'
+    map :array_operation,  '<Alt-F7>'
+    map :line_operation,   '<F7>'
 
     handler Methods::Control
-    map :smart_evaluate,  '<Alt-e>', '<Control-e>'
+    map :smart_evaluate,   '<Alt-e>', '<Control-e>'
 
     handler Methods::Selection
     map :pipe,            '<exclam>'

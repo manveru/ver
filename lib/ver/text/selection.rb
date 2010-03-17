@@ -184,6 +184,130 @@ module VER
         refresh
       end
 
+      # Press <Shift-F7> to work with the text as if it were one big string (multiple
+      # for Ruby code that uses the variable "str".  For example, entering
+      #
+      # str.upcase
+      #
+      # will convert the selected text to uppercase.
+      def string_operation
+        buffer.ask 'Ruby code: ', value: 'str.' do |code, action|
+          case action
+          when :attempt
+            begin
+              string_operation!(code)
+            rescue Exception => ex
+              VER.warn(ex)
+              buffer.warn(ex)
+            else
+              clear
+              finish
+              :abort
+            end
+          end
+        end
+      end
+
+      # Provide a restricted scope so people cannot interfere with undo or
+      # MiniBuffer.
+      def string_operation!(code)
+        replace(string_operation_eval(code, get))
+      end
+
+      def string_operation_eval(code, str)
+        eval(code).to_str
+      end
+
+      def array_operation
+        buffer.ask 'Ruby code: ', value: 'lines.' do |code, action|
+          case action
+          when :attempt
+            begin
+              array_operation!(code)
+            rescue Exception => ex
+              VER.error(ex)
+              buffer.warn(ex)
+            else
+              clear
+              finish
+              :abort
+            end
+          end
+        end
+      end
+
+      def array_operation!(code)
+        lines = []
+        first = last = nil
+
+        each do |from_line, from_char, to_line, to_char|
+          from_line.upto to_line do |lineno|
+            from, to = "#{lineno}.0", "#{lineno}.0 lineend"
+            first ||= from
+            last = to
+
+            line = buffer.get(from, to)
+            lines << line
+          end
+        end
+
+        buffer.undo_record do |record|
+          modified = array_operation_eval(code, lines)
+          record.replace(first, last, modified.join("\n"))
+        end
+      end
+
+      # Provide a restricted scope so people cannot interfere with undo or
+      # MiniBuffer.
+      def array_operation_eval(code, lines)
+        eval(code).to_a
+      end
+
+      # Press <F7> to iterate over each line of selected text.  You will be prompted
+      # for Ruby code which will act as the body of a Ruby block which uses the
+      # variable "line" and evaluates to a String.  For example:
+      #
+      #   line.strip.squeeze( ' ' )
+      #
+      # will strip off whitespace from the beginning and end of each line and then
+      # collapse all consecutive sequences of spaces into single spaces.
+      def line_operation
+        buffer.ask 'Ruby code: ', value: 'line.' do |code, action|
+          case action
+          when :attempt
+            begin
+              line_operation!(code)
+            rescue Exception => ex
+              VER.error(ex)
+              buffer.warn(ex)
+            else
+              clear
+              finish
+              :abort
+            end
+          end
+        end
+      end
+
+      def line_operation!(code)
+        buffer.undo_record do |record|
+          each do |from_line, from_char, to_line, to_char|
+            from_line.upto to_line do |lineno|
+              from, to = "#{lineno}.0", "#{lineno}.0 lineend"
+              line = buffer.get(from, to)
+              modified = line_operation_eval(code, line)
+              record.replace(from, to, modified)
+            end
+          end
+        end
+      end
+
+      # Provide a restricted scope so people cannot interfere with undo or
+      # MiniBuffer.
+      def line_operation_eval(code, line)
+        eval(code).to_str
+      end
+
       class Char < Selection
         def mode_name
           :select_char
@@ -199,26 +323,27 @@ module VER
           return Enumerator.new(self, :each) unless block_given?
 
           each_range do |range|
-            (fy, fx), (ty, tx) = *range.first, *range.last
+            fy, fx, ty, tx = *range.first, *range.last
+            p [fy, fx, ty, tx]
 
             if fy == ty
               yield fy, fx, ty, tx
             elsif (ty - fy) == 1
-              efy, efx = text.index("#{fy}.#{fx} lineend").split
-              sty, stx = text.index("#{ty}.#{tx} linestart").split
+              efy, efx = *buffer.index("#{fy}.#{fx} lineend")
+              sty, stx = *buffer.index("#{ty}.#{tx} linestart")
               yield fy, fx, efy, efx
               yield sty, stx, ty, tx
             else
-              efy, efx = text.index("#{fy}.#{fx} lineend").split
+              efy, efx = *buffer.index("#{fy}.#{fx} lineend")
               yield fy, fx, efy, efx
 
               ((fy + 1)...ty).each do |y|
-                sy, sx = text.index("#{y}.0 linestart").split
-                ey, ex = text.index("#{y}.0 lineend").split
+                sy, sx = *buffer.index("#{y}.0 linestart")
+                ey, ex = *buffer.index("#{y}.0 lineend")
                 yield sy, sx, ey, ex
               end
 
-              sty, stx = text.index("#{ty}.#{tx} linestart").split
+              sty, stx = *buffer.index("#{ty}.#{tx} linestart")
               yield sty, stx, ty, tx
             end
           end
@@ -286,11 +411,11 @@ module VER
           return Enumerator.new(self, :each) unless block_given?
 
           each_range do |range|
-            (fy, fx), (ty, tx) = *range.first, *range.last
+            fy, fx, ty, tx = *range.first, *range.last
 
             fy.upto(ty) do |y|
-              sy, sx = text.index("#{y}.0 linestart").split
-              ey, ex = text.index("#{y}.0 lineend").split
+              sy, sx = *buffer.index("#{y}.0 linestart")
+              ey, ex = *buffer.index("#{y}.0 lineend")
               yield sy, sx, ey, ex
             end
           end
@@ -319,7 +444,7 @@ module VER
           return Enumerator.new(self, :each) unless block_given?
 
           each_range do |range|
-            (fy, fx), (ty, tx) = *range.first, *range.last
+            fy, fx, ty, tx = *range.first, *range.last
             yield fy, fx, ty, tx
           end
         end
