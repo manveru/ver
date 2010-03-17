@@ -127,7 +127,12 @@ module VER
 
       @entry.value = ""
 
-      send_pattern = pattern.gsub(/\bAlt\b/, 'M1')
+      send_pattern = if Platform.mac?
+                       pattern
+                     else
+                       pattern.gsub(/\bAlt\b/, 'M1')
+                     end
+
       counter = 0
       until self.key?(pattern)
         Tk::Event.generate(@entry, send_pattern, when: :now)
@@ -221,7 +226,7 @@ module VER
         'dollar'       => '$',
         'percent'      => '%',
         'ampersand'    => '&',
-        'apostrophe'   => "'",
+        #'apostrophe'   => "'",
         'parenleft'    => '(',
         'parenright'   => ')',
         'asterisk'     => '*',
@@ -242,7 +247,8 @@ module VER
         'bracketright' => ']',
         'asciicircum'  => '^',
         'underscore'   => '_',
-        'grave'        => '`',
+        #'grave'        => '`',
+        'quoteleft'    => '`',
         'braceleft'    => '{',
         'bar'          => '|',
         'braceright'   => '}',
@@ -290,7 +296,21 @@ module VER
           add_alias(fsym: "F#{12 + n}", tsym: "F#{n}", tpat: "<Shift-F#{n}>")
         end
       end
+
+      if Platform.mac?
+        pattern '<Shift-Insert>', 'Shift-Insert', ''
+        if Platform.x11?
+          pattern '<Shift-Left>',  'Left',  ''
+          pattern '<Shift-Right>', 'Right', ''
+          pattern '<Shift-Control-Left>', 'Shift-Control-Left', "\uffe1"
+          pattern '<Shift-Control-Right>', 'Shift-Control-Right', "\uffe2"
+          pattern '<Shift-Down>', 'Down', "\uff54"
+          pattern '<Shift-Up>',   'Up',   "\uff52"
+          pattern '<ISO_Left_Tab>', 'Tab', "\t"
+        end
+      end
     end
+
 
     def self.add_alias(from, to = {})
       fsym = from[:keysym] || from[:fsym] || raise(ArgumentError, "Need keysym")
