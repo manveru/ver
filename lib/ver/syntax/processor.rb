@@ -5,6 +5,7 @@ module VER
         self.stack = []
         self.tags = Hash.new{|h,k| h[k] = [] }
         @tag_stack = []
+        tags[syntax_name] << "1.0" << "end"
       end
 
       def end_parsing(syntax_name)

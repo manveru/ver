@@ -420,7 +420,7 @@ module VER
     map :cancel, '<Escape>', '<Control-c>'
     map :jump,   '<Tab>'
 
-    missing :insert_string
+    missing :on_insert
   end
 
   major_mode :Fundamental do

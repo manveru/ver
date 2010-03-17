@@ -90,7 +90,8 @@ module VER
     end
 
     attr_reader :frame, :status, :options, :at_current, :at_insert, :at_end,
-                :theme_config, :matching_brace, :layout, :syntax, :minibuf
+                :theme_config, :matching_brace, :layout, :syntax, :minibuf,
+                :snippets
     attr_accessor :uri, :project_root, :project_repo, :undoer, :pristine,
                   :prefix_arg, :readonly, :encoding, :filename, :at_sel,
                   :symbolic, :locked

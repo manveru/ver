@@ -5,109 +5,134 @@ module VER
     module Snippet
       module_function
 
-      def dwim(text)
-        jump(text) or complete(text) && jump(text)
+      def dwim(buffer)
+        jump(buffer) or complete(buffer) && jump(buffer)
       end
 
-      def jump(text)
-        jump_marks_and_tags(text) || jump_home(text)
+      def jump(buffer)
+        jump_marks_and_tags(buffer) || jump_home(buffer)
       end
 
-      def jump_home(text)
-        if text.mark_names.include?(:ver_snippet_0)
-          text.mark_set(:insert, :ver_snippet_0)
-          text.mark_unset(:ver_snippet_0)
+      def jump_home(buffer)
+        if buffer.mark_names.include?(:ver_snippet_0)
+          buffer.mark_set(:insert, :ver_snippet_0)
+          buffer.mark_unset(:ver_snippet_0)
           true
         else
-          cancel(text)
+          cancel(buffer)
           false
         end
       end
 
-      def jump_marks_and_tags(text)
-        (marks(text) + tags(text)).
+      def jump_marks_and_tags(buffer)
+        (marks(buffer) + tags(buffer)).
           sort_by{|_, name, _|
             name =~ /_0$/ ? 'zero' : name
           }.each do |idx, name, type|
+
           case type
           when :tag
-            return jump_tag(text, name)
+            return jump_tag(buffer, name)
           when :mark
-            return jump_mark(text, name)
+            return jump_mark(buffer, name)
           end
         end
 
         false
       end
 
-      def marks(text)
-        text.mark_names.map{|mark|
+      def marks(buffer)
+        buffer.mark_names.map{|mark|
           next unless mark =~ /^ver_snippet_(\d+)$/
           [$1.to_i, mark, :mark]
         }.compact
       end
 
-      def tags(text)
-        text.tag_names.map{|tag|
+      def tags(buffer)
+        buffer.tag_names.map{|tag|
           next unless tag =~ /^ver\.snippet\.(\d+)$/
           [$1.to_i, tag, :tag]
         }.compact
       end
 
-      def jump_tag(text, name)
-        text.minor_mode(:control, :snippet)
-        from, to = text.tag_ranges(name).first
+      def jump_tag(buffer, name)
+        buffer.minor_mode(:insert, :snippet)
+        from, to = *buffer.tag_ranges(name).first
         return unless from
 
-        text.mark_set(:insert, from)
+        buffer.mark_set(:insert, from)
         true
       end
 
-      def jump_mark(text, name)
-        text.mark_set('insert', name)
+      def jump_mark(buffer, name)
+        buffer.mark_set('insert', name)
         if name =~ /_0$/
-          cancel(text, :insert)
+          cancel(buffer, :insert)
         else
-          text.mark_unset(name)
+          buffer.mark_unset(name)
         end
 
         true
       end
 
-      def cancel(text, into_mode = :control)
-        marks(text).each{|_, mark, _| text.mark_unset(mark) }
-        tags(text).each{|_, tag, _| text.tag_delete(tag) }
-        text.minor_mode(:snippet, into_mode) if text.minor_mode?(:snippet)
+      def cancel(buffer, into_mode = :control)
+        marks(buffer).each{|_, mark, _| buffer.mark_unset(mark) }
+        tags(buffer).each{|_, tag, _| buffer.tag_delete(tag) }
+        buffer.minor_mode(:snippet, into_mode) if buffer.minor_mode?(:snippet)
       end
 
-      def insert_string(text, string)
-        tag = text.tag_names(:insert).find{|name| name =~ /^ver\.snippet\.(\d+)$/ }
+      def on_insert(buffer, string = buffer.event.unicode)
+        tag = buffer.tag_names(:insert).find{|name| name =~ /^ver\.snippet\.(\d+)$/ }
 
         if tag
-          from, to = text.tag_ranges(tag).first
-          text.tag_delete(tag, from, to)
-          text.replace(from, to, string)
+          from, to = *buffer.tag_ranges(tag).first
+          buffer.tag_delete(tag, from, to)
+          buffer.replace(from, to, string)
         else
-          text.insert(:insert, string)
+          buffer.insert(:insert, string)
         end
       end
 
-      def complete(text)
-        head = text.get('insert linestart', 'insert')
-        name = head[/\S+$/]
-        from = text.index("insert - #{name.size} chars")
-        to = text.index("insert")
+      class Scope < Struct.new(:tags)
+        def include?(scope)
+          tags.include?(scope)
+        end
+      end
 
-        return unless snippet = text.snippets[name]
-        insert(text, from, to, snippet)
+      def complete(buffer)
+        sofar = buffer.get('insert linestart', 'insert')
+        l sofar: sofar
+
+        scope = Scope.new(buffer.tag_names(:insert))
+
+        buffer.snippets.each do |snippet|
+          next unless tab_trigger = snippet[:tabTrigger]
+          next unless sofar.end_with?(tab_trigger)
+          next unless scope.include?(snippet[:scope])
+          from = buffer.index("insert - #{tab_trigger.size} displaychars")
+          to = buffer.at_insert
+          return insert(buffer, from, to, snippet)
+        end
+
+        return
+
+        head = buffer.get('insert linestart', 'insert')
+        name = head[/\S+$/]
+        from = buffer.index("insert - #{name.size} chars")
+        to = buffer.index("insert")
+
+        l buffer.snippets
+
+        return unless snippet = buffer.snippets[name]
+        insert(buffer, from, to, snippet)
         true
       end
 
-      def insert(text, from, to, snippet_source)
-        text.delete(from, to)
-        text.mark_set(:insert, from)
+      def insert(buffer, from, to, snippet_source)
+        buffer.delete(from, to)
+        buffer.mark_set(:insert, from)
         snippet = VER::Snippet.new(snippet_source[:content])
-        snippet.apply_on(text)
+        snippet.apply_on(buffer)
       end
     end # Snippet
   end # Methods
@@ -147,9 +172,9 @@ module VER
       out
     end
 
-    def apply_on(widget)
+    def apply_on(buffer)
       parse(@snippet, out = [])
-      apply_out_on(widget, out)
+      apply_out_on(buffer, out)
     end
 
     private
@@ -215,11 +240,11 @@ module VER
       out
     end
 
-    def apply_out_on(widget, out)
-      indent = ' ' * widget.options.shiftwidth
-      initial_indent = widget.get('insert linestart', 'insert lineend')[/^\s+/]
+    def apply_out_on(buffer, out)
+      indent = ' ' * buffer.options.shiftwidth
+      initial_indent = buffer.get('insert linestart', 'insert lineend')[/^\s+/]
 
-      VER::Methods::Undo.record widget do |record|
+      buffer.undo_record do |record|
         out.each do |atom|
           case atom
           when String
@@ -229,12 +254,12 @@ module VER
             record.insert(:insert, atom)
           when Numeric
             mark = "ver_snippet_#{atom}"
-            widget.mark_set(mark, 'insert')
-            widget.mark_gravity(mark, 'left')
+            buffer.mark_set(mark, 'insert')
+            buffer.mark_gravity(mark, 'left')
           when Array
             number, content = atom
             tag = "ver.snippet.#{number}"
-            widget.tag_configure(tag, underline: true)
+            buffer.tag_configure(tag, underline: true)
             record.insert(:insert, content, tag)
           end
         end
