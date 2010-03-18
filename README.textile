@@ -34,10 +34,10 @@ h2. Features
 
 * VER and ffi-tk are 100% (hopefully straightforward) Ruby.
 * Syntax highlighting for around 140 file types.
+* Keymaps for Vim, Emacs, Nano, and Diakonos behaviour.
 * Intelligent indentation based on file type.
 * Automatic completion for words, lines, aspell, and more.
-* Integrated window management
-* Terminal emulator and console
+* Support for TextMate bundles and snippets.
 * Recursive fuzzy file finding
 * Recusive pattern grepping
 * Find and replace using oniguruma
@@ -49,16 +49,49 @@ h2. Features
 h2. Installation
 
 For Tcl/Tk there are various instructions available from
-"Tk Docs":http://tkdocs.org
+"Tk Docs":http://www.tkdocs.org/tutorial/install.html
+
 VER only runs on Ruby 1.9.1+, but should run on any implementation conforming to
 the corresponding specification because no C extensions are involved.
+At the time of writing, VER should run on MRI and JRuby (with --1.9 switch).
+This means that there is no need to follow all the complicated instructions to
+get Ruby and Tk to work together, you do need to install both however.
 
-h3. ArchLinux
+h3. General Information
+
+A couple of hints that should help you get started on any platform.
+See further below for detailed instructions for specific platforms, feel free to
+contribute additional information as you encounter issues.
+
+"Installing RVM":http://rvm.beginrescueend.com/rvm/install will show you how to
+install rvm, which is the best way to get Ruby 1.9.1 on platforms that have no
+package available.
+Once rvm installed, a simple @rvm install 1.9.1@ and @rvm use 1.9.1@ should get
+you going.
+Tk is easy to install in most cases, for Windows there is ActiveTcl, and there
+are packages for every linux distribution i know.
+
+OSX poses a unique challenge, it does ship with Tk 8.4there on one hand TkAqua,
+which uses the old Carbon UI, and on the other hand X11/Tk, which requires X11
+to be installed (I hear it's part of XCode).
+Users have reported best functionality under X11.
+Since VER doesn't use any buttons, sliders, or entry widgets, the difference
+should be very hard to notice.
+Additionally, there is a developer working on a Tk-Cocoa port, which should be
+ready in the near future.
+
+h3. Archlinux
+
+Installation on Archlinux is simple, as Ruby 1.9.1 and Tk 8.5.8 are the default
+packages (in the extra repository).
 
 [@
-  pacman -S tcl tk ruby rubygems
+  pacman -S tk ruby
   gem install ver
 @]
+
+I plan to make a tarball release of VER sometime in the future to allow easy
+installation from AUR.
 
 h2. Configuration
 
@@ -70,10 +103,26 @@ that at some point they might not work as expected anymore.
 If options are deprecated or replaced, I will try to keep the configuration
 working, but in early stages this is no priority.
 
-h3. Keymap
+h3. Plugins
 
-At the time of writing, only the vim keymap covers all features of VER and is
-actively maintained.
+There is a handful of plugins available right now, which you can use by adding
+@VER.plugin :name@ statements in your ~/.config/ver/rc.rb file.
+The most stable ones are probably the git and autosave plugins.
+So, to use the git plugin, put @VER.plugin :git@ in your rc.rb.
+Please note that all plugins have only bindings in the vim keymap right now,
+autosave doesn't require any keybinds, so it works with all keymaps.
+
+h3. Keymaps
+
+VER features 3 keymaps out of the box, Vim, Nano, and Diakonos, which are
+constantly tested and improved.
+As might be expected, the Vim keymap is not 100% complete, and I'm adding new
+mappings as I become aware of them.
+Vim is a fairly complex piece of software developed over the past 20 years, so
+don't expect full compatibility or behaviour in all cases.
+
+An Emacs keymap is currently under development, but not ready for daily use.
+
 We are searching for contributors that can provide keymaps for other editors.
 To add a new keymap, put it under config/keymap/$name.rb and start VER with
 
@@ -82,6 +131,7 @@ ver -k $name
 </shell>
 
 Where @$name@ is a placeholder for the filename of the keymap you created.
+So to try out nano, use @ver -k nano@.
 
 h2. Yet another editor?
 
@@ -140,6 +190,15 @@ h3. The name
 I tried to come up with a short name, that would give credit to my biggest
 inspirations.
 There is not much more to it.
+
+h2. Development
+
+VER is free and open software, we welcome anyone to use it and contribute.
+The source is at "Github":"http://github.com/manveru/ver"
+
+For bug tracking, release-, and feature-planning, we use
+"Pivotal Tracker":"http://www.pivotaltracker.com/projects/61971/overview".
+You can join the tracker and help out with creating stories.
 
 h2. Thanks
 
