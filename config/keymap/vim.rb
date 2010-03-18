@@ -94,8 +94,8 @@ module VER
     map :prev_line,       'k', '<Up>', '<Control-p>'
     map :prev_page,       '<Control-b>', '<Prior>'
     map :prev_word,       'b', '<Shift-Left>'
-    map :start_of_line,   '<Home>'
-    map :home_of_line,    '^'
+    map :start_of_line,   '<Home>', '^'
+    map :home_of_line,    'g^'
     map :go_char,         '|'
   end
 
