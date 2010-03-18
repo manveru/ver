@@ -82,19 +82,21 @@ module VER
     map :end_of_line,     '$', '<End>'
     map :go_line,         'gg'
     map :matching_brace,  '%'
-    map :next_char,       'l', '<Right>'
+    map :next_char,       'l', '<Right>', '<space>'
     map :next_chunk,      'W'
     map :next_chunk_end,  'E'
     map :next_line,       'j', '<Down>', '<Control-n>'
     map :next_page,       '<Control-f>', '<Next>'
     map :next_word,       'w', '<Shift-Right>'
     map :next_word_end,   'e'
-    map :prev_char,       'h', '<Left>'
+    map :prev_char,       'h', '<Left>', '<BackSpace>'
     map :prev_chunk,      'B'
     map :prev_line,       'k', '<Up>', '<Control-p>'
     map :prev_page,       '<Control-b>', '<Prior>'
     map :prev_word,       'b', '<Shift-Left>'
     map :start_of_line,   '<Home>'
+    map :home_of_line,    '^'
+    map :go_char,         '|'
   end
 
   minor_mode :prefix do
@@ -106,7 +108,9 @@ module VER
     handler Methods::Search
 
     map :char_left,               'F'
+    map :till_char_left,          'T'
     map :char_right,              'f'
+    map :till_char_right,         't'
     map :next,                    'n'
     map :next_word_under_cursor,  '*'
     map :prev,                    'N'
@@ -114,6 +118,8 @@ module VER
     map :remove,                  'g/'
     map :status_next,             '/'
     map :status_prev,             '?'
+    map :again_char,              ';'
+    map :again_char_opposite,     ',,' # ',' is used as prefix for ',c' ',u'
   end
 
   minor_mode :ctags do
@@ -191,6 +197,10 @@ module VER
     map :quit,                    ':qa', 'ZZ'
     map :close,                   ':q<Return>', ':x'
     map [:touch!, '1.0', 'end'],  '<Control-l>'
+    map :save,     ':w<Return>'
+    map :save_as,  ':w<space>'
+    map :save_all, ':wa'
+
 
     handler Methods::Open
     map :file_open_ask, ':o<space>'
@@ -206,17 +216,16 @@ module VER
     enter :enter
     leave :leave
 
-    map :chdir,                             'gc'
-    map :save,     ':w<Return>'
-    map :save_as,  ':w<space>'
-    map :save_all, ':wa'
+    map :chdir,    'gc'
 
-    map :cursor_vertical_bottom,            'zb'
-    map :cursor_vertical_bottom_sol,        'z-'
-    map :cursor_vertical_center,            'zz'
-    map :cursor_vertical_center_sol,        'z.'
-    map :cursor_vertical_top,               'zt'
-    map :cursor_vertical_top_sol,           'z<Return>'
+    handler Methods::Control
+    map :cursor_horizontal_center,    'gm'
+    map :cursor_vertical_bottom,      'zb'
+    map :cursor_vertical_bottom_sol,  'z-'
+    map :cursor_vertical_center,      'zz'
+    map :cursor_vertical_center_sol,  'z.'
+    map :cursor_vertical_top,         'zt'
+    map :cursor_vertical_top_sol,     'z<Return>'
 
     map :executor, '::'
     map [:ex, :buffer],       ':bu', '<Alt-b>', '<Control-m>b'

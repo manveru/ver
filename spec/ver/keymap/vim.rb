@@ -178,6 +178,13 @@ VER.spec keymap: 'vim', hidden: false do
         insert.index.should == '1.10'
       end
 
+      it 'repeats search for char to the right' do
+        type 'fm'
+        insert.index.should == '1.29'
+        type ';'
+        insert.index.should != '1.29'
+      end
+
       it 'searches expression forward with <slash>' do
         type '/officiis<Return>'
 

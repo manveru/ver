@@ -7,6 +7,13 @@ module VER
       }
       TAG = :search
 
+      CHAR_OPPOSITES = {
+        char_left: :char_right,
+        char_right: :char_left,
+        till_char_left: :till_char_right,
+        till_char_right: :till_char_left,
+      }
+
       module_function
 
       def jump(buffer, needle)
@@ -120,35 +127,96 @@ module VER
         prev(buffer)
       end
 
+      def char_common(buffer, name, action, count)
+        buffer.major_mode.read 1 do |event|
+          regexp = Regexp.new(Regexp.escape(event.unicode))
+          buffer.store(self, :char_search, name)
+          buffer.store(self, :char_search_regexp, regexp)
+          send(action, buffer, regexp, count)
+        end
+      end
+
       def char_right(buffer, count = buffer.prefix_count)
         buffer.message 'Press the character to find to the right'
+        char_common(buffer, :char_right, :char_right!, count)
+      end
 
-        buffer.major_mode.read 1 do |event|
-          from, to = 'insert + 1 chars', 'insert lineend'
-          regexp = Regexp.new(Regexp.escape(event.unicode))
-
-          counter = 0
-          buffer.search_all regexp, from, to do |match, pos, mark|
-            buffer.insert = pos
-            counter += 1
-            break if counter == count
-          end
+      def char_right!(buffer, regexp, count)
+        from, to = 'insert + 1 chars', 'insert lineend'
+        counter = 0
+        buffer.search_all regexp, from, to do |match, pos, mark|
+          buffer.insert = pos
+          counter += 1
+          return true if counter == count
         end
+
+        false
+      end
+
+      def till_char_right(buffer, count = buffer.prefix_count)
+        buffer.message 'Press the character to find to the right'
+        char_common(buffer, :till_char_right, :till_char_right!, count)
+      end
+
+      def till_char_right!(buffer, regexp, count)
+        return unless char_right!(buffer, regexp, count)
+        buffer.at_insert.prev_char
       end
 
       def char_left(buffer, count = buffer.prefix_count)
         buffer.message 'Press the character to find to the left'
+        char_common(buffer, :char_left, :char_left!, count)
+      end
 
-        buffer.major_mode.read 1 do |event|
-          from, to = 'insert', 'insert linestart'
-          regexp = Regexp.new(Regexp.escape(event.unicode))
+      def char_left!(buffer, regexp, count)
+        from, to = 'insert', 'insert linestart'
+        counter = 0
 
-          counter = 0
-          buffer.rsearch_all regexp, from, to do |match, pos, mark|
-            buffer.insert = pos
-            counter += 1
-            break if counter == count
+        buffer.rsearch_all regexp, from, to do |match, pos, mark|
+          buffer.insert = pos
+          counter += 1
+          return true if counter == count
+        end
+
+        false
+      end
+
+      def till_char_left(buffer, count = buffer.prefix_count)
+        buffer.message 'Press the character to find to the left'
+        char_common(buffer, :till_char_left, :till_char_left!, count)
+      end
+
+      def till_char_left!(buffer, regexp, count)
+        return unless char_left!(buffer, regexp, count)
+        buffer.at_insert.next_char
+      end
+
+      # Repeat the last {char_left}, {char_right}, {till_char_left}, or
+      # {till_char_right} search +count+ times.
+      def again_char(buffer, count = buffer.prefix_count)
+        if name = buffer.store(self, :char_search)
+          if regexp = buffer.store(self, :char_search_regexp)
+            send("#{name}!", buffer, regexp, count)
+          else
+            buffer.warn "Regexp missing, how weird!"
           end
+        else
+          buffer.warn "No previous char search, can't repeat."
+        end
+      end
+
+      # Repeat the last {char_left}, {char_right}, {till_char_left}, or
+      # {till_char_right} search +count+ times in the opposite direction.
+      def again_char_opposite(buffer, count = buffer.prefix_count)
+        if regexp = buffer.store(self, :char_search_regexp)
+          if name = buffer.store(self, :char_search)
+            opposite = CHAR_OPPOSITES.fetch(name)
+            send("#{opposite}!", buffer, regexp, count)
+          else
+            buffer.warn "No previous char search, can't repeat."
+          end
+        else
+          buffer.warn "Regexp missing, how weird!"
         end
       end
 

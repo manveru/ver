@@ -309,6 +309,15 @@ module VER
         end
       end
 
+      # Move to the middle of the display line.
+      # Vim moves to the middle of the screen width...
+      # not so useful, but in order to be compatible, do that instead.
+      def middle_of_line
+        x, y, width, height, baseline = *buffer.dlineinfo(self)
+        middle = width / 2
+        set("@#{middle},#{y}")
+      end
+
       # Move to the beginning of the line in which insert mark is located.
       #
       # With +count+ it will move to the beginning of the display line, which

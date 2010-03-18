@@ -81,6 +81,13 @@ module VER
         start_of_line(text)
       end
 
+      def cursor_horizontal_center(buffer)
+        x, y, width, height = *buffer.bbox('insert')
+        line_middle = y + (height / 2) # gives less room for error?
+        buffer_middle = buffer.winfo_width / 2
+        set("@#{buffer_middle},#{y}")
+      end
+
       def chdir(text)
         text.ask 'Change to: ' do |path, action|
           case action
