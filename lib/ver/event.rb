@@ -248,7 +248,7 @@ module VER
         'asciicircum'  => '^',
         'underscore'   => '_',
         #'grave'        => '`',
-        'quoteleft'    => '`',
+        'quoteright'   => '`',
         'braceleft'    => '{',
         'bar'          => '|',
         'braceright'   => '}',
