@@ -679,14 +679,18 @@ Close this buffer or continue with caution.
     end
 
     # Same as [prefix_arg], but returns 1 if there is no argument.
+    #
+    # The return value in case there is no argument can be changed by passing
+    # a +default+ argument.
+    #
     # Useful for [Move] methods and the like.
     # Please note that calling this method is destructive.
     # It will reset the state of the prefix_arg in order to avoid persistent
     # arguments.
     # So use it only once while your action is running, and store the result in a
     # variable if you need it more than once.
-    def prefix_count
-      count = prefix_arg || 1
+    def prefix_count(default = 1)
+      count = prefix_arg || default
       update_prefix_arg
       count
     end
@@ -799,7 +803,7 @@ Close this buffer or continue with caution.
     # This is an issue we can fix if we "forget" the @udl_pos_orig after a
     # user-defined maximum delta (something around 200 should do), will
     # implement that on demand.
-    def up_down_line(count)
+    def up_down_displayline(count)
       insert = index(:insert)
 
       @udl_pos_orig = insert if @udl_pos_prev != insert
@@ -808,6 +812,27 @@ Close this buffer or continue with caution.
       target = index("#@udl_pos_orig + #{lines + count} displaylines")
       @udl_pos_prev = target
 
+      @udl_pos_orig = target if target.char == @udl_pos_orig.char
+      target
+    end
+
+    # This method goes up and down lines, not taking line wrapping into account.
+    # To go a line down, pass 1, to go one up -1, you get the idea.
+    # Tries to maintain the same char position across lines.
+    def up_down_line(count)
+      insert = index(:insert)
+
+      # if the last movement was not done by up_down_*, set new origin.
+      @udl_pos_orig = insert if @udl_pos_prev != insert
+
+      # count lines between origin and current insert position.
+      lines = count(@udl_pos_orig, insert, :lines)
+      # now get the target count lines below.
+      target = index("#@udl_pos_orig + #{lines + count} lines")
+
+      @udl_pos_prev = target
+
+      # if target has the same char pos as the previous one, use it as origin.
       @udl_pos_orig = target if target.char == @udl_pos_orig.char
       target
     end

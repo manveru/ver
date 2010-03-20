@@ -95,7 +95,7 @@ module VER
       # @example usage
       #   insert = buffer.at_insert
       #   insert.virtual(&:next_char).delete # delete to next character
-      #   insert.virtual{|ins| ins.end_of_line }.copy # copy until end of line
+      #   insert.virtual{|ins| ins.last_char }.copy # copy until end of line
       def virtual(*args)
         pos = index
         yield(self, *args)
@@ -222,7 +222,7 @@ module VER
         else
           buffer.undo_record do |record|
             record.insert("#{self} linestart", "\n")
-            set 'insert - 1 line'
+            set "#{self} - 1 line"
             Methods::Control.clean_line(buffer, "#{self} - 1 line", record)
           end
         end
@@ -272,16 +272,58 @@ module VER
         set(index_at_word_left_end(count))
       end
 
-      def go_line(line = buffer.prefix_count)
-        set("#{line}.0")
+      def first_line(line = buffer.prefix_count)
+        go_first_nonblank(buffer.index("#{line}.0"))
       end
 
-      def go_char(char = buffer.prefix_count)
-        set("#{self} linestart + #{char} chars")
+      def last_line(line = buffer.prefix_count(:end))
+        if line == :end
+          go_first_nonblank(buffer.index("end - 1 chars"))
+        else
+          go_first_nonblank(buffer.index("#{line}.0"))
+        end
+      end
+
+      def go_first_nonblank(index)
+        line = index.get('linestart', 'lineend')
+
+        if first_nonblank = (line =~ /\S/)
+          set("#{index.line}.#{first_nonblank}")
+        else
+          set("#{index.line}.0")
+        end
+      end
+
+      def go_char(char = buffer.prefix_count(0))
+        set("#{self} linestart + #{char} display chars")
       end
 
       def go_line_char(line = nil, char = nil)
         set("#{line || self.line}.#{char || self.char}")
+      end
+
+
+      # Go to {count} percentage in the file, on the first non-blank in the line
+      # linewise. To compute the new line number this formula is used:
+      # ({count} * number-of-lines + 99) / 100
+      def go_percent(count = buffer.prefix_count(nil))
+        raise ArgumentError unless count
+        number_of_lines = buffer.count('1.0', 'end', :lines)
+        line = (count * number_of_lines + 99) / 100
+        go_first_nonblank(buffer.index("#{line}.0"))
+      end
+
+      def down_nonblank(count = buffer.prefix_count)
+        offset = (count - 1).abs
+        go_first_nonblank(buffer.index("insert + #{offset} lines"))
+      end
+
+      def prev_line_nonblank(count = buffer.prefix_count)
+        go_first_nonblank(buffer.index("insert - #{count} lines"))
+      end
+
+      def next_line_nonblank(count = buffer.prefix_count)
+        go_first_nonblank(buffer.index("insert + #{count} lines"))
       end
 
       def start_of_buffer
@@ -298,15 +340,9 @@ module VER
 
       # Move to the end of the line where mark is located.
       #
-      # With +count+ it moves to the end of the display line, so when there is
-      # a line wrap it will move to the place where the line wraps instead of the
-      # real end of the line.
-      def end_of_line(count = buffer.prefix_arg)
-        if count
-          set("#{self} display lineend")
-        else
-          set("#{self} lineend")
-        end
+      # With +count+ it moves to the end of line +count+ lines below.
+      def last_char(count = buffer.prefix_count)
+        set("#{self} + #{count - 1} lines lineend")
       end
 
       # Move to the middle of the display line.

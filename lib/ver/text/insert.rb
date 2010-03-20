@@ -13,11 +13,6 @@ module VER
       end
       alias index= set
 
-      def end_of_line(count_or_mode = nil)
-        super
-        buffer.minor_mode(:control, count_or_mode) if count_or_mode.is_a?(Symbol)
-      end
-
       # Same as {Mark.forward_jump}, but generate <<Movement>> event.
       def forward_jump(count)
         super

@@ -76,16 +76,17 @@ module VER
 
     handler Methods::Move
     map :prefix_arg_sol,  '<Key-0>'
+    map :percent,         '%'
 
     handler :at_insert
-    map :end_of_buffer,   'G'
-    map :end_of_line,     '$', '<End>'
-    map :go_line,         'gg'
-    map :matching_brace,  '%'
+    map :last_char,       '$', '<End>'
+    map :first_line,      'gg'
+    map :last_line,       'G'
     map :next_char,       'l', '<Right>', '<space>'
     map :next_chunk,      'W'
     map :next_chunk_end,  'E'
-    map :next_line,       'j', '<Down>', '<Control-n>'
+    map :next_line,       'j', '<Down>', '<Control-n>', '<Control-j>'
+    map :next_line_nonblank, '+', '<Control-m>', '<Return>'
     map :next_page,       '<Control-f>', '<Next>'
     map :next_word,       'w', '<Shift-Right>'
     map :next_word_end,   'e'
@@ -94,9 +95,11 @@ module VER
     map :prev_line,       'k', '<Up>', '<Control-p>'
     map :prev_page,       '<Control-b>', '<Prior>'
     map :prev_word,       'b', '<Shift-Left>'
-    map :start_of_line,   '<Home>', '^'
-    map :home_of_line,    'g^'
+    map :start_of_line,   '<Home>' # 0
+    map :home_of_line,    '^'
     map :go_char,         '|'
+    map :down_nonblank,   '_'
+    map :prev_line_nonblank, '-'
   end
 
   minor_mode :prefix do
@@ -157,8 +160,8 @@ module VER
     map :changing,                  ['c', :move]
     map :kill_line,                 'dd'
     map :killing,                   ['d', :move]
-    map [:changing, :end_of_line],  'C'
-    map [:killing,  :end_of_line],  'D'
+    map [:changing, :last_char],  'C'
+    map [:killing,  :last_char],  'D'
     map [:killing,  :next_char],    'x'
     map [:killing,  :prev_char],    'X'
   end
@@ -208,7 +211,7 @@ module VER
     handler :at_insert
     map :insert_newline_above,       'O'
     map :insert_newline_below,       'o'
-    map [:change_at, :end_of_line],  'A'
+    map [:change_at, :last_char],  'A'
     map [:change_at, :next_char],    'a'
     map [:change_at, :home_of_line], 'I'
 
@@ -256,10 +259,10 @@ module VER
   minor_mode :readline do
     map :accept_line,       '<Return>'
 
-    map :end_of_line,       '<End>', '<Control-e>'
+    map :last_char,       '<End>', '<Control-e>'
     map :insert_selection,  '<Shift-Insert>'
     map :insert_tab,        '<Control-v><Tab>', '<Control-i>'
-    map :kill_end_of_line,  '<Control-k>'
+    map :kill_last_char,  '<Control-k>'
     map :delete_next_char,  '<Control-d>', '<Delete>'
     map :delete_next_word,  '<Alt-d>'
     map :delete_prev_char,  '<BackSpace>'
@@ -283,7 +286,7 @@ module VER
     map :auto_fill_space,          '<space>'
 
     handler :at_insert
-    map :end_of_line,            '<End>', '<Control-e>'
+    map :last_char,            '<End>', '<Control-e>'
     map :insert_newline,         '<Return>'
     map :insert_selection,       '<Shift-Insert>', '<Insert>'
     map :insert_tab,             '<Control-v><Tab>', '<Control-i>'

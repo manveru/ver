@@ -71,6 +71,16 @@ module VER
         return if buffer.update_prefix_arg
         buffer.start_of_line
       end
+
+      # This method forwards to {go_percent} or {go_match}, depending on whether
+      # an argument was given.
+      def percent(buffer, count = buffer.prefix_count(nil))
+        if count
+          buffer.at_insert.go_percent(count)
+        else
+          buffer.at_insert.matching_brace
+        end
+      end
     end
   end
 end

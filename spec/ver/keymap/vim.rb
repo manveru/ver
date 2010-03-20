@@ -1,86 +1,236 @@
 require_relative '../../helper'
 
+shared :key_spec do
+  behaves_like :with_buffer
+
+  def keys(*names, desc)
+    names.each do |name|
+      title = "%-6s\t%s" % [name, desc]
+      it(title){ yield(name) }
+    end
+  end
+  alias key keys
+
+  # Currently we skip specs that rely on specific window size or font.
+  # Simply add a spec and put `skip` inside as a kind of TODO marker.
+  def skip
+    'skip spec until we find good way to implement it'.should.not.be.nil
+  end
+end
+
 # Show the buffer to get accurate behaviour
 VER.spec keymap: 'vim', hidden: false do
   describe 'Keymap for VIM' do
-    describe 'Control mode movement' do
-      behaves_like :with_buffer
+    describe 'Control mode Left-Right motions' do
+      behaves_like :key_spec
 
-      it 'goes to first column with <0>' do
+      keys 'h', '<BackSpace>', '<Left>', 'go one character left' do |key|
         buffer.insert = '1.5'
-        type '0'
-        insert.should == '1.0'
-      end
-
-      it 'goes to end of buffer with <G>' do
-        type 'G'
-        insert.should == 'end - 1 chars'
-      end
-
-      it 'goes to last column with <dollar> ($)' do
-        type '$'
-        insert.should == '1.0 lineend'
-      end
-
-      it 'goes to last char on line with <End>' do
-        type '<End>'
-        insert.should == '1.0 lineend'
-      end
-
-      it 'goes to start of buffer with <g><g>' do
-        buffer.insert = 'end'
-        type 'gg'
-        insert.should == '1.0'
-      end
-
-      it 'goes to arbitrary line with \d+<g><g>' do
-        type '5gg'
-        insert.line.should == 5
-        type '10gg'
-        insert.line.should == 10
-        type '015gg'
-        insert.line.should == 15
-      end
-
-      it 'goes to next char with <l> and <Right>' do
-        type 'l'
-        insert.should == '1.1'
-        type '<Right>'
-        insert.should == '1.2'
-      end
-
-      it 'goes to prev char with <h> and <Left>' do
-        buffer.insert = '1.5'
-        type 'h'
+        type key
         insert.should == '1.4'
-        type '<Left>'
-        insert.should == '1.3'
       end
 
-      it 'goes to next chunk with <W>' do
-        type 'W'
-        insert.index.should == '1.10'
+      keys 'l', '<Right>', 'go one character right' do |key|
+        type key
+        insert.should == '1.1'
       end
 
-      it 'goes to next line with <j>, <Down>, and <Control-n>' do
-        type 'j'
-        buffer.count('1.0', 'insert', :displaylines).should == 1
-        type '<Down>'
-        buffer.count('1.0', 'insert', :displaylines).should == 2
-        type '<Control-n>'
-        buffer.count('1.0', 'insert', :displaylines).should == 3
+      keys '0', '<Home>', 'goes to first character in the line' do |key|
+        buffer.insert = '1.5'
+        type key
+        insert.should == '1.0'
       end
 
-      # skip this for now
-=begin
-      it 'goes to next page with <Control-f> and <Next>' do
-        type '<Control-f>'
-        buffer.count('1.0', 'insert', :displaylines).should == 0
+      key '^', 'goes to the first non-blank character in the line' do
+        insert.index = '14.5'
+        type '^'
+        insert.index.should == '14.2'
+      end
+
+      keys '$', '<End>', 'goes to last character in the line (N-1 lines lower)' do |key|
+        type key
+        insert.index.should == '1.41'
+        type "4#{key}"
+        insert.index.should == '4.31'
+        type "4#{key}"
+        insert.index.should == '7.29'
+      end
+
+      key 'g0', 'to first character in display line' do |key|
+        type key
+        insert.index.should == '1.0'
+      end
+
+      key 'g^', 'to first non-blank character in display line' do
+        skip
+      end
+
+      key 'g$', 'to last character in display line' do
+        skip
+      end
+
+      key 'gm', 'to middle of display line' do
+        skip
+      end
+
+      key '|', 'to column N (default: 1)' do
+        type '|'
+        insert.index.should == '1.0'
+        insert.index = '1.5'
+        type '|'
+        insert.index.should == '1.0'
+        type '5|'
+        insert.index.should == '1.5'
+      end
+
+      key 'f{char}', 'to Nth occurance of {char} to the right' do
+        type 'fe'
+        insert.index.should == '1.3'
+        type '2fe'
+        insert.index.should == '1.28'
+      end
+
+      key 'F{char}', 'to Nth occurance of {char to the left' do
+        insert.index = '1.0 lineend'
+        type 'Fe'
+        insert.index.should == '1.36'
+
+        insert.index = '1.0 lineend'
+        type '3Fe'
+        insert.index.should == '1.8'
+      end
+
+      key 't{char}', 'till before Nth occurance of {char} to the right' do
         insert.index = '1.0'
-        type '<Next>'
-        buffer.count('1.0', 'insert', :displaylines).should == 0
+        type 'te'
+        insert.index.should == '1.2'
+
+        insert.index = '1.0'
+        type '3te'
+        insert.index.should == '1.27'
       end
-=end
+
+      key 'T{char}', 'till before Nth occurance of {char} to the left' do
+        insert.index = '1.0 lineend'
+        type 'Te'
+        insert.index.should == '1.37'
+
+        insert.index = '1.0 lineend'
+        type '3Te'
+        insert.index.should == '1.9'
+      end
+
+      key ';', 'repeats search for char' do
+        type 'fe'
+        insert.index.should == '1.3'
+        type ';'
+        insert.index.should == '1.8'
+      end
+
+      key ',,', 'repeats search for char in the opposite direction' do
+        insert.index = '1.5'
+        type 'fe'
+        insert.index.should == '1.8'
+        type ',,'
+        insert.index.should == '1.3'
+      end
+    end
+
+    describe 'Control mode Up-Down motions' do
+      behaves_like :key_spec
+
+      key 'k', '<Control-p>', '<Up>', 'go up N lines' do |key|
+        insert.index = '10.10'
+        type key
+        insert.index.should == '9.10'
+      end
+
+      keys 'j', '<Control-j>', '<Control-n>', '<Down>', 'go down N lines' do |key|
+        type key
+        insert.index.should == '2.0'
+        insert.index = '1.10'
+        type key
+        insert.index.should == '2.10'
+      end
+
+      key '-', 'up N lines, on the first non-blank character' do |key|
+        insert.index = 'end'
+        type key
+        insert.index.should == '40.0'
+        type "25#{key}"
+        insert.index.should == '15.4'
+      end
+
+      key '+', '<Control-m>', '<Return>',
+          'go down N lines, on the first non-blank character' do |key|
+        type key
+        insert.index.should == '2.0'
+        type "13#{key}"
+        insert.index.should == '15.4'
+      end
+
+      key '_', 'go down N-1 lines, on the first non-blank character' do
+        insert.index = '2.10'
+        type '_'
+        insert.index.should == '2.0'
+        type '2_'
+        insert.index.should == '3.0'
+        type '12_'
+        insert.index.should == '14.2'
+        type '2_'
+        insert.index.should == '15.4'
+      end
+
+      key 'G', 'goto line N (default: last line), on the first non-blank character' do
+        insert.index = '20.0'
+        type 'G'
+        insert.index.should == '41.0'
+        type '2G'
+        insert.index.should == '2.0'
+        type '15G'
+        insert.index.should == '15.4'
+      end
+
+      key 'gg', 'goes to line N (default: first line), on the first non-blank character' do
+        insert.index = '20.0'
+        type 'gg'
+        insert.index.should == '1.0'
+        type '2gg'
+        insert.index.should == '2.0'
+        type '015gg'
+        insert.index.should == '15.4'
+      end
+
+      key 'N%', 'goto line N percentage down in the file. N must be given' do
+        type '6%'
+        insert.index.should == '3.0'
+        type '12%'
+        insert.index.should == '5.0'
+        type '24%'
+        insert.index.should == '10.0'
+        type '48%'
+        insert.index.should == '20.0'
+        type '96%'
+        insert.index.should == '40.0'
+        type '100%'
+        insert.index.should == '41.0'
+      end
+
+      keys 'gk', 'g<Up>', 'go up N display lines' do |key|
+        skip
+      end
+
+      keys 'gj', 'g<Down>', 'go down N display lines' do |key|
+        skip
+      end
+    end
+  end
+end
+
+__END__
+
+    describe 'Control mode Text object motions' do
+      behaves_like :key_spec
 
       it 'goes to next word with <w> and <Shift-Right>' do
         type 'w'
@@ -88,6 +238,12 @@ VER.spec keymap: 'vim', hidden: false do
         type '<Shift-Right>'
         insert.index.should == '1.23'
       end
+
+      it 'goes to next chunk with <W>' do
+        type 'W'
+        insert.index.should == '1.10'
+      end
+
 
       it 'goes to next chunk end with <E>' do
         type 'E'
@@ -114,18 +270,6 @@ VER.spec keymap: 'vim', hidden: false do
         type '<Control-p>'
         buffer.count('insert', 'end', :displaylines).should == 4
       end
-
-      # we probably should skip that spec...
-=begin
-      it 'goes to prev page with <Control-b> and <Prior>' do
-        insert.index = 'end'
-        type '<Control-b>'
-        insert.index.should == '42.0'
-        insert.index = 'end'
-        type '<Prior>'
-        insert.index.should == '42.0'
-      end
-=end
 
       it 'goes to prev word with <b> and <Shift-Left>' do
         insert.index = '1.0 lineend'
@@ -165,24 +309,6 @@ VER.spec keymap: 'vim', hidden: false do
         buffer.count('1.0 linestart', '1.0 lineend', :displaychars).should == 41
         insert.index.should == '1.0'
         buffer.minor_mode?(:insert).should != nil
-      end
-
-      it 'searches char to the right' do
-        type 'fm'
-        insert.index.should == '1.29'
-      end
-
-      it 'searches char to the left' do
-        insert.index = '1.0 lineend'
-        type 'Fv'
-        insert.index.should == '1.10'
-      end
-
-      it 'repeats search for char to the right' do
-        type 'fm'
-        insert.index.should == '1.29'
-        type ';'
-        insert.index.should != '1.29'
       end
 
       it 'searches expression forward with <slash>' do
