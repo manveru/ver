@@ -84,7 +84,7 @@ class Pathname
     content.force_encoding(encoding.strip)
 
     return content, content.encoding
-  rescue Errno::ENOENT # file or rchardet missing?
+  rescue ArgumentError, Errno::ENOENT # file or rchardet missing?
     if content
       GUESS_ENCODING_ORDER.find{|enc|
         content.force_encoding(enc)
