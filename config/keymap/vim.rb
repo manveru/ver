@@ -290,6 +290,7 @@ module VER
     map :insert_newline,         '<Return>'
     map :insert_selection,       '<Shift-Insert>', '<Insert>'
     map :insert_tab,             '<Control-v><Tab>', '<Control-i>'
+    map :insert_digraph,         '<Control-k>'
     map :next_char,              '<Right>'
     map :next_line,              '<Down>', '<Control-n>'
     map :next_page,              '<Control-f>', '<Next>', '<Shift-Down>'

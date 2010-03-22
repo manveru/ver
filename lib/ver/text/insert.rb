@@ -63,6 +63,20 @@ module VER
         buffer.minor_mode(:control, :insert)
       end
 
+      def insert_digraph
+        buffer.major_mode.read 2 do |*events|
+          require 'ver/digraphs'
+          first, last = events.first.unicode, events.last.unicode
+          if found = DIGRAPHS["#{first}#{last}"]
+          elsif found = DIGRAPHS["#{last}#{first}"]
+          else
+            # some kinda error?
+          end
+
+          buffer.insert(self, found) if found
+        end
+      end
+
       # Set insert mark to a position in the previous page in buffer.
       # Also sets the insert mark to the position it used to be on the old view.
       #
