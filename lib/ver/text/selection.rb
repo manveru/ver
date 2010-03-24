@@ -72,6 +72,7 @@ module VER
 
       def copy
         super
+        buffer.insert = "#{self}.first"
         clear
         finish
       end

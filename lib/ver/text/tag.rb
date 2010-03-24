@@ -93,7 +93,7 @@ module VER
 
       def copy
         chunks = ranges.map{|range| range.get }
-        Methods::Clipboard.copy(buffer, chunks.at(1) ? chunks : chunks.first)
+        buffer.with_register{|reg| reg.value = chunks.at(1) ? chunks : chunks.first }
       end
 
       def delete
@@ -294,8 +294,7 @@ module VER
       end
       alias upcase! upper_case
 
-      def wrap(count = buffer.prefix_arg)
-        width = count || 80
+      def wrap(width = buffer.prefix_count(80))
         wrapped = Methods::Control.wrap_lines_of(get, width)
         replace(wrapped.join("\n"))
       end

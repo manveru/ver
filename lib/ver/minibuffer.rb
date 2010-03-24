@@ -24,9 +24,9 @@ module VER
 
     include Keymapped
 
-    attr_accessor :messages_expire, :messages_pending, :char_width, :ask_stack,
+    attr_accessor :messages_expire, :char_width, :ask_stack,
                   :at_insert, :completion_buffer
-    attr_reader :asking
+    attr_reader :asking, :messages, :messages_pending
 
     def initialize(*args)
       super
@@ -96,7 +96,8 @@ module VER
 
       self.major_mode = :MiniBuffer
       self.messages_expire = false
-      self.messages_pending = Hash.new(0)
+      @messages_pending = Hash.new(0)
+      @messages = SizedArray.new(10)
       self.char_width = VER.options.font.measure('0')
       self.ask_stack = []
       self.at_insert = mark(:insert)
@@ -179,6 +180,7 @@ module VER
       end
 
       if string.to_s.strip != ''
+        messages << string
         message_expire(tag) #  if messages_expire
         # message_notify(tag)
       end

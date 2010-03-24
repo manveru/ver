@@ -41,9 +41,16 @@ module VER
         buffer.minor_mode(:control, :insert)
       end
 
-      def copy_line
-        content = buffer.get("#{self} linestart", "#{self} lineend + 1 chars")
-        Methods::Clipboard.copy(buffer, content)
+      def copy_line(count = buffer.prefix_count)
+        from = "#{self} linestart"
+
+        to =
+          case count
+          when 0, 1; "#{self} lineend + 1 chars"
+          else     ; "#{self} + #{count - 1} lines lineend + 1 chars"
+          end
+
+        buffer.range(buffer.index(from), buffer.index(to)).copy
       end
 
       # Delete this and any other given +indices+ from the buffer.

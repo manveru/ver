@@ -13,22 +13,101 @@ module VER
         copy(text, text.get(*movement))
       end
 
-      # FIXME: nasty hack or neccesary?
-      def paste(text)
-        return unless content = VER::Clipboard.dwim
+      def responding_to?(method)
+        lambda{|object| object.respond_to?(method) }
+      end
 
-        if content.respond_to?(:to_str)
-          paste_continous(text, content.to_str)
-        elsif content.respond_to?(:to_ary)
-          paste_array(text, content.to_ary)
+      def paste_after(buffer, count = buffer.prefix_count)
+        register = buffer.register
+        case content = register.value
+        when responding_to?(:to_str)
+          paste_string_after(buffer, count, content.to_str)
+        when responding_to?(:to_ary)
+          paste_array_after(buffer, count, content.to_ary)
         else
-          raise "Don't know how to handle %p" % [content]
+          buffer.warn "Don't know how to paste: %p" % [content]
         end
       end
 
-      def paste_above(text)
-        text.mark_set(:insert, 'insert - 1 line lineend')
-        paste(text)
+      # on "foo", it's simple char selection, insert at insert mark.
+      # on "foo\nb", it was a char selection, insert at insert mark.
+      # on "foo\nbar\n":
+      #   we assume it's linewise, insert newline at eol, then insert the string
+      #   starting at the new line.
+      def paste_string_after(buffer, count, string)
+        buffer.undo_record do |record|
+          if string =~ /\n\Z/ # ends with newline
+            string = "\n#{string}".chomp # # put newline in front
+            count.times do
+              # insert newline at eol, insert string just after that
+              buffer.insert = buffer.at_insert.lineend
+              record.insert(:insert, string)
+              buffer.insert = buffer.at_insert.linestart
+            end
+          else
+            buffer.insert = buffer.at_insert + '1 displaychars'
+            count.times do
+              # insert after insert position.
+              record.insert(:insert, string)
+            end
+          end
+        end
+      end
+
+      # the vim and the ver, the vim and the ver,
+      # one's a genius, the other's insane.
+      #
+      # I have a faint idea how vim knows the difference, it involves the y_type
+      # of a register struct, but we won't go into that.
+      # It's enough to know that vim can only handle block pasting when it was
+      # yanked from vim, we shall behave the same.
+      def paste_array_after(buffer, count, array)
+        insert_line, insert_char = *buffer.index(:insert)
+
+        buffer.undo_record do |record|
+          array.each_with_index do |line, index|
+            record.insert("#{insert_line + index}.#{insert_char}", line)
+          end
+        end
+      end
+
+      # FIXME: fails at topmost line
+      # FIXME: fails for char selections
+      def paste_before(buffer, count = buffer.prefix_count)
+        register = buffer.register
+
+        case content = register.value
+        when responding_to?(:to_str)
+          paste_string_before(buffer, count, content.to_str)
+        when responding_to?(:to_ary)
+          paste_array_before(buffer, count, content.to_ary)
+        else
+          buffer.warn "Don't know how to paste: %p" % [content]
+        end
+      end
+
+      def paste_string_before(buffer, count, string)
+        buffer.undo_record do |record|
+          if string =~ /\n\Z/ # ends with newline
+            string = string.chomp # get rid of that
+            count.times do
+              # insert newline at sol, insert string just before that
+              buffer.insert = buffer.at_insert.linestart
+              record.insert(:insert, "\n")
+              record.insert(buffer.at_insert - '1 lines', string)
+              buffer.insert = (buffer.at_insert - '1 lines').linestart
+            end
+          else
+            buffer.insert = buffer.at_insert - '1 displaychars'
+            count.times do
+              # insert before insert position.
+              record.insert(:insert, string)
+            end
+          end
+        end
+      end
+
+      def paste_array_before(buffer, count, array)
       end
 
       def copy(text, content)
@@ -48,20 +127,25 @@ module VER
         lines_desc = lines == 1 ? 'line' : 'lines'
         chars_desc = chars == 1 ? 'character' : 'characters'
 
+        # FIXME: messages should be:
+        # block of N lines yanked
+        # N lines yanked
+        # no message for a couple of chars
+
         msg = "copied %d %s of %d %s" % [lines, lines_desc, chars, chars_desc]
         text.message(msg)
       end
 
-      def paste_continous(text, content)
+      def paste_continous(buffer, content)
         if content =~ /\A([^\n]*)\n\Z/
-          text.mark_set :insert, 'insert lineend'
-          text.insert :insert, "\n#{$1}"
+          buffer.mark_set :insert, 'insert lineend'
+          buffer.insert :insert, "\n#{$1}"
         elsif content =~ /\n/
-          text.mark_set :insert, 'insert lineend'
-          text.insert :insert, "\n"
-          content.each_line{|line| text.insert(:insert, line) }
+          buffer.mark_set :insert, 'insert lineend'
+          buffer.insert :insert, "\n"
+          content.each_line{|line| buffer.insert(:insert, line) }
         else
-          text.insert :insert, content
+          buffer.insert :insert, content
         end
       end
 

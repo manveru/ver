@@ -57,6 +57,8 @@ module VER
   autoload :NotebookLayout,      'ver/layout/notebook'
   autoload :PanedLayout,         'ver/layout/paned'
   autoload :Platform,            'ver/platform'
+  autoload :Register,            'ver/register'
+  autoload :RegisterList,        'ver/register'
   autoload :Status,              'ver/status'
   autoload :Struct,              'ver/struct'
   autoload :Syntax,              'ver/syntax'

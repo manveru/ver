@@ -7,7 +7,7 @@ module VER
       end
 
       def copy
-        Methods::Clipboard.copy(buffer, get)
+        buffer.with_register{|reg| reg.value = get }
       end
 
       def count(*options)

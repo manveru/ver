@@ -94,7 +94,7 @@ module VER
                 :snippets
     attr_accessor :uri, :project_root, :project_repo, :undoer, :pristine,
                   :prefix_arg, :readonly, :encoding, :filename, :at_sel,
-                  :symbolic, :locked
+                  :symbolic, :locked, :register
 
     # Hack for smoother minibuf completion
     public :binding, :local_variables, :global_variables
@@ -171,6 +171,7 @@ module VER
       @theme_config   = nil
       @highlighter    = nil
       @pristine       = true
+      self.register   = Register['*']
       self.major_mode = :Fundamental
     end
 
@@ -661,6 +662,29 @@ Close this buffer or continue with caution.
       else
         @store_hash[namespace][key] = value
       end
+    end
+
+    def change_register
+      major_mode.read(1) do |name|
+        if unicode = name.unicode
+          if unicode.empty?
+            warn "invalid name for register: %p" % [name]
+          else
+            self.register = Register[unicode]
+          end
+        else
+          warn "invalid name for register: %p" % [name]
+        end
+      end
+    end
+
+    def with_register
+      @with_register_level ||= 0
+      @with_register_level += 1
+      value = yield(register)
+      @with_register_level -= 1
+    ensure
+      self.register = Register['*'] if @with_register_level == 0
     end
 
     def update_prefix_arg

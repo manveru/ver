@@ -172,8 +172,8 @@ module VER
     map :copying,    ['y', :move]
 
     handler Methods::Clipboard
-    map :paste,            'p'
-    map :paste_above,      'P'
+    map :paste_after,      'p'
+    map :paste_before,     'P'
   end
 
   minor_mode :undo do
@@ -203,7 +203,11 @@ module VER
     map :save,     ':w<Return>'
     map :save_as,  ':w<space>'
     map :save_all, ':wa'
+    map :change_register, '"'
 
+    handler RegisterList
+    map :open, ':reg<Return>'
+    map :show, ':reg<space>'
 
     handler Methods::Open
     map :file_open_ask, ':o<space>'
@@ -347,6 +351,9 @@ module VER
 
   minor_mode :select do
     inherits :basic, :move, :search
+
+    handler nil
+    map :change_register, '"'
 
     handler :at_sel
     map :comment,         ',c'
