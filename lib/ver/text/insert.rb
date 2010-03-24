@@ -13,6 +13,23 @@ module VER
       end
       alias index= set
 
+      # Kill contents of the line at position, switch from control to
+      # insert mode.
+      # Always leaves an empty line and sets the insert mark inside that.
+      def change_line(count = buffer.prefix_count)
+        from, to = "insert linestart", "insert + #{count - 1} lines lineend"
+        range = buffer.range(buffer.index(from), buffer.index(to))
+        range.kill
+        buffer.minor_mode(:control, :insert)
+      end
+
+      def change(count = buffer.prefix_count)
+        from, to = "insert", "insert + #{count} displaychars"
+        range = buffer.range(buffer.index(from), buffer.index(to))
+        range.kill
+        buffer.minor_mode(:control, :insert)
+      end
+
       # Same as {Mark.forward_jump}, but generate <<Movement>> event.
       def forward_jump(count)
         super

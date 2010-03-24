@@ -156,7 +156,8 @@ module VER
   minor_mode :delete do
     handler :at_insert
     map :change_next_word_end,      'cw'
-    map :change_line,               'cc'
+    map :change_line,               'cc', 'S'
+    map :change,                    's'
     map :changing,                  ['c', :move]
     map :kill_line,                 'dd'
     map :killing,                   ['d', :move]
@@ -395,6 +396,7 @@ module VER
     enter :enter
     leave :leave
     map :wrap, 'gw'
+    map :change, 'c', 's'
   end
 
   minor_mode :select_line do
@@ -409,6 +411,7 @@ module VER
     enter :enter
     leave :leave
     map :wrap, 'gw'
+    map :change, 'c', 's'
   end
 
   minor_mode :select_block do

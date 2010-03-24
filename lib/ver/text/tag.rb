@@ -161,7 +161,10 @@ module VER
 
         # A bit of duplication, but if we use copy here we have to iterate the
         # ranges again.
-        Methods::Clipboard.copy(buffer, chunks.at(1) ? chunks : chunks.first)
+        buffer.with_register do |register|
+          register.value = chunks.at(1) ? chunks : chunks.first
+        end
+
         buffer.delete(*indices)
       end
 

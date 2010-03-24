@@ -48,26 +48,85 @@ VER.spec keymap: 'vim', hidden: false do
       end
 
       key '{visual}r{char}', 'in Visual block mode: Replace each char of the selected text with {char}' do
+        type '3l<Control-v>3j5lrx'
+        buffer.get('1.0', '6.0').should == <<-VALUE
+Invxxxxxx voluptatibus dolorem assumenda.
+Volxxxxxxs officiis quidem nemo est.
+Quixxxxxxique quia voluptatem.
+Sitxxxxxxtur vel aperiam et ab.
+Quam dolorem dignissimos perferendis.
+        VALUE
       end
 
       key 'c{motion}', 'change the text that is moved over with {motion}' do
-        skip
+        type '3cl'
+        buffer.minor_mode?(:insert).should.not.be.nil
+        type '<Escape>'
+        buffer.minor_mode?(:insert).should.be.nil
+        buffer.get('1.0', '1.0 lineend').should == "entore voluptatibus dolorem assumenda."
+
+        # this is a rabbit-hole, don't fix until it becomes annoying.
+        # type 'c3l'
+        # buffer.minor_mode?(:insert).should.not.be.nil
+        # type '<Escape>'
+        # buffer.minor_mode?(:insert).should.be.nil
+        # buffer.get('1.0', '1.0 lineend').should == "ore voluptatibus dolorem assumenda."
       end
 
       key '{visual}c', 'change the highlighted text' do
-        skip
+        type 'v2l3lc'
+        buffer.minor_mode?(:insert).should.not.be.nil
+        type '<Escape>'
+        buffer.minor_mode?(:insert).should.be.nil
+        buffer.get('1.0', '2.0').should == "ore voluptatibus dolorem assumenda.\n"
       end
 
-      keys 'cc', 'S', 'change N lines' do
-        skip
+      keys 'cc', 'S', 'change N lines' do |key|
+        type "#{key}"
+        buffer.minor_mode?(:insert).should.not.be.nil
+        type '<Escape>'
+        buffer.minor_mode?(:insert).should.be.nil
+        insert.index.should == '1.0'
+        buffer.get('1.0', '3.0').should == "\nVoluptates officiis quidem nemo est.\n"
+
+        type "3#{key}"
+        buffer.minor_mode?(:insert).should.not.be.nil
+        type '<Escape>'
+        buffer.minor_mode?(:insert).should.be.nil
+        insert.index.should == '1.0'
+        buffer.get('1.0', '3.0').should == "\nSit pariatur vel aperiam et ab.\n"
       end
 
-      key 'C', 'change to the end of the line (and N-1 more lines)' do
-        skip
+      key 'C', 'change to the end of the line (and N-1 more lines)' do |key|
+        buffer.insert = '1.5'
+        type key
+        buffer.minor_mode?(:insert).should.not.be.nil
+        type '<Escape>'
+        buffer.minor_mode?(:insert).should.be.nil
+        insert.index.should == '1.5'
+        buffer.get('1.0', '3.0').should == "Inven\nVoluptates officiis quidem nemo est.\n"
+
+        buffer.insert = '2.5'
+        type 3, key
+        buffer.minor_mode?(:insert).should.not.be.nil
+        type '<Escape>'
+        buffer.minor_mode?(:insert).should.be.nil
+        insert.index.should == '2.5'
+        buffer.get('1.0', '4.0').should == "Inven\nVolup\nQuam dolorem dignissimos perferendis.\n"
       end
 
-      key 's', 'change N characters' do
-        skip
+      key 's', 'change N characters' do |key|
+        type key, 'Winds of change: I'
+        buffer.minor_mode?(:insert).should.not.be.nil
+        type '<Escape>'
+        buffer.minor_mode?(:insert).should.be.nil
+        buffer.get('1.0', '2.0').should == "Winds of change: Inventore voluptatibus dolorem assumenda.\n"
+
+        type 0, 28, key, 'Winds of change: V'
+        buffer.minor_mode?(:insert).should.not.be.nil
+        type '<Escape>'
+        buffer.minor_mode?(:insert).should.be.nil
+        buffer.get('1.0', '2.0').should == "Winds of change: Voluptatibus dolorem assumenda.\n"
       end
 
       key '{visual}c', 'in Visual block mode: Change each of the selected lines with the entered text' do
@@ -81,6 +140,10 @@ VER.spec keymap: 'vim', hidden: false do
       key '~', 'switch case for N characters and advance cursor' do
         skip
       end
+    end
+  end
+end
+__END__
 
       key '{visual}~', 'switch case for highlighted text' do
         skip

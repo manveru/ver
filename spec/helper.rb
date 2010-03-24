@@ -147,9 +147,9 @@ shared :with_buffer do
     buffer.value = BUFFER_VALUE
   end
 
-  def type(string)
+  def type(*keys)
     Tk.update
-    buffer.type(string)
+    buffer.type(keys.join)
     Tk.update
   end
 

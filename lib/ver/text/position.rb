@@ -36,6 +36,8 @@ module VER
         return  0 if compare('==', other)
       end
 
+      # copy and delete contents of the line at position, switch from control to
+      # insert mode.
       def change_line
         kill_line
         buffer.minor_mode(:control, :insert)

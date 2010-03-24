@@ -83,6 +83,11 @@ module VER
         finish
       end
 
+      def change
+        kill
+        buffer.minor_mode(:control, :insert)
+      end
+
       def wrap
         super
         finish
