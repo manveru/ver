@@ -172,8 +172,12 @@ module VER
     map :copying,    ['y', :move]
 
     handler Methods::Clipboard
-    map :paste_after,      'p'
-    map :paste_before,     'P'
+    map :paste_after,           'p'
+    map :paste_before,          'P'
+    map :paste_after_adjust,    ']p'
+    map :paste_before_adjust,   '[p'
+    map :paste_after_go_after,  'gp'
+    map :paste_before_go_after, 'gP'
   end
 
   minor_mode :undo do

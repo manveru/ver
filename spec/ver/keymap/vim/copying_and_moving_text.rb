@@ -39,6 +39,11 @@ VER.spec keymap: 'vim', hidden: false do
         VER::Register['*'].value.should == 'In'
         type 'vl"ay'
         VER::Register['a'].value.should == 'In'
+        type 'Vj"ay'
+        VER::Register['a'].value.should == <<-VALUE
+Inventore voluptatibus dolorem assumenda.
+Voluptates officiis quidem nemo est.
+        VALUE
       end
 
       key 'yy', 'yank N lines into a register' do
@@ -210,37 +215,43 @@ cdcdabab
         VALUE
         insert.index.should == '1.0'
       end
-    end
-  end
-end
-__END__
 
       key ']p', 'like p, but adjust indent to current line' do
-        VER::Register['*'] = 'star register'
-        buffer.get('2.0', '2.0 lineend').should == ''
-        type ']p'
-        buffer.get('2.0', '2.0 lineend').should == ''
+        buffer.value = <<-VALUE.chomp
+line one
+  line two
+        VALUE
+        type '1GYj]p2]p'
+        buffer.value.should == <<-VALUE
+line one
+  line two
+  line one
+  line one
+  line one
+        VALUE
       end
 
       key '[p', 'like P, but adjust indent to current line' do
-        VER::Register['*'] = 'star register'
-        buffer.get('2.0', '2.0 lineend').should == ''
-        type '[p'
-        buffer.get('2.0', '2.0 lineend').should == ''
+        buffer.value = <<-VALUE.chomp
+line one
+  line two
+        VALUE
+        type '1GYj[p2[p'
+        buffer.value.should == <<-VALUE
+line one
+  line one
+  line one
+  line one
+  line two
+        VALUE
       end
 
       key 'gp', 'like p, but leave cursor after the new text' do
-        VER::Register['*'] = 'star register'
-        buffer.get('2.0', '2.0 lineend').should == ''
-        type 'gp'
-        buffer.get('2.0', '2.0 lineend').should == ''
+        skip # until someone complains
       end
 
       key 'gP', 'like P, but leave cursor after the new text' do
-        VER::Register['*'] = 'star register'
-        buffer.get('2.0', '2.0 lineend').should == ''
-        type 'gP'
-        buffer.get('2.0', '2.0 lineend').should == ''
+        skip # until someone complains
       end
     end
   end

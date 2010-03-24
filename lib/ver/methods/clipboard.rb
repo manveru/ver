@@ -18,14 +18,43 @@ module VER
       end
 
       def paste_after(buffer, count = buffer.prefix_count)
-        register = buffer.register
-        case content = register.value
-        when responding_to?(:to_str)
-          paste_string_after(buffer, count, content.to_str)
-        when responding_to?(:to_ary)
-          paste_array_after(buffer, count, content.to_ary)
-        else
-          buffer.warn "Don't know how to paste: %p" % [content]
+        buffer.with_register do |register|
+          case content = register.value
+          when responding_to?(:to_str)
+            paste_string_after(buffer, count, content.to_str)
+          when responding_to?(:to_ary)
+            paste_array_after(buffer, count, content.to_ary)
+          else
+            buffer.warn "Don't know how to paste: %p" % [content]
+          end
+        end
+      end
+
+      def paste_after_go_after(buffer, count = buffer.prefix_count)
+        buffer.with_register do |register|
+          case content = register.value
+          when responding_to?(:to_str)
+            paste_string_after_go_after(buffer, count, content.to_str)
+          when responding_to?(:to_ary)
+            paste_array_after(buffer, count, content.to_ary)
+          else
+            buffer.warn "Don't know how to paste: %p" % [content]
+          end
+        end
+      end
+
+      def paste_after_adjust(buffer, count = buffer.prefix_count)
+        buffer.with_register do |register|
+          case content = register.value
+          when responding_to?(:to_str)
+            indent = buffer.at_insert.get('linestart', 'lineend')[/^[ \t]*/]
+            string = content.to_str.gsub(/^\s*/, indent)
+            paste_string_after(buffer, count, string)
+          when responding_to?(:to_ary)
+            paste_array_after(buffer, count, content.to_ary)
+          else
+            buffer.warn "Don't know how to paste: %p" % [content]
+          end
         end
       end
 
@@ -37,19 +66,26 @@ module VER
       def paste_string_after(buffer, count, string)
         buffer.undo_record do |record|
           if string =~ /\n\Z/ # ends with newline
-            string = "\n#{string}".chomp # # put newline in front
-            count.times do
-              # insert newline at eol, insert string just after that
-              buffer.insert = buffer.at_insert.lineend
-              record.insert(:insert, string)
-              buffer.insert = buffer.at_insert.linestart
-            end
+            string = "\n#{string}".chomp * count # # put newline in front
+            buffer.insert = buffer.at_insert.lineend
+            record.insert(:insert, string)
+            buffer.insert = buffer.at_insert.linestart
           else
             buffer.insert = buffer.at_insert + '1 displaychars'
-            count.times do
-              # insert after insert position.
-              record.insert(:insert, string)
-            end
+            record.insert(:insert, string * count)
+          end
+        end
+      end
+
+      def paste_string_after_go_after(buffer, count, string)
+        buffer.undo_record do |record|
+          if string =~ /\n\Z/ # ends with newline
+            string = "\n#{string}".chomp * count # # put newline in front
+            buffer.insert = buffer.at_insert.lineend
+            record.insert(:insert, string)
+          else
+            buffer.insert = buffer.at_insert + '1 displaychars'
+            record.insert(:insert, string * count)
           end
         end
       end
@@ -71,18 +107,44 @@ module VER
         end
       end
 
-      # FIXME: fails at topmost line
-      # FIXME: fails for char selections
-      def paste_before(buffer, count = buffer.prefix_count)
-        register = buffer.register
+      def paste_before_go_after(buffer, count = buffer.prefix_count)
+        buffer.with_register do |register|
+          case content = register.value
+          when responding_to?(:to_str)
+            paste_string_before_go_after(buffer, count, content.to_str)
+          when responding_to?(:to_ary)
+            paste_array_before(buffer, count, content.to_ary)
+          else
+            buffer.warn "Don't know how to paste: %p" % [content]
+          end
+        end
+      end
 
-        case content = register.value
-        when responding_to?(:to_str)
-          paste_string_before(buffer, count, content.to_str)
-        when responding_to?(:to_ary)
-          paste_array_before(buffer, count, content.to_ary)
-        else
-          buffer.warn "Don't know how to paste: %p" % [content]
+      def paste_before_adjust(buffer, count = buffer.prefix_count)
+        buffer.with_register do |register|
+          case content = register.value
+          when responding_to?(:to_str)
+            indent = buffer.at_insert.get('linestart', 'lineend')[/^[ \t]*/]
+            string = content.to_str.gsub(/^\s*/, indent)
+            paste_string_before(buffer, count, string)
+          when responding_to?(:to_ary)
+            paste_array_before(buffer, count, content.to_ary)
+          else
+            buffer.warn "Don't know how to paste: %p" % [content]
+          end
+        end
+      end
+
+      def paste_before(buffer, count = buffer.prefix_count)
+        buffer.with_register do |register|
+          case content = register.value
+          when responding_to?(:to_str)
+            paste_string_before(buffer, count, content.to_str)
+          when responding_to?(:to_ary)
+            paste_array_before(buffer, count, content.to_ary)
+          else
+            buffer.warn "Don't know how to paste: %p" % [content]
+          end
         end
       end
 
@@ -99,10 +161,25 @@ module VER
             end
           else
             buffer.insert = buffer.at_insert - '1 displaychars'
+            record.insert(:insert, string * count)
+          end
+        end
+      end
+
+      def paste_string_before_go_after(buffer, count, string)
+        buffer.undo_record do |record|
+          if string =~ /\n\Z/ # ends with newline
+            string = string.chomp # get rid of that
             count.times do
-              # insert before insert position.
-              record.insert(:insert, string)
+              # insert newline at sol, insert string just before that
+              buffer.insert = buffer.at_insert.linestart
+              record.insert(:insert, "\n")
+              record.insert(buffer.at_insert - '1 lines', string)
+              buffer.insert = (buffer.at_insert - '1 lines').linestart
             end
+          else
+            buffer.insert = buffer.at_insert - '1 displaychars'
+            record.insert(:insert, string * count)
           end
         end
       end

@@ -408,6 +408,16 @@ module VER
           :select_line
         end
 
+        def copy
+          buffer.with_register do |register|
+            register.value = buffer.get("#{self}.first", "#{self}.last + 1 chars")
+          end
+
+          buffer.insert = "#{self}.first"
+          clear
+          finish
+        end
+
         def each
           return Enumerator.new(self, :each) unless block_given?
 
