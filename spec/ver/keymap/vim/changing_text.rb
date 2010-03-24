@@ -137,49 +137,90 @@ Quam dolorem dignissimos perferendis.
         skip
       end
 
-      key '~', 'switch case for N characters and advance cursor' do
+      key '~', 'switch case for N characters and advance cursor' do |key|
+        type key
+        buffer.get('1.0', '2.0').should == "inventore voluptatibus dolorem assumenda.\n"
+        type 8, key
+        buffer.get('1.0', '2.0').should == "iNVENTORE voluptatibus dolorem assumenda.\n"
+      end
+
+      key '{visual}~', 'switch case for highlighted text' do |key|
+        type 'v8l~'
+        buffer.get('1.0', '2.0').should == "iNVENTORE voluptatibus dolorem assumenda.\n"
+      end
+
+      key '{visual}u', 'make highlighted text lowercase' do
+        type 'v8lu'
+        buffer.get('1.0', '2.0').should == "inventore voluptatibus dolorem assumenda.\n"
+        buffer.minor_mode?(:select_char).should.be.nil
+      end
+
+      key '{visual}U', 'make highlighted text uppercase' do
+        type 'v8lU'
+        buffer.get('1.0', '2.0').should == "INVENTORE voluptatibus dolorem assumenda.\n"
+        buffer.minor_mode?(:select_char).should.be.nil
+      end
+
+      key 'g~{motion}', 'switch case for the text that is moved over with {motion}' do
+        type 'g~j'
+        buffer.get('1.0', '3.0').should == <<-VALUE
+iNVENTORE VOLUPTATIBUS DOLOREM ASSUMENDA.
+Voluptates officiis quidem nemo est.
+        VALUE
+        buffer.minor_mode?(:select_char).should.be.nil
+      end
+
+      key 'gu{motion}', 'make the text that is moved over with {motion} lowercase' do
+        skip
+        type 'guj'
+        buffer.get('1.0', '3.0').should == <<-VALUE
+inventore voluptatibus dolorem assumenda.
+Voluptates officiis quidem nemo est.
+        VALUE
+        buffer.minor_mode?(:select_char).should.be.nil
+      end
+
+      key 'gU{motion}', 'make the text that is moved over with {motion} uppercase' do
+        type 'gUj'
+        buffer.get('1.0', '3.0').should == <<-VALUE
+INVENTORE VOLUPTATIBUS DOLOREM ASSUMENDA.
+Voluptates officiis quidem nemo est.
+        VALUE
+        buffer.minor_mode?(:select_char).should.be.nil
+      end
+
+      key '{visual}g?', 'perform rot13 encoding on highlighted text' do
+        type 'vjg?'
+        buffer.get('1.0', '3.0').should == <<-VALUE
+Vairagber ibyhcgngvohf qbyberz nffhzraqn.
+Ioluptates officiis quidem nemo est.
+        VALUE
+        buffer.minor_mode?(:select_char).should.be.nil
+      end
+
+      key 'g?{motion}', 'perform rot13 encoding on the text that is moved over with {motion}' do
+        type 'g?j'
+        buffer.get('1.0', '3.0').should == <<-VALUE
+Vairagber ibyhcgngvohf qbyberz nffhzraqn.
+Voluptates officiis quidem nemo est.
+        VALUE
+
+        # if we were vim, we actually would have this:
+        # Vairagber ibyhcgngvohf qbyberz nffhzraqn.
+        # Ibyhcgngrf bssvpvvf dhvqrz arzb rfg.
+        #
+        # need to take another look at how we handle motions spanning lines.
+
+        buffer.minor_mode?(:select_char).should.be.nil
+      end
+
+      key '<Control-a>', 'add N to the number at or after the cursor' do
         skip
       end
     end
   end
 end
 __END__
-
-      key '{visual}~', 'switch case for highlighted text' do
-        skip
-      end
-
-      key '{visual}u', 'make highlighted text lowercase' do
-        skip
-      end
-
-      key '{visual}U', 'make highlighted text uppercase' do
-        skip
-      end
-
-      key 'g~{motion}', 'switch case for the text that is moved over with {motion}' do
-        skip
-      end
-
-      key 'gu{motion}', 'make the text that is moved over with {motion} lowercase' do
-        skip
-      end
-
-      key 'gU{motion}', 'make the text that is moved over with {motion} uppercase' do
-        skip
-      end
-
-      key '{visual}g?', 'perform rot13 encoding on highlighted text' do
-        skip
-      end
-
-      key 'g?{motion}', 'perform rot13 encoding on the text that is moved over with {motion}' do
-        skip
-      end
-
-      key '<Control-a>', 'add N to the number at or after the cursor' do
-        skip
-      end
 
       key '<Control-x>', 'subtract N from the number at or after the cursor' do
         skip

@@ -130,6 +130,22 @@ module VER
         virtual_motion(motion, *args).delete
       end
 
+      def toggle_casing(motion, *args)
+        virtual_motion(motion, *args).toggle_case!
+      end
+
+      def lower_casing(motion, *args)
+        virtual_motion(motion, *args).lower_case!
+      end
+
+      def upper_casing(motion, *args)
+        virtual_motion(motion, *args).upper_case!
+      end
+
+      def encoding_rot13(motion, *args)
+        virtual_motion(motion, *args).encode_rot13!
+      end
+
       # {word_right_end} goes to the last character, that is, the insert mark is
       # between the second to last and last character.
       # This means that the range to delete is off by one, account for it here.

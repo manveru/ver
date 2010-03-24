@@ -36,9 +36,10 @@ module VER
         return  0 if compare('==', other)
       end
 
-      # copy and delete contents of the line at position, switch from control to
+      # Kill contents of the line at position, switch from control to
       # insert mode.
-      def change_line
+      # Always leaves an empty line
+      def change_line(count = buffer.prefix_count)
         kill_line
         buffer.minor_mode(:control, :insert)
       end
@@ -127,6 +128,10 @@ module VER
 
       def to_a
         index.to_a
+      end
+
+      def toggle_case!(count = buffer.prefix_count)
+        buffer.range(self, self + "#{count} displaychars").toggle_case!
       end
 
       def +(arg)

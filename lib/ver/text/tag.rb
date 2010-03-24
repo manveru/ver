@@ -116,6 +116,14 @@ module VER
         end
       end
 
+      def encode_rot13!
+        buffer.undo_record do |record|
+          each_range do |range|
+            range.encode_rot13!(record)
+          end
+        end
+      end
+
       # Eval contents of tag and insert them into the buffer.
       def evaluate!
         file = buffer.filename
@@ -176,14 +184,14 @@ module VER
       # Convert all characters within the tag to lower-case using
       # String#downcase.
       # Usually only works for alphabetic ASCII characters.
-      def lower_case
+      def lower_case!
         buffer.undo_record do |record|
           each_range do |range|
-            record.replace(*range, range.get.chomp.downcase)
+            range.lower_case!(record)
           end
         end
       end
-      alias downcase! lower_case
+      alias downcase! lower_case!
 
       def next_range(from_index, to_index = Tk::None)
         buffer.tag_nextrange(self, from_index, to_index)
@@ -246,10 +254,10 @@ module VER
 
       # Toggle case within the selection.
       # This only works for alphabetic ASCII characters, no other encodings.
-      def toggle_case
+      def toggle_case!
         buffer.undo_record do |record|
           each_range do |range|
-            record.replace(*range, range.get.chomp.tr('a-zA-Z', 'A-Za-z'))
+            range.toggle_case!(record)
           end
         end
       end
@@ -288,14 +296,14 @@ module VER
       # Convert all characters within the tag to upper-case using
       # String#upcase.
       # Usually only works for alphabetic ASCII characters.
-      def upper_case
+      def upper_case!
         buffer.undo_record do |record|
           each_range do |range|
-            record.replace(*range, range.get.chomp.upcase)
+            range.upper_case!(record)
           end
         end
       end
-      alias upcase! upper_case
+      alias upcase! upper_case!
 
       def wrap(width = buffer.prefix_count(80))
         wrapped = Methods::Control.wrap_lines_of(get, width)

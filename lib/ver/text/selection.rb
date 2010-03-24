@@ -111,6 +111,32 @@ module VER
         finish
       end
 
+      def toggle_case!
+        super
+        clear
+        finish
+      end
+
+      def lower_case!
+        super
+        clear
+        finish
+      end
+      alias downcase! lower_case!
+
+      def upper_case!
+        super
+        clear
+        finish
+      end
+      alias upcase! upper_case!
+
+      def encode_rot13!
+        super
+        clear
+        finish
+      end
+
       def indent
         anchor = self.anchor.index
         insert = buffer.at_insert.index

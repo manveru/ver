@@ -155,16 +155,16 @@ module VER
 
   minor_mode :delete do
     handler :at_insert
-    map :change_next_word_end,      'cw'
-    map :change_line,               'cc', 'S'
-    map :change,                    's'
-    map :changing,                  ['c', :move]
-    map :kill_line,                 'dd'
-    map :killing,                   ['d', :move]
+    map :change_next_word_end,    'cw'
+    map :change_line,             'cc', 'S'
+    map :change,                  's'
+    map :changing,                ['c', :move]
+    map :kill_line,               'dd'
+    map :killing,                 ['d', :move]
     map [:changing, :last_char],  'C'
     map [:killing,  :last_char],  'D'
-    map [:killing,  :next_char],    'x'
-    map [:killing,  :prev_char],    'X'
+    map [:killing,  :next_char],  'x'
+    map [:killing,  :prev_char],  'X'
   end
 
   minor_mode :clipboard do
@@ -220,7 +220,12 @@ module VER
     handler :at_insert
     map :insert_newline_above,       'O'
     map :insert_newline_below,       'o'
-    map [:change_at, :last_char],  'A'
+    map :toggle_case!,               '~'
+    map :toggle_casing,              ['g~', :move]
+    map :lower_casing,               ['gu', :move]
+    map :upper_casing,               ['gU', :move]
+    map :encoding_rot13,             ['g?', :move]
+    map [:change_at, :last_char],    'A'
     map [:change_at, :next_char],    'a'
     map [:change_at, :home_of_line], 'I'
 
@@ -253,7 +258,6 @@ module VER
     map [:ex, :theme],        ':t'
     # map [:ex, :write],        ':w'
 
-    #map :toggle_case, '~'
     map :wrap_line,   'gw'
     map :indent_line,                       '>'
     map :unindent_line,                     '<less>'
@@ -367,15 +371,16 @@ module VER
     map :copy,            'y', 'Y'
     map :indent,          '<greater>'
     map :kill,            'd', 'D', 'x', '<BackSpace>', '<Delete>'
-    map :lower_case,      'u'
+    map :lower_case!,     'u'
     map :replace_string,  'c'
-    # map :toggle_case,     '<asciitilde>'
-    map :upper_case,      'U'
+    map :toggle_case!,    '~'
+    map :upper_case!,     'U'
     map :uncomment,       ',u'
     map :unindent,        '<less>'
     map :string_operation, '<F19>'
     map :array_operation,  '<Alt-F7>'
     map :line_operation,   '<F7>'
+    map :encode_rot13!,    'g?'
 
     handler Methods::Control
     map :smart_evaluate,   '<Alt-e>', '<Control-e>'

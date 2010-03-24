@@ -111,6 +111,10 @@ module VER
       def next_page(count = buffer.prefix_count)
         set(buffer.tk_next_page_pos(count))
       end
+
+      def toggle_case!
+        super
+      end
     end
   end
 end
