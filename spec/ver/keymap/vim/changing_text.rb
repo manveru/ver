@@ -7,23 +7,47 @@ VER.spec keymap: 'vim', hidden: false do
       behaves_like :destructive_key_spec
 
       key 'r{char}', 'replace N characters with {char}' do
-        skip
+        type 'ra'
+        buffer.get('insert linestart', 'insert lineend').should ==
+          "anventore voluptatibus dolorem assumenda."
+        type '5ra'
+        buffer.get('insert linestart', 'insert lineend').should ==
+          "aaaaatore voluptatibus dolorem assumenda."
       end
 
       key 'gr{char}', 'replace N characters without affecting layout' do
-        skip
+        skip # obsucre and not that useful, queue
       end
 
       key 'R', 'enter Replace mode (repeat the entered text N times)' do
-        skip
+        type 'R'
+        buffer.minor_mode?(:replace).should.not.be.nil
+        type 'Adventures are waiting for you'
+        buffer.minor_mode?(:replace).should.not.be.nil
+        buffer.get('1.0', '1.0 lineend').should ==
+          "Adventures are waiting for you assumenda."
+        type '<Escape>'
+        buffer.minor_mode?(:replace).should.be.nil
+        buffer.get('1.0', '1.0 lineend').should ==
+          "Adventures are waiting for you assumenda."
+
+        type '03R'
+        buffer.minor_mode?(:replace).should.not.be.nil
+        type 'go go gadget replacing '
+        buffer.minor_mode?(:replace).should.not.be.nil
+        buffer.get('1.0', '1.0 lineend').should ==
+          "go go gadget replacing for you assumenda."
+        type '<Escape>'
+        buffer.minor_mode?(:replace).should.be.nil
+        buffer.get('1.0', '1.0 lineend').should ==
+          "go go gadget replacing go go gadget replacing go go gadget replacing go go gadget replacing for you assumenda."
       end
 
       key 'gR', 'enter virtual Replace mode: Like Replace mode but without affecting layout' do
-        skip
+        skip # obsucre and not that useful, queue
       end
 
       key '{visual}r{char}', 'in Visual block mode: Replace each char of the selected text with {char}' do
-        skip
       end
 
       key 'c{motion}', 'change the text that is moved over with {motion}' do

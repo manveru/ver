@@ -78,20 +78,41 @@ module VER
         common_string(text, text.event.unicode)
       end
 
-      def replace_string(text, replacement = text.event.unicode)
-        Undo.record text do |record|
-          record.delete(:insert, 'insert + 1 chars')
-          common_string(text, replacement, record)
+      def enter_replace(buffer, old_mode, new_mode)
+        # store count argument for later repetition
+        buffer.store(self, :replace_count, buffer.prefix_count(0))
+        buffer.store(self, :replace_chars, '')
+      end
+
+      def leave_replace(buffer, old_mode, new_mode)
+        # repeat replacment
+        count = buffer.store(self, :replace_count)
+        chars = buffer.store(self, :replace_chars).dup
+
+        buffer.undo_record do |record|
+          count.times do
+            common_string(buffer, chars, record)
+          end
         end
       end
 
-      def replace_char(text, replacement = text.event.unicode)
-        Undo.record text do |record|
+      def replace_string(buffer, replacement = buffer.event.unicode)
+        buffer.undo_record do |record|
           record.delete(:insert, 'insert + 1 chars')
-          common_string(text, replacement, record)
+          buffer.store(self, :replace_chars) << replacement
+          common_string(buffer, replacement, record)
         end
-        text.mark_set(:insert, 'insert - 1 chars')
-        text.minor_mode(:replace_char, :control)
+      end
+
+      def replace_char(buffer, replacement = buffer.event.unicode, count = buffer.prefix_count)
+        buffer.undo_record do |record|
+          count.times do
+            record.delete(:insert, 'insert + 1 chars')
+            common_string(buffer, replacement, record)
+          end
+        end
+        buffer.mark_set(:insert, 'insert - 1 chars')
+        buffer.minor_mode(:replace_char, :control)
       end
 
       def common_string(text, string, record = text)

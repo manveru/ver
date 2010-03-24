@@ -328,6 +328,8 @@ module VER
     become :control, '<Escape>', '<Control-c>'
 
     handler Methods::Insert
+    enter :enter_replace
+    leave :leave_replace
     map [:replace_string, "\n"], '<Return>'
     missing :replace_string
   end
