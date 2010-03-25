@@ -93,6 +93,90 @@ module VER
         end
       end
 
+      def increase_number(count = buffer.prefix_count)
+        return unless result = formatted_number(count)
+        head, tail, number = *result
+        buffer.replace(
+          "#{self} - #{head.size} chars",
+          "#{self} + #{tail.size} chars",
+          number
+        )
+      end
+
+      def decrease_number(count = buffer.prefix_count)
+        return unless result = formatted_number(-count)
+        head, tail, number = *result
+        buffer.replace(
+          "#{self} - #{head.size} chars",
+          "#{self} + #{tail.size} chars",
+          number
+        )
+      end
+
+      def formatted_hex(number)
+        if number > 0
+          '%#x' % number
+        elsif number == 0
+          '0x0'
+        else
+          '-0x%x' % number.abs
+        end
+      end
+
+      def formatted_binary(number)
+        if number > 0
+          '%#b' % number
+        elsif number == 0
+          '0b0'
+        else
+          '-0b%b' % number.abs
+        end
+      end
+
+      def formatted_exponential(number, precicion)
+        "%-.#{precicion}e" % number
+      end
+
+      def formatted_float(number, precicion)
+        "%-.#{precicion}f" % number
+      end
+
+      def formatted_octal(number)
+        if number > 0
+          '%#o' % number
+        elsif number == 0
+          '00'
+        else
+          '-0%o' % number.abs
+        end
+      end
+
+      def formatted_number(count)
+        head = buffer.get("#{self} linestart", self)[/\S*$/]
+        tail = buffer.get(self, "#{self} lineend")[/^\S*/]
+
+        number =
+          case chunk = head + tail
+          when /^[+-]?0x\h+$/
+            formatted_hex(Integer(chunk) + count)
+          when /^[+-]?0b[01]+$/
+            formatted_binary(Integer(chunk) + count)
+          when /^[+-]?(\d+\.\d+|\d+)e[+-]?\d+$/
+            precicion = $1[/\.(\d+)/, 1].to_s.size
+            formatted_exponential(Float(chunk) + count, precicion)
+          when /^[+-]?\d+\.(\d+)/
+            formatted_float(Float(chunk) + count, $1.size)
+          when /^[+-]?([1-9]\d*|0)$/
+            "%-d" % [Integer(chunk) + count]
+          when /^[+-]?0\d+$/
+            formatted_octal(Integer(chunk) + count)
+          else
+            return
+          end
+
+        return head, tail, number
+      end
+
       def inspect
         index.inspect
       end

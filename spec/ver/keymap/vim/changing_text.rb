@@ -214,17 +214,222 @@ Voluptates officiis quidem nemo est.
         buffer.minor_mode?(:select_char).should.be.nil
       end
 
-      key '<Control-a>', 'add N to the number at or after the cursor' do
-        skip
+      key '<Control-a>', 'add N to the number at or after the cursor' do |key|
+        buffer.value = '0'
+        type key
+        buffer.value.should == "1\n"
+        insert.index.should == '1.3'
+
+        type 100, key
+        buffer.value.should == "101\n"
+        insert.index.should == '1.3'
+
+        type 999_899, key
+        buffer.value.should == "1000000\n"
+        insert.index.should == '1.7'
+      end
+
+      key '<Control-a>', 'add N to 0xd at or after the cursor' do |key|
+        buffer.value = '0x0'
+        type key
+        buffer.value.should == "0x1\n"
+        insert.index.should == '1.3'
+
+        type 100, key
+        buffer.value.should == "0x65\n"
+        insert.index.should == '1.4'
+
+        type 999_899, key
+        buffer.value.should == "0xf4240\n"
+        insert.index.should == '1.7'
+      end
+
+
+      key '<Control-a>', 'add N to 0bd at or after the cursor' do |key|
+        buffer.value = '0b0'
+        type key
+        buffer.value.should == "0b1\n"
+        insert.index.should == '1.3'
+
+        type 100, key
+        buffer.value.should == "0b1100101\n"
+        insert.index.should == '1.9'
+
+        type 999_899, key
+        buffer.value.should == "0b11110100001001000000\n"
+        insert.index.should == '1.22'
+      end
+
+
+      key '<Control-a>', 'add N to ded at or after the cursor' do |key|
+        buffer.value = '0e0'
+        type key
+        buffer.value.should == "1e+00\n"
+        insert.index.should == '1.5'
+
+        type 100, key
+        buffer.value.should == "1e+02\n"
+        insert.index.should == '1.5'
+
+        type 999_899, key
+        buffer.value.should == "1e+06\n"
+        insert.index.should == '1.5'
+      end
+
+      key '<Control-a>', 'add N to d.de+d at or after the cursor' do |key|
+        buffer.value = '0.0e0'
+        type key
+        buffer.value.should == "1.0e+00\n"
+        insert.index.should == '1.7'
+
+        type 2e42, key
+        buffer.value.should == "4.5e+01\n"
+        insert.index.should == '1.7'
+
+        type 2e42, key
+        buffer.value.should == "8.9e+01\n"
+        insert.index.should == '1.7'
+      end
+
+      key '<Control-a>', 'add N to d.d at or after the cursor' do |key|
+        buffer.value = '0.0'
+        type key
+        buffer.value.should == "1.0\n"
+        insert.index.should == '1.3'
+
+        type 100, key
+        buffer.value.should == "101.0\n"
+        insert.index.should == '1.5'
+
+        type 999_899, key
+        buffer.value.should == "1000000.0\n"
+        insert.index.should == '1.9'
+      end
+
+      key '<Control-a>', 'add N to 0d at or after the cursor' do |key|
+        buffer.value = '01'
+        type key
+        buffer.value.should == "02\n"
+        insert.index.should == '1.3'
+
+        type 100, key
+        buffer.value.should == "0146\n"
+        insert.index.should == '1.4'
+
+        type 999_899, key
+        buffer.value.should == "03641101\n"
+        insert.index.should == '1.8'
+      end
+
+      key '<Control-x>', 'substract N from the number at or after the cursor' do |key|
+        buffer.value = '0'
+        type key
+        buffer.value.should == "-1\n"
+        insert.index.should == '1.4'
+
+        type 100, key
+        buffer.value.should == "-101\n"
+        insert.index.should == '1.4'
+
+        type 999_899, key
+        buffer.value.should == "-1000000\n"
+        insert.index.should == '1.8'
+      end
+
+      key '<Control-x>', 'substract N from 0xd at or after the cursor' do |key|
+        buffer.value = '0x0'
+        type key
+        buffer.value.should == "-0x1\n"
+        insert.index.should == '1.4'
+
+        type 100, key
+        buffer.value.should == "-0x65\n"
+        insert.index.should == '1.5'
+
+        type 999_899, key
+        buffer.value.should == "-0xf4240\n"
+        insert.index.should == '1.8'
+      end
+
+      key '<Control-x>', 'substract N from 0bd at or after the cursor' do |key|
+        buffer.value = '0b0'
+        type key
+        buffer.value.should == "-0b1\n"
+        insert.index.should == '1.4'
+
+        type 100, key
+        buffer.value.should == "-0b1100101\n"
+        insert.index.should == '1.10'
+
+        type 999_899, key
+        buffer.value.should == "-0b11110100001001000000\n"
+        insert.index.should == '1.23'
+      end
+
+      key '<Control-x>', 'substract N from ded at or after the cursor' do |key|
+        buffer.value = '0e0'
+        type key
+        buffer.value.should == "-1e+00\n"
+        insert.index.should == '1.6'
+
+        type 100, key
+        buffer.value.should == "-1e+02\n"
+        insert.index.should == '1.6'
+
+        type 999_899, key
+        buffer.value.should == "-1e+06\n"
+        insert.index.should == '1.6'
+      end
+
+      key '<Control-x>', 'substract N from d.de+d at or after the cursor' do |key|
+        buffer.value = '0.0e0'
+        type key
+        buffer.value.should == "-1.0e+00\n"
+        insert.index.should == '1.8'
+
+        type 2e42, key
+        buffer.value.should == "-4.5e+01\n"
+        insert.index.should == '1.8'
+
+        type 2e42, key
+        buffer.value.should == "-8.9e+01\n"
+        insert.index.should == '1.8'
+      end
+
+      key '<Control-x>', 'substract N from d.d at or after the cursor' do |key|
+        buffer.value = '0.0'
+        type key
+        buffer.value.should == "-1.0\n"
+        insert.index.should == '1.4'
+
+        type 100, key
+        buffer.value.should == "-101.0\n"
+        insert.index.should == '1.6'
+
+        type 999_899, key
+        buffer.value.should == "-1000000.0\n"
+        insert.index.should == '1.10'
+      end
+
+      key '<Control-x>', 'substract N from 0d at or after the cursor' do |key|
+        buffer.value = '0100'
+        type key
+        buffer.value.should == "077\n"
+        insert.index.should == '1.3'
+
+        buffer.value = '-01'
+        type 100, key
+        buffer.value.should == "-0145\n"
+        insert.index.should == '1.5'
+
+        type 999_899, key
+        buffer.value.should == "-03641100\n"
+        insert.index.should == '1.9'
       end
     end
   end
 end
 __END__
-
-      key '<Control-x>', 'subtract N from the number at or after the cursor' do
-        skip
-      end
 
       key '<{motion}', 'move the lines that are moved over with {motion} one shiftwidth left' do
         skip

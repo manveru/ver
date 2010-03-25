@@ -220,6 +220,8 @@ module VER
     handler :at_insert
     map :insert_newline_above,       'O'
     map :insert_newline_below,       'o'
+    map :increase_number,            '<Control-a>'
+    map :decrease_number,            '<Control-x>'
     map :toggle_case!,               '~'
     map :toggle_casing,              ['g~', :move]
     map :lower_casing,               ['gu', :move]
