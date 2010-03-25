@@ -15,10 +15,6 @@ VER.spec keymap: 'vim', hidden: false do
           "aaaaatore voluptatibus dolorem assumenda."
       end
 
-      key 'gr{char}', 'replace N characters without affecting layout' do
-        skip # obsucre and not that useful, queue
-      end
-
       key 'R', 'enter Replace mode (repeat the entered text N times)' do
         type 'R'
         buffer.minor_mode?(:replace).should.not.be.nil
@@ -41,10 +37,6 @@ VER.spec keymap: 'vim', hidden: false do
         buffer.minor_mode?(:replace).should.be.nil
         buffer.get('1.0', '1.0 lineend').should ==
           "go go gadget replacing go go gadget replacing go go gadget replacing go go gadget replacing for you assumenda."
-      end
-
-      key 'gR', 'enter virtual Replace mode: Like Replace mode but without affecting layout' do
-        skip # obsucre and not that useful, queue
       end
 
       key '{visual}r{char}', 'in Visual block mode: Replace each char of the selected text with {char}' do
@@ -130,11 +122,27 @@ Quam dolorem dignissimos perferendis.
       end
 
       key '{visual}c', 'in Visual block mode: Change each of the selected lines with the entered text' do
-        skip
+        type '3l<Control-v>3j5lcfoo<Return>'
+        buffer.get('1.0', '7.0').should == <<-VALUE
+Invfoo voluptatibus dolorem assumenda.
+Volfoos officiis quidem nemo est.
+Quifooique quia voluptatem.
+Sitfootur vel aperiam et ab.
+Quam dolorem dignissimos perferendis.
+Nostrum cumque quaerat nobis ut repudiandae vitae autem perferendis.
+        VALUE
       end
 
       key '{visual}C', 'in Visual block mode: Change each of the selected lines until end-of-line with the entered text' do
-        skip
+        type '3l<Control-v>3j5lCfoo<Return>'
+        buffer.get('1.0', '7.0').should == <<-VALUE
+Invfoo
+Volfoo
+Quifoo
+Sitfoo
+Quam dolorem dignissimos perferendis.
+Nostrum cumque quaerat nobis ut repudiandae vitae autem perferendis.
+        VALUE
       end
 
       key '~', 'switch case for N characters and advance cursor' do |key|
@@ -171,7 +179,6 @@ Voluptates officiis quidem nemo est.
       end
 
       key 'gu{motion}', 'make the text that is moved over with {motion} lowercase' do
-        skip
         type 'guj'
         buffer.get('1.0', '3.0').should == <<-VALUE
 inventore voluptatibus dolorem assumenda.
@@ -426,10 +433,14 @@ Voluptates officiis quidem nemo est.
         buffer.value.should == "-03641100\n"
         insert.index.should == '1.9'
       end
-    end
-  end
-end
-__END__
+
+      key 'gr{char}', 'replace N characters without affecting layout' do
+        skip # obsucre and not that useful, queue
+      end
+
+      key 'gR', 'enter virtual Replace mode: Like Replace mode but without affecting layout' do
+        skip # obsucre and not that useful, queue
+      end
 
       key '<{motion}', 'move the lines that are moved over with {motion} one shiftwidth left' do
         skip

@@ -491,6 +491,31 @@ module VER
           end
         end
 
+        # Ask for string, then replace each line the selection spans with it.
+        def replace_string_eol
+          buffer.ask 'Replace selection with: ', do |answer, action|
+            case action
+            when :attempt
+              if answer.size > 0
+                replace_string_eol!(answer)
+                :abort
+              else
+                buffer.warn "replacement required"
+              end
+            end
+          end
+        end
+
+        def replace_string_eol!(string)
+          buffer.undo_record do |record|
+            each do |from_line, from_char, to_line, to_char|
+              from_line.upto to_line do |line|
+                buffer.replace("#{line}.#{from_char}", "#{line}.0 lineend", string)
+              end
+            end
+          end
+        end
+
         def refresh
           return unless @refresh
           start  = anchor.index

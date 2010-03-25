@@ -375,6 +375,7 @@ module VER
     map :kill,            'd', 'D', 'x', '<BackSpace>', '<Delete>'
     map :lower_case!,     'u'
     map :replace_string,  'c'
+    map :replace_string_eol, 'C'
     map :toggle_case!,    '~'
     map :upper_case!,     'U'
     map :uncomment,       ',u'
