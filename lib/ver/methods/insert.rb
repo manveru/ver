@@ -111,6 +111,7 @@ module VER
             common_string(buffer, replacement, record)
           end
         end
+        buffer.skip_prefix_count_once = replacement =~ /^\d+$/
         buffer.mark_set(:insert, 'insert - 1 chars')
         buffer.minor_mode(:replace_char, :control)
       end

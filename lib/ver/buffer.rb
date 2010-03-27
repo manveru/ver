@@ -94,7 +94,7 @@ module VER
                 :snippets
     attr_accessor :uri, :project_root, :project_repo, :undoer, :pristine,
                   :prefix_arg, :readonly, :encoding, :filename, :at_sel,
-                  :symbolic, :locked, :register
+                  :symbolic, :locked, :register, :skip_prefix_count_once
 
     # Hack for smoother minibuf completion
     public :binding, :local_variables, :global_variables
@@ -714,6 +714,12 @@ Close this buffer or continue with caution.
     # So use it only once while your action is running, and store the result in a
     # variable if you need it more than once.
     def prefix_count(default = 1)
+      if skip_prefix_count_once
+        self.skip_prefix_count_once = false
+        update_prefix_arg
+        return default
+      end
+
       count = prefix_arg || default
       update_prefix_arg
       count

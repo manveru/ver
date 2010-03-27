@@ -8,13 +8,24 @@ VER.spec keymap: 'vim', hidden: false do
 
       key 'r{char}', 'replace N characters with {char}' do
         type 'ra'
+        insert.index.should == '1.0'
         buffer.get('insert linestart', 'insert lineend').should ==
           "anventore voluptatibus dolorem assumenda."
+
         type '5ra'
+        insert.index.should == '1.4'
         buffer.get('insert linestart', 'insert lineend').should ==
           "aaaaatore voluptatibus dolorem assumenda."
-      end
 
+        # replacing with a number should not influence the numeric argument of
+        # the command that follows.
+        type 'r3l'
+        insert.index.should == '1.5'
+        buffer.get('1.0', '3.0').should == <<-VALUE
+aaaa3tore voluptatibus dolorem assumenda.
+Voluptates officiis quidem nemo est.
+        VALUE
+      end
       key 'R', 'enter Replace mode (repeat the entered text N times)' do
         type 'R'
         buffer.minor_mode?(:replace).should.not.be.nil
