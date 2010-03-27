@@ -27,7 +27,7 @@ module VER
   end
 
   minor_mode :basic do
-    inherits :help, :preview, :save, :open
+    inherits :help, :preview, :save
 
     handler Methods::Basic
     map :minibuf_eval,    '<Alt-x>', '<Control-m>x'
@@ -190,7 +190,7 @@ module VER
 
   minor_mode :control do
     inherits :basic, :move, :delete, :undo, :layout_control, :search, :ctags,
-             :bookmark, :clipboard
+             :bookmark, :clipboard, :open
 
     become :insert,         'i', '<Insert>'
     become :replace,        'R'
@@ -322,6 +322,7 @@ module VER
 
     handler Methods::Control
     map :smart_evaluate,   '<Alt-e>'
+    map :temporary,        ['<Control-o>', :control]
     if x11?
       map :unindent_line,  '<ISO_Left_Tab>'
     else

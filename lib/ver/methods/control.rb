@@ -11,6 +11,10 @@ module VER
         # clean_line(text, :insert)
       end
 
+      def temporary(buffer, action)
+        action.to_method(buffer).call
+      end
+
       def insert_at(text, motion, *count)
         Move.send(motion, text, *count)
         text.minor_mode(:control, :insert)
