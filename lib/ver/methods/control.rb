@@ -348,13 +348,29 @@ module VER
         end
       end
 
-      def join_line_forward(text)
-        from, to = 'insert linestart', 'insert + 1 lines lineend'
-        lines = text.get(from, to)
-        text.replace(from, to, lines.gsub(/\s*\n\s*/, ' '))
+      # for some odd reason, vim likes to have arbitrary commands that reduce
+      # the argument by one if it's greater 1...
+      def join_forward(buffer, count = buffer.prefix_count)
+        count = count > 1 ? (count - 1) : count
+        buffer.undo_record do |record|
+          count.times do
+            buffer.insert = buffer.at_insert.lineend
+            record.replace('insert', 'insert + 1 chars', ' ')
+          end
+        end
       end
 
-      def join_line_backward(text)
+      def join_forward_nospace(buffer, count = buffer.prefix_count)
+        count = count > 1 ? (count - 1) : count
+        buffer.undo_record do |record|
+          count.times do
+            buffer.insert = buffer.at_insert.lineend
+            record.replace('insert', 'insert + 1 chars', '')
+          end
+        end
+      end
+
+      def join_backward(text)
         from, to = 'insert - 1 lines linestart', 'insert lineend'
         lines = text.get(from, to)
         text.replace(from, to, lines.gsub(/\s*\n\s*/, ' '))

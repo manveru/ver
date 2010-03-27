@@ -163,7 +163,7 @@ module VER
     map :killing,                 ['d', :move]
     map [:changing, :last_char],  'C'
     map [:killing,  :last_char],  'D'
-    map [:killing,  :next_char],  'x'
+    map [:killing,  :next_char],  'x', '<Delete>'
     map [:killing,  :prev_char],  'X'
   end
 
@@ -235,7 +235,7 @@ module VER
     enter :enter
     leave :leave
 
-    map :chdir,    'gc'
+    map :chdir,  'gc'
 
     handler Methods::Control
     map :cursor_horizontal_center,    'gm'
@@ -260,12 +260,13 @@ module VER
     map [:ex, :theme],        ':t'
     # map [:ex, :write],        ':w'
 
-    map :wrap_line,   'gw'
-    map :indent_line,                       '>'
-    map :unindent_line,                     '<less>'
-    map :join_line_forward,                 'J'
-    map :open_file_under_cursor,            'gf'
-    map :smart_evaluate,                    '<Alt-e>', '<Control-m>e'
+    map :wrap_line,               'gw'
+    map :indent_line,             '>'
+    map :unindent_line,           '<less>'
+    map :join_forward,            'J'
+    map :join_forward_nospace,    'gJ'
+    map :open_file_under_cursor,  'gf'
+    map :smart_evaluate,          '<Alt-e>', '<Control-m>e'
 
     handler Methods::SearchAndReplace
     map :query, '<Alt-percent>'
@@ -274,10 +275,10 @@ module VER
   minor_mode :readline do
     map :accept_line,       '<Return>'
 
-    map :last_char,       '<End>', '<Control-e>'
+    map :last_char,         '<End>', '<Control-e>'
     map :insert_selection,  '<Shift-Insert>'
     map :insert_tab,        '<Control-v><Tab>', '<Control-i>'
-    map :kill_last_char,  '<Control-k>'
+    map :kill_last_char,    '<Control-k>'
     map :delete_next_char,  '<Control-d>', '<Delete>'
     map :delete_next_word,  '<Alt-d>'
     map :delete_prev_char,  '<BackSpace>'
@@ -298,10 +299,10 @@ module VER
     become :control, '<Escape>', '<Control-c>'
 
     handler Methods::AutoFill
-    map :auto_fill_space,          '<space>'
+    map :auto_fill_space,  '<space>'
 
     handler :at_insert
-    map :last_char,            '<End>', '<Control-e>'
+    map :last_char,              '<End>', '<Control-e>'
     map :insert_newline,         '<Return>'
     map :insert_selection,       '<Shift-Insert>', '<Insert>'
     map :insert_tab,             '<Control-v><Tab>', '<Control-i>'
@@ -320,11 +321,11 @@ module VER
     map [:killing, :prev_word],  '<Control-w>'
 
     handler Methods::Control
-    map :smart_evaluate,           '<Alt-e>'
+    map :smart_evaluate,   '<Alt-e>'
     if x11?
-      map :unindent_line,          '<ISO_Left_Tab>'
+      map :unindent_line,  '<ISO_Left_Tab>'
     else
-      map :unindent_line,          '<Shift-Tab>'
+      map :unindent_line,  '<Shift-Tab>'
     end
 
     handler Methods::Insert
@@ -369,21 +370,23 @@ module VER
     map :change_register, '"'
 
     handler :at_sel
-    map :comment,         ',c'
-    map :copy,            'y', 'Y'
-    map :indent,          '<greater>'
-    map :kill,            'd', 'D', 'x', '<BackSpace>', '<Delete>'
-    map :lower_case!,     'u'
-    map :replace_string,  'c'
-    map :replace_string_eol, 'C'
-    map :toggle_case!,    '~'
-    map :upper_case!,     'U'
-    map :uncomment,       ',u'
-    map :unindent,        '<less>'
-    map :string_operation, '<F19>'
-    map :array_operation,  '<Alt-F7>'
-    map :line_operation,   '<F7>'
-    map :encode_rot13!,    'g?'
+    map :comment,             ',c'
+    map :copy,                'y', 'Y'
+    map :indent,              '<greater>'
+    map :kill,                'd', 'D', 'x', '<BackSpace>', '<Delete>'
+    map :lower_case!,         'u'
+    map :replace_string,      'c'
+    map :replace_string_eol,  'C'
+    map :toggle_case!,        '~'
+    map :upper_case!,         'U'
+    map :uncomment,           ',u'
+    map :unindent,            '<less>'
+    map :string_operation,    '<F19>'
+    map :array_operation,     '<Alt-F7>'
+    map :line_operation,      '<F7>'
+    map :encode_rot13!,       'g?'
+    map [:join, ' '],         'J'
+    map [:join, ''],          'gJ'
 
     handler Methods::Control
     map :smart_evaluate,   '<Alt-e>', '<Control-e>'

@@ -345,6 +345,13 @@ module VER
           :select_char
         end
 
+        # Using delete, since the sel tag cannot be deleted anyway.
+        def delete
+          buffer.delete("sel.first", "sel.last")
+          finish
+        end
+
+
         # For every chunk selected, this yields the corresponding coordinates as
         # [from_y, from_x, to_y, to_x].
         # It takes into account the current selection mode.
@@ -432,6 +439,22 @@ module VER
           self.anchor.index = anchor
           refresh
         end
+
+        # assume that the selection is continuous... :)
+        def join(separator = ' ')
+          buffer.undo_record do |record|
+            each_range do |range|
+              # go backwards to avoid line number shifting
+              range.last.line.pred.downto range.first.line do |line|
+                buffer.insert = "#{line}.0 lineend"
+                record.replace('insert', 'insert + 1 chars', separator)
+              end
+            end
+          end
+
+          clear
+          finish
+        end
       end
 
       class Line < Selection
@@ -474,6 +497,11 @@ module VER
           else
             add(insert.linestart, start.lineend)
           end
+        end
+
+        def join_lines
+          count = buffer.count("#{self}.first", "#{self}.last", :lines)
+          Methods::Control.join_line_forward(count + 1)
         end
       end
 

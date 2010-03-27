@@ -122,6 +122,9 @@ module VER
         virtual_motion(motion, *args).change
       end
 
+      # if the motion is up-down, we might want to kill whole lines?
+      # that's what vim does, but i don't find it very intuitive or easy to
+      # implement.
       def killing(motion, *args)
         virtual_motion(motion, *args).kill
       end
@@ -244,9 +247,10 @@ module VER
         end
       end
 
-      # Set mark to be +count+ display-chars to the right, jumps to next line
-      # when on last character of a line.
+      # Set mark to be +count+ display-chars to the right.
+      # Stays on the same line.
       def next_char(count = buffer.prefix_count)
+        return if self == lineend
         set(self + "#{count} displaychars")
       end
 
@@ -273,6 +277,7 @@ module VER
       # Set mark to be +count+ display-chars to the left.
       # Jumps to previous line when on first character of a line.
       def prev_char(count = buffer.prefix_count)
+        return if self == linestart
         set(self - "#{count} displaychars")
       end
 

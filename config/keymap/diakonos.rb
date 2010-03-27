@@ -79,8 +79,8 @@ module VER
     map [:exec_into_new, 'ruby -c $f'], '<Control-Alt-c>'
     map :cursor_vertical_top,           '<Alt-comma>', '<Escape>,'
     map :cursor_vertical_bottom,        '<Alt-period>', '<Escape>.'
-    map :join_line_forward,             '<Alt-j>', '<Escape>j'
-    map :join_line_backward,            '<Alt-J>', '<Escape>J'
+    map :join_forward,                  '<Alt-j>', '<Escape>j'
+    map :join_backward,                 '<Alt-J>', '<Escape>J'
 
     handler Methods::Completion
     map :word, '<Alt-e>', '<Escape>e'

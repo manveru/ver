@@ -61,8 +61,8 @@ module VER
         buffer.delete(self, *indices)
       end
 
-      def delete_line
-        buffer.delete("#{self} linestar", "#{self} lineend + 1 chars")
+      def delete_line(count = buffer.prefix_count)
+        buffer.delete("#{self} linestart", "#{self} + #{count - 1} lines lineend + 1 chars")
       end
 
       def dlineinfo
@@ -185,9 +185,9 @@ module VER
         buffer.insert(self, *args)
       end
 
-      def kill_line
-        copy_line
-        delete_line
+      def kill_line(count = buffer.prefix_count)
+        copy_line(count)
+        delete_line(count)
       end
 
       def see
