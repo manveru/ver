@@ -100,16 +100,51 @@ Inventore voluptatibus dolorem assumenda. Voluptates officiis quidem nemo est. Q
         insert.index.should == '1.110'
       end
 
-      key '{visual}J', 'join the highlighted lines' do
+      key '{select_char}J', 'join the highlighted lines' do
         type 'vjJ'
         buffer.get('1.0', '2.0').should == <<-VALUE
 Inventore voluptatibus dolorem assumenda. Voluptates officiis quidem nemo est.
         VALUE
         insert.index.should == '1.42'
+      end
 
-        type 'v3jJ'
+      key '{select_char}J', 'join the highlighted lines' do
+        type 'v2jJ'
         buffer.get('1.0', '2.0').should == <<-VALUE
-Inventore voluptatibus dolorem assumenda. Voluptates officiis quidem nemo est. Qui similique quia voluptatem. Sit pariatur vel aperiam et ab. Quam dolorem dignissimos perferendis. Nostrum cumque quaerat nobis ut repudiandae vitae autem perferendis.
+Inventore voluptatibus dolorem assumenda. Voluptates officiis quidem nemo est. Qui similique quia voluptatem.
+        VALUE
+        insert.index.should == '1.79'
+      end
+
+      key '{select_line}J', 'join the highlighted lines' do
+        type 'VjJ'
+        buffer.get('1.0', '2.0').should == <<-VALUE
+Inventore voluptatibus dolorem assumenda. Voluptates officiis quidem nemo est.
+        VALUE
+        insert.index.should == '1.42'
+      end
+
+
+      key '{select_line}J', 'join the highlighted lines' do
+        type 'V2jJ'
+        buffer.get('1.0', '2.0').should == <<-VALUE
+Inventore voluptatibus dolorem assumenda. Voluptates officiis quidem nemo est. Qui similique quia voluptatem.
+        VALUE
+        insert.index.should == '1.79'
+      end
+
+      key '{select_block}J', 'join the highlighted lines' do
+        type '<Control-v>jJ'
+        buffer.get('1.0', '2.0').should == <<-VALUE
+Inventore voluptatibus dolorem assumenda. Voluptates officiis quidem nemo est.
+        VALUE
+        insert.index.should == '1.42'
+      end
+
+      key '{select_block}J', 'join the highlighted lines' do
+        type '<Control-v>2jJ'
+        buffer.get('1.0', '2.0').should == <<-VALUE
+Inventore voluptatibus dolorem assumenda. Voluptates officiis quidem nemo est. Qui similique quia voluptatem.
         VALUE
         insert.index.should == '1.79'
       end
@@ -139,7 +174,7 @@ Inventore voluptatibus dolorem assumenda.Voluptates officiis quidem nemo est.
         buffer.get('1.0', '2.0').should == <<-VALUE
 Inventore voluptatibus dolorem assumenda.Voluptates officiis quidem nemo est.Qui similique quia voluptatem.Sit pariatur vel aperiam et ab.Quam dolorem dignissimos perferendis.Nostrum cumque quaerat nobis ut repudiandae vitae autem perferendis.
         VALUE
-        insert.index.should == '1.77'
+        insert.index.should == '1.175'
       end
     end
   end

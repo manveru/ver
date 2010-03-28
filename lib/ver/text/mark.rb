@@ -387,17 +387,10 @@ module VER
         end
       end
 
-      # Move to the first character of the line in which insert mark is located.
-      #
-      # With +count+ it will move to the linestart of the displayed, taking
-      # linewraps into account.
-      def home_of_line(alternative = buffer.prefix_arg)
-        if alternative
-          start_of_line(alternative)
-        else
-          char = get('linestart', 'lineend').index(/\S/) || 0
-          self.char = char
-        end
+      # Move to the non-blank character of the line in which insert mark is located.
+      def home_of_line
+        char = get('linestart', 'lineend').index(/\S/) || 0
+        self.char = char
       end
 
       def end_of_sentence(count = buffer.prefix_count)

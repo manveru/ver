@@ -218,18 +218,19 @@ module VER
     map :file_open_ask, ':o<space>'
 
     handler :at_insert
-    map :insert_newline_above,       'O'
-    map :insert_newline_below,       'o'
-    map :increase_number,            '<Control-a>'
-    map :decrease_number,            '<Control-x>'
-    map :toggle_case!,               '~'
-    map :toggle_casing,              ['g~', :move]
-    map :lower_casing,               ['gu', :move]
-    map :upper_casing,               ['gU', :move]
-    map :encoding_rot13,             ['g?', :move]
-    map [:change_at, :last_char],    'A'
-    map [:change_at, :next_char],    'a'
-    map [:change_at, :home_of_line], 'I'
+    map :insert_newline_above,         'O'
+    map :insert_newline_below,         'o'
+    map :increase_number,              '<Control-a>'
+    map :decrease_number,              '<Control-x>'
+    map :toggle_case!,                 '~'
+    map :toggle_casing,                ['g~', :move]
+    map :lower_casing,                 ['gu', :move]
+    map :upper_casing,                 ['gU', :move]
+    map :encoding_rot13,               ['g?', :move]
+    map [:change_at, :last_char],      'A'
+    map [:change_at, :next_char],      'a'
+    map [:change_at, :home_of_line],   'I'
+    map [:change_at, :start_of_line],  'gI'
 
     handler Methods::Control
     enter :enter
@@ -388,6 +389,8 @@ module VER
     map :encode_rot13!,       'g?'
     map [:join, ' '],         'J'
     map [:join, ''],          'gJ'
+    map :change_linestart,    'I'
+    map :change_lineend,      'A'
 
     handler Methods::Control
     map :smart_evaluate,   '<Alt-e>', '<Control-e>'

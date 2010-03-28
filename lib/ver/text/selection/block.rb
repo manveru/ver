@@ -2,10 +2,6 @@ module VER
   class Text
     class Selection
       class Block < Selection
-        def mode_name
-          :select_block
-        end
-
         def each
           return Enumerator.new(self, :each) unless block_given?
 
@@ -13,6 +9,34 @@ module VER
             fy, fx, ty, tx = *range.first, *range.last
             yield fy, fx, ty, tx
           end
+        end
+
+        def mode_name
+          :select_block
+        end
+
+        def refresh
+          return unless @refresh
+          start  = anchor.index
+          insert = buffer.at_insert
+          clear
+
+          ly, lx, ry, rx =
+            if insert > start
+              [*insert, *start]
+            else
+              [*start, *insert]
+            end
+
+          from_y, to_y = [ly, ry].sort
+          from_x, to_x = [lx, rx].sort
+
+          ranges = []
+          from_y.upto to_y do |y|
+            ranges << "#{y}.#{from_x}" << "#{y}.#{to_x + 1}"
+          end
+
+          add(*ranges)
         end
 
         # Ask for string, then replace each line the selection spans with it.
@@ -39,31 +63,7 @@ module VER
             end
           end
         end
-
-        def refresh
-          return unless @refresh
-          start  = anchor.index
-          insert = buffer.at_insert
-          clear
-
-          ly, lx, ry, rx =
-            if insert > start
-              [*insert, *start]
-            else
-              [*start, *insert]
-            end
-
-          from_y, to_y = [ly, ry].sort
-          from_x, to_x = [lx, rx].sort
-
-          ranges = []
-          from_y.upto to_y do |y|
-            ranges << "#{y}.#{from_x}" << "#{y}.#{to_x + 1}"
-          end
-
-          add(*ranges)
-        end
-      end
-    end
-  end
-end
+      end # Block
+    end # Selection
+  end # Text
+end # VER

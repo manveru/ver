@@ -343,6 +343,30 @@ module VER
       def line_operation_eval(code, line)
         eval(code).to_str
       end
-    end
-  end
-end
+
+      def join(separator = ' ')
+        buffer.undo_record do |record|
+          first_line, last_line = first.line, last.line
+
+          first_line.upto(last_line - 1) do |line|
+            line = first_line
+
+            left  = buffer.get("#{line}.0", "#{line}.0 lineend").rstrip
+            right = buffer.get("#{line + 1}.0", "#{line + 1}.0 lineend").lstrip
+            left << separator
+
+            # first replace the right hand, which is the second line.
+            record.replace("#{line + 1}.0", "#{line + 1}.0 lineend", right, 'sel')
+            # put insert cursor at start of second line.
+            buffer.insert = "#{line + 1}.0"
+            # and finally join the two lines.
+            record.replace("#{line}.0", "#{line}.0 lineend + 1 chars", left, 'sel')
+          end
+        end
+
+        clear
+        finish
+      end
+    end # Selection
+  end # Text
+end # VER

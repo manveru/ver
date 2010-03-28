@@ -2,10 +2,6 @@ module VER
   class Text
     class Selection
       class Line < Selection
-        def mode_name
-          :select_line
-        end
-
         def copy
           buffer.with_register do |register|
             register.value = buffer.get("#{self}.first", "#{self}.last + 1 chars")
@@ -30,6 +26,10 @@ module VER
           end
         end
 
+        def mode_name
+          :select_line
+        end
+
         def refresh
           return unless @refresh
           start = anchor.index
@@ -42,12 +42,7 @@ module VER
             add(insert.linestart, start.lineend)
           end
         end
-
-        def join_lines
-          count = buffer.count("#{self}.first", "#{self}.last", :lines)
-          Methods::Control.join_line_forward(count + 1)
-        end
-      end
-    end
-  end
-end
+      end # Line
+    end # Selection
+  end # Text
+end # VER

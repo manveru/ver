@@ -137,6 +137,10 @@ module VER
         end
       end
 
+      def first
+        buffer.index("#{self}.first")
+      end
+
       def get
         values = ranges.map{|range| range.get }
         values.size == 1 ? values.first : values unless values.empty?
@@ -174,6 +178,10 @@ module VER
         end
 
         buffer.delete(*indices)
+      end
+
+      def last
+        buffer.index("#{self}.last")
       end
 
       def lower(below_this = Tk::None)

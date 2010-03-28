@@ -12,19 +12,12 @@ module VER
           finish
         end
 
-
-        # For every chunk selected, this yields the corresponding coordinates as
-        # [from_y, from_x, to_y, to_x].
-        # It takes into account the current selection mode.
-        # In many cases from_y and to_y are identical, but don't rely on this.
-        #
-        # @see each_line
+        # yields the range
         def each
           return Enumerator.new(self, :each) unless block_given?
 
           each_range do |range|
             fy, fx, ty, tx = *range.first, *range.last
-            p [fy, fx, ty, tx]
 
             if fy == ty
               yield fy, fx, ty, tx
@@ -100,24 +93,7 @@ module VER
           self.anchor.index = anchor
           refresh
         end
-
-        # assume that the selection is continuous... :)
-        # TODO: add this for all other selections
-        def join(separator = ' ')
-          buffer.undo_record do |record|
-            each_range do |range|
-              # go backwards to avoid line number shifting
-              range.last.line.pred.downto range.first.line do |line|
-                buffer.insert = "#{line}.0 lineend"
-                record.replace('insert', 'insert + 1 chars', separator)
-              end
-            end
-          end
-
-          clear
-          finish
-        end
-      end
-    end
-  end
-end
+      end # Char
+    end # Selection
+  end # Text
+end # VER

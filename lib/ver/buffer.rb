@@ -834,7 +834,7 @@ Close this buffer or continue with caution.
     # user-defined maximum delta (something around 200 should do), will
     # implement that on demand.
     def up_down_displayline(count)
-      insert = index(:insert)
+      insert = at_insert
 
       @udl_pos_orig = insert if @udl_pos_prev != insert
 
@@ -850,7 +850,7 @@ Close this buffer or continue with caution.
     # To go a line down, pass 1, to go one up -1, you get the idea.
     # Tries to maintain the same char position across lines.
     def up_down_line(count)
-      insert = index(:insert)
+      insert = at_insert
 
       # if the last movement was not done by up_down_*, set new origin.
       @udl_pos_orig = insert if @udl_pos_prev != insert
