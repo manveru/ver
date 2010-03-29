@@ -48,7 +48,7 @@ VER.spec do
 
       it 'toggles case of content' do
         buffer.value = 'AbCdEfGh'
-        sel.add('1.0', 'end')
+        sel.add('1.0', '1.0 lineend')
         sel.toggle_case!
         buffer.value.should == "aBcDeFgH\n"
       end

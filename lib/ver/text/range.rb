@@ -61,7 +61,7 @@ module VER
       end
 
       def toggle_case!(record = buffer)
-        record.replace(*self, get.chomp.tr('a-zA-Z', 'A-Za-z'))
+        record.replace(*self, get.tr('a-zA-Z', 'A-Za-z'))
       end
       # alias needed?
 
