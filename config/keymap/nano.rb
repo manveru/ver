@@ -29,7 +29,7 @@ module VER
   minor_mode :readline do
     map :accept_line,       '<Return>'
 
-    map :end_of_line,       '<End>', '<Control-e>'
+    map :last_char,         '<End>', '<Control-e>'
     map :insert_selection,  '<Shift-Insert>'
     map :insert_tab,        '<Control-v><Tab>'
     map :kill_end_of_line,  '<Control-k>'
@@ -86,7 +86,7 @@ module VER
     map :ask_go_line,                 '<Control-underscore>', '<F13>'
     map :backward_scroll,             '<Alt-minus>', '<Alt-underscore>'
     map :end_of_buffer,               '<Alt-slash>', '<Alt-question>'
-    map :end_of_line,                 '<End>', '<Control-e>'
+    map :last_char,                   '<End>', '<Control-e>'
     map :forward_scroll,              '<Alt-plus>', '<Alt-equal>'
     map :indent_line,                 '<Alt-bracketright>'
     map :kill_line,                   '<Control-k>', '<F9>'
