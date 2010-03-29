@@ -91,7 +91,7 @@ module VER
       *parts, detail = given_pattern[1..-2].split('-')
 
       if parts.empty?
-        pattern = given_pattern
+        PATTERN_ALIAS.fetch(given_pattern, given_pattern)
       else
         parts.map! do |part|
           MODIFIERS_ABBREV[part] || DETAILS_ABBREV[part] || part
@@ -100,9 +100,8 @@ module VER
         aliased_detail = PATTERN_ALIAS.fetch(detail, detail)
         inner = (parts << aliased_detail).join('-')
         pattern = "<#{inner}>"
+        PATTERN_ALIAS.fetch(pattern, pattern)
       end
-
-      PATTERN_ALIAS.fetch(pattern, given_pattern)
     end
 
     def self.capture(pattern)
