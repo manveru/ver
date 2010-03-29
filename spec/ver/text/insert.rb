@@ -38,41 +38,24 @@ VER.spec do
       @insert.index = '2.7'
       @insert.start_of_line
       @insert.should == '2.0'
-
-      @insert.index = '3.7'
-      @insert.start_of_line(true)
-      @insert.should == '3.7'
     end
 
     it 'goes to home of line' do
       @insert.index = '2.7'
       @insert.home_of_line
       @insert.should == '2.2'
-
-      @insert.index = '3.7'
-      @insert.home_of_line(true)
-      @insert.should == '3.7'
     end
 
     it 'goes to end of line' do
       @insert.index = '2.7'
-      @insert.end_of_line
+      @insert.last_char
       @insert.should == '2.10'
-
-      @insert.index = '2.7'
-      @insert.end_of_line(true)
-      @insert.should == '2.7'
-
-      @insert.index = '2.7'
-      @insert.end_of_line(:insert)
-      @insert.should == '2.7'
-      @buffer.minor_mode?(:insert).should == VER::MinorMode[:insert]
     end
 
     it 'goes to line' do
       @insert.index = '1.1'
-      @insert.go_line(2)
-      @insert.should == '2.0'
+      @insert.first_line(2)
+      @insert.index.should == '2.2'
     end
 
     it 'goes to char' do
