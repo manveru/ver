@@ -84,16 +84,16 @@ VER.spec keymap: 'vim', hidden: false do
       end
 
       key '{visual}I', 'insert the same text in front of all the selected lines' do
-        type 'vjIHi <Escape>'
+        type 'vjIHi <Return>'
         buffer.get('1.0', '4.0').should == <<-VALUE
 Hi Inventore voluptatibus dolorem assumenda.
-Hi oluptates officiis quidem nemo est.
+Hi Voluptates officiis quidem nemo est.
 Qui similique quia voluptatem.
         VALUE
       end
 
       key '{visual}A', 'append the same text after all the selected lines' do
-        type 'vjA Hi<Escape>'
+        type 'vjA Hi<Return>'
         buffer.get('1.0', '4.0').should == <<-VALUE
 Inventore voluptatibus dolorem assumenda. Hi
 Voluptates officiis quidem nemo est. Hi

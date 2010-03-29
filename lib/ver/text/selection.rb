@@ -344,6 +344,36 @@ module VER
         eval(code).to_str
       end
 
+      def change_linestart
+        first_line, last_line = first.line, last.line
+        buffer.ask 'Insert text at linestart: ' do |text, action|
+          case action
+          when :attempt
+            buffer.undo_record do |record|
+              first_line.upto last_line do |line|
+                record.insert("#{line}.0", text)
+              end
+            end
+            :abort
+          end
+        end
+      end
+
+      def change_lineend
+        first_line, last_line = first.line, last.line
+        buffer.ask 'Insert text at linestart: ' do |text, action|
+          case action
+          when :attempt
+            buffer.undo_record do |record|
+              first_line.upto last_line do |line|
+                record.insert("#{line}.0 lineend", text)
+              end
+            end
+            :abort
+          end
+        end
+      end
+
       def join(separator = ' ')
         buffer.undo_record do |record|
           first_line, last_line = first.line, last.line
