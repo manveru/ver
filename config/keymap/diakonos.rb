@@ -32,7 +32,7 @@ module VER
     map :ask_go_line,     '<Control-g>'
     map :backward_scroll, '<Alt-p>'
     map :end_of_buffer,   '<Alt-greater>'
-    map :end_of_line,     '<End>', '<Control-e>'
+    map :last_char,       '<End>', '<Control-e>'
     map :forward_scroll,  '<Alt-n>'
     map :next_char,       '<Right>'
     map :next_line,       '<Down>'
@@ -90,7 +90,7 @@ module VER
 
     handler :at_insert
     map :kill_line,                 '<Control-k>', '<Control-d><Control-d>'
-    map [:deleting, :end_of_line],  '<Control-Alt-k>', '<Control-d>$'
+    map [:deleting, :last_char],    '<Control-Alt-k>', '<Control-d>$'
     map [:deleting, :prev_char],    '<BackSpace>'
     map [:deleting, :next_char],    '<Delete>'
 
@@ -160,7 +160,7 @@ module VER
   minor_mode :readline do
     map :accept_line,       '<Return>'
 
-    map :end_of_line,       '<End>', '<Control-e>'
+    map :last_char,         '<End>', '<Control-e>'
     map :insert_selection,  '<Shift-Insert>'
     map :insert_tab,        '<Control-v><Tab>'
     map :kill_end_of_line,  '<Control-k>'
