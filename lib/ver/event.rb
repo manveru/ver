@@ -218,14 +218,14 @@ module VER
       ('0'..'9').each{|chr| pattern("<Key-#{chr}>", chr, chr) }
       ('A'..'Z').each{|chr| pattern(chr, chr, chr) }
       ('a'..'z').each{|chr| pattern(chr, chr, chr) }
-      { 'space'        => ' ',
+      keysyms = {
+        'space'        => ' ',
         'exclam'       => '!',
         'quotedbl'     => '"',
         'numbersign'   => '#',
         'dollar'       => '$',
         'percent'      => '%',
         'ampersand'    => '&',
-        #'apostrophe'   => "'",
         'parenleft'    => '(',
         'parenright'   => ')',
         'asterisk'     => '*',
@@ -246,7 +246,6 @@ module VER
         'bracketright' => ']',
         'asciicircum'  => '^',
         'underscore'   => '_',
-        #'grave'        => '`',
         'quoteright'   => '`',
         'braceleft'    => '{',
         'bar'          => '|',
@@ -268,7 +267,16 @@ module VER
         'Right'        => '',
         'Tab'          => "\t",
         'Up'           => '',
-      }.each do |keysym, unicode|
+      }
+
+      if Platform.x11?
+        keysyms.merge!({
+          'apostrophe'   => "'",
+          'grave'        => '`',
+        })
+      end
+
+      keysyms.each do |keysym, unicode|
         pattern("<#{keysym}>", keysym, unicode)
       end
 
