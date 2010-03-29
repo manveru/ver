@@ -21,8 +21,8 @@ VER.spec do
       wmm = WMM.new(entry, major)
       wmm.widget.should == entry
       wmm.major.should == major
-      action_mode, action = wmm.resolve(['g'])
-      action_mode.should == major
+      action = wmm.resolve(['g'])
+      action.mode.should == major
       action.invocation.should == :get
       action.handler.should == nil
 
