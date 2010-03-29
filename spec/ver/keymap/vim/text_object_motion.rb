@@ -21,36 +21,36 @@ VER.spec keymap: 'vim', hidden: false do
 
       key 'e', 'forward to the end of the Nth word' do |key|
         type key
-        insert.index.should == '1.0'
+        insert.index.should == '1.8'
       end
 
-      key 'E', 'forward to the end of the Nth blank-separated WORD' do
+      key 'E', 'forward to the end of the Nth blank-separated WORD' do |key|
         type key
-        insert.index.should == '1.0'
+        insert.index.should == '1.8'
       end
 
-      key 'b', 'N words backward' do
+      key 'b', 'N words backward' do |key|
         insert.index = 'end'
         type key
-        insert.index.should == '1.0'
+        insert.index.should == '41.39'
       end
 
-      key 'B', 'N blank-separated WORDs backward' do
+      key 'B', 'N blank-separated WORDs backward' do |key|
         insert.index = 'end'
         type key
-        insert.index.should == '1.0'
+        insert.index.should == '41.29'
       end
 
-      key 'ga', 'backward to the end of the Nth word' do
+      key 'ga', 'backward to the end of the Nth word' do |key|
         insert.index = 'end'
         type key
-        insert.index.should == '1.0'
+        insert.index.should == '41.40'
       end
 
-      key 'gE', 'backward to the end of the Nth blank-separated WORD' do
+      key 'gE', 'backward to the end of the Nth blank-separated WORD' do |key|
         insert.index = 'end'
         type key
-        insert.index.should == '1.0'
+        insert.index.should == '41.40'
       end
 
       key ')', 'N sentences forward' do |key|
