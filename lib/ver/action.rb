@@ -19,7 +19,7 @@ module VER
 
     def combine(action)
       invocation = [*self.invocation, action]
-      self.class.new(invocation, handler)
+      self.class.new(invocation, handler, mode)
     end
 
     def to_proc

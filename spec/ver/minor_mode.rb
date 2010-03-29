@@ -34,12 +34,12 @@ VER.spec do
       control.map(:quit, ['q'])
       control.inherits(:movement)
 
-      action_mode, action = control.resolve(['q'])
-      action_mode.should == control
+      action = control.resolve(['q'])
+      action.mode.should == control
       action.invocation.should == :quit
 
-      action_mode, action = control.resolve(['j'])
-      action_mode.should == movement
+      action = control.resolve(['j'])
+      action.mode.should == movement
       action.invocation.should == :next_line
     end
 
@@ -47,8 +47,8 @@ VER.spec do
       control = MinorMode[:control]
       control.map(:quit, ['Z', 'Z'])
 
-      action_mode, action = control.resolve(['Z', 'Z'])
-      action_mode.should == control
+      action = control.resolve(['Z', 'Z'])
+      action.mode.should == control
       action.invocation.should == :quit
 
       control.resolve(['Z']).should.be.kind_of Keymap::Results::Incomplete
@@ -60,10 +60,10 @@ VER.spec do
       mode.map(:kill_word, ['d', 'w'])
       mode.missing(:insert)
 
-      action_mode, action = mode.resolve(['d', 'w'])
+      action = mode.resolve(['d', 'w'])
       action.invocation.should == :kill_word
 
-      action_mode, action = mode.resolve(['y'])
+      action = mode.resolve(['y'])
       action.invocation.should == :insert
     end
 
@@ -77,12 +77,12 @@ VER.spec do
       control = MinorMode[:control]
       control.inherits :move, :kill
 
-      action_mode, action = control.resolve(['d', 'd'])
-      action_mode.should == kill
+      action = control.resolve(['d', 'd'])
+      action.mode.should == kill
       action.invocation.should == :kill_line
 
-      action_mode, action = control.resolve(['d', 'j'])
-      action_mode.should == kill
+      action = control.resolve(['d', 'j'])
+      action.mode.should == kill
       action.invocation.size.should == 2
       action.invocation.first.should == :kill_motion
       action.invocation.last.invocation.should == :next_line
