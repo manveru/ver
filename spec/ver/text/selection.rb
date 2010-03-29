@@ -35,21 +35,21 @@ VER.spec do
       it 'lowercases content' do
         buffer.value = 'ABCDEFGH'
         %w[1.0 1.2 1.4 1.6].each{|index| sel.add(index) }
-        sel.lower_case
+        sel.lower_case!
         buffer.value.should == "aBcDeFgH\n"
       end
 
       it 'uppercases content' do
         buffer.value = 'abcdefgh'
         %w[1.0 1.2 1.4 1.6].each{|index| sel.add(index) }
-        sel.upper_case
+        sel.upper_case!
         buffer.value.should == "AbCdEfGh\n"
       end
 
       it 'toggles case of content' do
         buffer.value = 'AbCdEfGh'
         sel.add('1.0', 'end')
-        sel.toggle_case
+        sel.toggle_case!
         buffer.value.should == "aBcDeFgH\n"
       end
 
@@ -192,7 +192,7 @@ line three
         start('select_line', '1.0')
         buffer.insert = 'end'
         sel.copy
-        VER::Clipboard.dwim.should == "line one\nline two\nline three"
+        VER::Clipboard.dwim.should == "line one\nline two\nline three\n"
         sel.ranges.should.be.empty
       end
 

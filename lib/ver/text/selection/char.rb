@@ -6,12 +6,6 @@ module VER
           :select_char
         end
 
-        # Using delete, since the sel tag cannot be deleted anyway.
-        def delete
-          buffer.delete("sel.first", "sel.last")
-          finish
-        end
-
         # yields the range
         def each
           return Enumerator.new(self, :each) unless block_given?
