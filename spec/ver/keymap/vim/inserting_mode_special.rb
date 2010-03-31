@@ -90,35 +90,74 @@ VER.spec keymap: 'vim', hidden: false do
       end
 
       key '<BackSpace>', '<Control-h>', 'delete the character before the cursor' do |key|
+        insert.index = '1.22'
+        13.times{ type key }
+        insert.get('linestart', 'lineend').should == "Inventore dolorem assumenda."
+      end
+
+      key '<Delete>', 'delete the character under the cursor' do |key|
+        type key
+        insert.get.should == 'n'
+      end
+
+      key '<Control-w>', 'delete word before the cursor' do |key|
+        insert.index = '1.22'
+        type key
+        insert.get('linestart', 'lineend').should == "Inventore  dolorem assumenda."
+      end
+
+      key '<Control-u>', 'delete all entered characters in the current line' do |key|
         skip
       end
 
-      key '<Delete>', 'delete the character under the cursor' do
-        skip
+      key '<Control-t>', 'insert one shiftwidth of indent in front of the current line' do |key|
+        insert.index = '16.16'
+        type key
+        buffer.get('13.0', '18.0').should == <<-VALUE
+Fugiat tempore officiis ab.
+  Aut culpa accusantium consequatur laboriosam pariatur.
+    Cum autem explicabo dignissimos nemo.
+        Omnis vero rerum et in fugiat et eos.
+Ipsum commodi beatae maxime deserunt aut.
+        VALUE
       end
 
-      key '<Control-w>', 'delete word before the cursor' do
-        skip
+      key '<Control-d>', 'delete one shiftwidth of indent in front of the current line' do |key|
+        insert.index = '16.16'
+        type key
+        buffer.get('13.0', '18.0').should == <<-VALUE
+Fugiat tempore officiis ab.
+  Aut culpa accusantium consequatur laboriosam pariatur.
+    Cum autem explicabo dignissimos nemo.
+    Omnis vero rerum et in fugiat et eos.
+Ipsum commodi beatae maxime deserunt aut.
+        VALUE
       end
 
-      key '<Control-u>', 'delete all entered characters in the current line' do
-        skip
+      key '0<Control-d>', 'delete all indent in the current line' do |key|
+        skip do
+          insert.index = '16.16'
+          type key
+          buffer.get('15.0', '18.0').should == <<-VALUE
+Fugiat tempore officiis ab.
+  Aut culpa accusantium consequatur laboriosam pariatur.
+    Cum autem explicabo dignissimos nemo.
+      Omnis vero rerum et in fugiat et eos.
+          VALUE
+        end
       end
 
-      key '<Control-t>', 'insert one shiftwidth of indent in front of the current line' do
-        skip
-      end
-
-      key '<Control-d>', 'delete one shiftwidth of indent in front of the current line' do
-        skip
-      end
-
-      key '0<Control-d>', 'delete all indent in the current line' do
-        skip
-      end
-
-      key '^<Control-d>', 'delete all indent in the current line, restore indent in next line' do
-        skip
+      key '^<Control-d>', 'delete all indent in the current line, restore indent in next line' do |key|
+        skip do
+          insert.index = '16.16'
+          type key
+          buffer.get('15.0', '18.0').should == <<-VALUE
+Fugiat tempore officiis ab.
+  Aut culpa accusantium consequatur laboriosam pariatur.
+    Cum autem explicabo dignissimos nemo.
+      Omnis vero rerum et in fugiat et eos.
+          VALUE
+        end
       end
     end
   end

@@ -324,6 +324,8 @@ module VER
     handler Methods::Control
     map :smart_evaluate,   '<Alt-e>'
     map :temporary,        ['<Control-o>', :control]
+    map :indent_line,             '<Control-t>'
+    map :unindent_line,           '<Control-d>'
     if x11?
       map :unindent_line,  '<ISO_Left_Tab>'
     else
