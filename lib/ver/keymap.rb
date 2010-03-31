@@ -97,7 +97,7 @@ module VER
       when Action
         VER.warn "Redefining %p bound to %p with %p" % [existing, pattern, action]
       when Incomplete
-        VER.warn "%p shadows other actions bound to %p" % [action, pattern]
+        VER.warn "%p shadows other actions bound to %p: %p" % [action, pattern, existing.choices]
       when Impossible
       end
 
