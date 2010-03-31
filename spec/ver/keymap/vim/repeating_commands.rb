@@ -11,7 +11,7 @@ VER.spec keymap: 'vim', hidden: false do
       end
 
       key 'q{a-z}', 'record typed characters into register {a-z}' do
-        type 'qa', 'iHello ', 'q'
+        type 'qa', 'iHello <Escape>', 'q'
         type '@a'
         insert.get('linestart', 'lineend').should ==
           "Hello Hello Inventore voluptatibus dolorem assumenda."
@@ -30,7 +30,10 @@ VER.spec keymap: 'vim', hidden: false do
       end
 
       key '@@', 'repeat previous @{a-z}' do
-        skip
+        type 'qa', 'iHello <Escape>', 'q'
+        type '@a', '@@'
+        insert.get('linestart', 'lineend').should ==
+          "Hello Hello Hello Inventore voluptatibus dolorem assumenda."
       end
 
       key ':[range]g[lobal]/{pattern}/[cmd]', 'Execute Ex command [cmd] (default ":p") on the lines within [range] where {pattern} matches.' do
@@ -50,11 +53,11 @@ VER.spec keymap: 'vim', hidden: false do
       end
 
       key ':sl[eep] [sec]', 'do nothing for [sec] seconds' do
-        skip
+        skip # not gonna add it
       end
 
       key 'gs', 'goto sleep for N seconds' do
-        skip
+        skip # not gonna add it
       end
     end
   end

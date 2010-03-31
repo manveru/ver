@@ -22,8 +22,13 @@ module VER
       end
 
       def repeat(buffer)
-        actions = buffer.store(self, current(buffer))
-        actions.each(&:call)
+        if actions = buffer.store(self, current(buffer))
+          actions.reverse_each do |widget, action|
+            action.call(widget)
+          end
+        else
+          buffer.warn("No macro used yet")
+        end
       end
 
       def play(buffer, name)
