@@ -304,7 +304,7 @@ module VER
 
     handler :at_insert
     map :last_char,              '<End>', '<Control-e>'
-    map :insert_newline,         '<Return>'
+    map :insert_newline,         '<Return>', '<Control-m>', '<Control-j>'
     map :insert_selection,       '<Shift-Insert>', '<Insert>'
     map :insert_tab,             '<Control-i>'
     map :insert_digraph,         '<Control-k>'

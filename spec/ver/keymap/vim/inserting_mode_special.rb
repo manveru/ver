@@ -52,7 +52,9 @@ VER.spec keymap: 'vim', hidden: false do
       end
 
       keys '<Return>', '<Control-m>', '<Control-j>', 'begin new line' do |key|
-        skip
+        buffer.value = ''
+        type key
+        buffer.value.should == "\n\n"
       end
 
       key '<Control-e>', 'insert the character from below the cursor' do
