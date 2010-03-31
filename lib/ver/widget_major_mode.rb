@@ -121,15 +121,19 @@ module VER
 
     # ignore event for now, it might be needed later
     def handle_reader(event)
+      read_amount = self.read_amount
+
       if stack.size >= read_amount
         stack.clear
-        handled = true
+
+        # before we call, we reset the state in case the reader adds a new reader.
+        reader = self.reader
+        self.reader = self.read_amount = nil
         reader.call(*event_history.last(read_amount))
+        true
       else
-        handled = false
+        false
       end
-    ensure
-      self.read_amount = self.reader = nil if handled
     end
 
     def read(amount, &reader)
