@@ -57,8 +57,13 @@ VER.spec keymap: 'vim', hidden: false do
         buffer.value.should == "\n\n"
       end
 
-      key '<Control-e>', 'insert the character from below the cursor' do
-        skip
+      key '<Control-e>', 'insert the character from below the cursor' do |key|
+        buffer.value = "\nsecond line"
+        insert.index = '1.0'
+        type key
+        buffer.value.should == "s\nsecond line"
+        type key, key, key
+        buffer.value.should == "seco\nsecond line"
       end
 
       key '<Control-y>', 'insert the character from abvoe the cursor' do
@@ -73,7 +78,7 @@ VER.spec keymap: 'vim', hidden: false do
         skip
       end
 
-      key '<Control-r>', 'nsert the contents of a register' do
+      key '<Control-r>', 'insert the contents of a register' do
         skip
       end
 
@@ -135,29 +140,11 @@ Ipsum commodi beatae maxime deserunt aut.
       end
 
       key '0<Control-d>', 'delete all indent in the current line' do |key|
-        skip do
-          insert.index = '16.16'
-          type key
-          buffer.get('15.0', '18.0').should == <<-VALUE
-Fugiat tempore officiis ab.
-  Aut culpa accusantium consequatur laboriosam pariatur.
-    Cum autem explicabo dignissimos nemo.
-      Omnis vero rerum et in fugiat et eos.
-          VALUE
-        end
+        skip # i don't think i'll implement that myself
       end
 
       key '^<Control-d>', 'delete all indent in the current line, restore indent in next line' do |key|
-        skip do
-          insert.index = '16.16'
-          type key
-          buffer.get('15.0', '18.0').should == <<-VALUE
-Fugiat tempore officiis ab.
-  Aut culpa accusantium consequatur laboriosam pariatur.
-    Cum autem explicabo dignissimos nemo.
-      Omnis vero rerum et in fugiat et eos.
-          VALUE
-        end
+        skip # i don't think i'll implement that myself
       end
     end
   end

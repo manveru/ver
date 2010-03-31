@@ -263,7 +263,7 @@ module VER
 
     map :wrap_line,               'gw'
     map :indent_line,             '>'
-    map :unindent_line,           '<less>'
+    map :unindent_line,           '<'
     map :join_forward,            'J'
     map :join_forward_nospace,    'gJ'
     map :open_file_under_cursor,  'gf'
@@ -303,11 +303,13 @@ module VER
     map :auto_fill_space,  '<space>'
 
     handler :at_insert
-    map :last_char,              '<End>', '<Control-e>'
+    map :insert_char_above,      '<Control-y>'
+    map :insert_char_below,      '<Control-e>'
+    map :insert_digraph,         '<Control-k>'
     map :insert_newline,         '<Return>', '<Control-m>', '<Control-j>'
     map :insert_selection,       '<Shift-Insert>', '<Insert>'
     map :insert_tab,             '<Control-i>'
-    map :insert_digraph,         '<Control-k>'
+    map :last_char,              '<End>', '<Control-e>'
     map :next_char,              '<Right>'
     map :next_line,              '<Down>', '<Control-n>'
     map :next_page,              '<Control-f>', '<Next>', '<Shift-Down>'
@@ -317,8 +319,8 @@ module VER
     map :prev_page,              '<Control-b>', '<Prior>', '<Shift-Up>'
     map :prev_word,              '<Shift-Left>', '<Alt-b>'
     map :start_of_line,          '<Home>', '<Control-a>'
-    map [:killing, :next_char],  '<Delete>', '<Control-d>'
-    map [:killing, :prev_char],  '<BackSpace>'
+    map [:killing, :next_char],  '<Delete>'
+    map [:killing, :prev_char],  '<BackSpace>', '<Control-h>'
     map [:killing, :prev_word],  '<Control-w>'
 
     handler Methods::Control
