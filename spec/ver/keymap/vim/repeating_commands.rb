@@ -6,11 +6,15 @@ VER.spec keymap: 'vim', hidden: false do
       behaves_like :destructive_key_spec
 
       key '.', 'repeat last change (with count replaced with N)' do
-        skip
+        type '3dl', '7.'
+        insert.get('linestart', 'lineend').should == "voluptatibus dolorem assumenda."
       end
 
       key 'q{a-z}', 'record typed characters into register {a-z}' do
-        skip
+        type 'qa', 'iHello ', 'q'
+        type '@a'
+        insert.get('linestart', 'lineend').should ==
+          "Hello Hello Inventore voluptatibus dolorem assumenda."
       end
 
       key 'q{A-Z}', 'record typed characters, append to register {a-z}' do

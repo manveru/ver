@@ -81,7 +81,10 @@ module VER
     def on_event(event)
       VER.touch
       stack << event.pattern
-      event_history << Event.new(event.pattern, event.keysym, event.unicode)
+
+      # replace with our subset
+      event = Event.new(event.pattern, event.keysym, event.unicode)
+      event_history << event
 
       return handle_reader(event) if reader && read_amount
 

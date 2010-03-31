@@ -188,6 +188,16 @@ module VER
     map :undo, 'u'
   end
 
+  minor_mode :macro do
+    inherits :control
+
+    become :control, 'q'
+
+    handler Methods::Macro
+    enter :enter
+    leave :leave
+  end
+
   minor_mode :control do
     inherits :basic, :move, :delete, :undo, :layout_control, :search, :ctags,
              :bookmark, :clipboard, :open
@@ -199,6 +209,11 @@ module VER
     become :select_char,    'v'
     become :select_line,    'V'
     become :control,        '<Escape>'
+    become :macro,          *('a'..'z').map{|c| "q#{c}" }
+
+    handler Methods::Macro
+    map :repeat, '@@'
+    ('a'..'z').each{|c| map [:play, c], "@#{c}" }
 
     handler nil # whatever the widget happens to be
     map :repeat_action,           '.'
@@ -326,8 +341,8 @@ module VER
     handler Methods::Control
     map :smart_evaluate,   '<Alt-e>'
     map :temporary,        ['<Control-o>', :control]
-    map :indent_line,             '<Control-t>'
-    map :unindent_line,           '<Control-d>'
+    map :indent_line,      '<Control-t>'
+    map :unindent_line,    '<Control-d>'
     if x11?
       map :unindent_line,  '<ISO_Left_Tab>'
     else

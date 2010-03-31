@@ -45,5 +45,9 @@ module VER
     def send(method, *args, &block)
       @widget.send(method, *args, &block)
     end
+
+    def inspect
+      "#<VER::WidgetEvent widget=%p event=%p>" % [@widget, @event]
+    end
   end
 end
