@@ -130,6 +130,66 @@ module VER
         # puts "Insert %p in mode %p" % [string, keymap.mode]
         record.insert(:insert, string)
       end
+
+      # Insert characters literally, or enter decimal byte value (3 digits).
+      # This means we try to get up to 3 digits, but possibly don't get any.
+      #
+      # This code is less than elegant, but so is the behaviour we try to
+      # achieve.
+      #
+      # (none)		decimal		   3		255
+      # o or O		octal		   3		377	 (255)
+      # x or X		hexadecimal	   2		ff	 (255)
+      # u		hexadecimal	   4		ffff	 (65535)
+      # U		hexadecimal	   8		7fffffff (2147483647)
+      def literal(buffer)
+        reader = ->(string = ''){
+          buffer.major_mode.read(1) do |event|
+            if unicode = event.unicode
+              string += unicode # copy
+              buffer.message string.inspect
+
+              case result = literal_handle(buffer, string)
+              when nil
+                reader.call(string)
+              when String
+                literal_insert(buffer, result)
+              end
+            else
+              return # Unverrichteter Dinge
+            end
+          end
+        }
+
+        reader.call
+      end
+
+      # returning nil means read next char
+      # returning a String means you're done and want the result inserted.
+      # returning anything else means you're giving up.
+      def literal_handle(buffer, string)
+        case string
+        when /^\d{,3}$/
+          return if string.size < 3
+          [string.to_i].pack('U')
+        when /^o([0-7]{,3})$/i
+          return if $1.size < 3
+          [Integer("0#$1")].pack('U')
+        when /^x(\h{,2})$/i
+          return if $1.size < 2
+          [Integer("0x#$1")].pack('U')
+        when /^u(\h{,4})$/
+          return if $1.size < 4
+          [Integer("0x#$1")].pack('U')
+        when /^U(\h{,8})$/
+          return if $1.size < 8
+          [Integer("0x#$1")].pack('U')
+        end
+      end
+
+      def literal_insert(buffer, char)
+        buffer.at_insert.insert(char)
+      end
     end
   end
 end

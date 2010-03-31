@@ -5,8 +5,50 @@ VER.spec keymap: 'vim', hidden: false do
     describe 'Special keys in Insert mode' do
       behaves_like :destructive_key_spec
 
-      key '<Control-v>', 'insert character literally, or enter decimal byte value' do
-        skip
+      before do
+        type 'i'
+      end
+
+      key '<Control-v>', 'insert character for ordinal equivalent' do |key|
+        buffer.value = ''
+        type key, '065'
+        buffer.value.should == "A\n"
+      end
+
+      key '<Control-v>o', 'insert character for octal equivalent' do |key|
+        buffer.value = ''
+        type key, '101'
+        buffer.value.should == "A\n"
+      end
+
+      key '<Control-v>O', 'insert character for octal equivalent' do |key|
+        buffer.value = ''
+        type key, '101'
+        buffer.value.should == "A\n"
+      end
+
+      key '<Control-v>x', 'insert character for hexadecimal equivalent of length two' do |key|
+        buffer.value = ''
+        type key, '41'
+        buffer.value.should == "A\n"
+      end
+
+      key '<Control-v>X', 'insert character for hexadecimal equivalent of length two' do |key|
+        buffer.value = ''
+        type key, '41'
+        buffer.value.should == "A\n"
+      end
+
+      key '<Control-v>u', 'insert character for hexadecimal equivalent of length four' do |key|
+        buffer.value = ''
+        type key, '0041'
+        buffer.value.should == "A\n"
+      end
+
+      key '<Control-v>U', 'insert character for hexadecimal equivalent of length eight' do |key|
+        buffer.value = ''
+        type key, '00000041'
+        buffer.value.should == "A\n"
       end
 
       keys '<Return>', '<Control-m>', '<Control-j>', 'begin new line' do |key|

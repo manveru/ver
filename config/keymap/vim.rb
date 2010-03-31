@@ -306,7 +306,7 @@ module VER
     map :last_char,              '<End>', '<Control-e>'
     map :insert_newline,         '<Return>'
     map :insert_selection,       '<Shift-Insert>', '<Insert>'
-    map :insert_tab,             '<Control-v><Tab>', '<Control-i>'
+    map :insert_tab,             '<Control-i>'
     map :insert_digraph,         '<Control-k>'
     map :next_char,              '<Right>'
     map :next_line,              '<Down>', '<Control-n>'
@@ -331,6 +331,7 @@ module VER
     end
 
     handler Methods::Insert
+    map :literal,     '<Control-v>', '<Control-q>'
     missing :string
   end
 
