@@ -15,17 +15,15 @@ module VER
 
         buffer.actions.reverse_each do |widget, mode, action|
           break if action.invocation == macro_invocation
-          history << [widget, action]
+          history << ->{ action.call(widget) }
         end
 
-        buffer.store(self, name, history)
+        buffer.store(self, name, history.reverse)
       end
 
       def repeat(buffer)
         if actions = buffer.store(self, current(buffer))
-          actions.reverse_each do |widget, action|
-            action.call(widget)
-          end
+          actions.each(&:call)
         else
           buffer.warn("No macro used yet")
         end
@@ -33,9 +31,7 @@ module VER
 
       def play(buffer, name)
         if actions = buffer.store(self, name)
-          actions.reverse_each do |widget, action|
-            action.call(widget)
-          end
+          actions.each(&:call)
         else
           buffer.warn("No macro called %p" % [name])
         end
