@@ -61,13 +61,30 @@ VER.spec keymap: 'vim', hidden: false do
         buffer.value = "\nsecond line"
         insert.index = '1.0'
         type key
-        buffer.value.should == "s\nsecond line"
-        type key, key, key
-        buffer.value.should == "seco\nsecond line"
+        buffer.value.should == <<-VALUE
+s
+second line
+        VALUE
+        15.times{ type key }
+        buffer.value.should == <<-VALUE
+second line
+second line
+        VALUE
       end
 
-      key '<Control-y>', 'insert the character from abvoe the cursor' do
-        skip
+      key '<Control-y>', 'insert the character from above the cursor' do |key|
+        buffer.value = "first line\n"
+        insert.index = '2.0'
+        type key
+        buffer.value.should == <<-VALUE
+first line
+f
+        VALUE
+        15.times{ type key }
+        buffer.value.should == <<-VALUE
+first line
+first line
+        VALUE
       end
 
       key '<Control-a>', 'insert previously inserted text' do

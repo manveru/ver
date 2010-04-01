@@ -324,7 +324,7 @@ module VER
     map :insert_newline,         '<Return>', '<Control-m>', '<Control-j>'
     map :insert_selection,       '<Shift-Insert>', '<Insert>'
     map :insert_tab,             '<Control-i>'
-    map :last_char,              '<End>', '<Control-e>'
+    map :last_char,              '<End>'
     map :next_char,              '<Right>'
     map :next_line,              '<Down>', '<Control-n>'
     map :next_page,              '<Control-f>', '<Next>', '<Shift-Down>'

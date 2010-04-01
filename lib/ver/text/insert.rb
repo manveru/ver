@@ -59,6 +59,24 @@ module VER
         set(buffer.up_down_line(count))
       end
 
+      def insert_char_above
+        index = buffer.index("#{self} - 1 lines")
+
+        if index.line < line && index.char == char
+          char = index.get
+          buffer.insert(self, char) unless char == "\n"
+        end
+      end
+
+      def insert_char_below
+        index = buffer.index("#{self} + 1 lines")
+
+        if index.line > line && index.char == char
+          char = index.get
+          buffer.insert(self, char) unless char == "\n"
+        end
+      end
+
       def insert_newline_below
         return insert_indented_newline_below if buffer.options.autoindent
         super
