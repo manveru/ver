@@ -13,9 +13,14 @@ require 'logger'
 require 'securerandom'
 require 'set'
 require 'tmpdir'
+
+# vendor stuff, extensions and fixes.
 require 'ver/vendor/better_pp_hash'
 require 'ver/vendor/pathname'
 require 'ver/vendor/sized_array'
+
+# 3rd party dependencies
+require 'ffi'
 
 # Small helper method that equivalent to Kernel#p but writes to log.
 # Please use this for debugging, log is at /tmp/ver/log/all.log.
@@ -88,7 +93,7 @@ module VER
   # the rest of the options are in config/rc.rb
   options.dsl do
     o "Fork off on startup to avoid dying with the terminal",
-      :fork, true
+      :fork, Platform.unix?
 
     o "Start hidden, useful for specs",
       :hidden, false

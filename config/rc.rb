@@ -24,7 +24,7 @@ VER.options.dsl do
     :font, "TkFixedFont 10"
 
   o "Fork off on startup to avoid dying with the terminal",
-    :fork, true
+    :fork, VER::Platform.unix?
 
   o "Use EventMachine inside VER, at the moment only for the console",
     :eventmachine, false
