@@ -231,6 +231,27 @@ module VER
       VER.defer{ VER.exit if VER.buffers.empty? }
     end
 
+    # This has to be called _before_ <Destroy> is received, otherwise the Buffer
+    # is half-dead.
+    def persist_info
+      file = VER.loadpath.first/'buffer_info.json'
+      l "Persisting Buffer info into: #{file}"
+      JSON::Store.new(file.to_s, true).transaction do |buffer_info|
+        buffer_info[uri.to_s] = {
+          'insert' => index('insert')
+        }
+      end
+    end
+
+    def load_info
+      file = VER.loadpath.first/'buffer_info.json'
+      l "Loading Buffer info from: #{file}"
+      JSON::Store.new(file.to_s, true).transaction do |buffer_info|
+        info = buffer_info[uri.to_s]
+        self.insert = info['insert']
+      end
+    end
+
     def sync_mode_status
       status.event :mode
     end
@@ -446,12 +467,17 @@ module VER
       after_open(nil, line, char)
     end
 
-    def after_open(syntax = nil, line = 1, char = 0)
+    def after_open(syntax = nil, line = nil, char = nil)
       @undoer = VER::Undo::Tree.new(self)
       VER.opened_file(self)
       layout.wm_title = uri.to_s
 
-      self.insert = "#{line || 1}.#{char || 0}"
+      if line || char
+        self.insert = "#{line || 1}.#{char || 0}"
+      else
+        load_info
+      end
+
       VER.buffers << self
       message "Opened #{uri}"
 
@@ -640,7 +666,10 @@ Close this buffer or continue with caution.
     end
 
     def close
-      may_close{ layout.destroy }
+      may_close do
+        persist_info
+        layout.destroy
+      end
     end
 
     def touch!(*indices)
