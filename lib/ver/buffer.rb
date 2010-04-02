@@ -455,13 +455,21 @@ module VER
       VER.buffers << self
       message "Opened #{uri}"
 
-      bind('<Map>') do
-        VER.defer do
-          syntax ? setup_highlight_for(syntax) : setup_highlight
-          apply_modeline
-        end
-        bind('<Map>'){ at_insert.see }
+      if winfo_ismapped
+        finalize_open(syntax)
+      else
+        bind('<Map>'){ finalize_open(syntax) }
       end
+    rescue => ex
+      VER.error(ex)
+    end
+
+    def finalize_open(syntax)
+      VER.defer do
+        syntax ? setup_highlight_for(syntax) : setup_highlight
+        apply_modeline
+      end
+      bind('<Map>'){ at_insert.see }
     end
 
     def lock_uri(uri, &block)
