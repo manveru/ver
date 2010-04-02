@@ -18,6 +18,7 @@ require 'tmpdir'
 require 'ver/vendor/better_pp_hash'
 require 'ver/vendor/pathname'
 require 'ver/vendor/sized_array'
+require 'ver/vendor/json_store'
 
 # 3rd party dependencies
 require 'ffi'
@@ -440,53 +441,51 @@ module VER
 
   def open_session
     return unless session_base = options.session
-    basename = "#{session_base}.session.rb"
+    basename = "sessions/#{session_base}.json"
     return unless file = find_in_loadpath(basename)
 
-    begin
-      session = eval(File.read(file))
-    rescue SyntaxError => ex
-      error(ex)
-      return
-    end
+    JSON::Store.new(file, true).transaction do |session|
+      session['bookmarks'].each do |raw_bm|
+        bm = Bookmarks::Bookmark.new
+        bm.name  = raw_bm['name']
+        bm.file  = Pathname(raw_bm['file'])
+        bm.index = raw_bm['index']
+        l "Loaded %p" % [bm]
+        bookmarks << bm
+      end
 
-    session[:bookmarks].each do |raw_bm|
-      bm = Bookmarks::Bookmark.new
-      bm.name = raw_bm[:name]
-      bm.file = Pathname(raw_bm[:file])
-      bm.index = raw_bm[:index]
-      bookmarks << bm
-    end
-
-    session[:buffers].each do |buffer|
-      find_or_create_buffer(buffer[:filename], *buffer[:insert])
+      session['buffers'].each do |buffer|
+        l "Loading Buffer: %p" % [buffer]
+        find_or_create_buffer(buffer['filename'], *buffer['insert'])
+      end
     end
   end
 
+  # FIXME: there are no buffers anymore when this is called.
   def store_session
     return unless session_base = VER.options.session
-    basename = "#{session_base}.session.rb"
+    basename = "sessions/#{session_base}.json"
     session_path = loadpath.first/basename
+    session_path.parent.mkpath
 
-    session = {buffers: [], bookmarks: []}
-    buffers.each do |buffer|
-      session[:buffers] << {
-        name:     buffer.name.to_s,
-        filename: buffer.filename.to_s,
-        insert:   buffer.at_insert.to_a,
-      }
-    end
+    JSON::Store.new(session_path.to_s, true).transaction do |session|
+      buffers = self.buffers.map do |buffer|
+        l buffer: buffer
+        { 'name'     => buffer.name.to_s,
+          'filename' => buffer.filename.to_s,
+          'insert'   => buffer.at_insert.to_a, }
+      end
+      l "Storing Buffers: %p" % [buffers]
+      session['buffers'] = buffers
 
-    bookmarks.each do |bm|
-      session[:bookmarks] << {
-        name:  bm.name,
-        file:  bm.file.to_s,
-        index: bm.index,
-      }
-    end
-
-    session_path.open('w+:UTF-8') do |io|
-      io.write(session.pretty_inspect)
+      bookmarks = self.bookmarks.map do |bm|
+        l bookmark: bm
+        { 'name'  => bm.name,
+          'file'  => bm.file.to_s,
+          'index' => bm.index, }
+      end
+      l "Storing Bookmarks: %p" % [bookmarks]
+      session['bookmarks'] = bookmarks
     end
   end
 
