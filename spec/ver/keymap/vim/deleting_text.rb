@@ -53,6 +53,13 @@ Qui similique quia voluptatem.
         buffer.minor_mode?(:select_char).should.be.nil
       end
 
+      key '{visual}d', 'delete the highlighted text' do
+        buffer.value = "one\ntwo"
+        type 'ggVGd'
+        buffer.value.should == "\n"
+        VER::Register['*'].value.should == "one\ntwo\n"
+      end
+
       key 'dd', 'delete N lines' do |key|
         type key
         buffer.get('1.0', '2.0').should == <<-VALUE

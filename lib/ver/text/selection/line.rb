@@ -2,6 +2,22 @@ module VER
   class Text
     class Selection
       class Line < Selection
+        def kill
+          indices = []
+          chunks = each_range.map do |range|
+            indices << range.first << (range.last + '1 chars')
+            buffer.get(*indices.last(2))
+          end
+
+          buffer.with_register do |register|
+            register.value = chunks.at(1) ? chunks : chunks.first
+          end
+
+          buffer.delete(*indices)
+          clear
+          finish
+        end
+
         def copy
           buffer.with_register do |register|
             register.value = buffer.get("#{self}.first", "#{self}.last + 1 chars")
