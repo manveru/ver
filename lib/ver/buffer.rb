@@ -236,9 +236,13 @@ module VER
     def persist_info
       file = VER.loadpath.first/'buffer_info.json'
       l "Persisting Buffer info into: #{file}"
+
       JSON::Store.new(file.to_s, true).transaction do |buffer_info|
+        syntax_name = @syntax.name if @syntax
+
         buffer_info[uri.to_s] = {
-          'insert' => index('insert')
+          'insert' => index('insert').to_s,
+          'syntax' => syntax_name
         }
       end
     end
@@ -248,9 +252,11 @@ module VER
       l "Loading Buffer info from: #{file}"
       JSON::Store.new(file.to_s, true).transaction do |buffer_info|
         if info = buffer_info[uri.to_s]
-          self.insert = info['insert']
+          return info
         end
       end
+
+      return {}
     end
 
     def sync_mode_status
@@ -473,17 +479,19 @@ module VER
       VER.opened_file(self)
       layout.wm_title = uri.to_s
 
+      info = load_info
+
       if line || char
         self.insert = "#{line || 1}.#{char || 0}"
       else
-        load_info
+        self.insert = info['insert'] || '1.0'
       end
 
       VER.buffers << self
       message "Opened #{uri}"
 
       # Don't rely on the <Map> event, since it's prone to race-conditions.
-      finalize_open(syntax)
+      finalize_open(syntax || info['syntax'])
     rescue => ex
       VER.error(ex)
     end
@@ -909,6 +917,7 @@ Close this buffer or continue with caution.
     def setup_highlight_for(syntax)
       return if encoding == Encoding::BINARY
       return unless syntax
+      syntax = Syntax.new(syntax) unless syntax.is_a?(Syntax)
 
       self.syntax = syntax
       VER.cancel_block(@highlighter)
