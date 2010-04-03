@@ -247,8 +247,9 @@ module VER
       file = VER.loadpath.first/'buffer_info.json'
       l "Loading Buffer info from: #{file}"
       JSON::Store.new(file.to_s, true).transaction do |buffer_info|
-        info = buffer_info[uri.to_s]
-        self.insert = info['insert']
+        if info = buffer_info[uri.to_s]
+          self.insert = info['insert']
+        end
       end
     end
 
