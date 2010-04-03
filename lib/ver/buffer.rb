@@ -481,11 +481,8 @@ module VER
       VER.buffers << self
       message "Opened #{uri}"
 
-      if winfo_ismapped
-        finalize_open(syntax)
-      else
-        bind('<Map>'){ finalize_open(syntax) }
-      end
+      # Don't rely on the <Map> event, since it's prone to race-conditions.
+      finalize_open(syntax)
     rescue => ex
       VER.error(ex)
     end
