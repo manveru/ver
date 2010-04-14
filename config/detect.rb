@@ -11,6 +11,7 @@ module VER::Syntax::Detector
   exts "Apache", ["conf", "htaccess"]
   exts "AppleScript", ["applescript", "script editor"]
   head "AppleScript", /^#!.*(osascript)/
+  exts "AsciiDoc", ["txt", "asciidoc"]
   exts "ASP", ["asa"]
   exts "ASP vb.NET", ["vb"]
   exts "BibTeX", ["bib"]
@@ -57,6 +58,8 @@ module VER::Syntax::Detector
   exts "Fortran - Punchcard", ["f", "F", "f77", "F77", "for", "FOR", "fpp", "FPP"]
   exts "FXScript", ["fxscript"]
   exts "Gettext", ["po", "potx"]
+  exts "Go", ["go"]
+  head "Go", /-[*]-( Mode:)? Go -[*]-/
   exts "Grails Server Page", ["gsp"]
   exts "Graphviz (DOT)", ["dot", "DOT"]
   exts "Greasemonkey", ["user.js"]
