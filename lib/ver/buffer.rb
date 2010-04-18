@@ -499,6 +499,7 @@ module VER
     def finalize_open(syntax)
       VER.defer do
         syntax ? setup_highlight_for(syntax) : setup_highlight
+        load_preferences
         apply_modeline
       end
       bind('<Map>'){ at_insert.see }
@@ -975,8 +976,30 @@ Close this buffer or continue with caution.
       name = syntax.name
       return unless file = VER.find_in_loadpath("preferences/#{name}.rb")
       @preferences = eval(file.read)
+      apply_preferences
     rescue Errno::ENOENT, TypeError => ex
       VER.error(ex)
+    end
+
+    def apply_preferences
+      return unless @preferences
+
+      @preferences.each do |preference|
+        next unless preference[:name] == "Comments"
+        if settings = preference[:settings]
+          if shell_variables = settings[:shellVariables]
+            shell_variables.each do |variable|
+              name, value = variable.values_at(:name, :value)
+              ENV[name] = value
+
+              case name
+              when 'TM_COMMENT_START'
+                options.comment_line = value
+              end
+            end
+          end
+        end
+      end
     end
 
     def handle_pending_syntax_highlights

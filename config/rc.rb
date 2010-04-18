@@ -6,7 +6,7 @@ VER.options.dsl do
     :http_browser, (ENV['BROWSER'] || %w[links -g])
 
   o "Sequence to comment a line, may change through file type preferences",
-    :comment_line, '#'
+    :comment_line, '# '
 
   o "Start and end sequence to comment a region, may change through file type preferences",
     :comment_region, ['=begin', '=end']

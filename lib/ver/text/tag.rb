@@ -57,7 +57,7 @@ module VER
       # Comment all lines that the selection touches.
       # Tries to maintain indent.
       def comment
-        comment = "#{buffer.options.comment_line} "
+        comment = buffer.options.comment_line.to_s
         indent = nil
         lines = []
 
@@ -271,7 +271,7 @@ module VER
       end
 
       def uncomment
-        comment = "#{buffer.options.comment_line} "
+        comment = buffer.options.comment_line.to_s
         regex = /#{Regexp.escape(comment)}/
 
         buffer.undo_record do |record|
