@@ -133,7 +133,7 @@ module VER
 
     def setup_widgets
       @status    = Status.new(frame, self)
-      @minibuf   = VER.minibuf.peer_create(frame)
+      @minibuf   = VER.minibuf.peer_create(frame, self)
 
       if options.horizontal_scrollbar
         @xbar = Tk::Tile::XScrollbar.new(frame)
