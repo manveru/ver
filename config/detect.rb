@@ -31,6 +31,7 @@ module VER::Syntax::Detector
   head "C++", /-\*- C\+\+ -\*-/
   head "C++ Qt", /-\*- C\+\+ -\*-/
   exts "CMake Listfile", ["CMakeLists.txt", "cmake"]
+  exts "CoffeeScript", ["coffee", "Cakefile"]
   exts "ColdFusion", ["cfm", "cfml", "cfc"]
   exts "Context Free", ["cfdg", "context free"]
   exts "CSS", ["css", "css.erb"]
