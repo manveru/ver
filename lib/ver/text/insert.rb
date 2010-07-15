@@ -115,7 +115,7 @@ module VER
       # Set insert mark to a position in the previous page in buffer.
       # Also sets the insert mark to the position it used to be on the old view.
       #
-      # @params [Integer] count
+      # @param [Integer] count
       #   Number of pages to scroll
       def prev_page(count = buffer.prefix_count)
         set(buffer.tk_prev_page_pos(count))
@@ -124,7 +124,7 @@ module VER
       # Scroll down the view of buffer by +count+ number of pages.
       # Also sets the insert mark to the position it used to be on the old view.
       #
-      # @params [Integer] count
+      # @param [Integer] count
       #   Number of pages to scroll
       def next_page(count = buffer.prefix_count)
         set(buffer.tk_next_page_pos(count))
