@@ -51,7 +51,7 @@ module VER
 
         base = [head[(head_index + 1)..-1], tail[0...tail_index]].join
 
-        syntax_name = text.syntax.name if @syntax
+        syntax_name = text.syntax.name if text.syntax
         exts = VER::Syntax::Detector::EXTS_LIST.fetch(syntax_name, [])
 
         found = catch(:found){
