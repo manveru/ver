@@ -30,11 +30,11 @@ module VER
           end
         when :modified
           parse_go_line(answer) do |index|
-            tag_configure(Search::TAG, Search::HIGHLIGHT)
-            tag_add(Search::TAG, index, index.lineend)
+            tag_configure(Methods::Search::TAG, Methods::Search::HIGHLIGHT)
+            tag_add(Methods::Search::TAG, index, index.lineend)
             see(index)
             Tk::After.ms(3000){
-              tag_remove(Search::TAG, index, index.lineend)
+              tag_remove(Methods::Search::TAG, index, index.lineend)
               at_insert.see
             }
           end
