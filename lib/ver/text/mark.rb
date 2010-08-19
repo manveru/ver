@@ -402,17 +402,38 @@ module VER
       end
 
       def matching_brace(count = buffer.prefix_count)
-        set(matching_brace_index(count))
+        from, to = matching_brace_indices(count)
+        index = self.index
+
+        if index < from
+          set(from)
+        elsif index == from
+          set(to)
+        elsif index > to
+          set(to)
+        elsif index == to
+          set(from)
+        else
+          if from.delta(index) < to.delta(index)
+            set(from)
+          else
+            set(to)
+          end
+        end
       end
 
-      def matching_brace_index(count = 1)
-        opening = get
+      def matching_brace_indices(count = 1)
+        needle = Regexp.union(MATCHING_BRACE_RIGHT.to_a.flatten.sort.uniq)
+        from = buffer.search_all(needle, self){|match, range| break range }
+        return unless from
+
+        opening = from.get
 
         if closing = MATCHING_BRACE_RIGHT[opening]
-          start = self + '1 chars'
+          start = from + '1 chars'
           search = buffer.method(:search_all)
         elsif closing = MATCHING_BRACE_LEFT[opening]
-          start = index
+          start = from.index
           search = buffer.method(:rsearch_all)
         else
           return
@@ -429,7 +450,7 @@ module VER
           end
 
           if balance == 0
-            return range
+            return [from, range].sort
           end
         }
       end
