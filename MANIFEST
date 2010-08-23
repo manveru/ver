@@ -1,15 +1,135 @@
 .gitignore
 .mailmap
-.todo
 .yardopts
 AUTHORS
 CHANGELOG
 LICENSE
 MANIFEST
 README.textile
-ROADMAP.textile
 Rakefile
 bin/ver
+config/commands/ANTLR.rb
+config/commands/ActionScript.rb
+config/commands/Active4D.rb
+config/commands/Ada.rb
+config/commands/Ant.rb
+config/commands/Apache.rb
+config/commands/AppleScript.rb
+config/commands/Blogging.rb
+config/commands/Bulletin Board.rb
+config/commands/Bundle Development.rb
+config/commands/C++ Qt.rb
+config/commands/C.rb
+config/commands/CMake.rb
+config/commands/CSS.rb
+config/commands/CTags.rb
+config/commands/CVS.rb
+config/commands/CoffeeScript.rb
+config/commands/Context Free.rb
+config/commands/Cucumber.rb
+config/commands/D.rb
+config/commands/Darcs.rb
+config/commands/Diff.rb
+config/commands/Doxygen.rb
+config/commands/Experimental Wiki.rb
+config/commands/Experimental.rb
+config/commands/F-Script.rb
+config/commands/FXScript.rb
+config/commands/FileMerge.rb
+config/commands/Fortran.rb
+config/commands/GTD2.rb
+config/commands/GTDAlt.rb
+config/commands/GetBundle.rb
+config/commands/Go.rb
+config/commands/Graphviz.rb
+config/commands/Greasemonkey.rb
+config/commands/Gri.rb
+config/commands/Groovy Grails.rb
+config/commands/Groovy.rb
+config/commands/HTML.rb
+config/commands/Haskell.rb
+config/commands/Hotkey.rb
+config/commands/Hyperlink Helper.rb
+config/commands/ImageBrowser.rb
+config/commands/Io.rb
+config/commands/JSFL.rb
+config/commands/JSON.rb
+config/commands/Java.rb
+config/commands/JavaDoc.rb
+config/commands/JavaScript Prototype & Script.aculo.us.rb
+config/commands/JavaScript YUI.rb
+config/commands/JavaScript jQuery.rb
+config/commands/JavaScript.rb
+config/commands/LaTeX.rb
+config/commands/Lisp.rb
+config/commands/Logo.rb
+config/commands/Logtalk.rb
+config/commands/Lua.rb
+config/commands/MEL.rb
+config/commands/Mail.rb
+config/commands/Make.rb
+config/commands/Man Pages.rb
+config/commands/Markdown.rb
+config/commands/Math.rb
+config/commands/Matlab.rb
+config/commands/Maven.rb
+config/commands/Mediawiki.rb
+config/commands/Mercurial.rb
+config/commands/MoinMoin.rb
+config/commands/Movable Type.rb
+config/commands/Nemerle.rb
+config/commands/OCaml Experimental Completions.rb
+config/commands/OCaml.rb
+config/commands/Objective-C.rb
+config/commands/Outlines.rb
+config/commands/PHP Smarty.rb
+config/commands/Pascal.rb
+config/commands/Perforce.rb
+config/commands/Perl.rb
+config/commands/Processing.rb
+config/commands/Prolog.rb
+config/commands/Property List.rb
+config/commands/Python Django.rb
+config/commands/Python.rb
+config/commands/R Console (R.app).rb
+config/commands/R Console (Rdaemon).rb
+config/commands/R.rb
+config/commands/Ragel.rb
+config/commands/Regular Expressions.rb
+config/commands/Remind.rb
+config/commands/Ruby RSpec.rb
+config/commands/Ruby on Rails.rb
+config/commands/Ruby.rb
+config/commands/S5 Slide Show.rb
+config/commands/SCons.rb
+config/commands/SQL.rb
+config/commands/SVK.rb
+config/commands/SWeave.rb
+config/commands/Scheme.rb
+config/commands/Scilab.rb
+config/commands/Setext.rb
+config/commands/Shell Script.rb
+config/commands/Slate.rb
+config/commands/Source.rb
+config/commands/Standard ML.rb
+config/commands/Subversion.rb
+config/commands/TODO.rb
+config/commands/Tcl.rb
+config/commands/TerminalMate.rb
+config/commands/Text.rb
+config/commands/TextMate.rb
+config/commands/Textile.rb
+config/commands/Thrift.rb
+config/commands/Transmit.rb
+config/commands/Txt2tags.rb
+config/commands/Vectorscript.rb
+config/commands/Widget Creator.rb
+config/commands/XML.rb
+config/commands/Xcode.rb
+config/commands/YAML.rb
+config/commands/YARD.rb
+config/commands/iTerm.rb
+config/commands/reStructuredText.rb
 config/detect.rb
 config/keymap/diakonos.rb
 config/keymap/emacs.rb
@@ -34,8 +154,10 @@ config/preferences/C++ Qt.rb
 config/preferences/C.rb
 config/preferences/CMake.rb
 config/preferences/CSS.rb
+config/preferences/CoffeeScript.rb
 config/preferences/ColdFusion.rb
 config/preferences/Context Free.rb
+config/preferences/Cucumber.rb
 config/preferences/D.rb
 config/preferences/Diff.rb
 config/preferences/DokuWiki.rb
@@ -48,8 +170,10 @@ config/preferences/Fortran.rb
 config/preferences/GTD2.rb
 config/preferences/GTDAlt.rb
 config/preferences/Gettext.rb
+config/preferences/Go.rb
 config/preferences/Graphviz.rb
 config/preferences/Gri.rb
+config/preferences/Groovy.rb
 config/preferences/HTML.rb
 config/preferences/Haskell.rb
 config/preferences/Hyperlink Helper.rb
@@ -70,6 +194,7 @@ config/preferences/MEL.rb
 config/preferences/MIPS Assembler.rb
 config/preferences/Make.rb
 config/preferences/Man Pages.rb
+config/preferences/Markdown.rb
 config/preferences/Matlab.rb
 config/preferences/Maven.rb
 config/preferences/Mediawiki.rb
@@ -80,6 +205,7 @@ config/preferences/OCaml Experimental Completions.rb
 config/preferences/OCaml.rb
 config/preferences/Objective-C.rb
 config/preferences/OpenGL.rb
+config/preferences/PHP.rb
 config/preferences/Pascal.rb
 config/preferences/Perl Template Toolkit.rb
 config/preferences/Perl.rb
@@ -120,13 +246,13 @@ config/preferences/Txt2tags.rb
 config/preferences/Vectorscript.rb
 config/preferences/XML.rb
 config/preferences/YAML.rb
+config/preferences/YARD.rb
 config/preferences/iCalendar.rb
 config/preferences/iTerm.rb
 config/preferences/newLisp.rb
 config/preferences/reStructuredText.rb
 config/rc.rb
 config/scratch
-config/snippets/ANTLR.rb
 config/snippets/ASP vb.NET.rb
 config/snippets/ASP.rb
 config/snippets/ActionScript.rb
@@ -135,7 +261,6 @@ config/snippets/Ada.rb
 config/snippets/Ant.rb
 config/snippets/Apache.rb
 config/snippets/AppleScript.rb
-config/snippets/Bison.rb
 config/snippets/Blogging.rb
 config/snippets/Bulletin Board.rb
 config/snippets/Bundle Development.rb
@@ -143,42 +268,28 @@ config/snippets/C++ Qt.rb
 config/snippets/C.rb
 config/snippets/CMake.rb
 config/snippets/CSS.rb
-config/snippets/CTags.rb
-config/snippets/CVS.rb
+config/snippets/CoffeeScript.rb
 config/snippets/ColdFusion.rb
 config/snippets/Context Free.rb
+config/snippets/Cucumber.rb
 config/snippets/D.rb
-config/snippets/Darcs.rb
-config/snippets/Diff.rb
 config/snippets/DokuWiki.rb
 config/snippets/Doxygen.rb
-config/snippets/Dylan.rb
 config/snippets/Eiffel.rb
 config/snippets/Erlang.rb
-config/snippets/Experimental Wiki.rb
-config/snippets/Experimental.rb
 config/snippets/F-Script.rb
 config/snippets/FXScript.rb
-config/snippets/FileMerge.rb
 config/snippets/Fortran.rb
-config/snippets/GTD2.rb
 config/snippets/GTDAlt.rb
-config/snippets/GetBundle.rb
 config/snippets/Gettext.rb
-config/snippets/Graphviz.rb
+config/snippets/Go.rb
 config/snippets/Greasemonkey.rb
 config/snippets/Gri.rb
+config/snippets/Groovy Grails.rb
+config/snippets/Groovy.rb
 config/snippets/HTML.rb
 config/snippets/Haskell.rb
-config/snippets/Hotkey.rb
-config/snippets/Hyperlink Helper.rb
-config/snippets/ImageBrowser.rb
-config/snippets/Inform.rb
-config/snippets/Ini.rb
-config/snippets/Installer.rb
 config/snippets/Io.rb
-config/snippets/JSFL.rb
-config/snippets/JSON.rb
 config/snippets/Java.rb
 config/snippets/JavaDoc.rb
 config/snippets/JavaScript MooTools.rb
@@ -187,96 +298,65 @@ config/snippets/JavaScript Prototype & Script.aculo.us.rb
 config/snippets/JavaScript YUI.rb
 config/snippets/JavaScript jQuery.rb
 config/snippets/JavaScript.rb
-config/snippets/Lex-Flex.rb
-config/snippets/Lighttpd.rb
+config/snippets/LaTeX.rb
 config/snippets/LilyPond.rb
 config/snippets/Lisp.rb
 config/snippets/Logo.rb
 config/snippets/Logtalk.rb
 config/snippets/Lua.rb
-config/snippets/MEL.rb
 config/snippets/MIPS Assembler.rb
-config/snippets/MacPorts.rb
 config/snippets/Mail.rb
-config/snippets/Make.rb
-config/snippets/Man Pages.rb
-config/snippets/Math.rb
+config/snippets/Markdown.rb
 config/snippets/Matlab.rb
 config/snippets/Maven.rb
 config/snippets/Mediawiki.rb
-config/snippets/Mercurial.rb
-config/snippets/Modula.rb
 config/snippets/MoinMoin.rb
 config/snippets/Movable Type.rb
-config/snippets/Navigation.rb
 config/snippets/Nemerle.rb
 config/snippets/OCaml Code Completion Misc.rb
 config/snippets/OCaml Code Completion Unix.rb
-config/snippets/OCaml Experimental Completions.rb
 config/snippets/OCaml.rb
 config/snippets/ODCompletion.rb
 config/snippets/Objective-C.rb
-config/snippets/OpenGL.rb
-config/snippets/Outlines.rb
 config/snippets/PHP Smarty.rb
+config/snippets/PHP.rb
 config/snippets/Pascal.rb
-config/snippets/Perforce.rb
-config/snippets/Perl HTML::Template.rb
+config/snippets/Perl HTML-Template.rb
 config/snippets/Perl Mason.rb
 config/snippets/Perl Template Toolkit.rb
 config/snippets/Perl.rb
-config/snippets/Postscript.rb
 config/snippets/Processing.rb
-config/snippets/Prolog.rb
 config/snippets/Propel.rb
 config/snippets/Property List.rb
 config/snippets/Python Django Templates.rb
 config/snippets/Python Django.rb
-config/snippets/Quake.rb
-config/snippets/R Console (R.app).rb
+config/snippets/Python.rb
 config/snippets/R Console (Rdaemon).rb
 config/snippets/R.rb
-config/snippets/Ragel.rb
-config/snippets/Regular Expressions.rb
 config/snippets/Remind.rb
-config/snippets/Rez.rb
-config/snippets/Ruby Haml.rb
 config/snippets/Ruby RSpec.rb
 config/snippets/Ruby on Rails.rb
 config/snippets/Ruby.rb
 config/snippets/S5 Slide Show.rb
-config/snippets/SCons.rb
-config/snippets/SQL.rb
 config/snippets/SSH Config.rb
-config/snippets/SVK.rb
 config/snippets/SWIG.rb
-config/snippets/SWeave.rb
-config/snippets/Scheme.rb
 config/snippets/Scilab.rb
 config/snippets/Setext.rb
 config/snippets/Shell Script.rb
 config/snippets/Slate.rb
 config/snippets/Source.rb
 config/snippets/Standard ML.rb
-config/snippets/Subversion.rb
-config/snippets/TODO.rb
-config/snippets/Tabular.rb
 config/snippets/Tcl.rb
-config/snippets/TerminalMate.rb
 config/snippets/Text.rb
-config/snippets/TextMate.rb
 config/snippets/Textile.rb
 config/snippets/Thrift.rb
-config/snippets/Transmit.rb
 config/snippets/Twiki.rb
 config/snippets/Txt2tags.rb
 config/snippets/Vectorscript.rb
 config/snippets/Widget Creator.rb
 config/snippets/XML.rb
-config/snippets/Xcode.rb
 config/snippets/YAML.rb
-config/snippets/iCalendar.rb
-config/snippets/iTerm.rb
+config/snippets/YARD.rb
 config/snippets/newLisp.rb
 config/snippets/reStructuredText.rb
 config/syntax/ANTLR.rb
@@ -290,6 +370,7 @@ config/syntax/Ada.rb
 config/syntax/Ant.rb
 config/syntax/Apache.rb
 config/syntax/AppleScript.rb
+config/syntax/AsciiDoc.rb
 config/syntax/BibTeX.rb
 config/syntax/Bison.rb
 config/syntax/Blog - HTML.rb
@@ -303,8 +384,10 @@ config/syntax/C.rb
 config/syntax/CMake Listfile.rb
 config/syntax/CSS.rb
 config/syntax/CSV.rb
+config/syntax/CoffeeScript.rb
 config/syntax/ColdFusion.rb
 config/syntax/Context Free.rb
+config/syntax/Cucumber Steps.rb
 config/syntax/D.rb
 config/syntax/Diff.rb
 config/syntax/DokuWiki.rb
@@ -319,9 +402,13 @@ config/syntax/Fortran - Punchcard.rb
 config/syntax/GTD.rb
 config/syntax/GTDalt.rb
 config/syntax/Gettext.rb
+config/syntax/Gherkin.rb
+config/syntax/Go.rb
+config/syntax/Grails Server Page.rb
 config/syntax/Graphviz (DOT).rb
 config/syntax/Greasemonkey.rb
 config/syntax/Gri.rb
+config/syntax/Groovy.rb
 config/syntax/HTML (ASP).rb
 config/syntax/HTML (ASP.net).rb
 config/syntax/HTML (Active4D).rb
@@ -367,6 +454,7 @@ config/syntax/MacPorts Portfile.rb
 config/syntax/Mail.rb
 config/syntax/Makefile.rb
 config/syntax/Man.rb
+config/syntax/Markdown.rb
 config/syntax/Maven POM.rb
 config/syntax/Mediawiki.rb
 config/syntax/Modula-3.rb
@@ -374,6 +462,7 @@ config/syntax/MoinMoin.rb
 config/syntax/MooTools.rb
 config/syntax/Movable Type (MT only).rb
 config/syntax/Movable Type.rb
+config/syntax/MultiMarkdown.rb
 config/syntax/Nemerle.rb
 config/syntax/OCaml.rb
 config/syntax/OCamllex.rb
@@ -383,6 +472,7 @@ config/syntax/Objective-C.rb
 config/syntax/Objective-J.rb
 config/syntax/Octave.rb
 config/syntax/OpenGL.rb
+config/syntax/PHP.rb
 config/syntax/Pascal.rb
 config/syntax/Perl HTML-Template.rb
 config/syntax/Perl.rb
@@ -479,11 +569,19 @@ lib/ver.rb
 lib/ver/action.rb
 lib/ver/buffer.rb
 lib/ver/buffer/console.rb
+lib/ver/buffer/frame.rb
+lib/ver/buffer/invalid_trailing_whitespace.rb
+lib/ver/buffer/markup_underline_link.rb
+lib/ver/buffer/matching_brace.rb
 lib/ver/buffer/term.rb
+lib/ver/clipboard.rb
+lib/ver/digraphs.rb
 lib/ver/entry.rb
+lib/ver/event.rb
 lib/ver/exception_view.rb
 lib/ver/executor.rb
 lib/ver/executor/buffer.rb
+lib/ver/executor/encoding.rb
 lib/ver/executor/entry.rb
 lib/ver/executor/fuzzy_file_finder.rb
 lib/ver/executor/grep.rb
@@ -500,13 +598,14 @@ lib/ver/help/help_for_help.rb
 lib/ver/hover_completion.rb
 lib/ver/keymap.rb
 lib/ver/keymap/keymapped.rb
-lib/ver/keysyms.rb
 lib/ver/layout/notebook.rb
 lib/ver/layout/paned.rb
 lib/ver/layout/tiling.rb
 lib/ver/layout/tiling/common.rb
 lib/ver/layout/tiling/horizontal.rb
 lib/ver/layout/tiling/vertical.rb
+lib/ver/layout/toplevel.rb
+lib/ver/layout/vim.rb
 lib/ver/major_mode.rb
 lib/ver/methods.rb
 lib/ver/methods/autofill.rb
@@ -520,6 +619,7 @@ lib/ver/methods/delete.rb
 lib/ver/methods/help.rb
 lib/ver/methods/insert.rb
 lib/ver/methods/layout.rb
+lib/ver/methods/macro.rb
 lib/ver/methods/move.rb
 lib/ver/methods/nano.rb
 lib/ver/methods/open.rb
@@ -532,8 +632,11 @@ lib/ver/methods/snippet.rb
 lib/ver/methods/undo.rb
 lib/ver/minibuffer.rb
 lib/ver/minor_mode.rb
+lib/ver/mode_resolving.rb
 lib/ver/options.rb
+lib/ver/platform.rb
 lib/ver/plist.rb
+lib/ver/register.rb
 lib/ver/status.rb
 lib/ver/status/battery.rb
 lib/ver/status/buffer_position.rb
@@ -549,19 +652,33 @@ lib/ver/status/position.rb
 lib/ver/status/separator.rb
 lib/ver/status/short_filename.rb
 lib/ver/status/syntax.rb
+lib/ver/struct.rb
 lib/ver/syntax.rb
 lib/ver/syntax/detector.rb
 lib/ver/syntax/processor.rb
 lib/ver/text.rb
+lib/ver/text/end.rb
 lib/ver/text/index.rb
+lib/ver/text/insert.rb
+lib/ver/text/mark.rb
+lib/ver/text/position.rb
+lib/ver/text/range.rb
+lib/ver/text/selection.rb
+lib/ver/text/selection/block.rb
+lib/ver/text/selection/char.rb
+lib/ver/text/selection/line.rb
+lib/ver/text/tag.rb
 lib/ver/theme.rb
 lib/ver/tooltip.rb
 lib/ver/treeview.rb
 lib/ver/undo.rb
 lib/ver/vendor/better_pp_hash.rb
 lib/ver/vendor/binary_search.rb
+lib/ver/vendor/eval_completer.rb
 lib/ver/vendor/fuzzy_file_finder.rb
+lib/ver/vendor/json_store.rb
 lib/ver/vendor/levenshtein.rb
+lib/ver/vendor/open3.rb
 lib/ver/vendor/pathname.rb
 lib/ver/vendor/sized_array.rb
 lib/ver/vendor/textpow.rb
@@ -571,11 +688,44 @@ lib/ver/widget_major_mode.rb
 spec/helper.rb
 spec/tm_snippet.rb
 spec/ver/action.rb
+spec/ver/buffer.rb
+spec/ver/clipboard.rb
 spec/ver/keymap.rb
+spec/ver/keymap/diakonos.rb
+spec/ver/keymap/emacs.rb
+spec/ver/keymap/general.rb
+spec/ver/keymap/nano.rb
+spec/ver/keymap/vim.rb
+spec/ver/keymap/vim/changing_text.rb
+spec/ver/keymap/vim/complex_changes.rb
+spec/ver/keymap/vim/copying_and_moving_text.rb
+spec/ver/keymap/vim/deleting_text.rb
+spec/ver/keymap/vim/digraphs.rb
+spec/ver/keymap/vim/external_commands.rb
+spec/ver/keymap/vim/inserting_mode_keys.rb
+spec/ver/keymap/vim/inserting_mode_special.rb
+spec/ver/keymap/vim/inserting_text.rb
+spec/ver/keymap/vim/left_right_motion.rb
+spec/ver/keymap/vim/mark_motion.rb
+spec/ver/keymap/vim/repeating_commands.rb
+spec/ver/keymap/vim/text_object_motion.rb
+spec/ver/keymap/vim/text_objects.rb
+spec/ver/keymap/vim/undo_redo.rb
+spec/ver/keymap/vim/up_down_motion.rb
+spec/ver/keymap/vim/various_motion.rb
+spec/ver/keysyms.rb
 spec/ver/major_mode.rb
-spec/ver/methods/move.rb
 spec/ver/minor_mode.rb
 spec/ver/plugin/smart_autoindent.rb
+spec/ver/text/index.rb
+spec/ver/text/insert.rb
+spec/ver/text/mark.rb
+spec/ver/text/range.rb
+spec/ver/text/selection.rb
+spec/ver/text/tag.rb
+spec/ver/undo.rb
+spec/ver/undo/record_sanitize.rb
+spec/ver/vendor/eval_completer.rb
 spec/ver/widget_major_mode.rb
 tasks/authors.rake
 tasks/bacon.rake

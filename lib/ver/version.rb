@@ -1,3 +1,3 @@
 module VER
-  VERSION = "2010.02"
+  VERSION = "2010.08"
 end

@@ -1,3 +1,1163 @@
+[07a6847 | 2010-08-19 10:39:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement matching brace jumping from anywhere
+
+[4f9ae6f | 2010-08-17 09:05:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix namespace reference
+
+[fa104a7 | 2010-08-05 08:24:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adding cucumber from aslak
+
+[a516287 | 2010-08-05 02:30:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix Open.file_under_cursor
+
+[31dc014 | 2010-06-24 11:48:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add CoffeScript bundle
+
+[7d93dc5 | 2010-04-20 05:58:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure insert cursor stays visible if minibuffer expands
+
+[3ad4ead | 2010-04-18 11:19:03 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Language preferences influence options.comment_line now
+
+[0939615 | 2010-04-18 11:06:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make config/preferences/Go.rb US-ASCII
+
+[5862b15 | 2010-04-14 09:33:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update config/detect.rb for AsciiDoc and Go
+
+[8e84b70 | 2010-04-03 15:01:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remember the syntax last used in a buffer
+
+[7b19a18 | 2010-04-03 11:59:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Avoid failure when buffer is visited for the first time
+
+[e00499e | 2010-04-03 11:55:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix .yardopts
+
+[19d18e5 | 2010-04-03 11:55:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Avoid race conditions in syntax highlighting
+
+[9ee2edb | 2010-04-02 12:05:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Persist and load individual buffer info so VER remembers the position of insert cursor even without sessions
+
+[fc4d13c | 2010-04-02 05:43:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve the session code, unfortunately sessions are useless right now
+
+[cba72e4 | 2010-04-02 03:44:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix and spec issue when deleting line selections
+
+[5fc32e7 | 2010-04-02 03:37:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix issue with syntax highlighting when buffer lock is deleted
+
+[1d9a149 | 2010-04-01 04:00:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Only fork on unix platform
+
+[10190d6 | 2010-04-01 03:50:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement Control-e and Control-y in insert mode
+
+[16a869c | 2010-03-31 15:02:00 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Simplify macro calls
+
+[154963c | 2010-03-31 14:55:48 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add last-used macro repetition
+
+[e1edbf8 | 2010-03-31 14:43:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Basic support for macros
+
+[b695962 | 2010-03-31 06:45:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Cleanup
+
+[6a8006b | 2010-03-31 06:42:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Increase/Decrease indent in insert mode with Control-t and Control-d
+
+[f345e14 | 2010-03-31 06:12:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Control-m and Control-j can be used for newlines in insert mode
+
+[3885a64 | 2010-03-31 06:06:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Basic support for Control-v to insert literals
+
+[7a8081e | 2010-03-31 03:43:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make it possible to add a new reader within a called reader
+
+[240fbac | 2010-03-31 03:42:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve debugging output for shadowed actions
+
+[dc659bd | 2010-03-29 08:32:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix end_of_line in diakonos keymap
+
+[48f2ae8 | 2010-03-29 08:32:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix some keysyms for X11
+
+[21a66f3 | 2010-03-29 08:15:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix nano keymap
+
+[f43b424 | 2010-03-29 08:12:04 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix toggling selection case
+
+[efa5a62 | 2010-03-29 08:00:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Support for {visual}I and {visual}A
+
+[a0b0d07 | 2010-03-29 07:37:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix specs for text object motion
+
+[0a6dd92 | 2010-03-29 06:38:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix pattern expansion
+
+[1b62c89 | 2010-03-29 06:35:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix specs of MajorMode
+
+[f2e648c | 2010-03-29 06:32:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix MinorMode specs
+
+[3e622cb | 2010-03-29 06:26:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix insert specs
+
+[3b91d22 | 2010-03-29 06:18:28 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix selection specs
+
+[6e2d990 | 2010-03-29 06:07:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix WidgetMajorMode spec
+
+[369556d | 2010-03-28 19:09:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * a bunch of changes, don't even try to understand that
+
+[16f601b | 2010-03-28 14:32:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Split selection into more files
+
+[e3b8835 | 2010-03-27 13:14:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement specs for insert mode keys
+
+[0c52b7e | 2010-03-27 13:01:59 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix and spec for bug in replace char
+
+[dc5e07f | 2010-03-27 12:17:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement specs for deletion
+
+[37f40fa | 2010-03-25 13:17:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finalize yet another spec file
+
+[9165aa3 | 2010-03-25 13:07:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Support for increase/decrease numbers
+
+[855f84f | 2010-03-24 15:55:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * rot13 encoding, up/down/toggle casing
+
+[6116ab7 | 2010-03-24 12:48:47 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A couple of improvments for changing
+
+[1033751 | 2010-03-24 04:49:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * specs and support for NR
+
+[fd8632c | 2010-03-24 04:15:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * some more for copying and moving
+
+[cee78b5 | 2010-03-24 01:58:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add a lot of stuff... see spec for details
+
+[7f22266 | 2010-03-22 03:35:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add support for digraphs
+
+[eb31050 | 2010-03-22 01:38:03 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Split vim keymap into files
+
+[d8da7d0 | 2010-03-21 12:03:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Hackfix for rchardet fail
+
+[fb80925 | 2010-03-21 12:03:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add specs describing the functionality listed in vim quickref
+
+[fa7862d | 2010-03-20 10:54:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First chunk of specs written to match vim behaviour
+
+[cfeb1d6 | 2010-03-18 07:02:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * ^ really is start_of_line, g^ is home_of_line
+
+[e0b3410 | 2010-03-18 05:08:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement a bit of vim left-right motion quickref
+
+[f7c9513 | 2010-03-18 03:55:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove the ROADMAP
+
+[26cea72 | 2010-03-18 03:54:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Some updates for README
+
+[84374da | 2010-03-17 17:14:54 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * Fix quoteright typo
+
+[d6237dd | 2010-03-17 09:46:05 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * Adjust load_aliases to mac
+
+[a110fe0 | 2010-03-17 11:56:42 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement equivalents for the way diakonos manipulates text via <F7>, <F19>, and <Alt-F7>
+
+[0808bcd | 2010-03-17 04:57:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First fixes for snippet completion
+
+[a8cf144 | 2010-03-17 04:52:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Final fixes and specs, generalize mode resolution and make it very explicit what happens
+
+[96cf161 | 2010-03-16 16:17:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix and spec the fallback behaviour of modes
+
+[afc4589 | 2010-03-16 15:39:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Simplify keymap spec
+
+[e260fb1 | 2010-03-16 14:07:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Comment Completions bind, rm your .events to get rid of weird mouse behaviour
+
+[e3b0d82 | 2010-03-16 14:06:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Event::load_default is a module function
+
+[4a155b2 | 2010-03-15 13:26:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Share common code of keymap specs
+
+[d6fda47 | 2010-03-15 13:15:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improvments and fixes for diakonos keymap spec
+
+[e79891a | 2010-03-15 13:11:22 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix aliasing
+
+[d560c15 | 2010-03-15 12:36:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally rename keysyms.rb to event.rb
+
+[1d452f1 | 2010-03-15 12:35:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A bit less verbose keysyms
+
+[91da344 | 2010-03-15 12:34:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add pasting from clipboard in Entry
+
+[c859afd | 2010-03-15 12:34:42 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * bind <Control-l> to kind-of-redraw
+
+[7549efc | 2010-03-15 12:28:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Try a different approach for the Shift-Fn issue
+
+[7ab8ac8 | 2010-03-15 11:58:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A few more specs for nano and vim
+
+[999ac49 | 2010-03-15 11:57:56 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix deleting in Entry
+
+[b1ec518 | 2010-03-15 10:39:48 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add specs for forward search in vim keymap, minibuffer queries can be handled in specs now as well
+
+[94dfcf3 | 2010-03-15 10:13:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Some updates to vim keymap specs
+
+[d1d6152 | 2010-03-14 15:05:08 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add support for Esc Esc ascii input in nano keymap
+
+[666347d | 2010-03-14 14:40:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix filename completion
+
+[d1c3c40 | 2010-03-14 14:28:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix diakonos keymap
+
+[a873426 | 2010-03-14 14:25:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix keymap spec
+
+[2ea4682 | 2010-03-14 14:20:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix spec for smart_autoindent
+
+[a78c163 | 2010-03-14 14:17:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update keymap of git and soma plugins
+
+[d90a0f2 | 2010-03-14 14:11:56 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Improve behaviour of r and c in char selection
+
+[674c2ba | 2010-03-14 14:01:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add simple copy/paste to readline
+
+[1f08862 | 2010-03-14 13:52:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix warnings in vim keymap
+
+[69a1d12 | 2010-03-14 13:45:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow abbreviation of modifiers and details in event pattern
+
+[767abee | 2010-03-13 17:53:51 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Extract Platform into VER namespace
+
+[0d6dd60 | 2010-03-13 15:46:28 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add Go bundle
+
+[63f2efa | 2010-03-13 15:46:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update bundles
+
+[72c7e95 | 2010-03-13 12:32:24 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Try to capture correct pattern
+
+[49a2991 | 2010-03-13 12:32:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * In insert mode, Control-e is not eval
+
+[599fce4 | 2010-03-13 12:31:47 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update nano keymap
+
+[85d9391 | 2010-03-13 12:15:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Log warnings when keymap is not consistent
+
+[cfba760 | 2010-03-13 11:56:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add Pathname#rm_f, in case another instance of VER was told to remove the lockfile, the original holder of the lock shouldn't complain when it's gone
+
+[76d7650 | 2010-03-13 11:51:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove some useless overhead
+
+[8b1cfe3 | 2010-03-13 11:51:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add Control-bracketleft and Control-bracketright for lianj
+
+[488b76b | 2010-03-13 11:42:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add VER::Struct, a caching wrapper for core Struct, so source-reloading works for classes that inherit from Struct.new without superclass mismatch
+
+[d4990f2 | 2010-03-13 11:39:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A bit of nitpicking
+
+[ebeeb58 | 2010-03-13 11:39:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix file_open_ask
+
+[001709f | 2010-03-13 11:31:22 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A couple more shortcuts from FFI::Platform for Keymap::Platform
+
+[43ced59 | 2010-03-13 10:32:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Seed .events with all non-mod ASCII keys
+
+[f7f005b | 2010-03-13 10:31:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix preview
+
+[bccf37f | 2010-03-13 00:45:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Now try it the other way round, keymap has Alt, we send M1
+
+[858e7dd | 2010-03-13 00:45:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Only use STRING_UTF8 on x11
+
+[5c79d1f | 2010-03-12 09:25:11 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * use b flag instead of :BINARY
+
+[db7cfd3 | 2010-03-12 08:57:08 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add stub spec for nano and fix keymap
+
+[c193da5 | 2010-03-12 08:56:24 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * And a couple more improvments to keysyms
+
+[67cb586 | 2010-03-12 08:22:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix Status::Label#on_destroy
+
+[bdf8f35 | 2010-03-12 08:21:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix specs
+
+[462646d | 2010-03-12 08:20:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make Status::Label more robust when destroyed
+
+[95882c8 | 2010-03-12 08:19:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add clear method to Clipboard
+
+[801065c | 2010-03-12 07:13:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix specs to handle Buffer calling VER.exit
+
+[5eed471 | 2010-03-12 06:18:59 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix Diakonos keymap and spec
+
+[a34469e | 2010-03-12 06:16:12 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * This should finally solve the keysym issues
+
+[68a772c | 2010-03-12 05:53:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix annoying behaviour of MiniBuffer, no highlighting anymore since the popup of the minibuffer should be notification enough
+
+[829df0d | 2010-03-12 05:52:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix some annoying behaviour of search_and_replace
+
+[c5d2472 | 2010-03-12 05:24:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adjust the binding of keys
+
+[795e961 | 2010-03-12 05:20:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Nicer name in $0
+
+[e8573b0 | 2010-03-11 12:08:03 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix vim spec
+
+[c070a6a | 2010-03-11 12:06:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A little bit of cleanup in minibuffer
+
+[fad649e | 2010-03-11 12:04:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Also export to string selection when copying an array
+
+[2ce4cc6 | 2010-03-11 12:04:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Bookmark visit should work now
+
+[da38e35 | 2010-03-11 12:03:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Some more fixes and specs
+
+[b30c78f | 2010-03-11 11:27:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Major improvments to VER::Clipboard
+
+[7241574 | 2010-03-11 10:02:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A lot of cleanup in vim keymap
+
+[c1ff3e9 | 2010-03-11 09:19:48 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make vim keymap spec pass again
+
+[5880f9d | 2010-03-10 17:53:24 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Prepare some more ASCII for .events generation
+
+[3ab995b | 2010-03-10 13:17:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make location of .events configurable
+
+[8c51bd0 | 2010-03-10 13:14:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Don't pay too much attention to the .events missing
+
+[7aec21e | 2010-03-10 13:14:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Avoid fail for colon
+
+[856600c | 2010-03-10 13:08:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix subtle bug
+
+[8f2db0a | 2010-03-10 13:06:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Better structure and behaviour of keysym update
+
+[655c891 | 2010-03-10 12:39:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * M2 really is Control
+
+[65271b8 | 2010-03-10 12:35:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * remove call to windowingsystem before fork
+
+[b49608a | 2010-03-10 04:26:57 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * Fix fork startup
+
+[cbc5665 | 2010-03-10 04:17:12 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * missing keysyms uncomment
+
+[f1c6fca | 2010-03-10 08:02:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First more-or-less done version of the keysym mapping
+
+[6201481 | 2010-03-10 01:49:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Another snapshot on the way to better keysyms
+
+[501eda8 | 2010-03-09 07:38:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove useless code
+
+[1b942ec | 2010-03-09 15:16:41 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * Fix line_evaluate
+
+[385dd4a | 2010-03-09 07:37:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Rename sequence to pattern
+
+[a3ebcec | 2010-03-09 07:28:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Snapshot of keysyms
+
+[a566924 | 2010-03-07 12:37:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Try to resolve issues with windows platform
+
+[2969f3a | 2010-03-07 09:32:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add some more sequences
+
+[dd57916 | 2010-03-07 09:14:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add output to console, if we are forked it goes to /dev/null anyway
+
+[5d884df | 2010-03-07 09:14:00 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * More fixes and specs
+
+[10a1afe | 2010-03-07 09:04:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix Basic::quit
+
+[2127ea6 | 2010-03-07 09:04:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix Status::Filename
+
+[29c50a1 | 2010-03-07 09:03:42 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Use Tk.update
+
+[83da8af | 2010-03-07 09:03:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add option to avoid opening welcome buffer
+
+[6db44e8 | 2010-03-07 09:02:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove KEYSYM and SYMKEY, use FakeEvent instead, seed with the results of one hour of punching the keyboard
+
+[4dca9fb | 2010-03-07 07:46:31 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First set of specs for Diakonos keymap
+
+[01cb87b | 2010-03-07 07:45:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix Diakonos status widgets
+
+[dac5734 | 2010-03-07 07:45:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * HoverCompletion should share font with buffer
+
+[aabee17 | 2010-03-07 06:35:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * The toplevel itself should never take focus
+
+[4da23b4 | 2010-03-07 05:01:03 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove trailing newline
+
+[1f5d807 | 2010-03-07 04:58:02 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Try to avoid focusing text widget while minibuffer is asking
+
+[c1ef75f | 2010-03-07 04:17:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow opening non-existant files
+
+[2387c84 | 2010-03-07 03:53:56 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally ask for piping selections
+
+[2755ce4 | 2010-03-07 03:28:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix usage of logger, it might be needed before it's there
+
+[60b61ab | 2010-03-07 03:27:55 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Map Escape in control mode to control mode
+
+[f4a06bd | 2010-03-06 11:14:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Try to sort indices before working with them
+
+[39a5bc4 | 2010-03-06 10:58:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix aspell completion
+
+[457d145 | 2010-03-06 10:55:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix bug in minibuffer expiration
+
+[e4436aa | 2010-03-06 10:55:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally add a logger
+
+[d59390a | 2010-03-06 10:48:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Negotiate encoding when saving too, allow deleting lock, simplify rchardet call
+
+[d77166c | 2010-03-06 05:24:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix empty buffer issue when rchardet isn't available
+
+[05e9c10 | 2010-03-05 20:53:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix autosave
+
+[443382b | 2010-03-05 19:52:38 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Lots of changes around save/open/close
+
+[2589ab1 | 2010-03-05 16:17:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Change encoding on the fly using Executor
+
+[da5680c | 2010-03-05 04:32:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Don't rely on 'tk inactive', it's reset randomly
+
+[79b7189 | 2010-03-04 08:38:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove Delete module, all methods are in other places now
+
+[6814913 | 2010-03-04 08:36:59 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Move delete_trailing_whitespace into Buffer and add specs for it
+
+[40e5972 | 2010-03-04 08:22:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix exception in replace_once when it runs out of matches
+
+[f045efa | 2010-03-04 08:16:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * More specs and fixes for Selection and Clipboard
+
+[4a0b161 | 2010-03-03 13:58:02 UTC] Julian Langschaedel <meta.rb@gmail.com>
+
+  * Add tig to git plugin and fix git blame
+
+[6b666a6 | 2010-03-03 16:07:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix swallowed raise when setting minibuffer height
+
+[6b78efe | 2010-03-03 12:10:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make as much as possible use of Buffer#message
+
+[0bd642c | 2010-03-03 11:58:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure file can be sourced
+
+[3178192 | 2010-03-03 11:58:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Control::tags_at isn't used anymore
+
+[a8a24e5 | 2010-03-03 11:57:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure Search&Replace always jumps to match
+
+[c0a051c | 2010-03-03 11:54:56 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Call message on buffer in nano methods
+
+[ab762fc | 2010-03-03 10:53:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Implement locking of files in VIM fashion
+
+[1a9353d | 2010-03-03 08:02:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Center search result location
+
+[a6d9c09 | 2010-03-03 07:55:27 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix I
+
+[e340332 | 2010-03-02 15:23:51 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove .todo from repo and add it to .gitignore
+
+[d646509 | 2010-03-02 14:56:42 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Center view around search results
+
+[75664b9 | 2010-03-02 14:38:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Use spawn_rxvt for git plugin, and trust that we don't need less
+
+[54bdbe1 | 2010-03-02 14:25:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix indent
+
+[acb338c | 2010-03-02 14:21:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix the git plugin by spawning new terminals outside VER
+
+[4499a4c | 2010-03-02 09:32:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure line_evaluate works
+
+[6af8835 | 2010-03-02 09:30:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * repeat_command becomes repeat_action, is improved, and moves into Buffer
+
+[2917c5e | 2010-03-02 09:13:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Increase event history size to 500
+
+[ae031bf | 2010-03-02 09:13:30 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix HoverCompletion
+
+[47e24ac | 2010-03-02 09:06:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fixes for Entry
+
+[b4bfd35 | 2010-03-02 08:58:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Dedicated class for the events in event history, makes Executor work again
+
+[21d7a02 | 2010-03-02 08:47:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Abort search and replace when no more matches exist
+
+[f498a35 | 2010-03-02 08:46:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Rename text to buffer for clarity in Search and SearchAndReplace
+
+[259a178 | 2010-03-02 08:40:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Incremental highlight for search_and_replace
+
+[61a9bdc | 2010-03-02 08:34:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix search and replace
+
+[4c0de94 | 2010-03-02 08:06:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix a lot of issues with selection
+
+[1453a37 | 2010-03-02 05:41:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix weird filenames with colon in them
+
+[57791cc | 2010-03-01 05:40:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Put more functionality into Tag, inheritance rocks
+
+[91f02f7 | 2010-03-01 05:02:20 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * indent and unindent selections
+
+[56651f3 | 2010-02-28 08:10:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First attempt at hiding minibuffer when it's empty
+
+[9548230 | 2010-02-28 07:26:19 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make specs pass once again
+
+[d47df93 | 2010-02-28 06:51:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Work around closing issues
+
+[f0da6f9 | 2010-02-28 06:51:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adding VER::Clipboard
+
+[dac250d | 2010-02-28 02:52:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Don't load customized rc.rb for specs
+
+[bc256b7 | 2010-02-28 02:44:42 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure we get and set UTF8_STRING from clipboard
+
+[3287214 | 2010-02-27 18:39:57 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A bit of fixing so VER actually exits when all buffers are closed
+
+[6b0d8a4 | 2010-02-27 18:39:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Start spec for emacs keymap
+
+[0a25ed8 | 2010-02-27 17:06:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix a and A
+
+[342d2f0 | 2010-02-27 16:57:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * For now, don't use a normal Buffer for completion
+
+[1aa7758 | 2010-02-27 11:18:58 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally figured out how the indication for the input focus works
+
+[8a24a84 | 2010-02-27 11:16:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Various fixes so most of nano keymap works again, still needs specs
+
+[0879a58 | 2010-02-27 10:34:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Use another shared context in vim keymap spec
+
+[a347b12 | 2010-02-27 10:34:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Don't notify when nothing was added in minibuffer
+
+[2d2675d | 2010-02-27 10:34:04 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make the output of Incomplete easier to read
+
+[8a05783 | 2010-02-27 10:13:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add specs and implement deletion in VIM Keymap
+
+[9a706eb | 2010-02-27 08:58:36 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A couple of minor fixes
+
+[c82e002 | 2010-02-27 08:42:56 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First set of specs for movement in vim keymap
+
+[8c869d8 | 2010-02-26 19:13:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update todo
+
+[228356c | 2010-02-26 19:10:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Unindent line when pressing Shift-Tab in insert mode
+
+[ca815d9 | 2010-02-26 19:05:44 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fail silently when removing highlight
+
+[6434ac8 | 2010-02-26 19:05:23 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix wrapping selection
+
+[c647ff8 | 2010-02-26 18:34:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Collapse keychain completion when action was found
+
+[94eca42 | 2010-02-26 18:33:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Decrease message expiration time again
+
+[ca3311a | 2010-02-26 18:32:53 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Nicer prompt for eval
+
+[f1a94b5 | 2010-02-26 18:32:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure syntax is highlighted immediately on change
+
+[d7e4b27 | 2010-02-26 18:24:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure insert cursor is visible on startup
+
+[ed04847 | 2010-02-26 18:24:22 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Lots of changes for minibuffer to make it more resilient and useful
+
+[ca4f88c | 2010-02-26 09:16:25 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add VER::EvalCompleter, a reusable version of IRB::InputCompleter
+
+[9b964e0 | 2010-02-26 07:31:37 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix issues with focus of minibuffer
+
+[b8d552d | 2010-02-26 07:18:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add option for HTTP browser
+
+[168bb80 | 2010-02-26 07:14:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix some binds for insertion
+
+[8e72efa | 2010-02-26 07:07:42 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make uniq of minor and major modes less expensive
+
+[b62e961 | 2010-02-26 07:07:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Support for deleting and killing line at position
+
+[de1b712 | 2010-02-23 15:59:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add support for importing tm commands
+
+[fedfc7d | 2010-02-23 16:00:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Sort bundle arrays, snippets also must be an array since not all have a tabTrigger
+
+[995b4c1 | 2010-02-23 16:23:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update bundles, remove empty ones and add commands
+
+[d6bcda9 | 2010-02-25 17:33:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Avoid incredibly expensive uniq of minors
+
+[a57db44 | 2010-02-26 06:48:06 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Avoid flashing for save
+
+[83c542a | 2010-02-25 18:40:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix reference to removed file_open_fuzzy
+
+[0cecb05 | 2010-02-25 17:33:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Avoid incredibly expensive uniq of minors
+
+[163bbe4 | 2010-02-25 17:32:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Support for tracing of actions
+
+[83289ae | 2010-02-25 16:36:33 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix some focus issues
+
+[c090009 | 2010-02-25 16:36:16 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Finally fix the save_all issue by declaring symbolic buffers as such
+
+[2aa9822 | 2010-02-25 16:24:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make sure the buffer is all set before displaying
+
+[c54029d | 2010-02-25 16:23:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix Help::DescribeKey
+
+[d6aecf0 | 2010-02-25 16:21:39 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow Action to be converted to Proc or Method
+
+[659ff06 | 2010-02-25 15:14:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Speed up specs by hidden option
+
+[b88b031 | 2010-02-25 15:09:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Make the Index spec pass
+
+[febad4d | 2010-02-24 17:58:07 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Getting and replacing text of tag
+
+[c5804de | 2010-02-24 17:52:34 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Allow replacing range with additional tag
+
+[608ff5c | 2010-02-24 17:48:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * New layout using toplevel, this could actually work...
+
+[f3b6162 | 2010-02-23 17:53:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Adapt clipboard minor mode
+
+[219171b | 2010-02-23 17:52:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Mark can copy motion
+
+[d6b9e83 | 2010-02-23 17:43:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A line may be copied
+
+[db25e10 | 2010-02-23 17:43:26 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * A range may be copied
+
+[d3a57e4 | 2010-02-23 17:30:14 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove most methods from Move module
+
+[96fff33 | 2010-02-23 17:27:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add specs for Text::Range
+
+[0775a9f | 2010-02-23 16:23:17 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update bundles, remove empty ones and add commands
+
+[5298076 | 2010-02-23 16:00:49 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Sort bundle arrays, snippets also must be an array since not all have a tabTrigger
+
+[bbf59fd | 2010-02-23 15:59:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Add support for importing tm commands
+
+[ccfeb58 | 2010-02-23 15:24:35 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * More accurate spec for Action on Module
+
+[1462a60 | 2010-02-23 15:24:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Put eval_buffer and tags_tooltip into preview and make them work
+
+[ad13959 | 2010-02-23 14:59:54 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Let Position know about tags
+
+[bd776e3 | 2010-02-22 05:01:45 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * First step in latest refactor, yay for specs.
+
+[d8a27ae | 2010-02-19 18:51:01 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update bundles from github
+
+[b72a728 | 2010-02-22 03:40:21 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Remove debugging output from minibuffer ask
+
+[382e721 | 2010-02-22 03:36:50 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Append the slash for :o<space>
+
+[deea0e0 | 2010-02-22 03:22:10 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Reset handler after (major|minor)_mode def
+
+[ed4af49 | 2010-02-22 03:15:46 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update bundles from git
+
+[487edc0 | 2010-02-22 02:02:43 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Include the hackfix from Kornelius Kalnbach
+
+[ac8adca | 2010-02-22 02:02:13 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Update the detector
+
+[d377f7b | 2010-02-21 19:09:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Experimental support for Markdown and PHP
+
+[7a0cff4 | 2010-02-15 14:01:33 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix autosave
+
+[9728345 | 2010-02-15 12:27:18 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Nicer Text#inspect
+
+[789b0dd | 2010-02-15 12:27:05 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Stack MiniBuffer#ask
+
+[e6957c5 | 2010-02-15 12:23:52 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix some stuff around saving and opening
+
+[3a37759 | 2010-02-15 03:25:28 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Fix autosave
+
+[548d780 | 2010-02-14 18:38:32 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Correct ffi-tk version
+
+[c6d313a | 2010-02-14 18:37:40 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Version 2010.02
+
 [250dc92 | 2010-02-14 16:21:41 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * Highlight matching brace
