@@ -10,7 +10,7 @@ PROJECT_README = 'README.textile'
 PROJECT_VERSION = (ENV['VERSION'] || Date.today.strftime('%Y.%m.%d')).dup
 
 DEPENDENCIES = {
-  'ffi-tk'       => {:version => '2010.02'},
+  'ffi-tk'       => {:version => '> 2010.02'},
 }
 DEVELOPMENT_DEPENDENCIES = {
   'bacon'        => {:version => '1.1.0'}
