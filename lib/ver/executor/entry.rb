@@ -1,5 +1,12 @@
 module VER
   class Executor
+    # This class defines the opening dialog used in ExPath, ExTheme and so on.
+    # There are a bunch of callbacks you can use to define your own, namely
+    # #action, #after_update, #choices, #completed=, #update_items
+    # @example a simple one
+    #    @see ExPath
+    # @example rather complex
+    #    @see ExFuzzyFileFinder
     class Entry < VER::Entry
       include Keymapped
 
@@ -40,10 +47,18 @@ module VER
         update_only if update_on_change
       end
 
+      # @param [Array<Object>] values the items to be inserted into the tree
+      # @return [Array<Item>] inserted items
       def update_items(values)
         values.map{|value|
           tree.insert(nil, :end, values: [*value])
         }
+      end
+
+      # @param [String] entered entered string value in the text field
+      # @return [Array|Array<Array>] passed to #update_items
+      # @abstract
+      def choices(entered)
       end
 
       def update_only
@@ -60,9 +75,13 @@ module VER
         after_update
       end
 
+      # Called after the other widgets are set up.
+      # @abstract
+      # @return [void]
       def setup
       end
 
+      # Not sure wherever that's called at all...
       def completed=(values)
         self.value = values.first
       end
@@ -114,6 +133,8 @@ module VER
         scored.sort.select{|score, lower, value| score < 1 }.map{|score, lower, value| value }
       end
 
+      # Callback after the tree values have changed. Only called if there are
+      # any items the tree.
       def after_update
       end
 
@@ -127,6 +148,12 @@ module VER
         self.value = value
       end
 
+      # This method is called if a value is chosen (hitting enter)
+      # @abstract
+      # @param [String] value the selected value.
+      # @throw [:invalid] if the value is invalid (aka directory selected in
+      #   file dialog and so on)
+      # @return [void]
       def action(value)
         l action: value
         raise NotImplementedError, "Implement in subclass"
