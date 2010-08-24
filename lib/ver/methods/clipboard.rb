@@ -71,9 +71,7 @@ module VER
             record.insert(:insert, string)
             buffer.insert = buffer.at_insert.linestart
           else
-            add = buffer.at_eol? ? '0' : '1'
-            buffer.insert = buffer.at_insert + (add + ' displaychars')
-            record.insert(:insert, string * count)
+            pastie_string_after!(record, count, string)
           end
         end
       end
@@ -85,11 +83,15 @@ module VER
             buffer.insert = buffer.at_insert.lineend
             record.insert(:insert, string)
           else
-            add = buffer.at_eol? ? '0' : '1'
-            buffer.insert = buffer.at_insert + (add + ' displaychars')
-            record.insert(:insert, string * count)
+            pastie_string_after!(record, count, string)
           end
         end
+      end
+
+      def pastie_string_after!(buffer, count, string)
+        add = buffer.at_eol? ? '0' : '1'
+        buffer.insert = buffer.at_insert + (add + ' displaychars')
+        buffer.insert(:insert, string * count)
       end
 
       # the vim and the ver, the vim and the ver,
