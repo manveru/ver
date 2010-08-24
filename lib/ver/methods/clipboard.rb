@@ -71,7 +71,8 @@ module VER
             record.insert(:insert, string)
             buffer.insert = buffer.at_insert.linestart
           else
-            buffer.insert = buffer.at_insert + '1 displaychars'
+            add = buffer.at_eol? ? '0' : '1'
+            buffer.insert = buffer.at_insert + (add + ' displaychars')
             record.insert(:insert, string * count)
           end
         end
@@ -84,7 +85,8 @@ module VER
             buffer.insert = buffer.at_insert.lineend
             record.insert(:insert, string)
           else
-            buffer.insert = buffer.at_insert + '1 displaychars'
+            add = buffer.at_eol? ? '0' : '1'
+            buffer.insert = buffer.at_insert + (add + ' displaychars')
             record.insert(:insert, string * count)
           end
         end

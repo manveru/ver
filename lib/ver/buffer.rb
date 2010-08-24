@@ -857,6 +857,10 @@ Close this buffer or continue with caution.
       end
     end
 
+    def at_eol?
+      at_insert == at_insert.lineend
+    end
+
     # OK, finally found the issue.
     #
     # the implementation of tk::TextUpDownLine is smart, but not smart enough.

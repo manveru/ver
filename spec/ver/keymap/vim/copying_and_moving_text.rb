@@ -139,6 +139,26 @@ gh
 gh
         VALUE
         insert.index.should == '5.0'
+
+        VER::Register['a'] = "ij"
+        type 'gg$"ap'
+        buffer.value.should == <<-VALUE
+acdcdbabij
+ef
+ef
+gh
+gh
+        VALUE
+
+        VER::Register['a'] = "kl"
+        type 'ggl"ap'
+        buffer.value.should == <<-VALUE
+ackldcdbabij
+ef
+ef
+gh
+gh
+        VALUE
       end
 
       key 'P', 'put a register before the cursor position (N times)' do
