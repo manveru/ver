@@ -12,8 +12,9 @@ module VER
       def refresh(index = buffer.at_insert)
         remove('1.0', 'end')
 
-        from, to = index.matching_brace_indices
-        if from && to
+        idx = index
+        from, to = idx.matching_brace_indices
+        if from == idx || to == idx
           add(from, from + '1 chars', to, to + '1 chars')
         end
       end
