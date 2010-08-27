@@ -141,7 +141,7 @@ module VER
 
       # a generous 25ms to make sure the display is updated.
       # Might need longer, lemme know if that's the case.
-      Tk::After.ms(25){ buffer.see(:insert) } if buffer
+      Tk::After.ms(25){ buffer.adjust_sight } if buffer
     rescue => ex
       VER.error(ex)
     end

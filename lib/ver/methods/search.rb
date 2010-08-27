@@ -44,6 +44,7 @@ module VER
             incremental(buffer, answer, force = true)
             prev(buffer)
             yield
+            buffer.look_at(buffer.at_insert)
             :abort
           end
         end
@@ -70,7 +71,7 @@ module VER
 
         tag(buffer, needle)
         from, to = buffer.tag_nextrange(TAG, 1.0, :end)
-        buffer.see(from) if from
+        buffer.look_at(from) if from
       end
 
       def first(buffer)

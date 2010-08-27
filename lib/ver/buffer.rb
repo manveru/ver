@@ -200,7 +200,7 @@ module VER
     end
 
     def on_movement(event)
-      at_insert.see
+      adjust_sight
       at_sel.refresh
       @matching_brace.refresh
       sync_position_status
@@ -229,6 +229,14 @@ module VER
       unlock_uri(uri)
     ensure
       VER.defer{ VER.exit if VER.buffers.empty? }
+    end
+
+    def adjust_sight
+      see(@look_at || at_insert)
+    end
+
+    def look_at(obj)
+      @look_at = obj
     end
 
     # This has to be called _before_ <Destroy> is received, otherwise the Buffer
@@ -502,7 +510,7 @@ module VER
         load_preferences
         apply_modeline
       end
-      bind('<Map>'){ at_insert.see }
+      bind('<Map>'){ adjust_sight }
     end
 
     def lock_uri(uri, &block)
