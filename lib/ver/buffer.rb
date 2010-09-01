@@ -91,7 +91,7 @@ module VER
 
     attr_reader :frame, :status, :options, :at_current, :at_insert, :at_end,
                 :theme_config, :matching_brace, :layout, :syntax, :minibuf,
-                :snippets
+                :snippets, :preferences
     attr_accessor :uri, :project_root, :project_repo, :undoer, :pristine,
                   :prefix_arg, :readonly, :encoding, :filename, :at_sel,
                   :symbolic, :locked, :register, :skip_prefix_count_once
