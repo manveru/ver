@@ -54,7 +54,7 @@ module VER
     end
 
     def create_buffer(options = {})
-      toplevel = Toplevel.new(self, takefocus: false)
+      toplevel = Toplevel.new(self, takefocus: false, class: 'ver')
       buffer = Buffer.new(toplevel, options)
       toplevel.buffer = buffer
       yield buffer if block_given?
