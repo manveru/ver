@@ -173,7 +173,7 @@ module VER
 
       # Ask for a string that every chunk of the selection should be replaced with
       def replace_string
-        buffer.ask 'Replace selection with: ', do |answer, action|
+        buffer.ask 'Replace selection with: ' do |answer, action|
           case action
           when :attempt
             if answer.size > 0

@@ -41,7 +41,7 @@ module VER
 
         # Ask for string, then replace each line the selection spans with it.
         def replace_string_eol
-          buffer.ask 'Replace selection with: ', do |answer, action|
+          buffer.ask 'Replace selection with: ' do |answer, action|
             case action
             when :attempt
               if answer.size > 0
