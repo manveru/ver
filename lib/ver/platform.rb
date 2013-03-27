@@ -18,24 +18,38 @@ module VER
       @windowingsystem ||= Tk::TkCmd.windowingsystem
     end
 
+    OS = RbConfig::CONFIG['host_os']
+
     def bsd?
-      FFI::Platform.bsd?
+      mac? || freebsd? || openbsd?
+    end
+
+    def freebsd?
+      OS =~ /freebsd/
+    end
+
+    def openbsd?
+      OS =~ /openbsd/
+    end
+
+    def darwin?
+      OS =~ /darwin/
     end
 
     def windows?
-      FFI::Platform.windows?
+      OS =~ /mingw|mswin/
     end
 
     def mac?
-      FFI::Platform.mac?
+      darwin?
     end
 
     def unix?
-      FFI::Platform.unix?
+      not windows?
     end
 
     def operatingsystem
-      FFI::Platform::OS
+      OS
     end
   end
 end
