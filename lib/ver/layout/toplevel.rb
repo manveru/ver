@@ -55,6 +55,7 @@ module VER
 
     def create_buffer(options = {})
       toplevel = Toplevel.new(self, takefocus: false, class: 'ver')
+      toplevel.wm_resizable true, true
       buffer = Buffer.new(toplevel, options)
       toplevel.buffer = buffer
       yield buffer if block_given?
