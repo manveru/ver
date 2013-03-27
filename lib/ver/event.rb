@@ -44,7 +44,7 @@ module VER
         pattern = "<#{string}>"
         UNICODE.fetch(string).min_by{|event| event.pattern.size }
       end
-    rescue KeyError => ex
+    rescue IndexError => ex
       capture(pattern || string)
     end
 
@@ -58,7 +58,7 @@ module VER
       end
 
       true
-    rescue KeyError
+    rescue IndexError
       false
     end
 
