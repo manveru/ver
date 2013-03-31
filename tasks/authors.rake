@@ -7,6 +7,11 @@ task :authors do
   authors = Hash.new(0)
 
   `git shortlog -nse`.scan(/(\d+)\s(.+)\s<(.*)>$/) do |count, name, email|
+    case name
+    when "Michael Fellinger m.fellinger@gmail.com"
+      name, email = "Michael Fellinger", "m.fellinger@gmail.com"
+    end
+
     authors[[name, email]] += count.to_i
   end
 

@@ -1,10 +1,9 @@
-require 'rake'
 require 'rake/clean'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 require 'time'
 require 'date'
 
-PROJECT_SPECS = Dir['spec/ver/**/*.rb']
+PROJECT_SPECS = FileList['spec/ffi-tk/**/*.rb']
 PROJECT_MODULE = 'VER'
 PROJECT_README = 'README.textile'
 PROJECT_VERSION = (ENV['VERSION'] || Date.today.strftime('%Y.%m.%d')).dup
@@ -32,9 +31,12 @@ GEMSPEC = Gem::Specification.new{|s|
   s.executables  = ['ver']
 }
 
-
 DEPENDENCIES.each do |name, options|
   GEMSPEC.add_dependency(name, options[:version])
+end
+
+DEVELOPMENT_DEPENDENCIES.each do |name, options|
+  GEMSPEC.add_development_dependency(name, options[:version])
 end
 
 Dir['tasks/*.rake'].each{|f| import(f) }

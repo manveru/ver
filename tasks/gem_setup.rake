@@ -108,6 +108,5 @@ task :gem_setup do
 
     def rubyforge; 'http://gems.rubyforge.org/' end
     def github; 'http://gems.github.com/' end
-    def gemcutter; 'http://gemcutter.org' end
   end
 end
