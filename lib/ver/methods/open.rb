@@ -25,7 +25,7 @@ module VER
         Encoding::Windows_31J,
         Encoding::MacJapanese,
         Encoding::UTF8_MAC,
-        Encoding::BINARY,
+        Encoding::BINARY
       ]
 
       module_function
@@ -40,7 +40,7 @@ module VER
       # if that fails, we try to use `locate`, which can yield good results.
       # if no file could be found it simply does nothing?
       def file_under_cursor(text)
-        paths = %w[ . lib ext / ]
+        paths = %w[. lib ext /]
         head = text.get('insert linestart', 'insert')
         tail = text.get('insert', 'insert lineend')
         tail_index = tail.index(/['"\]})>]/) || tail.index(/\s/)
@@ -54,19 +54,19 @@ module VER
         syntax_name = text.syntax.name if text.syntax
         exts = VER::Syntax::Detector::EXTS_LIST.fetch(syntax_name, [])
 
-        found = catch(:found){
-          paths.map{|path|
+        found = catch(:found) do
+          paths.map do |path|
             path_base = File.join(path, base)
             throw(:found, path_base) if File.file?(path_base)
             path_base
-          }.each do |path_base|
+          end.each do |path_base|
             exts.each do |ext|
               path_base_ext = "#{path_base}.#{ext}"
               throw(:found, path_base_ext) if File.file?(path_base_ext)
             end
           end
           nil
-        }
+        end
       end
 
       def open_file_under_cursor(text)
@@ -124,7 +124,7 @@ module VER
         after_open(text, line, column)
       end
 
-      def open_symbolic(text, name, line = 1, column = 0)
+      def open_symbolic(text, name, _line = 1, _column = 0)
         text.name = name
         text.clear
 
@@ -153,14 +153,14 @@ module VER
 
       def open_empty(text)
         text.clear
-        text.message "[No File]"
+        text.message '[No File]'
         after_open(text, 1, 0, Syntax.new('Plain Text'))
       end
 
-      def file_open_popup(text)
+      def file_open_popup(_text)
         filetypes = [
-          ['ALL Files',  '*'    ],
-          ['Text Files', '*.txt'],
+          ['ALL Files',  '*'],
+          ['Text Files', '*.txt']
         ]
 
         fpath = Tk.get_open_file(filetypes: filetypes)
@@ -189,13 +189,13 @@ module VER
         rel = File.expand_path(rel) unless File.directory?(rel)
         rel_size = rel.size
 
-        choices = Dir.glob("#{rel}*").map{|path|
+        choices = Dir.glob("#{rel}*").map do |path|
           if File.directory?(path)
             path[rel_size..-1] << '/'
           else
             path[rel_size..-1]
           end
-        }
+        end
 
         common = nil
         choices.each do |path|
@@ -203,7 +203,7 @@ module VER
             next if index == 0
             slice = path[0, index]
 
-            if choices.all?{|choice| choice.start_with?(slice) }
+            if choices.all? { |choice| choice.start_with?(slice) }
               common = slice
             end
           end
@@ -213,7 +213,7 @@ module VER
           only = answer + common
 
           if choices.size == 1
-            choices.map{|choice| (answer + choice).sub(/\/+$/, '/') }
+            choices.map { |choice| (answer + choice).sub(/\/+$/, '/') }
           elsif choices.size > 1
             [only]
           else
@@ -224,7 +224,7 @@ module VER
             end
           end
         else
-          choices.map{|choice| (answer + choice).sub(/\/+$/, '/') }
+          choices.map { |choice| (answer + choice).sub(/\/+$/, '/') }
         end
       end
 
@@ -232,20 +232,20 @@ module VER
       def read_file(text, path)
         path = Pathname(path.to_s).expand_path
         encoding = text.encoding
-        content = path.open("r:#{encoding.name}"){|io| io.read }
+        content = path.open("r:#{encoding.name}", &:read)
 
         unless content.valid_encoding? # take a guess
-          GUESS_ENCODING_ORDER.find{|enc|
+          GUESS_ENCODING_ORDER.find do |enc|
             content.force_encoding(enc)
             content.valid_encoding?
-          }
+          end
 
           # Now we have the source encoding, let's make it UTF-8 so Tcl can
           # handle it.
           content.encode!(Encoding::UTF_8)
         end
 
-        return content.chomp
+        content.chomp
       end
 
       def after_open(text, line = 1, column = 0, syntax = nil)
@@ -263,7 +263,7 @@ module VER
             syntax ? text.setup_highlight_for(syntax) : text.setup_highlight
             apply_modeline(text)
           end
-          text.bind('<Map>'){ text.see(:insert) }
+          text.bind('<Map>') { text.see(:insert) }
         end
       end
 
@@ -280,7 +280,7 @@ module VER
         parent = filename.expand_path.dirname
 
         begin
-          (parent/PROJECT_DIRECTORY_GLOB).glob do |repo|
+          (parent / PROJECT_DIRECTORY_GLOB).glob do |repo|
             text.project_repo = repo
             text.project_root = repo.dirname
             return
@@ -293,7 +293,7 @@ module VER
       MODELINES = {
         /\s+(?:ver|vim?|ex):\s*.*$/ => /\s+(?:ver|vim?|ex):\s*(.*)$/,
         /\s+(?:ver|vim?|ex):[^:]+:/ => /\s+(?:ver|vim?|ex):([^:]+):/,
-        /^(?:ver|vim?):[^:]+:/      => /^(?:ver|vim?):([^:]+):/,
+        /^(?:ver|vim?):[^:]+:/      => /^(?:ver|vim?):([^:]+):/
       }
 
       def apply_modeline(text)
@@ -309,7 +309,7 @@ module VER
           # p line: line
 
           line =~ extract_pattern
-          $1.scan(/[^:\s]+/) do |option|
+          Regexp.last_match(1).scan(/[^:\s]+/) do |option|
             apply_modeline_option(text, option)
           end
         end
@@ -325,13 +325,13 @@ module VER
         when 'et', 'expandtab'
           set text, :expandtab, boolean
         when /(?:tw|textwidth)=(\d+)/
-          set text, :textwidth, $1.to_i
+          set text, :textwidth, Regexp.last_match(1).to_i
         when /(?:ts|tabstop)=(\d+)/
-          set text, :tabstop, $1.to_i
+          set text, :tabstop, Regexp.last_match(1).to_i
         when /(?:sw|shiftwidth)=(\d+)/
-          set text, :shiftwidth, $1.to_i
+          set text, :shiftwidth, Regexp.last_match(1).to_i
         when /(?:ft|filetype)=(\w+)/
-          set text, :filetype, $1
+          set text, :filetype, Regexp.last_match(1)
         else
           l unknown_modeline_option: option
         end
@@ -355,9 +355,7 @@ module VER
       def set_filetype(type)
         syntax = VER::Syntax.from_filename(Pathname("foo.#{type}"))
 
-        if text.load_syntax(syntax)
-          text.options.filetype = type
-        end
+        text.options.filetype = type if text.load_syntax(syntax)
       end
     end
   end

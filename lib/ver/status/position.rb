@@ -6,10 +6,9 @@ module VER
       end
 
       def to_s
-        "%4d,%3d" % [
-          buffer.count('1.0', 'insert', :lines) + 1,
-          buffer.count('insert linestart', 'insert', :displaychars)
-        ]
+        lines = buffer.count('1.0', 'insert', :lines) + 1
+        chars = buffer.count('insert linestart', 'insert', :displaychars)
+        '%4d,%3d' % [lines, chars]
       end
     end
   end

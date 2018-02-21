@@ -23,48 +23,41 @@
 class SizedArray < Array
   attr_reader :capacity
 
-  def initialize( capacity = 10, *args )
+  def initialize(capacity = 10, *args)
     @capacity = capacity
-    super( *args )
+    super(*args)
   end
 
   def resize
-    if size > @capacity
-      slice!( (0...-@capacity) )
-    end
+    slice!((0...-@capacity)) if size > @capacity
   end
   private :resize
 
-  def concat( other_array )
-    super( other_array )
+  def concat(other_array)
+    super(other_array)
     resize
     self
   end
 
-  def fill( *args )
-    retval = super( *args )
+  def fill(*args)
+    retval = super(*args)
     resize
     self
   end
 
-  def <<( item )
-    retval = super( item )
-    if size > @capacity
-      retval = shift
-    end
+  def <<(item)
+    retval = super(item)
+    retval = shift if size > @capacity
     retval
   end
 
-  def push( item )
+  def push(item)
     self << item
   end
 
-  def unshift( item )
-    retval = super( item )
-    if size > @capacity
-      retval = pop
-    end
+  def unshift(item)
+    retval = super(item)
+    retval = pop if size > @capacity
     retval
   end
 end
-

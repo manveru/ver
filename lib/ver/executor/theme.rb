@@ -3,9 +3,9 @@ module VER
     class ExTheme < Entry
       def setup
         callback.update_on_change = true
-        @themes = VER::Theme.list.map{|fullpath|
+        @themes = VER::Theme.list.map do |fullpath|
           File.basename(fullpath, File.extname(fullpath))
-        }
+        end
       end
 
       def choices(name)

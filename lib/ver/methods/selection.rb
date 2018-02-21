@@ -4,22 +4,22 @@ module VER
       module_function
 
       def pipe(buffer)
-        paths = ENV['PATH'].split(':').map{|path| Pathname(path).expand_path }
+        paths = ENV['PATH'].split(':').map { |path| Pathname(path).expand_path }
 
         buffer.ask 'Pipe command: ' do |answer, action|
           case action
           when :complete
             current = answer.split.last
-            paths.map{|path|
-              (path/"*#{current}*").glob.select{|file|
+            paths.map do |path|
+              (path / "*#{current}*").glob.select do |file|
                 begin
                   file = File.readlink(file) if File.symlink?(file)
                   stat = File.stat(file)
                   stat.file? && stat.executable?
                 rescue Errno::ENOENT
                 end
-              }
-            }.flatten.compact
+              end
+            end.flatten.compact
           when :attempt
             buffer.at_sel.pipe!(answer)
             buffer.at_sel.finish

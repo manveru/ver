@@ -6,11 +6,11 @@ module VER
 
       module_function
 
-      def leave(buffer, old_mode, new_mode)
+      def leave(buffer, _old_mode, _new_mode)
         buffer.tag_remove(TAG, 1.0, :end)
       end
 
-      def enter(buffer, old_mode, new_mode)
+      def enter(buffer, _old_mode, _new_mode)
         pattern = buffer.store(self, :pattern)
         buffer.tag_all_matching(TAG, pattern, HIGHLIGHT)
         from, to = buffer.tag_nextrange(TAG, 'insert + 1 chars', 'end')
@@ -58,7 +58,7 @@ module VER
       end
 
       def query_attempt(buffer, pattern)
-        question = "Replace %p with: " % [pattern]
+        question = format('Replace %p with: ', pattern)
         value = buffer.store(self, :replacement)
         buffer.ask question, value: value do |replacement, action|
           case action
@@ -79,7 +79,7 @@ module VER
         begin
           from, to = buffer.tag_nextrange(TAG, 'insert', 'end')
           return unless from && to
-        rescue => ex
+        rescue StandardError => ex
           if ex.message.start_with?('bad text index ""')
             buffer.minor_mode(:search_and_replace, :control)
             buffer.message 'No more matches'

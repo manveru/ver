@@ -24,16 +24,16 @@ module VER
         wm_withdraw
 
         # catch destroy requests from the WM before it's too late.
-        wm_protocol('WM_DELETE_WINDOW'){
+        wm_protocol('WM_DELETE_WINDOW') do
           buffer.close unless @really_destroy
           Tk::OK # don't forget about those...
-        }
-        bind('<FocusIn>'){|event|
-          if event.window_path == self.tk_pathname
+        end
+        bind('<FocusIn>') do |event|
+          if event.window_path == tk_pathname
             buffer.focus
             Tk.callback_break
           end
-        }
+        end
         Tk.update
         wm_deiconify
       end

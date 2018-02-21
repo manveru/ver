@@ -3,7 +3,7 @@ module VER
     module Control
       module_function
 
-      def enter(text, old_mode, new_mode)
+      def enter(text, _old_mode, _new_mode)
         clean_line(text, :insert)
       end
 
@@ -100,7 +100,7 @@ module VER
 
             begin
               Dir.chdir(path)
-              text.message 'Changed working directory to %s' % [path]
+              text.message format('Changed working directory to %s', path)
               :abort
             rescue Errno::ENOENT => ex
               VER.warn ex
@@ -113,7 +113,8 @@ module VER
       # forward (+count+ is inclusive the first character).
       # This only works for alphabetic ASCII characters, no other encodings.
       def toggle_case(text, count = text.prefix_count)
-        from, to = 'insert', "insert + #{count} chars"
+        from = 'insert'
+        to = "insert + #{count} chars"
         chunk = text.get(from, to)
         chunk.tr!('a-zA-Z', 'A-Za-z')
         text.replace(from, to, chunk)
@@ -138,27 +139,27 @@ module VER
         prepare_exec_s(text) if command =~ /\$s/
       end
 
-      def prepare_exec_f(text)
+      def prepare_exec_f(_text)
         p f: (ENV['f'] = filename.to_s)
       end
 
-      def prepare_exec_d(text)
+      def prepare_exec_d(_text)
         p d: (ENV['d'] = filename.directory.to_s)
       end
 
-      def prepare_exec_F(text)
-        p F: (ENV['F'] = VER.buffers.map{|key, buffer| buffer.filename }.join(' '))
+      def prepare_exec_F(_text)
+        p F: (ENV['F'] = VER.buffers.map { |_key, buffer| buffer.filename }.join(' '))
       end
 
-      def prepare_exec_i(text)
+      def prepare_exec_i(_text)
         raise NotImplementedError
       end
 
-      def prepare_exec_c(text)
+      def prepare_exec_c(_text)
         p c: (ENV['c'] = clipboard_get)
       end
 
-      def prepare_exec_s(text)
+      def prepare_exec_s(_text)
         content = []
 
         each_selected_line do |y, fx, tx|
@@ -179,7 +180,7 @@ module VER
       def exec_bundle
         ENV_EXPORTERS.each do |exporter|
           ENV["VER_#{exporter.upcase}"] = ENV["TM_#{exporter.upcase}"] =
-            send("exec_env_#{exporter}").to_s
+                                            send("exec_env_#{exporter}").to_s
         end
 
         yield if block_given?
@@ -238,10 +239,10 @@ module VER
 
       def exec_into_new(text, command = nil)
         if command
-          target = text.options.home_conf_dir/'shell-result.txt'
+          target = text.options.home_conf_dir / 'shell-result.txt'
           prepare_exec(command)
           system(command)
-          target.open('w+'){|io| io.write(`#{command}`) }
+          target.open('w+') { |io| io.write(`#{command}`) }
           VER.find_or_create_buffer(target)
         else
           text.ask 'Command: ' do |answer, action|
@@ -250,7 +251,7 @@ module VER
               begin
                 exec_into_new(answer)
                 :abort
-              rescue => ex
+              rescue StandardError => ex
                 VER.warn(ex)
               end
             end
@@ -264,9 +265,9 @@ module VER
           when :attempt
             begin
               system(command)
-              text.message("Exit code: #{$?}")
+              text.message("Exit code: #{$CHILD_STATUS}")
               :abort
-            rescue => ex
+            rescue StandardError => ex
               VER.warn(ex)
             end
           end
@@ -297,9 +298,7 @@ module VER
         lineend = linestart.lineend
         line = text.get(linestart, lineend)
 
-        if line.sub!(regexp, with)
-          text.replace(linestart, lineend, line)
-        end
+        text.replace(linestart, lineend, line) if line.sub!(regexp, with)
       end
 
       def executor(text, action = nil)
@@ -330,26 +329,24 @@ module VER
         code = text.get('insert linestart', 'insert lineend')
         file = (text.filename || text.uri).to_s
         stdout_capture_evaluate(code, file, binding) do |res, out|
-          text.at_insert.lineend.insert("\n%s%p" % [out, res])
+          text.at_insert.lineend.insert(format("\n%s%p", out, res))
         end
       end
 
-      def stdout_capture_evaluate(code, file, binding = binding)
-        begin
-          old_stdout = $stdout.dup
-          rd, wr = IO.pipe
-          $stdout.reopen(wr)
-          result = eval(code, binding, file.to_s)
-          $stdout.reopen old_stdout; wr.close
-          stdout = rd.read
+      def stdout_capture_evaluate(code, file, binding = self.binding)
+        old_stdout = $stdout.dup
+        rd, wr = IO.pipe
+        $stdout.reopen(wr)
+        result = eval(code, binding, file.to_s)
+        $stdout.reopen old_stdout; wr.close
+        stdout = rd.read
 
-          yield(result, stdout)
-        rescue Exception => exception
-          yield(exception, '')
-        ensure
-          wr.closed? || $stdout.reopen(old_stdout) && wr.close
-          rd.closed? || rd.close
-        end
+        yield(result, stdout)
+      rescue StandardError => exception
+        yield(exception, '')
+      ensure
+        wr.closed? || $stdout.reopen(old_stdout) && wr.close
+        rd.closed? || rd.close
       end
 
       # for some odd reason, vim likes to have arbitrary commands that reduce
@@ -375,7 +372,8 @@ module VER
       end
 
       def join_backward(text)
-        from, to = 'insert - 1 lines linestart', 'insert lineend'
+        from = 'insert - 1 lines linestart'
+        to = 'insert lineend'
         lines = text.get(from, to)
         text.replace(from, to, lines.gsub(/\s*\n\s*/, ' '))
       end
@@ -403,14 +401,15 @@ module VER
 
       def clean_line(text, index, record = text)
         index = text.index(index)
-        from, to = index.linestart, index.lineend
+        from = index.linestart
+        to = index.lineend
         line = text.get(from, to)
         bare = line.rstrip
         record.replace(from, to, bare) if bare.empty?
       end
 
       def wrap_lines_of(content, wrap = 80)
-        Kernel.raise ArgumentError, "+wrap+ must be > 1" unless wrap > 1
+        Kernel.raise ArgumentError, '+wrap+ must be > 1' unless wrap > 1
         wrap -= 1
 
         indent = content[/^\s+/] || ''

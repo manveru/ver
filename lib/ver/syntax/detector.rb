@@ -38,14 +38,13 @@ module VER
               return name
             end
           end
-
         end
 
         nil
       end
 
       def detect_head(path)
-        line = path.open{|io| io.gets }
+        line = path.open(&:gets)
         return unless line && line.valid_encoding?
 
         HEAD_LIST.find do |name, head|

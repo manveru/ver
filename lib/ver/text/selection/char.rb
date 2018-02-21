@@ -62,7 +62,7 @@ module VER
           when String
             replace(content)
           else
-            raise "Unknown kind of clipboard content: %p" % [content]
+            raise format('Unknown kind of clipboard content: %p', content)
           end
 
           finish
@@ -73,7 +73,8 @@ module VER
           insert = buffer.index(:insert)
           anchor = self.anchor.index
 
-          from, to = buffer.index('sel.first'), buffer.index('sel.last')
+          from = buffer.index('sel.first')
+          to = buffer.index('sel.last')
 
           buffer.undo_record do |record|
             if expand

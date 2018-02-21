@@ -12,7 +12,8 @@ module VER
         @sticky = options.delete(:sticky)
         super
 
-        @width, @height = cget(:width), cget(:height)
+        @width = cget(:width)
+        @height = cget(:height)
 
         draw_battery
         draw_text
@@ -20,12 +21,12 @@ module VER
         percent, string = Battery.update(format)
         show(percent / 100.0, string)
 
-        @show_block = VER.when_inactive_for(5000){
+        @show_block = VER.when_inactive_for(5000) do
           percent, string = Battery.update(format)
           show(percent / 100.0, string)
-        }
+        end
 
-        tk_parent.bind '<Destroy>' do |event|
+        tk_parent.bind '<Destroy>' do |_event|
           VER.cancel_block(@show_block)
         end
       end
@@ -58,8 +59,10 @@ module VER
       end
 
       def show(percent, string)
-        r, g, b = 0xffff - (0xffff * percent), (0xffff * percent), 0
-        color = '#%04x%04x%04x' % [r, g, b]
+        r = 0xffff - (0xffff * percent)
+        g = (0xffff * percent)
+        b = 0
+        color = format('#%04x%04x%04x', r, g, b)
         @battery.configure fill: color
         @label.configure text: string
       end
@@ -78,7 +81,7 @@ module VER
           @battery_last = now
           @battery_value = battery_build(format)
         end
-      rescue => ex
+      rescue StandardError => ex
         VER.error(ex)
         ex.message
       end
@@ -98,7 +101,8 @@ module VER
         capacity = total[:remaining_capacity].to_i
 
         if rate == 0
-          hours, percent = 2, 100
+          hours = 2
+          percent = 100
           time = hours_left = minutes_left = 'N/A'
         else
           hours, minutes = ((capacity * 60.0) / rate).divmod(60)
@@ -123,11 +127,11 @@ module VER
           '%p' => percent,
           '%m' => minutes_left,
           '%h' => hours_left,
-          '%t' => time,
+          '%t' => time
         }
 
         @last = Time.now
-        return percent, format.gsub(/%\w/, final)
+        [percent, format.gsub(/%\w/, final)]
       end
 
       def self.battery_parse(file)
@@ -136,7 +140,7 @@ module VER
         File.open(file) do |io|
           io.each_line do |line|
             next unless line =~ /^([^:]+):\s*(.+)$/
-            data[$1.downcase.tr(' ', '_').to_sym] = $2
+            data[Regexp.last_match(1).downcase.tr(' ', '_').to_sym] = Regexp.last_match(2)
           end
         end
 

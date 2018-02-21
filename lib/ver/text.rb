@@ -1,15 +1,15 @@
 module VER
   # Common funcionality for Tk::Text widgets, mostly with shortcuts and helpers
   # for VER.
-  class Text < Tk::Text
-    autoload :Index,     'ver/text/index'
-    autoload :Mark,      'ver/text/mark'
-    autoload :Position,  'ver/text/position'
-    autoload :Range,     'ver/text/range'
-    autoload :Selection, 'ver/text/selection'
-    autoload :Tag,       'ver/text/tag'
-    autoload :Insert,    'ver/text/insert'
-    autoload :End,       'ver/text/end'
+  class Text < ::Tk::Text
+    require_relative 'text/position'
+    require_relative 'text/tag'
+    require_relative 'text/index'
+    require_relative 'text/mark'
+    require_relative 'text/range'
+    require_relative 'text/selection'
+    require_relative 'text/insert'
+    require_relative 'text/end'
 
     attr_reader :lock
 
@@ -30,7 +30,7 @@ module VER
     end
 
     def inspect
-      "#<VER::Text %p>" % [tk_pathname]
+      format('#<VER::Text %p>', tk_pathname)
     end
 
     def index(idx)
@@ -56,11 +56,11 @@ module VER
     end
 
     def tags(index = Tk::None)
-      tag_names(index).map{|name| Tag.new(self, name) }
+      tag_names(index).map { |name| Tag.new(self, name) }
     end
 
     def tag_ranges(tag_name)
-      super(tag_name).map{|first, last| range(first, last) }
+      super(tag_name).map { |first, last| range(first, last) }
     end
 
     def range(first, last)
@@ -74,7 +74,7 @@ module VER
     end
 
     def marks
-      mark_names.map{|name| Mark.new(self, name) }
+      mark_names.map { |name| Mark.new(self, name) }
     end
 
     def mark_next(index)

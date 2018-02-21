@@ -26,7 +26,7 @@ class Pathname
     Encoding::Windows_31J,
     Encoding::MacJapanese,
     Encoding::UTF8_MAC,
-    Encoding::BINARY,
+    Encoding::BINARY
   ]
 
   alias / join
@@ -35,12 +35,13 @@ class Pathname
   def rm_f
     rm
   rescue Errno::ENOENT
-  rescue => ex
+  rescue StandardError => ex
     VER.error(ex)
   end
 
   def cp(dest)
-    FileUtils.copy_file(expand_path.to_s, dest.to_s, preserve = true)
+    preserve = true
+    FileUtils.copy_file(expand_path.to_s, dest.to_s, preserve)
   end
 
   def =~(regexp)
@@ -49,7 +50,7 @@ class Pathname
 
   def glob(&block)
     if block
-      Dir.glob(to_s){|match| yield(self.class.new(match)) }
+      Dir.glob(to_s) { |match| yield(self.class.new(match)) }
     else
       Dir.glob(to_s)
     end
@@ -79,17 +80,17 @@ class Pathname
     content = read
     content.force_encoding('BINARY')
 
-    require 'ver/vendor/open3'
+    require_relative 'open3'
     encoding, status = Open3.capture2('rchardet', to_s)
     content.force_encoding(encoding.strip)
 
     return content, content.encoding
   rescue ArgumentError, Errno::ENOENT # file or rchardet missing?
     if content
-      GUESS_ENCODING_ORDER.find{|enc|
+      GUESS_ENCODING_ORDER.find do |enc|
         content.force_encoding(enc)
         content.valid_encoding?
-      }
+      end
 
       return content, content.encoding
     else

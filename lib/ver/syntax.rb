@@ -1,15 +1,15 @@
 module VER
   class Syntax
-    autoload :Detector, 'ver/syntax/detector'
-    autoload :Processor, 'ver/syntax/processor'
+    require_relative 'syntax/detector'
+    require_relative 'syntax/processor'
 
     def self.list
-      VER.loadpath.map{|path| Dir[(path/'syntax/*.rb').to_s] }.flatten
+      VER.loadpath.map { |path| Dir[(path / 'syntax/*.rb').to_s] }.flatten
     end
 
     def self.from_filename(filename)
       if syntax_name = Detector.detect(filename)
-        return new(syntax_name)
+        new(syntax_name)
       else
         new(VER.options.filetype)
       end
@@ -20,7 +20,7 @@ module VER
     end
 
     def self.load(file)
-      raise(ArgumentError, "No path to syntax file given") unless file
+      raise(ArgumentError, 'No path to syntax file given') unless file
       Textpow::SyntaxNode.load(file)
     end
 

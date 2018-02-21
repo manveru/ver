@@ -61,20 +61,20 @@ module VER
       end
 
       def setup_events
-        @entry.bind('<Control-q>'){ Tk.exit }
+        @entry.bind('<Control-q>') { Tk.exit }
         # @entry.bind('Escape'){ closed }
-        @entry.bind('<Return>'){
+        @entry.bind('<Return>') do
           send_data @entry.value
           @entry.clear
-        }
+        end
       end
 
       def closed
-        @entry.bind('<Return>'){}
-        @entry.bind('<Key>'){ Tk.callback_break }
-        @entry.bind('<Escape>'){ destroy }
+        @entry.bind('<Return>') {}
+        @entry.bind('<Key>') { Tk.callback_break }
+        @entry.bind('<Escape>') { destroy }
         @entry.value = 'Session ended. Press Escape to close console'
-      rescue => ex
+      rescue StandardError => ex
         VER.error(ex)
       end
 
@@ -99,7 +99,7 @@ module VER
           buffer << 'echo $BASH $BASH_VERSION'
         end
 
-        return buffer, opts
+        [buffer, opts]
       end
 
       def setup_terminal(*cmd)
@@ -119,7 +119,7 @@ module VER
             while line = @buffer.shift
               send_data(line)
             end
-          rescue => ex
+          rescue StandardError => ex
             VER.error(ex)
           end
         end
@@ -131,7 +131,7 @@ module VER
       # maybe there are other solutions.
       def popen3(cmd, callback)
         old_stderr = $stderr.dup
-        rd, wr = IO::pipe
+        rd, wr = IO.pipe
         $stderr.reopen(wr)
 
         popen_stdin = EM.popen(cmd, Process)
@@ -155,7 +155,7 @@ module VER
       end
 
       def on_stdout(string)
-        output "#{string}", :stdout
+        output string.to_s, :stdout
       end
 
       def on_stderr(string)

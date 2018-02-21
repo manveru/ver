@@ -31,12 +31,14 @@ module VER
   #   # For those curious, it's 2592000
   class BinarySearch
     def initialize(works, fails, &block)
-      @works, @fails = works, fails
+      @works = works
+      @fails = fails
       run(&block) if block_given?
     end
 
     def run
-      works, fails = @works, @fails
+      works = @works
+      fails = @fails
       current = works
       step = 0
 
@@ -51,11 +53,11 @@ module VER
           current = works + ((fails - works) / 2)
         end
 
-        break if current == fails or current == works
+        break if (current == fails) || (current == works)
         step += 1
       end
 
-      return current
+      current
     end
   end
 end

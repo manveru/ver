@@ -1,7 +1,7 @@
 module VER
   class Executor
-    autoload :Entry,   'ver/executor/entry'
-    autoload :ExLabel, 'ver/executor/label'
+    require_relative 'executor/entry'
+    require_relative 'executor/label'
 
     class Frame < Tk::Tile::Frame
       attr_accessor :shown

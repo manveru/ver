@@ -43,7 +43,8 @@ module VER
   #
   class Options
     def initialize(name, parent = self)
-      @name, @parent, = name, parent
+      @name = name
+      @parent = parent
       @hash = {}
       yield(self) if block_given?
     end
@@ -78,7 +79,7 @@ module VER
     #                        :doc, :value keys will be ignored
     def option(doc, key, value, other = {}, &block)
       trigger = block || other[:trigger]
-      convert = {:doc => doc.to_s, :value => value}
+      convert = { doc: doc.to_s, value: value }
       convert[:trigger] = trigger if trigger
       @hash[key.to_sym] = other.merge(convert)
     end
@@ -87,7 +88,7 @@ module VER
     # To avoid lookup on the parent, we can set a default to the internal Hash.
     # Parameters as in {Options#o}, but without the +key+.
     def default(doc, value, other = {})
-      @hash.default = other.merge(:doc => doc, :value => value)
+      @hash.default = other.merge(doc: doc, value: value)
     end
 
     # Add a block that will be called when a new value is set.
@@ -105,8 +106,6 @@ module VER
           value
         elsif @parent != self
           @parent.get(key)
-        else
-          nil
         end
       elsif sub_options = get(key)
         sub_options.get(*keys)
@@ -118,7 +117,7 @@ module VER
     def set_value(keys, value)
       got = get(*keys)
       return got[:value] = value if got
-      raise(IndexError, "There is no option available for %p" % [keys])
+      raise(IndexError, format('There is no option available for %p', keys))
     end
 
     # Retrieve only the :value from the value hash if found via +keys+.
@@ -133,21 +132,21 @@ module VER
     # TODO: allow arbitrary assignments
     def []=(key, value)
       ks = key.to_sym
-      if @hash.has_key? ks
+      if @hash.key? ks
         ns = @hash[ks]
         ns[:value] = value
         ns[:trigger].call(value) if ns[:trigger].respond_to?(:call)
       elsif existing = get(key)
         option(existing[:doc].to_s.dup, key, value)
       else
-        raise(ArgumentError, "No key for %p exists" % [key])
+        raise(ArgumentError, format('No key for %p exists', key))
       end
     end
 
     def method_missing(meth, *args)
       case meth.to_s
       when /^(.*)=$/
-        self[$1] = args.first
+        self[Regexp.last_match(1)] = args.first
       else
         self[meth]
       end
@@ -168,7 +167,7 @@ module VER
     end
 
     def each_pair
-      @hash.each do |key, values|
+      @hash.each do |key, _values|
         yield(key, self[key])
       end
     end
@@ -188,7 +187,7 @@ module VER
       into.extend(SingletonMethods)
 
       snaked = into.name.split('::').last
-      snaked = snaked.gsub(/\B[A-Z][^A-Z]/, '_\&').downcase.gsub(' ', '_')
+      snaked = snaked.gsub(/\B[A-Z][^A-Z]/, '_\&').downcase.tr(' ', '_')
 
       options = VER.options.sub(snaked)
       into.instance_variable_set(:@options, options)

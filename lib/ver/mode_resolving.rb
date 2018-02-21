@@ -34,7 +34,7 @@ module VER
         end
       end
 
-      return result
+      result
     end
 
     def resolve_impossible(pattern, parents, result)
@@ -65,7 +65,7 @@ module VER
       return incomplete if incomplete
       return fallback_action if fallback_action
       return fallback if fallback
-      return result
+      result
     end
   end
 end

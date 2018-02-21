@@ -33,7 +33,7 @@ module VER
     end
 
     def listen
-      VER.root.bind('<<PluginLoaded>>'){|event| synchronize }
+      VER.root.bind('<<PluginLoaded>>') { |_event| synchronize }
     end
 
     def bound_keys
@@ -52,7 +52,7 @@ module VER
     def use(*minors)
       minors.each do |name|
         minor = MinorMode[name]
-        next if self.minors.any?{|m| m.name == minor.name }
+        next if self.minors.any? { |m| m.name == minor.name }
         self.minors << minor
       end
 
@@ -60,7 +60,7 @@ module VER
     end
 
     def forget(*minors)
-      self.minors -= minors.map{|name| MinorMode[name] }
+      self.minors -= minors.map { |name| MinorMode[name] }
     end
 
     def fake(input)
@@ -123,7 +123,7 @@ module VER
     end
 
     # ignore event for now, it might be needed later
-    def handle_reader(event)
+    def handle_reader(_event)
       read_amount = self.read_amount
 
       if stack.size >= read_amount
@@ -141,7 +141,7 @@ module VER
 
     def read(amount, &reader)
       amount = amount.to_int
-      raise ArgumentError, "amount must be greater than 0" unless amount > 0
+      raise ArgumentError, 'amount must be greater than 0' unless amount > 0
       self.read_amount = amount
       self.reader = reader
     end
@@ -153,23 +153,24 @@ module VER
     def replaces(other)
       other.replaced_by(self) if other
       yield if block_given?
-      self.replacing(other)
+      replacing(other)
     end
 
-    def replaced_by(other)
-      Tk::Event.generate(widget, "<<LeaveMode>>", data: name)
-      Tk::Event.generate(widget, "<<LeaveMajorMode>>", data: name)
+    def replaced_by(_other)
+      Tk::Event.generate(widget, '<<LeaveMode>>', data: name)
+      Tk::Event.generate(widget, '<<LeaveMajorMode>>', data: name)
       Tk::Event.generate(widget, "<<LeaveMajorMode#{to_camel_case}>>", data: name)
     end
 
-    def replacing(other)
+    def replacing(_other)
       Tk::Event.generate(widget, "<<EnterMajorMode#{to_camel_case}>>", data: name)
-      Tk::Event.generate(widget, "<<EnterMajorMode>>", data: name)
-      Tk::Event.generate(widget, "<<EnterMode>>", data: name)
+      Tk::Event.generate(widget, '<<EnterMajorMode>>', data: name)
+      Tk::Event.generate(widget, '<<EnterMode>>', data: name)
     end
 
     def replace_minor(old, new)
-      old, new = MinorMode[old], MinorMode[new]
+      old = MinorMode[old]
+      new = MinorMode[new]
 
       minors.dup.each do |minor|
         if minor == old
@@ -195,11 +196,11 @@ module VER
     end
 
     def actions
-      major.actions + minors.map{|minor| minor.actions }.flatten
+      major.actions + minors.map(&:actions).flatten
     end
 
     def to_hash
-      [major.keymap, *minors].inject{|h, m| h.merge(m.keymap) }
+      [major.keymap, *minors].inject { |h, m| h.merge(m.keymap) }
     end
 
     def name
@@ -215,16 +216,15 @@ module VER
     end
 
     def to_camel_case
-      major.name.to_s.split('_').map{|e| e.capitalize}.join
+      major.name.to_s.split('_').map(&:capitalize).join
     end
 
     def inspect
       out = ['#<Ver::WidgetMajorMode']
       { major: major.name,
-        minors: minors.map{|m| m.to_sym },
+        minors: minors.map(&:to_sym),
         event_history: event_history.map(&:keysym),
-        stack: stack,
-      }.each{|k,v| out << "#{k}=#{v.inspect}" }
+        stack: stack }.each { |k, v| out << "#{k}=#{v.inspect}" }
       out.join(' ') << '>'
     end
 

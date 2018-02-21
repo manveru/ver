@@ -25,15 +25,15 @@ class VER::Buffer::Terminal
     @text.pack expand: true, fill: :both
     @text.focus
 
-    @text.bind('<Key>'){|event|
+    @text.bind('<Key>') do |event|
       @pty_queue << event.unicode
       Tk.callback_break
-    }
+    end
 
-    @text.bind('<Return>'){|event|
+    @text.bind('<Return>') do |event|
       @pty_queue << event.unicode
       # Tk.callback_break
-    }
+    end
   end
 
   def destroy
@@ -49,7 +49,7 @@ class VER::Buffer::Terminal
     Thread.new do
       shell = ENV['SHELL'] || 'bash'
 
-      PTY.spawn(shell) do |r_pty, w_pty, pid|
+      PTY.spawn(shell) do |r_pty, w_pty, _pid|
         Thread.new do
           while chunk = queue.shift
             w_pty.print chunk
@@ -141,9 +141,9 @@ class VER::Buffer::Terminal
         elsif s.scan(/\r\r/)
           delete 'insert linestart', 'insert lineend'
         elsif s.scan(/\r[^\n\r]/)
-          p :no_rn => s.matched
+          p no_rn: s.matched
         else
-          p :r_fail => s.rest
+          p r_fail: s.rest
         end
       when "\x07"
         s.pos += 1
@@ -152,24 +152,21 @@ class VER::Buffer::Terminal
         s.pos += 1
         delete 'insert - 1 chars'
       else
-        if s.scan(/\A[^\e\r\x08\x07]+/)
-          insert :end, s.matched
-        end
+        insert :end, s.matched if s.scan(/\A[^\e\r\x08\x07]+/)
       end
-     #  p s.matched
+      #  p s.matched
 
-      if s.pos == pos
-        warn("Scanner stopped at: %p" % [s])
-        @buffer = s.rest
-        return
-      end
+      next unless s.pos == pos
+      warn(format('Scanner stopped at: %p', s))
+      @buffer = s.rest
+      return
     end
 
     @buffer = ''
     @text.see :end
   rescue StringScanner::Error => ex
     VER.error(ex)
-  rescue => ex
+  rescue StandardError => ex
     puts "#{ex.class}: #{ex}", *ex.backtrace
     @buffer = ''
     destroy
@@ -177,7 +174,8 @@ class VER::Buffer::Terminal
 
   def color(fg, bg = nil)
     if bg
-      fg, bg = ANSI_CODES[fg.to_i], ANSI_CODES[bg.to_i]
+      fg = ANSI_CODES[fg.to_i]
+      bg = ANSI_CODES[bg.to_i]
 
       @tag = [:ansi, fg, bg].join('_')
       @text.tag_configure @tag, options_for(@tag, fg, bg)
@@ -189,11 +187,10 @@ class VER::Buffer::Terminal
     end
   end
 
-  FG_COLORS = [:black, :red, :green, :yellow, :blue, :magenta, :cyan, :white]
-  BG_COLORS = [:on_black, :on_red, :on_green, :on_yellow, :on_blue, :on_magenta, :on_cyan, :on_white]
+  FG_COLORS = %i[black red green yellow blue magenta cyan white]
+  BG_COLORS = %i[on_black on_red on_green on_yellow on_blue on_magenta on_cyan on_white]
 
   def options_for(tag, fg, bg = nil)
-
     if found = @option_cache[tag]
       return found
     end

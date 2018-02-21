@@ -5,65 +5,52 @@ class Window
   # window). Reduces the current window height to create room (and others, if
   # the 'equalalways' option is set, 'eadirection' isn't "hor", and one of the
   # mis higher than the current or the new window.
-  def split_horizontal(n = nil)
-  end
+  def split_horizontal(n = nil); end
 
   # Like {split_horizontal}, but split vertically.
-  def split_vertical(n = nil)
-  end
+  def split_vertical(n = nil); end
 
   # Create a new window and start editing an empty file in it.
   # Make new window N high (default is to use half the existing height).
   # Reduces the current window height to create room.
-  def new_horizontal(n = nil)
-  end
+  def new_horizontal(n = nil); end
 
   # Like {new_horizontal} but split vertically.
-  def new_vertical(n = nil)
-  end
+  def new_vertical(n = nil); end
 
   # Quit current window.
   # When quitting the last window (not counting symbolic ones), exit VER.
   # Asks before unsaved changes are abandoned.
-  def quit
-  end
+  def quit; end
 
   # Same as {quit}, but doesn't ask if buffer was modified.
-  def quit!
-  end
+  def quit!; end
 
   # Close this window to hide it, asks if buffer was modified, will do nothing
   # if current window is last window on screen.
-  def close
-  end
+  def close; end
 
   # Same as {close}, but will not ask anything.
-  def close!
-  end
+  def close!; end
 
   # Make this the only window on the screen. All other windows are {close}d.
-  def only
-  end
+  def only; end
 
   # Focus the nth window below.
   # Uses insert cursor position to select between alternatives.
-  def go_below(n = nil)
-  end
+  def go_below(n = nil); end
 
   # Focus the nth window above.
   # Uses insert cursor position to select between alternatives.
-  def go_above(n = nil)
-  end
+  def go_above(n = nil); end
 
   # Focus the nth window to the left.
   # Uses insert cursor position to select between alternatives.
-  def go_left(n = nil)
-  end
+  def go_left(n = nil); end
 
   # Focus the nth window to the right.
   # Uses insert cursor position to select between alternatives.
-  def go_right(n = nil)
-  end
+  def go_right(n = nil); end
 end
 
 __END__

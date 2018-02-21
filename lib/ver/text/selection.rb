@@ -1,9 +1,9 @@
 module VER
   class Text
     class Selection < Tag
-      autoload :Char, 'ver/text/selection/char'
-      autoload :Line, 'ver/text/selection/line'
-      autoload :Block, 'ver/text/selection/block'
+      require_relative 'selection/char'
+      require_relative 'selection/line'
+      require_relative 'selection/block'
 
       def self.enter(buffer, old_mode, new_mode)
         buffer.at_sel.enter(old_mode, new_mode)
@@ -20,7 +20,7 @@ module VER
         super(buffer, :sel)
         @mode = mode
         @anchor = buffer.mark(:sel_anchor)
-        refresh() if @refresh = refresh
+        refresh if @refresh = refresh
       end
 
       # This is called when the minor mode changes.
@@ -31,18 +31,18 @@ module VER
 
       def enter_mode(mode_name)
         buffer.at_sel = sel =
-          case mode_name
-          when /^select_char/;  Char.new(buffer)
-          when /^select_line/;  Line.new(buffer)
-          when /^select_block/; Block.new(buffer)
-          else; raise ArgumentError, "Unknown mode: %p"
-          end
+                          case mode_name
+                          when /^select_char/ then  Char.new(buffer)
+                          when /^select_line/ then  Line.new(buffer)
+                          when /^select_block/ then Block.new(buffer)
+                          else; raise ArgumentError, 'Unknown mode: %p'
+                          end
 
         sel.mode = mode_name.to_sym
       end
 
       # This is called when the minor mode changes.
-      def leave(old_mode, new_mode)
+      def leave(_old_mode, new_mode)
         return if new_mode.name =~ /^select/
         @refresh = false
         clear
@@ -67,7 +67,7 @@ module VER
       def delete
         buffer.undo_record do |record|
           ranges = []
-          each_range{|range| ranges.push(*range) }
+          each_range { |range| ranges.push(*range) }
           record.delete(*ranges)
         end
 
@@ -176,12 +176,12 @@ module VER
         buffer.ask 'Replace selection with: ' do |answer, action|
           case action
           when :attempt
-            if answer.size > 0
+            if !answer.empty?
               replace_with_string(answer, expand = false)
               buffer.message "replaced #{answer.size} chars"
               :abort
             else
-              buffer.warn "replacement required"
+              buffer.warn 'replacement required'
             end
           end
         end
@@ -190,7 +190,8 @@ module VER
       def replace_with_clipboard
         return unless string = VER::Clipboard.string
         ranges = buffer.tag_ranges(:sel)
-        from, to = ranges.first.first, ranges.last.last
+        from = ranges.first.first
+        to = ranges.last.last
         replace(from, to, string)
         finish
         buffer.mark_set :insert, from
@@ -250,7 +251,7 @@ module VER
         replace(string_operation_eval(code, get))
       end
 
-      def string_operation_eval(code, str)
+      def string_operation_eval(code, _str)
         eval(code).to_str
       end
 
@@ -276,9 +277,10 @@ module VER
         lines = []
         first = last = nil
 
-        each do |from_line, from_char, to_line, to_char|
+        each do |from_line, _from_char, to_line, _to_char|
           from_line.upto to_line do |lineno|
-            from, to = "#{lineno}.0", "#{lineno}.0 lineend"
+            from = "#{lineno}.0"
+            to = "#{lineno}.0 lineend"
             first ||= from
             last = to
 
@@ -295,7 +297,7 @@ module VER
 
       # Provide a restricted scope so people cannot interfere with undo or
       # MiniBuffer.
-      def array_operation_eval(code, lines)
+      def array_operation_eval(code, _lines)
         eval(code).to_a
       end
 
@@ -327,9 +329,10 @@ module VER
 
       def line_operation!(code)
         buffer.undo_record do |record|
-          each do |from_line, from_char, to_line, to_char|
+          each do |from_line, _from_char, to_line, _to_char|
             from_line.upto to_line do |lineno|
-              from, to = "#{lineno}.0", "#{lineno}.0 lineend"
+              from = "#{lineno}.0"
+              to = "#{lineno}.0 lineend"
               line = buffer.get(from, to)
               modified = line_operation_eval(code, line)
               record.replace(from, to, modified)
@@ -340,12 +343,13 @@ module VER
 
       # Provide a restricted scope so people cannot interfere with undo or
       # MiniBuffer.
-      def line_operation_eval(code, line)
+      def line_operation_eval(code, _line)
         eval(code).to_str
       end
 
       def change_linestart
-        first_line, last_line = first.line, last.line
+        first_line = first.line
+        last_line = last.line
         buffer.ask 'Insert text at linestart: ' do |text, action|
           case action
           when :attempt
@@ -360,7 +364,8 @@ module VER
       end
 
       def change_lineend
-        first_line, last_line = first.line, last.line
+        first_line = first.line
+        last_line = last.line
         buffer.ask 'Insert text at linestart: ' do |text, action|
           case action
           when :attempt
@@ -376,7 +381,8 @@ module VER
 
       def join(separator = ' ')
         buffer.undo_record do |record|
-          first_line, last_line = first.line, last.line
+          first_line = first.line
+          last_line = last.line
 
           first_line.upto(last_line - 1) do |line|
             line = first_line

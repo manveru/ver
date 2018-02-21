@@ -28,7 +28,6 @@
 #
 
 module Open3
-
   # Open stdin, stdout, and stderr streams and start external executable.
   # In addition, a thread for waiting the started process is noticed.
   # The thread has a pid method and thread variable :pid which is the pid of
@@ -71,11 +70,11 @@ module Open3
   # Closing stdin, stdout and stderr does not wait the process.
   #
   def popen3(*cmd, &block)
-    if Hash === cmd.last
-      opts = cmd.pop.dup
-    else
-      opts = {}
-    end
+    opts = if Hash === cmd.last
+             cmd.pop.dup
+           else
+             {}
+           end
 
     in_r, in_w = IO.pipe
     opts[:in] = in_r
@@ -132,11 +131,11 @@ module Open3
   #   }
   #
   def popen2(*cmd, &block)
-    if Hash === cmd.last
-      opts = cmd.pop.dup
-    else
-      opts = {}
-    end
+    opts = if Hash === cmd.last
+             cmd.pop.dup
+           else
+             {}
+           end
 
     in_r, in_w = IO.pipe
     opts[:in] = in_r
@@ -181,18 +180,18 @@ module Open3
   #   }
   #
   def popen2e(*cmd, &block)
-    if Hash === cmd.last
-      opts = cmd.pop.dup
-    else
-      opts = {}
-    end
+    opts = if Hash === cmd.last
+             cmd.pop.dup
+           else
+             {}
+           end
 
     in_r, in_w = IO.pipe
     opts[:in] = in_r
     in_w.sync = true
 
     out_r, out_w = IO.pipe
-    opts[[:out, :err]] = out_w
+    opts[%i[out err]] = out_w
 
     popen_run(cmd, opts, [in_r, out_w], [in_w, out_r], &block)
   end
@@ -201,13 +200,13 @@ module Open3
   def popen_run(cmd, opts, child_io, parent_io) # :nodoc:
     pid = spawn(*cmd, opts)
     wait_thr = Process.detach(pid)
-    child_io.each {|io| io.close }
+    child_io.each(&:close)
     result = [*parent_io, wait_thr]
     if defined? yield
       begin
-	return yield(*result)
+        return yield(*result)
       ensure
-	parent_io.each{|io| io.close unless io.closed?}
+        parent_io.each { |io| io.close unless io.closed? }
         wait_thr.join
       end
     end
@@ -257,17 +256,17 @@ module Open3
   #     STDOUT.binmode; print thumnail
   #   end
   #
-  def capture3(*cmd, &block)
-    if Hash === cmd.last
-      opts = cmd.pop.dup
-    else
-      opts = {}
-    end
+  def capture3(*cmd)
+    opts = if Hash === cmd.last
+             cmd.pop.dup
+           else
+             {}
+           end
 
     stdin_data = opts.delete(:stdin_data) || ''
     binmode = opts.delete(:binmode)
 
-    popen3(*cmd, opts) {|i, o, e, t|
+    popen3(*cmd, opts) do |i, o, e, t|
       if binmode
         i.binmode
         o.binmode
@@ -278,7 +277,7 @@ module Open3
       i.write stdin_data
       i.close
       [out_reader.value, err_reader.value, t.value]
-    }
+    end
   end
   module_function :capture3
 
@@ -311,17 +310,17 @@ module Open3
   #   End
   #   image, s = Open3.capture2("gnuplot", :stdin_data=>gnuplot_commands, :binmode=>true)
   #
-  def capture2(*cmd, &block)
-    if Hash === cmd.last
-      opts = cmd.pop.dup
-    else
-      opts = {}
-    end
+  def capture2(*cmd)
+    opts = if Hash === cmd.last
+             cmd.pop.dup
+           else
+             {}
+           end
 
     stdin_data = opts.delete(:stdin_data) || ''
     binmode = opts.delete(:binmode)
 
-    popen2(*cmd, opts) {|i, o, t|
+    popen2(*cmd, opts) do |i, o, t|
       if binmode
         i.binmode
         o.binmode
@@ -330,7 +329,7 @@ module Open3
       i.write stdin_data
       i.close
       [out_reader.value, t.value]
-    }
+    end
   end
   module_function :capture2
 
@@ -350,17 +349,17 @@ module Open3
   #   # capture make log
   #   make_log, s = Open3.capture2e("make")
   #
-  def capture2e(*cmd, &block)
-    if Hash === cmd.last
-      opts = cmd.pop.dup
-    else
-      opts = {}
-    end
+  def capture2e(*cmd)
+    opts = if Hash === cmd.last
+             cmd.pop.dup
+           else
+             {}
+           end
 
     stdin_data = opts.delete(:stdin_data) || ''
     binmode = opts.delete(:binmode)
 
-    popen2e(*cmd, opts) {|i, oe, t|
+    popen2e(*cmd, opts) do |i, oe, t|
       if binmode
         i.binmode
         oe.binmode
@@ -369,7 +368,7 @@ module Open3
       i.write stdin_data
       i.close
       [outerr_reader.value, t.value]
-    }
+    end
   end
   module_function :capture2e
 
@@ -416,11 +415,11 @@ module Open3
   #     p stdout.read   #=> "     1\tbar\n     2\tbaz\n     3\tfoo\n"
   #   }
   def pipeline_rw(*cmds, &block)
-    if Hash === cmds.last
-      opts = cmds.pop.dup
-    else
-      opts = {}
-    end
+    opts = if Hash === cmds.last
+             cmds.pop.dup
+           else
+             {}
+           end
 
     in_r, in_w = IO.pipe
     opts[:in] = in_r
@@ -472,11 +471,11 @@ module Open3
   #   }
   #
   def pipeline_r(*cmds, &block)
-    if Hash === cmds.last
-      opts = cmds.pop.dup
-    else
-      opts = {}
-    end
+    opts = if Hash === cmds.last
+             cmds.pop.dup
+           else
+             {}
+           end
 
     out_r, out_w = IO.pipe
     opts[:out] = out_w
@@ -514,11 +513,11 @@ module Open3
   #   }
   #
   def pipeline_w(*cmds, &block)
-    if Hash === cmds.last
-      opts = cmds.pop.dup
-    else
-      opts = {}
-    end
+    opts = if Hash === cmds.last
+             cmds.pop.dup
+           else
+             {}
+           end
 
     in_r, in_w = IO.pipe
     opts[:in] = in_r
@@ -573,11 +572,11 @@ module Open3
   #   }
   #
   def pipeline_start(*cmds, &block)
-    if Hash === cmds.last
-      opts = cmds.pop.dup
-    else
-      opts = {}
-    end
+    opts = if Hash === cmds.last
+             cmds.pop.dup
+           else
+             {}
+           end
 
     if block
       pipeline_run(cmds, opts, [], [], &block)
@@ -641,22 +640,20 @@ module Open3
   #   #   202
   #
   def pipeline(*cmds)
-    if Hash === cmds.last
-      opts = cmds.pop.dup
-    else
-      opts = {}
-    end
+    opts = if Hash === cmds.last
+             cmds.pop.dup
+           else
+             {}
+           end
 
-    pipeline_run(cmds, opts, [], []) {|ts|
-      ts.map {|t| t.value }
-    }
+    pipeline_run(cmds, opts, [], []) do |ts|
+      ts.map(&:value)
+    end
   end
   module_function :pipeline
 
-  def pipeline_run(cmds, pipeline_opts, child_io, parent_io, &block) # :nodoc:
-    if cmds.empty?
-      raise ArgumentError, "no commands"
-    end
+  def pipeline_run(cmds, pipeline_opts, child_io, parent_io) # :nodoc:
+    raise ArgumentError, 'no commands' if cmds.empty?
 
     opts_base = pipeline_opts.dup
     opts_base.delete :in
@@ -664,7 +661,7 @@ module Open3
 
     wait_thrs = []
     r = nil
-    cmds.each_with_index {|cmd, i|
+    cmds.each_with_index do |cmd, i|
       cmd_opts = opts_base.dup
       if String === cmd
         cmd = [cmd]
@@ -672,10 +669,8 @@ module Open3
         cmd_opts.update cmd.pop if Hash === cmd.last
       end
       if i == 0
-        if !cmd_opts.include?(:in)
-          if pipeline_opts.include?(:in)
-            cmd_opts[:in] = pipeline_opts[:in]
-          end
+        unless cmd_opts.include?(:in)
+          cmd_opts[:in] = pipeline_opts[:in] if pipeline_opts.include?(:in)
         end
       else
         cmd_opts[:in] = r
@@ -684,10 +679,8 @@ module Open3
         r2, w2 = IO.pipe
         cmd_opts[:out] = w2
       else
-        if !cmd_opts.include?(:out)
-          if pipeline_opts.include?(:out)
-            cmd_opts[:out] = pipeline_opts[:out]
-          end
+        unless cmd_opts.include?(:out)
+          cmd_opts[:out] = pipeline_opts[:out] if pipeline_opts.include?(:out)
         end
       end
       pid = spawn(*cmd, cmd_opts)
@@ -695,15 +688,15 @@ module Open3
       r.close if r
       w2.close if w2
       r = r2
-    }
+    end
     result = parent_io + [wait_thrs]
-    child_io.each {|io| io.close }
+    child_io.each(&:close)
     if defined? yield
       begin
-	return yield(*result)
+        return yield(*result)
       ensure
-	parent_io.each{|io| io.close unless io.closed?}
-        wait_thrs.each {|t| t.join }
+        parent_io.each { |io| io.close unless io.closed? }
+        wait_thrs.each(&:join)
       end
     end
     result
@@ -712,11 +705,10 @@ module Open3
   class << self
     private :pipeline_run
   end
-
 end
 
-if $0 == __FILE__
-  a = Open3.popen3("nroff -man")
+if $PROGRAM_NAME == __FILE__
+  a = Open3.popen3('nroff -man')
   Thread.start do
     while line = gets
       a[0].print line
@@ -724,6 +716,6 @@ if $0 == __FILE__
     a[0].close
   end
   while line = a[1].gets
-    print ":", line
+    print ':', line
   end
 end

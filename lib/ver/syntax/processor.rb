@@ -3,24 +3,24 @@ module VER
     class Processor < Struct.new(:textarea, :theme, :lineno, :stack, :tags)
       def start_parsing(syntax_name)
         self.stack = []
-        self.tags = Hash.new{|h,k| h[k] = [] }
+        self.tags = Hash.new { |h, k| h[k] = [] }
         @tag_stack = []
-        tags[syntax_name] << "1.0" << "end"
+        tags[syntax_name] << '1.0' << 'end'
       end
 
-      def end_parsing(syntax_name)
+      def end_parsing(_syntax_name)
         tags.each do |name, indices|
           tag_name = theme.get(name) || name
           textarea.tag_add(tag_name, *indices)
         end
 
         @tag_stack.uniq!
-        @tag_stack.each_cons(2){|under, over| textarea.tag_raise(under, over) }
+        @tag_stack.each_cons(2) { |under, over| textarea.tag_raise(under, over) }
 
         stack.clear
       end
 
-      def new_line(line)
+      def new_line(_line)
         self.lineno += 1
       end
 

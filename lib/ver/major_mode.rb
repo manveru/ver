@@ -43,7 +43,7 @@ module VER
       self.name = name = name.to_sym
 
       if MODES.key?(name)
-        raise ArgumentError, "Duplicate #{self.class}: %p" % [name]
+        raise ArgumentError, format("Duplicate #{self.class}: %p", name)
       else
         MODES[name] = self
       end
@@ -54,11 +54,11 @@ module VER
       self.tag = Tk::BindTag.new("#{name}-mode")
 
       # and now register all we didn't have yet.
-      Event.each{|event| bind_key(event) }
+      Event.each { |event| bind_key(event) }
     end
 
     def destroy
-      tag.bind.each{|key| tag.unbind(key) }
+      tag.bind.each { |key| tag.unbind(key) }
       MODES.delete(name)
     end
 
@@ -68,7 +68,7 @@ module VER
 
     def map(invocation, *patterns)
       action = Action.new(invocation, receiver, self)
-      patterns.each{|pattern| keymap[pattern] = action }
+      patterns.each { |pattern| keymap[pattern] = action }
     end
 
     def missing(invocation)
@@ -98,13 +98,13 @@ module VER
     def use(*minors)
       minors.each do |name|
         minor = MinorMode[name]
-        next if self.minors.any?{|m| m.name == minor.name }
+        next if self.minors.any? { |m| m.name == minor.name }
         self.minors << minor
       end
     end
 
     def forget(*minors)
-      self.minors -= minors.map{|name| MinorMode[name] }
+      self.minors -= minors.map { |name| MinorMode[name] }
     end
 
     # recursively try to find the pattern in the major mode and its minors.
@@ -125,7 +125,7 @@ module VER
       when String
         pattern = Event[key].pasttern
       else
-        raise ArgumentError, "Invalid key: %p" % [key]
+        raise ArgumentError, format('Invalid key: %p', key)
       end
 
       return if bound_keys.include?(pattern)
@@ -147,7 +147,7 @@ module VER
     end
 
     def inspect
-      "#<VER::MajorMode name=%p>" % [name]
+      format('#<VER::MajorMode name=%p>', name)
     end
 
     def hash
@@ -156,7 +156,7 @@ module VER
 
     # we assume that name is unique
     def eql?(other)
-      other.class == self.class && other.name == self.name
+      other.class == self.class && other.name == name
     end
   end
 end

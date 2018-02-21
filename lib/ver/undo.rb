@@ -161,7 +161,9 @@ module VER
                               :applied, :undo_info, :redo_info, :separator)
 
       def initialize(tree, widget, parent = nil)
-        self.tree, self.widget, self.parent = tree, widget, parent
+        self.tree = tree
+        self.widget = widget
+        self.parent = parent
         self.ctime = Time.now
         self.childs = []
         self.applied = false
@@ -196,7 +198,7 @@ module VER
       def delete(*indices)
         case indices.size
         when 0
-          return
+          nil
         when 1 # pad to two
           index = index(*indices)
           delete(index, index + '1 chars')
@@ -212,9 +214,9 @@ module VER
           self.applied = true
           first
         else # sanitize and chunk into deletes
-          sanitize(*indices).map{|first, last|
-            tree.record{|rec| rec.delete(first, last) }
-          }.last
+          sanitize(*indices).map do |first, last|
+            tree.record { |rec| rec.delete(first, last) }
+          end.last
         end
       end
 
@@ -315,9 +317,9 @@ module VER
       end
 
       def indices(*given_indices)
-        given_indices.map{|index|
+        given_indices.map do |index|
           index.respond_to?(:to_index) ? index.to_index : widget.index(index)
-        }.sort
+        end.sort
       end
 
       def index(given_index)
@@ -333,10 +335,10 @@ module VER
       # It also needs to handle partial and fully overlapping ranges. We have to
       # do this with multiple passes.
       def sanitize(*indices)
-        raise ArgumentError if indices.size % 2 != 0
+        raise ArgumentError if indices.size.odd?
 
         # first we get the real indices
-        indices = indices.map{|index| widget.index(index) }
+        indices = indices.map { |index| widget.index(index) }
 
         # pair them, to make later code easier.
         indices = indices.each_slice(2).to_a
@@ -345,7 +347,7 @@ module VER
         indices = indices.sort
 
         # Now we eliminate ranges where end is before start.
-        indices = indices.select{|st, en| st <= en }
+        indices = indices.select { |st, en| st <= en }
 
         # And finally we merge ranges where the end is after the start of a
         # following range.
@@ -353,8 +355,10 @@ module VER
 
         while rang = indices.shift
           if prev = final.last
-            prev_start, prev_end = prev.at(0), prev.at(1)
-            rang_start, rang_end = rang.at(0), rang.at(1)
+            prev_start = prev.at(0)
+            prev_end = prev.at(1)
+            rang_start = rang.at(0)
+            rang_end = rang.at(1)
           else
             final << rang
             next
@@ -377,7 +381,7 @@ module VER
       end
 
       def inspect
-        "#<Undo::Record sep=%p undo=%p redo=%p>" % [separator, undo_info, redo_info]
+        format('#<Undo::Record sep=%p undo=%p redo=%p>', separator, undo_info, redo_info)
       end
     end # Record
   end # Undo

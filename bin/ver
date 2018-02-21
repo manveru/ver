@@ -5,17 +5,12 @@ require 'optparse'
 require 'shellwords'
 
 module VER
-  file = File.symlink?(__FILE__) ? File.readlink(__FILE__) : __FILE__
-  ROOT = File.expand_path('../../lib', file).encode(Encoding::UTF_8)
-  require File.join(ROOT, 'ver/vendor/pathname')
+  require_relative '../lib/ver/vendor/pathname'
 
   module_function
 
   def require_and_run(options = {})
-    # TODO: remove before release
-    $LOAD_PATH.unshift(ROOT)
-
-    require 'ver'
+    require_relative '../lib/ver'
     run(options)
   end
 
@@ -172,7 +167,7 @@ op = OptionParser.new{|o|
   o.on('-h', '--help', 'Show this help'){ puts o; exit }
   o.on('--debug', 'turn $DEBUG on'){ $DEBUG = true }
   o.on('--trace', 'turn tracer on (extremely verbose)'){
-    require 'tracer'
+    # require 'tracer'
     options[:tracer] = true
   }
 }

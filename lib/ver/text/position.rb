@@ -33,13 +33,13 @@ module VER
       def <=>(other)
         return  1 if compare('>',  other)
         return -1 if compare('<',  other)
-        return  0 if compare('==', other)
+        return 0 if compare('==', other)
       end
 
       # Kill contents of the line at position, switch from control to
       # insert mode.
       # Always leaves an empty line
-      def change_line(count = buffer.prefix_count)
+      def change_line(_count = buffer.prefix_count)
         kill_line
         buffer.minor_mode(:control, :insert)
       end
@@ -49,8 +49,8 @@ module VER
 
         to =
           case count
-          when 0, 1; "#{self} lineend + 1 chars"
-          else     ; "#{self} + #{count - 1} lines lineend + 1 chars"
+          when 0, 1 then "#{self} lineend + 1 chars"
+          else; "#{self} + #{count - 1} lines lineend + 1 chars"
           end
 
         buffer.range(buffer.index(from), buffer.index(to)).copy
@@ -115,39 +115,39 @@ module VER
 
       def formatted_hex(number)
         if number > 0
-          '%#x' % number
+          format('%#x', number)
         elsif number == 0
           '0x0'
         else
-          '-0x%x' % number.abs
+          format('-0x%x', number.abs)
         end
       end
 
       def formatted_binary(number)
         if number > 0
-          '%#b' % number
+          format('%#b', number)
         elsif number == 0
           '0b0'
         else
-          '-0b%b' % number.abs
+          format('-0b%b', number.abs)
         end
       end
 
       def formatted_exponential(number, precicion)
-        "%-.#{precicion}e" % number
+        format("%-.#{precicion}e", number)
       end
 
       def formatted_float(number, precicion)
-        "%-.#{precicion}f" % number
+        format("%-.#{precicion}f", number)
       end
 
       def formatted_octal(number)
         if number > 0
-          '%#o' % number
+          format('%#o', number)
         elsif number == 0
           '00'
         else
-          '-0%o' % number.abs
+          format('-0%o', number.abs)
         end
       end
 
@@ -162,19 +162,19 @@ module VER
           when /^[+-]?0b[01]+$/
             formatted_binary(Integer(chunk) + count)
           when /^[+-]?(\d+\.\d+|\d+)e[+-]?\d+$/
-            precicion = $1[/\.(\d+)/, 1].to_s.size
+            precicion = Regexp.last_match(1)[/\.(\d+)/, 1].to_s.size
             formatted_exponential(Float(chunk) + count, precicion)
           when /^[+-]?\d+\.(\d+)/
-            formatted_float(Float(chunk) + count, $1.size)
+            formatted_float(Float(chunk) + count, Regexp.last_match(1).size)
           when /^[+-]?([1-9]\d*|0)$/
-            "%-d" % [Integer(chunk) + count]
+            format('%-d', Integer(chunk) + count)
           when /^[+-]?0\d+$/
             formatted_octal(Integer(chunk) + count)
           else
             return
           end
 
-        return head, tail, number
+        [head, tail, number]
       end
 
       def inspect

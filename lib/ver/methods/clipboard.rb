@@ -14,7 +14,7 @@ module VER
       end
 
       def responding_to?(method)
-        lambda{|object| object.respond_to?(method) }
+        ->(object) { object.respond_to?(method) }
       end
 
       def paste_after(buffer, count = buffer.prefix_count)
@@ -25,7 +25,7 @@ module VER
           when responding_to?(:to_ary)
             paste_array_after(buffer, count, content.to_ary)
           else
-            buffer.warn "Don't know how to paste: %p" % [content]
+            buffer.warn format("Don't know how to paste: %p", content)
           end
         end
       end
@@ -38,7 +38,7 @@ module VER
           when responding_to?(:to_ary)
             paste_array_after(buffer, count, content.to_ary)
           else
-            buffer.warn "Don't know how to paste: %p" % [content]
+            buffer.warn format("Don't know how to paste: %p", content)
           end
         end
       end
@@ -53,7 +53,7 @@ module VER
           when responding_to?(:to_ary)
             paste_array_after(buffer, count, content.to_ary)
           else
-            buffer.warn "Don't know how to paste: %p" % [content]
+            buffer.warn format("Don't know how to paste: %p", content)
           end
         end
       end
@@ -101,7 +101,7 @@ module VER
       # of a register struct, but we won't go into that.
       # It's enough to know that vim can only handle block pasting when it was
       # yanked from vim, we shall behave the same.
-      def paste_array_after(buffer, count, array)
+      def paste_array_after(buffer, _count, array)
         insert_line, insert_char = *buffer.index(:insert)
 
         buffer.undo_record do |record|
@@ -119,7 +119,7 @@ module VER
           when responding_to?(:to_ary)
             paste_array_before(buffer, count, content.to_ary)
           else
-            buffer.warn "Don't know how to paste: %p" % [content]
+            buffer.warn format("Don't know how to paste: %p", content)
           end
         end
       end
@@ -134,7 +134,7 @@ module VER
           when responding_to?(:to_ary)
             paste_array_before(buffer, count, content.to_ary)
           else
-            buffer.warn "Don't know how to paste: %p" % [content]
+            buffer.warn format("Don't know how to paste: %p", content)
           end
         end
       end
@@ -147,7 +147,7 @@ module VER
           when responding_to?(:to_ary)
             paste_array_before(buffer, count, content.to_ary)
           else
-            buffer.warn "Don't know how to paste: %p" % [content]
+            buffer.warn format("Don't know how to paste: %p", content)
           end
         end
       end
@@ -188,8 +188,7 @@ module VER
         end
       end
 
-      def paste_array_before(buffer, count, array)
-      end
+      def paste_array_before(buffer, count, array); end
 
       def copy(text, content)
         if content.respond_to?(:to_str)
@@ -197,10 +196,10 @@ module VER
           copy_message(text, string.count("\n") + 1, string.size)
         elsif content.respond_to?(:to_ary)
           VER::Clipboard.marshal = array = content.to_ary
-          copy_message(text, array.size, array.reduce(0){|s,v| s + v.size })
+          copy_message(text, array.size, array.reduce(0) { |s, v| s + v.size })
         else
           VER::Clipboard.dwim = content
-          text.message "Copied unkown entity of class %p" % [content.class]
+          text.message format('Copied unkown entity of class %p', content.class)
         end
       end
 
@@ -213,18 +212,18 @@ module VER
         # N lines yanked
         # no message for a couple of chars
 
-        msg = "copied %d %s of %d %s" % [lines, lines_desc, chars, chars_desc]
+        msg = format('copied %d %s of %d %s', lines, lines_desc, chars, chars_desc)
         text.message(msg)
       end
 
       def paste_continous(buffer, content)
         if content =~ /\A([^\n]*)\n\Z/
           buffer.mark_set :insert, 'insert lineend'
-          buffer.insert :insert, "\n#{$1}"
+          buffer.insert :insert, "\n#{Regexp.last_match(1)}"
         elsif content =~ /\n/
           buffer.mark_set :insert, 'insert lineend'
           buffer.insert :insert, "\n"
-          content.each_line{|line| buffer.insert(:insert, line) }
+          content.each_line { |line| buffer.insert(:insert, line) }
         else
           buffer.insert :insert, content
         end

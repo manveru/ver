@@ -6,7 +6,7 @@ module VER
       # Indicate that no result can and will be found in the keymap
       class Impossible < Struct.new(:pattern)
         def to_s
-          stack = pattern.map{|seq| Event[seq].keysym }.join(' - ')
+          stack = pattern.map { |seq| Event[seq].keysym }.join(' - ')
           "#{stack} is undefined"
         end
       end
@@ -19,9 +19,9 @@ module VER
         end
 
         def to_s(handler)
-          stack = pattern.map{|seq| Event[seq].keysym }.join
+          stack = pattern.map { |seq| Event[seq].keysym }.join
 
-          follow = choices.map{|key, action|
+          follow = choices.map do |key, action|
             case action
             when Action
               method = action.to_method(handler)
@@ -42,9 +42,9 @@ module VER
             when MapHash
               key
             else
-              '%s => %p' % [key, action]
+              format('%s => %p', key, action)
             end
-          }.join(', ')
+          end.join(', ')
           "#{stack} -- (#{follow})"
         end
       end
@@ -77,7 +77,7 @@ module VER
       end
     end
 
-    MERGER = proc{|key, v1, v2|
+    MERGER = proc { |_key, v1, v2|
       if v1.respond_to?(:merge) && v2.respond_to?(:merge)
         v1.merge(v2, &MERGER)
       else
@@ -95,16 +95,16 @@ module VER
 
       case existing = self[pattern]
       when Action
-        VER.warn "Redefining %p bound to %p with %p" % [existing, pattern, action]
+        VER.warn format('Redefining %p bound to %p with %p', existing, pattern, action)
       when Incomplete
-        VER.warn "%p shadows other actions bound to %p: %p" % [action, pattern, existing.choices]
+        VER.warn format('%p shadows other actions bound to %p: %p', action, pattern, existing.choices)
       when Impossible
       end
 
       top = sub = MapHash.new
 
       while key = pattern.shift
-        self.keys << key if key.respond_to?(:keysym)
+        keys << key if key.respond_to?(:keysym)
 
         if pattern.empty?
           sub[key] = action
@@ -166,7 +166,7 @@ module VER
     end
 
     def actions
-      keymap.deep_each.map{|key, value| value }
+      keymap.deep_each.map { |_key, value| value }
     end
 
     def pattern_to_patterns(*patterns)

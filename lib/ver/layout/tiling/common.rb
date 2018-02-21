@@ -8,14 +8,16 @@ module VER
         slaves = layout.stack
         master, stacking = options.values_at(:master, :stacking)
         given_options.merge!(options)
-        head, tail, hidden = slaves[0...master], slaves[master..stacking], slaves[(stacking + 1)..-1]
-        return head, tail, hidden, options
+        head = slaves[0...master]
+        tail = slaves[master..stacking]
+        hidden = slaves[(stacking + 1)..-1]
+        [head, tail, hidden, options]
       end
 
       def apply(layout, given_options = {})
         masters, stacked, hidden, options = prepare(layout, given_options)
 
-        center = stacked.size == 0 ? 1.0 : options[:center]
+        center = stacked.empty? ? 1.0 : options[:center]
 
         apply_hidden(hidden) if hidden
         apply_masters(masters, center) if masters

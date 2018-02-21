@@ -22,7 +22,7 @@ module VER
 
     def string
       got = Tk.execute('::tk::GetSelection', VER.root, 'CLIPBOARD').to_s
-    rescue => ex
+    rescue StandardError => ex
       l ex
       nil
     else
@@ -38,7 +38,7 @@ module VER
 
     def marshal
       got = get('RUBY_MARSHAL')
-    rescue
+    rescue StandardError
       nil
     else
       Marshal.load(got.unpack('m0').first)

@@ -1,7 +1,7 @@
 module VER
   class Buffer
     class MatchingBrace < Tag
-      NAME = 'ver.highlight.brace'.freeze
+      NAME = 'ver.highlight.brace'
 
       def initialize(buffer, name = NAME)
         super

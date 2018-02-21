@@ -7,8 +7,8 @@ module VER
   # we generate them in specs.
   class Event < Struct.new(:pattern, :keysym, :unicode)
     PATTERN = {}
-    UNICODE  = Hash.new{|h,k| h[k] = Set.new }
-    KEYSYM   = Hash.new{|h,k| h[k] = Set.new }
+    UNICODE  = Hash.new { |h, k| h[k] = Set.new }
+    KEYSYM   = Hash.new { |h, k| h[k] = Set.new }
 
     def self.each(&block)
       PATTERN.values.each(&block)
@@ -24,7 +24,7 @@ module VER
 
     def self.fake(alias_pattern, keysym, unicode = '')
       event = pattern("<#{alias_pattern}>", keysym, unicode)
-      MODIFIERS.each{|mod| pattern("<#{mod}-#{alias_pattern}>", keysym, unicode) }
+      MODIFIERS.each { |mod| pattern("<#{mod}-#{alias_pattern}>", keysym, unicode) }
       event
     end
 
@@ -42,7 +42,7 @@ module VER
         KEYSYM.fetch(string)
       when /^.$/ # single unicode char
         pattern = "<#{string}>"
-        UNICODE.fetch(string).min_by{|event| event.pattern.size }
+        UNICODE.fetch(string).min_by { |event| event.pattern.size }
       end
     rescue IndexError => ex
       capture(pattern || string)
@@ -52,7 +52,7 @@ module VER
       if string =~ /^<(.*)>$/
         PATTERN.fetch(string)
       elsif string.size == 1
-        UNICODE.fetch(string).min_by{|event| event.pattern.size }
+        UNICODE.fetch(string).min_by { |event| event.pattern.size }
       else # it may be keysym, but let's try to make it pattern instead
         PATTERN.fetch("<#{string}>")
       end
@@ -65,13 +65,15 @@ module VER
     MODIFIERS = %w[
       Control Mod1 M1 Command Alt Mod2 M2 Option Shift Mod3 M3 Lock Mod4 M4
       Extended Mod5 M5 Button1 B1 Meta M Button2 B2 Double Button3 B3 Triple
-      Button4 B4 Quadruple Button5 B5 ]
+      Button4 B4 Quadruple Button5 B5
+    ]
 
     DETAILS = %w[
       Activate Destroy Map ButtonPress Button Enter MapRequest ButtonRelease
       Expose Motion Circulate FocusIn MouseWheel CirculateRequest FocusOut
       Property Colormap Gravity Reparent Configure KeyPress Key ResizeRequest
-      ConfigureRequest KeyRelease Unmap Create Leave Visibility Deactivate ]
+      ConfigureRequest KeyRelease Unmap Create Leave Visibility Deactivate
+    ]
 
     require 'abbrev'
     MODIFIERS_ABBREV = MODIFIERS.abbrev
@@ -105,26 +107,27 @@ module VER
     end
 
     def self.capture(pattern)
-      l "capturing %p" % [pattern]
+      l format('capturing %p', pattern)
       @entry ||= setup_capture
       @pending += 1
 
-      @entry.bind(pattern){|event|
-        keysym, unicode = event.keysym, event.unicode
-        l "Received: %p" % [[pattern, keysym, unicode]]
+      @entry.bind(pattern) do |event|
+        keysym = event.keysym
+        unicode = event.unicode
+        l format('Received: %p', [pattern, keysym, unicode])
 
         if pattern =~ /^<(.*)>$/
           pattern(pattern, keysym, unicode)
         elsif pattern.size == 1
           pattern("<#{keysym}>", keysym, unicode)
         else
-          raise "Don't know how to handle: %p" % [event]
+          raise format("Don't know how to handle: %p", event)
         end
 
         Tk.callback_break
-      }
+      end
 
-      @entry.value = ""
+      @entry.value = ''
 
       send_pattern = if Platform.mac?
                        pattern
@@ -133,14 +136,14 @@ module VER
                      end
 
       counter = 0
-      until self.key?(pattern)
+      until key?(pattern)
         Tk::Event.generate(@entry, send_pattern, when: :now)
         Tk.update
         counter += 1
 
         # just try a couple of times before annoying the user.
         if counter == 10
-          @entry.value = "Please press %p" % [pattern]
+          @entry.value = format('Please press %p', pattern)
           @entry.focus
         end
       end
@@ -154,7 +157,7 @@ module VER
       @toplevel = Tk::Toplevel.new
       @label = Tk::Tile::Label.new(
         @toplevel,
-        text: "Detected updates to keymap, this may take a few seconds..."
+        text: 'Detected updates to keymap, this may take a few seconds...'
       )
       @entry = Tk::Entry.new(@toplevel)
       @progress = Tk::Tile::Progressbar.new(
@@ -167,7 +170,7 @@ module VER
       @label.pack fill: :x
       @progress.pack fill: :x
       @entry.pack fill: :x
-      @entry.bind('<Map>'){ @entry.focus }
+      @entry.bind('<Map>') { @entry.focus }
       @entry
     end
 
@@ -179,7 +182,7 @@ module VER
     end
 
     def self.persist_location
-      VER.options.home_conf_dir/'.events'
+      VER.options.home_conf_dir / '.events'
     end
 
     def self.persist!
@@ -196,7 +199,7 @@ module VER
 
       path.open 'rb' do |io|
         pattern = Marshal.load(io.read)
-        pattern.each do |sym, event|
+        pattern.each do |_sym, event|
           PATTERN[event.pattern] = event
           UNICODE[event.unicode] << event
           KEYSYM[event.keysym] << event
@@ -204,10 +207,10 @@ module VER
       end
 
       load_aliases
-      l "Event patterns loaded"
+      l 'Event patterns loaded'
     rescue Errno::ENOENT
       # Mostly harmless, the .events file isn't created yet.
-      l "Attempt to load event patterns failed"
+      l 'Attempt to load event patterns failed'
       load_default
       load_aliases
     end
@@ -215,9 +218,9 @@ module VER
     def self.load_default
       # To make creation easier, we define well-known patterns for ASCII here.
       # The rest is still to be defined by actual events.
-      ('0'..'9').each{|chr| pattern("<Key-#{chr}>", chr, chr) }
-      ('A'..'Z').each{|chr| pattern(chr, chr, chr) }
-      ('a'..'z').each{|chr| pattern(chr, chr, chr) }
+      ('0'..'9').each { |chr| pattern("<Key-#{chr}>", chr, chr) }
+      ('A'..'Z').each { |chr| pattern(chr, chr, chr) }
+      ('a'..'z').each { |chr| pattern(chr, chr, chr) }
       keysyms = {
         'space'        => ' ',
         'exclam'       => '!',
@@ -266,14 +269,12 @@ module VER
         'Return'       => "\n",
         'Right'        => '',
         'Tab'          => "\t",
-        'Up'           => '',
+        'Up'           => ''
       }
 
       if Platform.x11?
-        keysyms.merge!({
-          'apostrophe'   => "'",
-          'grave'        => '`',
-        })
+        keysyms['apostrophe'] = "'"
+        keysyms['grave'] = '`'
       end
 
       keysyms.each do |keysym, unicode|
@@ -281,7 +282,7 @@ module VER
       end
 
       # F1-F12
-      1.upto(12){|n| pattern("<F#{n}>", "F#{n}", '') }
+      1.upto(12) { |n| pattern("<F#{n}>", "F#{n}", '') }
 
       # Something for german keyboards
       pattern('<Control-bracketleft>', 'bracketleft', '[')
@@ -318,12 +319,11 @@ module VER
       end
     end
 
-
     def self.add_alias(from, to = {})
-      fsym = from[:keysym] || from[:fsym] || raise(ArgumentError, "Need keysym")
-      tsym = to[  :keysym] || from[:tsym] || raise(ArgumentError, "Need keysym")
+      fsym = from[:keysym] || from[:fsym] || raise(ArgumentError, 'Need keysym')
+      tsym = to[:keysym] || from[:tsym] || raise(ArgumentError, 'Need keysym')
       fpat = from[:pattern] || from[:fpat] || "<#{fsym}>"
-      tpat = to[  :pattern] || from[:tpat] || "<#{tsym}>"
+      tpat = to[:pattern] || from[:tpat] || "<#{tsym}>"
       unicode = from[:unicode] || to[:unicode] || ''
 
       event = pattern(tpat, tsym, unicode)

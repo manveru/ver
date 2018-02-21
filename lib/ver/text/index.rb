@@ -24,11 +24,11 @@ module VER
 
       def to_a
         line, char = index.split('.')
-        return line.to_i, char.to_i
+        [line.to_i, char.to_i]
       end
 
       def inspect
-        "#<VER::Text::Index %p on %p>" % [index, buffer]
+        format('#<VER::Text::Index %p on %p>', index, buffer)
       end
     end
   end

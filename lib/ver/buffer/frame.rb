@@ -16,7 +16,7 @@ module VER
 
         @shown = true
 
-        bind('<FocusIn>'){ buffer.focus; Tk.callback_break }
+        bind('<FocusIn>') { buffer.focus; Tk.callback_break }
       end
     end
   end

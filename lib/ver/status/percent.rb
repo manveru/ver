@@ -7,9 +7,10 @@ module VER
         percent = ((100.0 / total) * here).round
 
         case percent
-        when 100, 99; 'Bot'
-        when 0      ; 'Top'
-        else        ; '%2d%%' % percent
+        when 100, 99 then 'Bot'
+        when 0 then 'Top'
+        else
+          '%2d%%' % [percent]
         end
       end
     end

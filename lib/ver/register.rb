@@ -21,7 +21,7 @@ module VER
     end
 
     def inspect
-      "#<VER::Register name=%p, value=%p>" % [name, value]
+      format('#<VER::Register name=%p, value=%p>', name, value)
     end
 
     # Special register for clipboard, found in Register['*']
@@ -35,7 +35,7 @@ module VER
       end
 
       def inspect
-        "#<VER::Register::Clipboard name=%p, value=%p>" % [name, value]
+        format('#<VER::Register::Clipboard name=%p, value=%p>', name, value)
       end
     end
 
@@ -52,9 +52,9 @@ module VER
         case action
         when :modified
           begin
-            buffer.warn ""
+            buffer.warn ''
             register = Register.fetch(answer)
-            buffer.message '"%s: %p' % [register.name, register.value]
+            buffer.message format('"%s: %p', register.name, register.value)
             :abort
           rescue KeyError => ex
             buffer.warn "#{ex}: #{answer}"

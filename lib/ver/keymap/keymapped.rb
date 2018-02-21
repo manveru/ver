@@ -3,7 +3,7 @@ module VER
     attr_reader :major_mode
 
     def major_mode=(new_mode)
-      old_mode = self.major_mode
+      old_mode = major_mode
       new_mode = WidgetMajorMode.new(self, new_mode)
 
       return if old_mode == new_mode
@@ -13,13 +13,13 @@ module VER
       end
     end
 
-    def minor_mode(*args, old, new)
+    def minor_mode(*_args, old, new)
       major_mode.replace_minor(old, new)
     end
 
     def minor_mode?(name)
       name = name.to_sym
-      major_mode.minors.find{|minor| minor.to_sym == name }
+      major_mode.minors.find { |minor| minor.to_sym == name }
     end
   end
 end

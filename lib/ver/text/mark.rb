@@ -7,12 +7,13 @@ module VER
         '(' => ')',
         '{' => '}',
         '[' => ']',
-        '<' => '>',
+        '<' => '>'
       }
       MATCHING_BRACE_LEFT = MATCHING_BRACE_RIGHT.invert
 
       def initialize(buffer, name, index = nil)
-        self.buffer, self.name = buffer, name
+        self.buffer = buffer
+        self.name = name
         self.index = index unless index.nil?
       end
 
@@ -28,7 +29,7 @@ module VER
 
       # @return [String] representation of {name} and {buffer}
       def inspect
-        "#<VER::Text::Mark %p on %p>" % [name, buffer]
+        format('#<VER::Text::Mark %p on %p>', name, buffer)
       end
 
       # Number of characters from the start of the line.
@@ -101,7 +102,7 @@ module VER
         yield(self, *args)
         mark = index
         set(pos)
-        return Range.new(buffer, *[pos, mark].sort)
+        Range.new(buffer, *[pos, mark].sort)
       end
 
       def virtual_motion(motion, *args)
@@ -299,7 +300,7 @@ module VER
 
       def last_line(line = buffer.prefix_count(:end))
         if line == :end
-          go_first_nonblank(buffer.index("end - 1 chars"))
+          go_first_nonblank(buffer.index('end - 1 chars'))
         else
           go_first_nonblank(buffer.index("#{line}.0"))
         end
@@ -322,7 +323,6 @@ module VER
       def go_line_char(line = nil, char = nil)
         set("#{line || self.line}.#{char || self.char}")
       end
-
 
       # Go to {count} percentage in the file, on the first non-blank in the line
       # linewise. To compute the new line number this formula is used:
@@ -394,7 +394,7 @@ module VER
       end
 
       def end_of_sentence(count = buffer.prefix_count)
-        buffer.search_all(/\.\s/, self) do |match, from, to|
+        buffer.search_all(/\.\s/, self) do |_match, _from, to|
           set("#{to} - 1 chars")
           count -= 1
           return if count <= 0
@@ -424,7 +424,7 @@ module VER
 
       def matching_brace_indices(count = 1)
         needle = Regexp.union(MATCHING_BRACE_RIGHT.to_a.flatten.sort.uniq)
-        from = buffer.search_all(needle, self){|match, range| break range }
+        from = buffer.search_all(needle, self) { |_match, range| break range }
         return unless from
 
         opening = from.get
@@ -441,7 +441,7 @@ module VER
 
         balance = count
         needle = Regexp.union(opening, closing)
-        search.call(needle, start){|match, range|
+        search.call(needle, start) do |match, range|
           case match
           when opening
             balance += 1
@@ -449,28 +449,26 @@ module VER
             balance -= 1
           end
 
-          if balance == 0
-            return [from, range].sort
-          end
-        }
+          return [from, range].sort if balance == 0
+        end
       end
 
       def word_char_type(char)
         case char
-        when /\w/; :word
-        when /\S/; :special
-        when /\s/; :space
+        when /\w/ then :word
+        when /\S/ then :special
+        when /\s/ then :space
         else
-          Kernel.raise "No matching char type for: %p" % [char]
+          Kernel.raise format('No matching char type for: %p', char)
         end
       end
 
       def chunk_char_type(char)
         case char
-        when /\S/; :nonspace
-        when /\s/; :space
+        when /\S/ then :nonspace
+        when /\s/ then :space
         else
-          Kernel.raise "No matching chunk type for: %p " % [char]
+          Kernel.raise format('No matching chunk type for: %p ', char)
         end
       end
 
@@ -489,7 +487,7 @@ module VER
             original_type = type
           end until changed > 0 && type != :space
         end
-      rescue => ex
+      rescue StandardError => ex
         VER.error(ex)
       end
 
@@ -498,7 +496,7 @@ module VER
         last = buffer.index('end')
 
         count.times do
-          pos  = buffer.index("#{self} + #{offset} chars")
+          pos = buffer.index("#{self} + #{offset} chars")
 
           return if pos == last
 
@@ -522,7 +520,7 @@ module VER
         end
 
         set("#{self} + #{offset - 1} chars")
-      rescue => ex
+      rescue StandardError => ex
         VER.error(ex)
       end
 
@@ -551,7 +549,7 @@ module VER
             type = yield(get('- 1 chars'))
           end
         end
-      rescue => ex
+      rescue StandardError => ex
         VER.error(ex)
       end
     end

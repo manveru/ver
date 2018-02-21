@@ -3,7 +3,7 @@ module VER
     module Search
       HIGHLIGHT = {
         foreground: '#fff',
-        background: '#660',
+        background: '#660'
       }
       TAG = :search
 
@@ -11,7 +11,7 @@ module VER
         char_left: :char_right,
         char_right: :char_left,
         till_char_left: :till_char_right,
-        till_char_right: :till_char_left,
+        till_char_right: :till_char_left
       }
 
       module_function
@@ -28,11 +28,11 @@ module VER
       module_function :clear
 
       def status_next(buffer)
-        status_common(buffer, '/'){ self.next(buffer) }
+        status_common(buffer, '/') { self.next(buffer) }
       end
 
       def status_prev(buffer)
-        status_common(buffer, '?'){ prev(buffer) }
+        status_common(buffer, '?') { prev(buffer) }
       end
 
       def status_common(buffer, question)
@@ -97,11 +97,11 @@ module VER
         total = buffer.tag_ranges(TAG).size
 
         if total == 1
-          buffer.message "1 match found"
+          buffer.message '1 match found'
         elsif total > 1
           buffer.message "#{total} matches found"
         else
-          buffer.message "No matches found"
+          buffer.message 'No matches found'
         end
       end
 
@@ -143,9 +143,10 @@ module VER
       end
 
       def char_right!(buffer, regexp, count)
-        from, to = 'insert + 1 chars', 'insert lineend'
+        from = 'insert + 1 chars'
+        to = 'insert lineend'
         counter = 0
-        buffer.search_all regexp, from, to do |match, pos, mark|
+        buffer.search_all regexp, from, to do |_match, pos, _mark|
           buffer.insert = pos
           counter += 1
           return true if counter == count
@@ -170,10 +171,11 @@ module VER
       end
 
       def char_left!(buffer, regexp, count)
-        from, to = 'insert', 'insert linestart'
+        from = 'insert'
+        to = 'insert linestart'
         counter = 0
 
-        buffer.rsearch_all regexp, from, to do |match, pos, mark|
+        buffer.rsearch_all regexp, from, to do |_match, pos, _mark|
           buffer.insert = pos
           counter += 1
           return true if counter == count
@@ -199,7 +201,7 @@ module VER
           if regexp = buffer.store(self, :char_search_regexp)
             send("#{name}!", buffer, regexp, count)
           else
-            buffer.warn "Regexp missing, how weird!"
+            buffer.warn 'Regexp missing, how weird!'
           end
         else
           buffer.warn "No previous char search, can't repeat."
@@ -217,7 +219,7 @@ module VER
             buffer.warn "No previous char search, can't repeat."
           end
         else
-          buffer.warn "Regexp missing, how weird!"
+          buffer.warn 'Regexp missing, how weird!'
         end
       end
 

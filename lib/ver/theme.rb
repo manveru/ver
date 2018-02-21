@@ -3,7 +3,7 @@ module VER
     CACHE = {}
 
     def self.list
-      VER.loadpath.map{|path| Dir[(path/'theme/*.rb').to_s] }.flatten
+      VER.loadpath.map { |path| Dir[(path / 'theme/*.rb').to_s] }.flatten
     end
 
     def self.find(theme_name)
@@ -11,7 +11,7 @@ module VER
     end
 
     def self.load(filename)
-       raise(ArgumentError, "No path to theme file given") unless filename
+      raise(ArgumentError, 'No path to theme file given') unless filename
 
       hash = eval(File.read(filename.to_s))
       uuid = hash[:uuid]
@@ -38,7 +38,7 @@ module VER
         end
       end
 
-      return instance
+      instance
     end
 
     def self.find_and_load(theme_name)
@@ -49,17 +49,17 @@ module VER
 
     def self.tm_color_to_tk_color(color)
       case color
-      when /^(#\h{6})\h{2}$/, /^(#\h{6})$/,/^(#\h{3})\h$/
-        color = $1
+      when /^(#\h{6})\h{2}$/, /^(#\h{6})$/, /^(#\h{3})\h$/
+        color = Regexp.last_match(1)
       end
 
-      xcolor = FFI::Tk::get_color(Tk.interp, color)
-      R4G4B4 % [xcolor.red, xcolor.green, xcolor.blue]
+      xcolor = FFI::Tk.get_color(Tk.interp, color)
+      format(R4G4B4, xcolor.red, xcolor.green, xcolor.blue)
     end
 
     def self.invert_rgb(color)
-      xcolor = FFI::Tk::get_color(Tk.interp, color)
-      R4G4B4 % [0xffff - xcolor.red, 0xffff - xcolor.green, 0xffff - xcolor.blue]
+      xcolor = FFI::Tk.get_color(Tk.interp, color)
+      format(R4G4B4, 0xffff - xcolor.red, 0xffff - xcolor.green, 0xffff - xcolor.blue)
     end
 
     def initialize(colors = {}, &block)
@@ -74,7 +74,7 @@ module VER
 
     def get(name)
       name = normalize(name)
-      colors.each do |syntax_name, options|
+      colors.each do |syntax_name, _options|
         return syntax_name if name.start_with?(syntax_name)
       end
 
@@ -180,16 +180,24 @@ module VER
     def remove_tags_on(widget, from, to)
       outer_tags = widget.tag_names(from) & widget.tag_names(to)
 
-      colors.each do |name, options|
+      colors.each do |name, _options|
         name = name.to_s
         next if outer_tags.include?(name)
-        widget.tag_remove(name, from, to) rescue nil
+        begin
+          widget.tag_remove(name, from, to)
+        rescue StandardError
+          nil
+        end
       end
     end
 
     def delete_tags_on(widget)
-      colors.each do |name, option|
-        widget.tag_delete(name.to_s) rescue nil
+      colors.each do |name, _option|
+        begin
+          widget.tag_delete(name.to_s)
+        rescue StandardError
+          nil
+        end
       end
     end
   end

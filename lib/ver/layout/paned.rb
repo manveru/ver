@@ -17,7 +17,7 @@ module VER
     attr_reader :options
 
     # default options
-    OPTIONS = {masters: 1, slaves: 3, center: 0.5}
+    OPTIONS = { masters: 1, slaves: 3, center: 0.5 }
 
     # Create a new PanedLayout for given +parent+ and +options+.
     # The +options+ may contain :masters and :slaves, which will be merged with
@@ -40,7 +40,7 @@ module VER
       @layout_pane.add(@master_pane, weight: 1)
       @layout_pane.add(@slave_pane, weight: 1)
 
-      @layout_pane.bind('<Map>'){ apply }
+      @layout_pane.bind('<Map>') { apply }
     end
 
     # Add the given +buffer+.frame to the {frames}, apply, and focus +buffer+.
@@ -85,21 +85,29 @@ module VER
     def apply
       masters, slaves = masters_slaves
 
-      (master_pane.panes - masters.map{|bff| bff.tk_pathname }).each do |bff|
+      (master_pane.panes - masters.map(&:tk_pathname)).each do |bff|
         master_pane.forget(bff)
       end
 
-      (slave_pane.panes - slaves.map{|bff| bff.tk_pathname }).each do |bff|
+      (slave_pane.panes - slaves.map(&:tk_pathname)).each do |bff|
         slave_pane.forget(bff)
       end
 
-      masters.each{|bff| master_pane.insert(:end, bff, weight: 1) }
-      slaves.each{|bff| slave_pane.insert(:end, bff, weight: 1) }
+      masters.each { |bff| master_pane.insert(:end, bff, weight: 1) }
+      slaves.each { |bff| slave_pane.insert(:end, bff, weight: 1) }
 
       if slaves.empty?
-        layout_pane.forget(slave_pane) rescue nil
+        begin
+          layout_pane.forget(slave_pane)
+        rescue StandardError
+          nil
+        end
       else
-        layout_pane.add(slave_pane, weight: 1) rescue nil
+        begin
+          layout_pane.add(slave_pane, weight: 1)
+        rescue StandardError
+          nil
+        end
 
         width = layout_pane.winfo_width
         center = (width * options[:center]).to_i
@@ -112,7 +120,7 @@ module VER
       masters_max, slaves_max = options.values_at(:masters, :slaves)
       frames.compact!
       possible = frames.select(&:shown?)
-      return [*possible[0, masters_max]], [*possible[masters_max, slaves_max]]
+      [[*possible[0, masters_max]], [*possible[masters_max, slaves_max]]]
     end
 
     def visible?(frame)
@@ -152,7 +160,8 @@ module VER
       return unless index = frames.index(frame)
       previous = frames[index - 1]
       frame.raise(previous)
-      frames[index - 1], frames[index] = frame, previous
+      frames[index - 1] = frame
+      frames[index] = previous
 
       apply
       previous.focus unless visible?(frame)
@@ -162,7 +171,8 @@ module VER
       return unless index = frames.index(frame)
       following = frames[index + 1] || frames[0]
       frame.raise(following)
-      frames[frames.index(following)], frames[index] = frame, following
+      frames[frames.index(following)] = frame
+      frames[index] = following
 
       apply
       following.focus unless visible?(frame)

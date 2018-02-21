@@ -22,7 +22,7 @@ if { $item == {} } { set item [lindex $children [expr $children_length - 1]] }
     # Some lists may be huge, so we handle this in tcl to avoid lots of
     # useless traffic between tcl and ruby.
     # My apologies.
-    def line_up(event = nil)
+    def line_up(_event = nil)
       Tk.eval(LINE_UP.gsub(/%path%/, tk_pathname))
     end
 
@@ -47,7 +47,7 @@ if { $item == {} } { set item [lindex $children 0] }
     # Some lists may be huge, so we handle this in tcl to avoid lots of
     # useless traffic between tcl and ruby.
     # My apologies.
-    def line_down(event = nil)
+    def line_down(_event = nil)
       Tk.eval(LINE_DOWN.gsub(/%path%/, tk_pathname))
     end
   end

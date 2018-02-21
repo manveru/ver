@@ -1,7 +1,7 @@
 module VER
   class Buffer
     class InvalidTrailingWhitespace < Tag
-      NAME = 'invalid.trailing-whitespace'.freeze
+      NAME = 'invalid.trailing-whitespace'
 
       def initialize(buffer, name = NAME)
         super

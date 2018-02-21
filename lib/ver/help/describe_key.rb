@@ -27,12 +27,12 @@ Click on result opens the location of the associated action.
         @label.focus
 
         @parent.major_mode.bound_keys.each do |key|
-          @label.bind(key){|event| lookup(key) }
+          @label.bind(key) { |_event| lookup(key) }
         end
 
-        @label.bind('<Escape>'){ @label_frame.destroy }
-        @label.bind('<FocusOut>'){ @label_frame.destroy }
-        @label.bind('<Destroy>'){ @parent.focus }
+        @label.bind('<Escape>') { @label_frame.destroy }
+        @label.bind('<FocusOut>') { @label_frame.destroy }
+        @label.bind('<Destroy>') { @parent.focus }
       end
 
       def lookup(pattern)
@@ -56,11 +56,11 @@ Handler:     #{handler}
 Invocation:  #{invocation.inspect}
           INFO
 
-          message(info){
+          message(info) do
             open_method(action.to_method(@parent))
-          }
+          end
         end
-      rescue => ex
+      rescue StandardError => ex
         VER.error(ex)
       end
 
@@ -70,13 +70,13 @@ Invocation:  #{invocation.inspect}
       end
 
       def inspect
-        "#<VER::Help::DescribeKey>"
+        '#<VER::Help::DescribeKey>'
       end
 
       def open_method(method)
         file, line = method.source_location
         VER.find_or_create_buffer(file, line)
-        Tk::After.idle{ @label_frame.destroy }
+        Tk::After.idle { @label_frame.destroy }
       end
     end
   end

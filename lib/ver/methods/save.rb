@@ -19,7 +19,7 @@ module VER
     # Close one buffer after another, wait when one needs user input.
     def quit
       buffers = VER.buffers.each
-      closer = lambda{
+      closer = lambda {
         begin
           buffers.next.close(&closer)
         rescue StopIteration
@@ -32,13 +32,23 @@ module VER
     # might require user interaction.
     def save_all
       buffers = VER.buffers.each
-      closer = lambda{
+      closer = lambda {
         begin
           buffers.next.save(&closer)
         rescue StopIteration
         end
       }
       closer.call
+    end
+
+    def save_and_quit
+      save
+      quit
+    end
+
+    def save_all_and_quit
+      save_all
+      quit
     end
 
     # Try to copy the file we want to save to a temp dir, trying to preserve
@@ -66,7 +76,7 @@ module VER
       end
     rescue Errno::EACCES => ex
       # sshfs-mounts raise error but save correctly.
-      if ex.backtrace[0].match(/chown\'$/)
+      if ex.backtrace[0] =~ /chown\'$/
         success("Saved to #{to} (chown issue)", &block)
       else
         warn(ex)
@@ -78,17 +88,17 @@ module VER
 
     def save_dumb(to, &block)
       File.open(to, 'w+') do |io|
-        io.set_encoding(self.encoding)
+        io.set_encoding(encoding)
 
         begin
-          io.write(self.value)
+          io.write(value)
         rescue Encoding::UndefinedConversionError => ex
           # this might happen when trying to save UTF-8 as US-ASCII
           # so just warn, try to save as UTF-8 instead.
           warn("Saving as UTF-8 because of: #{ex.class}: #{ex}")
           io.rewind
           io.set_encoding(Encoding::UTF_8)
-          io.write(self.value)
+          io.write(value)
           self.encoding = Encoding::UTF_8
         end
       end
@@ -111,8 +121,8 @@ module VER
     def save_popup(options = {}, &block)
       options = options.dup
       options[:filetypes] ||= [
-        ['ALL Files',  '*'    ],
-        ['Text Files', '*.txt'],
+        ['ALL Files',  '*'],
+        ['Text Files', '*.txt']
       ]
 
       options[:initialfile]      ||= filename.basename
@@ -133,33 +143,33 @@ module VER
     end
 
     def save_to(to, &block)
-      may_save{ save_atomic(filename, to, &block) }
-    rescue => exception
+      may_save { save_atomic(filename, to, &block) }
+    rescue StandardError => exception
       VER.error(exception)
-      may_save{ save_dumb(to, &block) }
+      may_save { save_dumb(to, &block) }
     end
 
     def save_as
-      if filename = self.filename
-        dir = filename.dirname.to_s + '/'
-      else
-        dir = Dir.pwd + '/'
-      end
+      dir = if filename = self.filename
+              filename.dirname.to_s + '/'
+            else
+              Dir.pwd + '/'
+            end
 
       message = "Save #{uri} as: "
 
       ask message, value: dir do |answer, action|
         case action
         when :complete
-          Pathname(answer + '*').expand_path.glob.map{|f|
+          Pathname(answer + '*').expand_path.glob.map do |f|
             File.directory?(f) ? "#{f}/" : f
-          }
+          end
         when :attempt
           begin
             save_to(Pathname(answer).expand_path)
             yield if block_given?
             :abort
-          rescue => exception
+          rescue StandardError => exception
             warn exception
           end
         end
@@ -170,14 +180,14 @@ module VER
       return yield if pristine? || persisted?
 
       question = "Save buffer #{uri} before closing? " \
-                 "[y]es [n]o [c]ancel: "
+                 '[y]es [n]o [c]ancel: '
 
       ask question, value: 'y' do |answer, action|
         case action
         when :attempt
           case answer[0]
           when /y/i
-            may_save{ yield if save }
+            may_save { yield if save }
             VER.message 'Saved'
             :abort
           when /n/i
@@ -185,28 +195,32 @@ module VER
             VER.message 'Closing without saving'
             :abort
           else
-            VER.warn "Cancel closing"
+            VER.warn 'Cancel closing'
             :abort
           end
         end
       end
     end
 
-    def may_save(as = nil)
+    def may_save(_as = nil)
       last    = store(:stat, :mtime)
-      current = filename.mtime rescue nil
+      current = begin
+                  filename.mtime
+                rescue StandardError
+                  nil
+                end
 
       # if we have two mtimes
       if last && current
         # save if they're the same
         return yield if last == current
       else
-         # save since there is no previous one
+        # save since there is no previous one
         return yield
       end
 
       question = "The buffer #{uri} has changed since last save, " \
-                 "overwrite? [y]es [n]o: "
+                 'overwrite? [y]es [n]o: '
       ask question, value: 'n' do |answer, action|
         case action
         when :attempt
@@ -215,7 +229,7 @@ module VER
             yield
             :abort
           else
-            warn "Save aborted"
+            warn 'Save aborted'
             :abort
           end
         end

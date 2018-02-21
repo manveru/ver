@@ -16,7 +16,7 @@ module VER
         if bm
           Bookmark.open(text, bm)
         else
-          message("Tag stack empty.")
+          message('Tag stack empty.')
         end
       end
 
@@ -53,14 +53,14 @@ module VER
         when /^\/(.*)\/$/
           VER.ctag_stack << Bookmarks::Bookmark.new(nil, *Bookmark.value(text))
 
-          source = $1.gsub(/(?!\\)([()])/, '\\\\\\1')
+          source = Regexp.last_match(1).gsub(/(?!\\)([()])/, '\\\\\\1')
           regexp = Regexp.new(source)
 
           VER.find_or_create_buffer(file_name) do |buffer|
             Search.jump(buffer.text, regexp)
           end
         else
-          raise ArgumentError, "Unknown Ex command: %p" % [ex_cmd]
+          raise ArgumentError, format('Unknown Ex command: %p', ex_cmd)
         end
       end
 
@@ -69,7 +69,7 @@ module VER
         file = nil
 
         loop do
-          file = dir/'tags'
+          file = dir / 'tags'
           break if file.file? || dir.root?
           dir = dir.parent
         end

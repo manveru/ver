@@ -7,7 +7,8 @@ module VER
         enabled = text.store(self, :enable)
         return text.insert(:insert, ' ') unless enabled
 
-        from, to = 'insert linestart', 'insert lineend'
+        from = 'insert linestart'
+        to = 'insert lineend'
         line = text.get(from, to)
 
         if line.size < (text.options.auto_fill_width || 78)

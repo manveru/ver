@@ -222,7 +222,9 @@ module VER
     map [:touch!, '1.0', 'end'],  '<Control-l>'
     map :save,     ':w<Return>'
     map :save_as,  ':w<space>'
-    map :save_all, ':wa'
+    map :save_all, ':wa<Return>'
+    map :save_all_and_quit, %w[w q a].permutation.map{ |keys| ":#{keys.join}<Return>" }
+    map :save_and_quit, ':wq<Return>', ':qw<Return>'
     map :change_register, '"'
 
     handler RegisterList

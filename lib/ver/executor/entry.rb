@@ -26,7 +26,7 @@ module VER
 
         self.parent = parent
         self.major_mode = :Executor
-        self.minor_mode(:executor_label, mode) if mode
+        minor_mode(:executor_label, mode) if mode
 
         self.tabcount = 0
         self.update_on_change = true
@@ -36,13 +36,13 @@ module VER
       end
 
       # Called on <<Inserted>> events.
-      def on_insert(event)
+      def on_insert(_event)
         self.tabcount = 0
         update_only if update_on_change
       end
 
       # Called on <<Deleted>> events.
-      def on_delete(event)
+      def on_delete(_event)
         self.tabcount = 0
         update_only if update_on_change
       end
@@ -50,16 +50,15 @@ module VER
       # @param [Array<Object>] values the items to be inserted into the tree
       # @return [Array<Item>] inserted items
       def update_items(values)
-        values.map{|value|
+        values.map do |value|
           tree.insert(nil, :end, values: [*value])
-        }
+        end
       end
 
       # @param [String] entered entered string value in the text field
       # @return [Array|Array<Array>] passed to #update_items
       # @abstract
-      def choices(entered)
-      end
+      def choices(entered); end
 
       def update_only
         values = choices(value)
@@ -78,8 +77,7 @@ module VER
       # Called after the other widgets are set up.
       # @abstract
       # @return [void]
-      def setup
-      end
+      def setup; end
 
       # Not sure wherever that's called at all...
       def completed=(values)
@@ -130,13 +128,12 @@ module VER
           [score, lower_value, value]
         end
 
-        scored.sort.select{|score, lower, value| score < 1 }.map{|score, lower, value| value }
+        scored.sort.select { |score, _lower, _value| score < 1 }.map { |_score, _lower, value| value }
       end
 
       # Callback after the tree values have changed. Only called if there are
       # any items the tree.
-      def after_update
-      end
+      def after_update; end
 
       def tree_selection_value
         return unless item = tree.selection.first
@@ -156,7 +153,7 @@ module VER
       # @return [void]
       def action(value)
         l action: value
-        raise NotImplementedError, "Implement in subclass"
+        raise NotImplementedError, 'Implement in subclass'
       end
 
       def cancel
@@ -173,7 +170,7 @@ module VER
 
       def accept_line
         self.tabcount = 0
-        catch(:invalid){ action(tree_selection_value) }
+        catch(:invalid) { action(tree_selection_value) }
       end
 
       def speed_selection

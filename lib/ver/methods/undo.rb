@@ -8,12 +8,12 @@ module VER
 
       # Redo +count+ changes made in the given +buffer+.
       def redo(buffer, count = buffer.prefix_count)
-        count.times{ buffer.redo }
+        count.times { buffer.redo }
       end
 
       # Undo +count+ changes made in the given +buffer+
       def undo(buffer, count = buffer.prefix_count)
-        count.times{ buffer.undo }
+        count.times { buffer.undo }
       end
 
       # Wrapper to record multiple changes to given +buffer+ as one change, so

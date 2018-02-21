@@ -17,7 +17,8 @@ module VER
     attr_reader :widget, :event
 
     def initialize(widget, event)
-      @widget, @event = widget, event
+      @widget = widget
+      @event = event
     end
 
     def respond_to?(method)
@@ -47,7 +48,7 @@ module VER
     end
 
     def inspect
-      "#<VER::WidgetEvent widget=%p event=%p>" % [@widget, @event]
+      format('#<VER::WidgetEvent widget=%p event=%p>', @widget, @event)
     end
   end
 end

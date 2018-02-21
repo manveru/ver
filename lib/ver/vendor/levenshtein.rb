@@ -30,18 +30,18 @@ module VER
       n = s.length
       m = t.length
 
-      return m if (0 == n)
-      return n if (0 == m)
+      return m if n == 0
+      return n if m == 0
 
       d = (0..m).to_a
       x = nil
 
       (0...n).each do |i|
-        e = i+1
+        e = i + 1
         (0...m).each do |j|
-          cost = (s[i] == t[j]) ? 0 : 1
+          cost = s[i] == t[j] ? 0 : 1
           x = [
-            d[j+1] + 1, # insertion
+            d[j + 1] + 1, # insertion
             e + 1,      # deletion
             d[j] + cost # substitution
           ].min
@@ -51,7 +51,7 @@ module VER
         d[m] = x
       end
 
-      return x
+      x
     end
   end
 end

@@ -8,7 +8,7 @@ module VER
         tree.configure(
           show: [:headings],
           columns:        %w[file line source],
-          displaycolumns: %w[file line source],
+          displaycolumns: %w[file line source]
         )
         tree.heading('file', text: 'File')
         tree.heading('line', text: 'Line')
@@ -19,7 +19,7 @@ module VER
         total = tree.winfo_width - 50
 
         tree.column('file',   width: (total * 0.3).to_i, stretch: false, anchor: :w)
-        tree.column('line',   width: 50,  stretch: false, anchor: :e)
+        tree.column('line',   width: 50, stretch: false, anchor: :e)
         tree.column('source', width: (total * 0.7).to_i, stretch: false, anchor: :w)
       end
 
@@ -30,7 +30,8 @@ module VER
 
         glob, needle = glob_needle.split(/\s+/, 2)
         unless needle
-          glob, needle = '*', glob
+          needle = glob
+          glob = '*'
           self.value = "#{glob} #{needle}"
         end
 
@@ -47,7 +48,7 @@ module VER
 
       def grep_with(glob, regexp, with_root = true)
         results = []
-        root = with_root ? @root/glob : glob
+        root = with_root ? @root / glob : glob
 
         root.glob do |path|
           next unless path.file?
@@ -66,17 +67,16 @@ module VER
         results
       end
 
-      def action(selected)
+      def action(_selected)
         item = tree.focus_item
-        file, line, _ = item.options(:values)
+        file, line, = item.options(:values)
         return unless file && line
         VER.find_or_create_buffer(file.to_s, line.to_i)
         callback.destroy(false)
       end
 
       # Ignore sync
-      def sync_value_with_tree_selection
-      end
+      def sync_value_with_tree_selection; end
     end
 
     # Grep the open buffers interactively
@@ -85,7 +85,7 @@ module VER
         choices = []
         return choices if needle =~ /^\s*$/
 
-        files = VER.buffers.map{|name, buffer| buffer.filename }
+        files = VER.buffers.map { |_name, buffer| buffer.filename }
         glob = Pathname("{#{files.join(',')}}")
 
         begin

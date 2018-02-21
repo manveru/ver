@@ -9,7 +9,8 @@ module VER
   # Tk should get some user states, called like 'user1', 'user2', 'user3', that
   # would allow some flexibility, but still won't be able to represent every mode.
   class Entry < Tk::Tile::Entry
-    space, word = /[^[:alnum:]]+/, /[[:alnum:]]/
+    space = /[^[:alnum:]]+/
+    word = /[[:alnum:]]/
     FORWARD_WORD = /#{space}+#{word}|#{word}+#{space}+#{word}/
     BACKWARD_WORD = /#{word}+/
 
@@ -199,11 +200,11 @@ module VER
     def previous_history
       history_size = @history.size
 
-      if @history_index && @history_index < history_size
-        @history_index = [@history_index + 1, history_size - 1].min
-      else
-        @history_index = 0
-      end
+      @history_index = if @history_index && @history_index < history_size
+                         [@history_index + 1, history_size - 1].min
+                       else
+                         0
+                       end
 
       self.value = @history[@history_index]
     end
@@ -245,7 +246,7 @@ module VER
       mark = cursor
       self.cursor = pos
       return [pos, mark].sort
-    rescue => ex
+    rescue StandardError => ex
       VER.error(ex)
     end
   end

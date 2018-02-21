@@ -13,8 +13,7 @@ module VER
         super
       end
 
-      def style=(conf)
-      end
+      def style=(conf); end
     end
   end
 end

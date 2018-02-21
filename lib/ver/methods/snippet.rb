@@ -6,7 +6,7 @@ module VER
       module_function
 
       def dwim(buffer)
-        jump(buffer) or complete(buffer) && jump(buffer)
+        jump(buffer) || complete(buffer) && jump(buffer)
       end
 
       def jump(buffer)
@@ -25,10 +25,10 @@ module VER
       end
 
       def jump_marks_and_tags(buffer)
-        (marks(buffer) + tags(buffer)).
-          sort_by{|_, name, _|
+        (marks(buffer) + tags(buffer))
+          .sort_by do |_, name, _|
             name =~ /_0$/ ? 'zero' : name
-          }.each do |idx, name, type|
+          end.each do |_idx, name, type|
 
           case type
           when :tag
@@ -42,17 +42,17 @@ module VER
       end
 
       def marks(buffer)
-        buffer.mark_names.map{|mark|
+        buffer.mark_names.map do |mark|
           next unless mark =~ /^ver_snippet_(\d+)$/
-          [$1.to_i, mark, :mark]
-        }.compact
+          [Regexp.last_match(1).to_i, mark, :mark]
+        end.compact
       end
 
       def tags(buffer)
-        buffer.tag_names.map{|tag|
+        buffer.tag_names.map do |tag|
           next unless tag =~ /^ver\.snippet\.(\d+)$/
-          [$1.to_i, tag, :tag]
-        }.compact
+          [Regexp.last_match(1).to_i, tag, :tag]
+        end.compact
       end
 
       def jump_tag(buffer, name)
@@ -76,13 +76,13 @@ module VER
       end
 
       def cancel(buffer, into_mode = :control)
-        marks(buffer).each{|_, mark, _| buffer.mark_unset(mark) }
-        tags(buffer).each{|_, tag, _| buffer.tag_delete(tag) }
+        marks(buffer).each { |_, mark, _| buffer.mark_unset(mark) }
+        tags(buffer).each { |_, tag, _| buffer.tag_delete(tag) }
         buffer.minor_mode(:snippet, into_mode) if buffer.minor_mode?(:snippet)
       end
 
       def on_insert(buffer, string = buffer.event.unicode)
-        tag = buffer.tag_names(:insert).find{|name| name =~ /^ver\.snippet\.(\d+)$/ }
+        tag = buffer.tag_names(:insert).find { |name| name =~ /^ver\.snippet\.(\d+)$/ }
 
         if tag
           from, to = *buffer.tag_ranges(tag).first
@@ -119,7 +119,7 @@ module VER
         head = buffer.get('insert linestart', 'insert')
         name = head[/\S+$/]
         from = buffer.index("insert - #{name.size} chars")
-        to = buffer.index("insert")
+        to = buffer.index('insert')
 
         l buffer.snippets
 
@@ -188,9 +188,7 @@ module VER
 
         step(scanner, out)
 
-        if spos == scanner.pos
-          raise scanner.inspect
-        end
+        raise scanner.inspect if spos == scanner.pos
       end
     end
 
@@ -205,13 +203,16 @@ module VER
         out << @env[s[1]]
       elsif s.scan SUBSTITUTE_VARIABLE_WITH_DEFAULT
         key = s[1]
-        if @env.key?(key)
-          out << @env[key]
-        else
-          out << sub(s[2])
-        end
+        out << if @env.key?(key)
+                 @env[key]
+               else
+                 sub(s[2])
+               end
       elsif s.scan SUBSTITUTE_VARIABLE_WITH_REGEXP
-        variable, regexp, format, options = s[1], s[2], s[3], s[4]
+        variable = s[1]
+        regexp = s[2]
+        format = s[3]
+        options = s[4]
         regexp = Regexp.new(regexp)
         format.gsub!(/\$(\d+)/, '\\\\\1')
 
@@ -248,9 +249,9 @@ module VER
         out.each do |atom|
           case atom
           when String
-            atom = atom.
-              gsub(/\t/, indent).
-              gsub(/\n/, "\n#{initial_indent}")
+            atom = atom
+                   .gsub(/\t/, indent)
+                   .gsub(/\n/, "\n#{initial_indent}")
             record.insert(:insert, atom)
           when Numeric
             mark = "ver_snippet_#{atom}"

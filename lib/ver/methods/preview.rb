@@ -18,9 +18,7 @@ module VER
 
         method = "preview_#{syntax.name}".downcase
 
-        if respond_to?(method)
-          send(method, buffer)
-        end
+        send(method, buffer) if respond_to?(method)
       end
 
       def compile(buffer)
@@ -28,16 +26,12 @@ module VER
 
         method = "compile_#{syntax.name}".downcase
 
-        if respond_to?(method)
-          send(method, buffer)
-        end
+        send(method, buffer) if respond_to?(method)
       end
 
-      def compile_haml(buffer)
-      end
+      def compile_haml(buffer); end
 
-      def compile_sass(buffer)
-      end
+      def compile_sass(buffer); end
 
       def preview_ruby(buffer)
         buffer.save
@@ -52,7 +46,7 @@ exit
       # Open a new urxvt term in the background, this is not kept inside VER
       # layout.
       def spawn_rxvt(command)
-        system("urxvt -e $SHELL -c '%s' &" % [command])
+        system(format("urxvt -e $SHELL -c '%s' &", command))
       end
 
       # Open a new urxvt term and manage it inside the layout of VER.
@@ -64,7 +58,7 @@ exit
         frame = Frame.new(layout, container: true)
         layout.add_buffer(frame)
 
-        frame.bind '<MapRequest>' do |event|
+        frame.bind '<MapRequest>' do |_event|
           # Quite the weird hack, but once the MapRequest was handled, we can
           # focus the frame again to actually focus the term.
           # The delay was chosen by trying it on my notebook, which may or may
@@ -77,13 +71,13 @@ exit
           end
         end
 
-        frame.bind '<Map>' do |event|
-          cmd = "urxvt -embed #{frame.winfo_id} -e $SHELL -c '%s' &" % [command]
+        frame.bind '<Map>' do |_event|
+          cmd = format("urxvt -embed #{frame.winfo_id} -e $SHELL -c '%s' &", command)
           # puts cmd
           `#{cmd}`
         end
 
-        frame.bind '<Destroy>' do |event|
+        frame.bind '<Destroy>' do |_event|
           Tk::After.idle do
             layout.close_buffer(frame)
             buffer.focus(:force) # need to use force, the term was outside tk

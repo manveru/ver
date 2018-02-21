@@ -18,7 +18,7 @@ module VER
     end
 
     def ask_go_line
-      initial = $1 if events.last[:unicode] =~ /^(\d+)$/
+      initial = Regexp.last_match(1) if events.last[:unicode] =~ /^(\d+)$/
 
       question = 'Go to [line number|+lines][,column number]: '
       ask(question, value: initial) do |answer, action|
@@ -33,10 +33,10 @@ module VER
             tag_configure(Methods::Search::TAG, Methods::Search::HIGHLIGHT)
             tag_add(Methods::Search::TAG, index, index.lineend)
             see(index)
-            Tk::After.ms(3000){
+            Tk::After.ms(3000) do
               tag_remove(Methods::Search::TAG, index, index.lineend)
               at_insert.see
-            }
+            end
           end
         end
       end
@@ -45,22 +45,23 @@ module VER
     def parse_go_line(input)
       case input.to_s.strip
       when /^\+(\d+)(?:,(\d+))?$/
-        line, char = $1.to_i, $2.to_i
+        line = Regexp.last_match(1).to_i
+        char = Regexp.last_match(2).to_i
         yield index("#{at_insert.line + line}.#{char}")
       when /^(\d+)(?:,(\d+))?$/
-        line, char = $1.to_i, $2.to_i
+        line = Regexp.last_match(1).to_i
+        char = Regexp.last_match(2).to_i
         yield index("#{line}.#{char}")
       else
-        VER.warn("Invalid [+]line[,char]: %p" % [input])
+        VER.warn(format('Invalid [+]line[,char]: %p', input))
       end
     end
 
     def_delegators(:@at_insert,
-      :end_of_buffer, :end_of_line, :go_line, :home_of_line, :next_char,
-      :next_char, :next_chunk, :next_line, :next_page, :next_word,
-      :next_word_end, :prev_char, :prev_char, :prev_chunk, :prev_line,
-      :prev_page, :prev_word, :prev_word_end, :start_of_line
-    )
+                   :end_of_buffer, :end_of_line, :go_line, :home_of_line, :next_char,
+                   :next_char, :next_chunk, :next_line, :next_page, :next_word,
+                   :next_word_end, :prev_char, :prev_char, :prev_chunk, :prev_line,
+                   :prev_page, :prev_word, :prev_word_end, :start_of_line)
   end
 
   module Methods

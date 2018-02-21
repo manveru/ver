@@ -12,8 +12,8 @@ module VER
       else
         raise ArgumentError
       end
-    rescue => ex
-      VER.error("Exception from %p" % [self])
+    rescue StandardError => ex
+      VER.error(format('Exception from %p', self))
       VER.error(ex)
     end
 
@@ -23,7 +23,7 @@ module VER
     end
 
     def to_proc
-      Proc.new{|widget, *args| call(widget, *args) }
+      proc { |widget, *args| call(widget, *args) }
     end
 
     def to_method(widget)

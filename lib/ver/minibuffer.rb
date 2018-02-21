@@ -1,6 +1,6 @@
 module VER
   class MiniBuffer < Text
-    HISTORY = Hash.new{|h,k| h[k] = SizedArray.new(50) }
+    HISTORY = Hash.new { |h, k| h[k] = SizedArray.new(50) }
 
     # NOTE:
     #   {Text#dump} on a peer text widget causes segfault, I've reported the
@@ -75,7 +75,7 @@ module VER
       @answer_keeper.configure(elide: true)
       tag_lower(@answer_tag, @answer_keeper)
 
-      bind('<Configure>'){ pack_forget }
+      bind('<Configure>') { pack_forget }
     end
 
     def setup_common
@@ -107,7 +107,7 @@ module VER
       self.completion_buffer = Tk::Text.new(tk_parent)
       @old_grid_info = nil
 
-      [ :info, :warn, :highlight, :prompt, :answer ].each do |name|
+      %i[info warn highlight prompt answer].each do |name|
         instance_variable_set("@#{name}", tag(name))
       end
 
@@ -115,7 +115,7 @@ module VER
       bind('<Destroy>', &method(:on_destroy))
     end
 
-    def on_destroy(event)
+    def on_destroy(_event)
       @lock = true
     end
 
@@ -127,7 +127,7 @@ module VER
       HISTORY[@prompt.get]
     end
 
-    def adjust_size(event = nil)
+    def adjust_size(_event = nil)
       if get_displaychars('1.0', 'end').strip.empty?
         if (info = grid_info) && !info.empty?
           @old_grid_info = info
@@ -141,8 +141,8 @@ module VER
 
       # a generous 25ms to make sure the display is updated.
       # Might need longer, lemme know if that's the case.
-      Tk::After.ms(25){ buffer.adjust_sight } if buffer
-    rescue => ex
+      Tk::After.ms(25) { buffer.adjust_sight } if buffer
+    rescue StandardError => ex
       VER.error(ex)
     end
 
@@ -179,10 +179,10 @@ module VER
       begin
         replace("#{tag}.first", "#{tag}.last", " #{string}", tag)
         # mark(tag, "#{tag}.first", :left)
-      rescue
+      rescue StandardError
         begin
           insert(tag, " #{string}", tag)
-        rescue
+        rescue StandardError
           insert('1.0 lineend', " #{string}", tag)
         end
       end
@@ -204,30 +204,34 @@ module VER
       Tk::After.ms timeout.to_int do
         begin
           tag_remove('highlight', "#{tag}.first", "#{tag}.last")
-        rescue
+        rescue StandardError
         end
       end
     end
 
     def message_expire(tag, timeout = 5000)
-      self.messages_pending[tag] += 1
+      messages_pending[tag] += 1
 
       Tk::After.ms timeout.to_int do
-        self.messages_pending[tag] -= 1
+        messages_pending[tag] -= 1
         if messages_pending[tag] == 0
-          delete("#{tag}.first", "#{tag}.last") rescue nil
+          begin
+            delete("#{tag}.first", "#{tag}.last")
+          rescue StandardError
+            nil
+          end
           adjust_size
         end
       end
     end
 
     def claim_focus
-      bind('<FocusOut>'){ focus; Tk.callback_break }
+      bind('<FocusOut>') { focus; Tk.callback_break }
       focus
     end
 
     def release_focus
-      bind('<FocusOut>'){ }
+      bind('<FocusOut>') {}
     end
 
     def ask(prompt, options = {}, action = nil, &block)
@@ -254,10 +258,14 @@ module VER
       end
     end
 
-    def abort(event = nil)
+    def abort(_event = nil)
       self.prompt = ''
       self.answer = ''
-      completion_buffer.place_forget rescue nil
+      begin
+        completion_buffer.place_forget
+      rescue StandardError
+        nil
+      end
       @asking = false
 
       if ask_stack.empty?
@@ -268,7 +276,7 @@ module VER
       end
     end
 
-    def attempt(event = nil)
+    def attempt(_event = nil)
       HISTORY[@prompt.get] << answer
       invoke(:attempt)
     end
@@ -283,7 +291,7 @@ module VER
       buffer.place relx: 0.0, rely: 0.9, anchor: :sw, relheight: 0.9
     end
 
-    def complete_small(event = nil)
+    def complete_small(_event = nil)
       if choices = invoke(:complete)
         case choices.size
         when 0
@@ -295,7 +303,7 @@ module VER
       end
     end
 
-    def complete_large(event = nil)
+    def complete_large(_event = nil)
       if choices = invoke(:complete)
         case choices.size
         when 0
@@ -309,13 +317,13 @@ module VER
     end
 
     def common_subchoice(choices)
-      longest = choices.max_by{|choice| choice.size }
+      longest = choices.max_by(&:size)
       common = ''
 
       longest.each_char do |char|
         current = common + char
 
-        if choices.all?{|choice| choice.start_with?(current) }
+        if choices.all? { |choice| choice.start_with?(current) }
           common << char
         else
           break
@@ -345,72 +353,72 @@ module VER
       end
     end
 
-    def insert_selection(event = nil)
+    def insert_selection(_event = nil)
       insert(:insert, Tk::Selection.get(type: 'UTF8_STRING'), 'answer')
       invoke(:modified)
     end
 
-    def insert_tab(event = nil)
+    def insert_tab(_event = nil)
       insert(:insert, "\t", 'answer')
       invoke(:modified)
     end
 
-    def end_of_line(event = nil)
+    def end_of_line(_event = nil)
       mark_set('insert', 'answer.last')
       invoke(:movement)
     end
 
-    def kill_end_of_line(event = nil)
+    def kill_end_of_line(_event = nil)
       content = get_displaychars('insert', 'answer.last')
       copy(content) if content =~ /\S/
       delete('insert', 'answer.last')
       invoke(:modified)
     end
 
-    def delete_next_char(event = nil)
+    def delete_next_char(_event = nil)
       return unless line = get_displaychars('insert', 'answer.last')
       delete('insert') unless line == ''
       invoke(:modified)
     end
 
-    def delete_next_word(event = nil)
+    def delete_next_word(_event = nil)
       line = get_displaychars('insert', 'answer.last')
       return unless word = line[/^\s*(?:\w+|[^\w\s]+)\s*/]
       delete('insert', "insert + #{word.size} chars")
       invoke(:modified)
     end
 
-    def delete_prev_char(event = nil)
+    def delete_prev_char(_event = nil)
       return unless compare('insert', '>', 'answer')
       delete('insert - 1 display chars')
       invoke(:modified)
     end
 
-    def delete_prev_word(event = nil)
+    def delete_prev_word(_event = nil)
       line = get_displaychars('answer', 'insert').reverse
       return unless word = line[/^\s*(?:\w+|[^\w\s]+)\s*/]
       delete("insert - #{word.size} display chars", 'insert')
       invoke(:modified)
     end
 
-    def next_char(event = nil)
+    def next_char(_event = nil)
       return if compare('insert', '>=', 'answer.last')
       mark_set('insert', 'insert + 1 chars')
       invoke(:movement)
     end
 
-    def prev_char(event = nil)
+    def prev_char(_event = nil)
       return if compare('insert', '<=', 'answer')
       mark_set('insert', 'insert - 1 chars')
       invoke(:movement)
     end
 
-    def start_of_line(event = nil)
+    def start_of_line(_event = nil)
       mark_set('insert', 'answer')
       invoke(:movement)
     end
 
-    def transpose_chars(event = nil)
+    def transpose_chars(_event = nil)
       insert = index('insert')
       line = get_displaychars('insert', 'answer.last')
       line[0, 2] = line[0, 2].reverse
@@ -423,7 +431,7 @@ module VER
       Clipboard.dwim = string
     end
 
-    def paste(event = nil)
+    def paste(_event = nil)
       return unless content = Clipboard.dwim
       insert(:insert, content, 'answer')
       invoke(:modified)

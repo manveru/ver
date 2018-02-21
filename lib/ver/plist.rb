@@ -49,7 +49,7 @@ module VER
           raise ArgumentError, 'This is no XML plist'
         end
 
-        fail "#{@exceptions.size} errors encountered" if @exceptions.any?
+        raise "#{@exceptions.size} errors encountered" if @exceptions.any?
         @parsed
       end
 
@@ -77,7 +77,7 @@ module VER
             when 'true'
               true
             else
-              raise "unhandled %p: %p" % [child_name, child]
+              raise format('unhandled %p: %p', child_name, child)
             end
           )
         end
@@ -94,12 +94,12 @@ module VER
 
           case child_name
           when 'key'
-            case key = child.inner_text
-            when /^\d+$/
-              key = key.to_i
-            else
-              key = key.to_sym
-            end
+            key = case key = child.inner_text
+                  when /^\d+$/
+                    key.to_i
+                  else
+                    key.to_sym
+                  end
           when 'text'
             # ignore
           else
@@ -119,7 +119,6 @@ module VER
                 false
               when 'string'
                 value = child.inner_text
-
                 case key
                 when :begin, :match, :foldingStartMarker, :foldingStopMarker
                   sanitize_regexp(value)
@@ -127,7 +126,7 @@ module VER
                   value
                 end
               else
-                raise "unhandled %p: %p" % [child_name, child]
+                raise format('unhandled %p: %p', child_name, child)
               end
 
             key = nil
@@ -152,7 +151,7 @@ module VER
       private
 
       SANITIZE_REGEXP = {}
-      r = lambda{|string, replacement|
+      r = lambda { |string, replacement|
         pattern =
           if string.is_a? Regexp
             string
@@ -226,7 +225,7 @@ module VER
       r['(\}|)|]>)',  '(\}|\)|\]>)']
 
       # found in HTML (Active4D)
-      r['\b([a-zA-Z-:]+)','\b([a-zA-Z:-]+)']
+      r['\b([a-zA-Z-:]+)', '\b([a-zA-Z:-]+)']
       r['\[CDATA\[(.*?)]](?=>)', '\[CDATA\[(.*?)\]\](?=>)']
 
       # found in Bulletin Board.tmbundle
@@ -261,13 +260,13 @@ module VER
         value2 = ''
         group_index = 0
         value.scan(/((?:[^\\(]+|\\[^\d])+)|(\\\d+)|(\(\??)/m) do |content, backref, capture|
-          if capture == '('
-            value2 << "(?<_#{group_index += 1}>"
-          elsif backref
-            value2 << "\\k<_#{backref[/\d+/]}>"
-          else
-            value2 << (content || capture)
-          end
+          value2 << if capture == '('
+                      "(?<_#{group_index += 1}>"
+                    elsif backref
+                      "\\k<_#{backref[/\d+/]}>"
+                    else
+                      (content || capture)
+                    end
         end
 
         Regexp.new(value2)

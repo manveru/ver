@@ -45,7 +45,7 @@ module VER
     end
 
     def unix?
-      not windows?
+      !windows?
     end
 
     def operatingsystem

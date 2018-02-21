@@ -36,11 +36,11 @@ module VER
         code = [%(set win "#{buffer.tk_pathname}")]
 
         indices.each_slice(2) do |first, last|
-          if last
-            code << %($win tag add #{name} "#{first}" "#{last}")
-          else
-            code << %($win tag add #{name} "#{first}")
-          end
+          code << if last
+                    %($win tag add #{name} "#{first}" "#{last}")
+                  else
+                    %($win tag add #{name} "#{first}")
+                  end
         end
 
         Tk.execute_only(Tk::TclString.new(code.join("\n")))
@@ -62,7 +62,8 @@ module VER
         lines = []
 
         each_line do |line, fc, tc|
-          line_fc, line_tc = "#{line}.#{fc}", "#{line}.#{tc}"
+          line_fc = "#{line}.#{fc}"
+          line_tc = "#{line}.#{tc}"
 
           next if buffer.at_end == line_tc
 
@@ -92,8 +93,8 @@ module VER
       end
 
       def copy
-        chunks = ranges.map{|range| range.get }
-        buffer.with_register{|reg| reg.value = chunks.at(1) ? chunks : chunks.first }
+        chunks = ranges.map(&:get)
+        buffer.with_register { |reg| reg.value = chunks.at(1) ? chunks : chunks.first }
       end
 
       def delete
@@ -132,7 +133,7 @@ module VER
           code = range.get
 
           Methods::Control.stdout_capture_evaluate(code, file, binding) do |res, out|
-            range.last.lineend.insert("\n%s%p" % [out, res])
+            range.last.lineend.insert(format("\n%s%p", out, res))
           end
         end
       end
@@ -142,7 +143,7 @@ module VER
       end
 
       def get
-        values = ranges.map{|range| range.get }
+        values = ranges.map(&:get)
         values.size == 1 ? values.first : values unless values.empty?
       end
 
@@ -160,16 +161,16 @@ module VER
       end
 
       def inspect
-        "#<VER::Text::Tag %p on %p>" % [name, buffer]
+        format('#<VER::Text::Tag %p on %p>', name, buffer)
       end
 
       def kill
         indices = []
 
-        chunks = ranges.map{|range|
+        chunks = ranges.map do |range|
           indices << range.first << range.last
           range.get
-        }
+        end
 
         # A bit of duplication, but if we use copy here we have to iterate the
         # ranges again.
@@ -210,7 +211,7 @@ module VER
       def pipe!(*cmd)
         require 'open3'
 
-        Open3.popen3(*cmd) do |si, so, thread|
+        Open3.popen3(*cmd) do |si, so, _thread|
           queue = []
           each_range do |range|
             si.write(range.get)
@@ -275,13 +276,12 @@ module VER
         regex = /#{Regexp.escape(comment)}/
 
         buffer.undo_record do |record|
-          each_line do |y, fx, tx|
-            from, to = "#{y}.0 linestart", "#{y}.0 lineend"
+          each_line do |y, _fx, _tx|
+            from = "#{y}.0 linestart"
+            to = "#{y}.0 lineend"
             line = buffer.get(from, to)
 
-            if line.sub!(regex, '')
-              record.replace(from, to, line)
-            end
+            record.replace(from, to, line) if line.sub!(regex, '')
           end
         end
       end
@@ -293,7 +293,8 @@ module VER
 
         each_line do |y, fx, tx|
           tx = fx + indent_size
-          left, right = "#{y}.#{fx}", "#{y}.#{tx}"
+          left = "#{y}.#{fx}"
+          right = "#{y}.#{tx}"
           next unless buffer.get(left, right) == indent
           queue << left << right
         end

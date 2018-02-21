@@ -22,29 +22,29 @@ module VER
     def complete(input, bind = TOPLEVEL_BINDING)
       case input
       when /^(\/[^\/]*\/)\.([^.]*)$/
-        complete_regexp_method($1, Regexp.quote($2))
+        complete_regexp_method(Regexp.last_match(1), Regexp.quote(Regexp.last_match(2)))
       when /^([^\]]*\])\.([^.]*)$/
-        complete_array_method($1, Regexp.quote($2))
+        complete_array_method(Regexp.last_match(1), Regexp.quote(Regexp.last_match(2)))
       when /^([^\}]*\})\.([^.]*)$/
-        complete_proc_or_hash_method($1, Regexp.quote($2))
+        complete_proc_or_hash_method(Regexp.last_match(1), Regexp.quote(Regexp.last_match(2)))
       when /^(:[^:.]*)$/
-        complete_symbol(Regexp.quote($1))
+        complete_symbol(Regexp.quote(Regexp.last_match(1)))
       when /^::([A-Z][^:\.\(]*)$/
-        complete_absolute_constant_or_class_method(Regexp.quote($1))
+        complete_absolute_constant_or_class_method(Regexp.quote(Regexp.last_match(1)))
       when /^(((::)?[A-Z][^:.\(]*)+)::?([^:.]*)$/
-        complete_constant_or_class_method(bind, $1, Regexp.quote($4))
+        complete_constant_or_class_method(bind, Regexp.last_match(1), Regexp.quote(Regexp.last_match(4)))
       when /^(:[^:.]+)\.([^.]*)$/
-        complete_symbol_method($1, Regexp.quote($2))
+        complete_symbol_method(Regexp.last_match(1), Regexp.quote(Regexp.last_match(2)))
       when /^(-?(0[dbo])?[0-9_]+(\.[0-9_]+)?([eE]-?[0-9]+)?)\.([^.]*)$/
-        complete_numeric_method(bind, $1, Regexp.quote($5))
+        complete_numeric_method(bind, Regexp.last_match(1), Regexp.quote(Regexp.last_match(5)))
       when /^(-?0x[0-9a-fA-F_]+)\.([^.]*)$/
-        complete_numeric_hex_method(bind, $1, Regexp.quote($2))
+        complete_numeric_hex_method(bind, Regexp.last_match(1), Regexp.quote(Regexp.last_match(2)))
       when /^(\$[^.]*)$/
-        complete_global_variable(Regexp.new(Regexp.quote($1)))
+        complete_global_variable(Regexp.new(Regexp.quote(Regexp.last_match(1))))
       when /^((\.?[^.]+)+)\.([^.]*)$/
-        complete_variable(bind, $1, Regexp.quote($3))
+        complete_variable(bind, Regexp.last_match(1), Regexp.quote(Regexp.last_match(3)))
       when /^\.([^.]*)$/
-        complete_unknown(Regexp.quote($1))
+        complete_unknown(Regexp.quote(Regexp.last_match(1)))
       else
         complete_else(bind, Regexp.quote(input))
       end
@@ -73,7 +73,7 @@ module VER
 
     def complete_absolute_constant_or_class_method(receiver)
       candidates = Object.constants
-      candidates.grep(/^#{receiver}/).map{|name| "::#{name}" }
+      candidates.grep(/^#{receiver}/).map { |name| "::#{name}" }
     end
 
     def complete_constant_or_class_method(bind, receiver, message)
@@ -84,7 +84,7 @@ module VER
         candidates = [*candidates]
       end
 
-      candidates.grep(/^#{message}/).map{|name| "#{receiver}::#{name}" }
+      candidates.grep(/^#{message}/).map { |name| "#{receiver}::#{name}" }
     end
 
     def complete_symbol_method(receiver, message)
@@ -118,14 +118,14 @@ module VER
     end
 
     def complete_variable(bind, receiver, message)
-      gv = eval("global_variables",     bind).map(&:to_s)
-      lv = eval("local_variables",      bind).map(&:to_s)
-      cv = eval("self.class.constants", bind).map(&:to_s)
+      gv = eval('global_variables',     bind).map(&:to_s)
+      lv = eval('local_variables',      bind).map(&:to_s)
+      cv = eval('self.class.constants', bind).map(&:to_s)
 
       if (gv | lv | cv).include?(receiver)
         # foo.func and foo is local var.
         candidates = eval("#{receiver}.methods", bind)
-      elsif /^[A-Z]/ =~ receiver and /\./ !~ receiver
+      elsif /^[A-Z]/ =~ receiver && /\./ !~ receiver
         # Foo::Bar.func
         begin
           candidates = eval("#{receiver}.methods", bind)
@@ -140,10 +140,10 @@ module VER
           begin
             name = mod.name
           rescue Exception
-            name = ""
+            name = ''
           end
 
-          next if name != "IRB::Context" && /^(IRB|SLex|RubyLex|RubyToken)/ =~ name
+          next if name != 'IRB::Context' && /^(IRB|SLex|RubyLex|RubyToken)/ =~ name
           candidates.concat mod.instance_methods(false)
         end
 
@@ -156,21 +156,21 @@ module VER
 
     # unknown(maybe String)
     def complete_unknown(message)
-      receiver = ""
+      receiver = ''
 
       candidates = String.instance_methods(true)
       select_message(receiver, message, candidates)
     end
 
     def complete_else(bind, receiver)
-      code = "methods | private_methods | local_variables | self.class.constants"
+      code = 'methods | private_methods | local_variables | self.class.constants'
       candidates = eval(code, bind)
 
-      (candidates|ReservedWords).grep(/^#{receiver}/).map(&:to_s)
+      (candidates | ReservedWords).grep(/^#{receiver}/).map(&:to_s)
     end
 
     def select_message(receiver, message, candidates)
-      candidates.grep(/^#{message}/).map{|entity|
+      candidates.grep(/^#{message}/).map do |entity|
         case entity
         when /^[a-zA-Z_]/
           "#{receiver}.#{entity}"
@@ -178,7 +178,7 @@ module VER
         when *Operators
           # "#{receiver} #{entity}"
         end
-      }.compact
+      end.compact
     end
   end
 end

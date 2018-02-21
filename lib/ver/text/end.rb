@@ -6,8 +6,7 @@ module VER
       end
 
       # ignore
-      def set(index)
-      end
+      def set(index); end
       alias index= set
     end
   end

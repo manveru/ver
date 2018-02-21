@@ -23,7 +23,7 @@ module VER
 
       tooltip = Tk::Tooltip.new(string)
       tooltip.show_on(self)
-      Tk::After.ms(timeout * 1000){ tooltip.destroy }
+      Tk::After.ms(timeout * 1000) { tooltip.destroy }
     end
   end
 
@@ -70,7 +70,7 @@ module VER
       end
 
       def open_terminal(text)
-        require 'ver/buffer/term'
+        require_relative '../buffer/term'
         Buffer::Terminal.new(text)
       end
 

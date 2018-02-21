@@ -51,7 +51,8 @@ module VER
         return unless text.load_preferences
         text.store(self, :last_used, :contextual)
 
-        from, to = 'insert - 1 chars wordstart', 'insert - 1 chars wordend'
+        from = 'insert - 1 chars wordstart'
+        to = 'insert - 1 chars wordend'
 
         complete(text) do
           [from, to, contextual_completions(text, from, to)]
@@ -69,10 +70,11 @@ module VER
       def line(text)
         text.store(self, :last_used, :line)
 
-        from, to = 'insert linestart', 'insert lineend'
+        from = 'insert linestart'
+        to = 'insert lineend'
         lines = line_completions(text, from, to)
 
-        complete(text){ [from, to, lines] }
+        complete(text) { [from, to, lines] }
       end
 
       def snippet(text)
@@ -87,18 +89,19 @@ module VER
 
         y, x = *text.index('insert')
         x = (x - 1).abs
-        from, to = text.index("#{y}.#{x} wordstart"), text.index("#{y}.#{x} wordend")
+        from = text.index("#{y}.#{x} wordstart")
+        to = text.index("#{y}.#{x} wordend")
 
         words = word_completions(text, from, to)
 
-        complete(text){ [from, to, words] }
+        complete(text) { [from, to, words] }
       end
 
       def contextual_completions(text, from, to)
-        tags  = Set.new(text.tag_names(to))
+        tags = Set.new(text.tag_names(to))
         completions = []
 
-        text.preferences.each do |key, value|
+        text.preferences.each do |_key, value|
           name, scope, settings, uuid =
             value.values_at('name', 'scope', 'settings', 'uuid')
           scopes = Set.new(scope.split(/\s*,\s*|\s+/))
@@ -113,7 +116,7 @@ module VER
           tmp.print(completion_command)
           tmp.close
           begin
-            FileUtils.chmod(0700, tmp.path)
+            FileUtils.chmod(0o700, tmp.path)
             result = `exec '#{tmp.path}'`
             completions = result.scan(/[^\r\n]+/)
           ensure
@@ -122,12 +125,12 @@ module VER
         end
 
         completions
-      rescue => ex
+      rescue StandardError => ex
         VER.error(ex)
       end
 
       def scope_compare(tags, scopes)
-        scopes.all?{|scope| tags.any?{|tag| scope.start_with?(tag) }}
+        scopes.all? { |scope| tags.any? { |tag| scope.start_with?(tag) } }
       end
 
       def line_completions(text, from, to)
@@ -135,7 +138,7 @@ module VER
 
         return [] if line.empty?
         needle = Regexp.escape(line)
-        text.search_all(/^.*#{needle}.*$/).map{|match, *_| match }.uniq
+        text.search_all(/^.*#{needle}.*$/).map { |match, *_| match }.uniq
       end
 
       # TODO: use filename_under_cursor, that should be much more accurate.
@@ -156,7 +159,7 @@ module VER
           item.sub(path, '/')
         end
 
-        return "#{lineno}.#{to - 1}", "#{lineno}.#{to}", list
+        ["#{lineno}.#{to - 1}", "#{lineno}.#{to}", list]
       end
 
       def word_completions(text, from, to)
@@ -164,15 +167,15 @@ module VER
         return [] if prefix.empty?
         prefix = Regexp.escape(prefix)
 
-        found = text.search_all(/(^|\W)(#{prefix}[\w-]*)/).
-          sort_by{|match, mf, mt|
-            [VER::Text::Index.new(text, mf).delta(from), match]
-          }.map{|match, *_| match.strip[/[\w-]+/] }.uniq
+        found = text.search_all(/(^|\W)(#{prefix}[\w-]*)/)
+                    .sort_by do |match, mf, _mt|
+                  [VER::Text::Index.new(text, mf).delta(from), match]
+                end.map { |match, *_| match.strip[/[\w-]+/] }.uniq
         found.delete prefix
         found
       end
 
-      def aspell_completions(text, word)
+      def aspell_completions(_text, word)
         if result = aspell_execute(word)[word]
           result[:suggestions]
         else
@@ -186,7 +189,7 @@ module VER
         require 'open3'
         results = {}
 
-        Open3.popen3("aspell pipe") do |stdin, stdout, stderr|
+        Open3.popen3('aspell pipe') do |stdin, stdout, _stderr|
           stdin.print("^#{word}")
           stdin.close
           result = stdout.read
@@ -195,12 +198,12 @@ module VER
             results[original] = {
               count: count.to_i,
               offset: offset.to_i,
-              suggestions: suggestions.split(/\s*,\s*/),
+              suggestions: suggestions.split(/\s*,\s*/)
             }
           end
         end
 
-        return results
+        results
       end
     end
   end

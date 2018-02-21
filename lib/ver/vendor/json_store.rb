@@ -2,7 +2,7 @@ require 'json'
 require 'pstore'
 
 class JSON::Store < PStore
-  def dump(table)
+  def dump(_table)
     JSON.pretty_unparse(@table)
   end
 

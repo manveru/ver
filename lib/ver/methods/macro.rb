@@ -3,19 +3,19 @@ module VER
     module Macro
       module_function
 
-      def enter(buffer, old_mode, new_mode)
+      def enter(buffer, _old_mode, _new_mode)
         name = buffer.events.last.unicode
         buffer.store(self, :current, name)
       end
 
-      def leave(buffer, old_mode, new_mode)
+      def leave(buffer, _old_mode, _new_mode)
         history = []
         name = buffer.store(self, :current)
         macro_invocation = [:minor_mode, MinorMode[:control], :macro]
 
-        buffer.actions.reverse_each do |widget, mode, action|
+        buffer.actions.reverse_each do |widget, _mode, action|
           break if action.invocation == macro_invocation
-          history << ->{ action.call(widget) }
+          history << -> { action.call(widget) }
         end
 
         buffer.store(self, name, history.reverse)
@@ -25,7 +25,7 @@ module VER
         if actions = buffer.store(self, current(buffer))
           actions.each(&:call)
         else
-          buffer.warn("No macro used yet")
+          buffer.warn('No macro used yet')
         end
       end
 
@@ -33,7 +33,7 @@ module VER
         if actions = buffer.store(self, name)
           actions.each(&:call)
         else
-          buffer.warn("No macro called %p" % [name])
+          buffer.warn(format('No macro called %p', name))
         end
       end
 

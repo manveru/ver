@@ -31,18 +31,17 @@ module VER
         @destroyed
       end
 
-      def on_destroy(event)
+      def on_destroy(_event)
         @destroyed = true
       end
 
-      def setup
-      end
+      def setup; end
 
       def buffer
         status.buffer
       end
 
-      def update(event)
+      def update(_event)
         variable.set(to_s) unless destroyed?
       end
 

@@ -1,16 +1,16 @@
 module VER
   class Executor
-    autoload :ExFuzzyFileFinder, 'ver/executor/fuzzy_file_finder'
-    autoload :ExEncoding,        'ver/executor/encoding'
-    autoload :ExGrep,            'ver/executor/grep'
-    autoload :ExGrepBuffers,     'ver/executor/grep'
-    autoload :ExLocate,          'ver/executor/locate'
-    autoload :ExMethod,          'ver/executor/method'
-    autoload :ExPath,            'ver/executor/path'
-    autoload :ExSyntax,          'ver/executor/syntax'
-    autoload :ExTheme,           'ver/executor/theme'
-    autoload :ExWrite,           'ver/executor/path'
-    autoload :ExBuffer,          'ver/executor/buffer'
+    require_relative 'fuzzy_file_finder'
+    require_relative 'encoding'
+    require_relative 'grep'
+    require_relative 'grep'
+    require_relative 'locate'
+    require_relative 'method'
+    require_relative 'path'
+    require_relative 'syntax'
+    require_relative 'theme'
+    require_relative 'path'
+    require_relative 'buffer'
 
     class ExLabel < Entry
       COMPLETERS = {
@@ -25,14 +25,14 @@ module VER
         'syntax'       => :ExSyntax,
         'theme'        => :ExTheme,
         'write'        => :ExWrite,
-        'buffer'       => :ExBuffer,
+        'buffer'       => :ExBuffer
       }
 
       def setup
         tree.configure(
           show: [],
           columns: %w[ex],
-          displaycolumns: %w[ex],
+          displaycolumns: %w[ex]
         )
         tree.heading('ex', text: 'Execution Method')
         update_only

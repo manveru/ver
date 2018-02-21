@@ -25,11 +25,7 @@ module VER
         char_percent = ((100.0 / char_total) * char_now)
         char_percent = 0 if char_percent.nan?
 
-        inner = "%d/%d (%d%%), %d/%d (%d%%), %d/%d (%d%%)" % [
-          line_now, line_total, line_percent.round,
-          col_now,  col_total,  col_percent.round,
-          char_now, char_total, char_percent.round,
-        ]
+        inner = format('%d/%d (%d%%), %d/%d (%d%%), %d/%d (%d%%)', line_now, line_total, line_percent.round, col_now, col_total, col_percent.round, char_now, char_total, char_percent.round)
 
         "[ #{inner} ]"
       end

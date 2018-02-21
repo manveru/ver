@@ -7,9 +7,17 @@ module VER
     module Insert
       module_function
 
-      def tab(buffer)     buffer.insert_tab end
-      def newline(buffer) buffer.insert_newline end
-      def selection(buffer) buffer.insert_selection end
+      def tab(buffer)
+        buffer.insert_tab
+      end
+
+      def newline(buffer)
+        buffer.insert_newline
+      end
+
+      def selection(buffer)
+        buffer.insert_selection
+      end
 
       def file_contents(filename)
         content = read_file(filename)
@@ -78,13 +86,13 @@ module VER
         common_string(text, text.event.unicode)
       end
 
-      def enter_replace(buffer, old_mode, new_mode)
+      def enter_replace(buffer, _old_mode, _new_mode)
         # store count argument for later repetition
         buffer.store(self, :replace_count, buffer.prefix_count(0))
         buffer.store(self, :replace_chars, '')
       end
 
-      def leave_replace(buffer, old_mode, new_mode)
+      def leave_replace(buffer, _old_mode, _new_mode)
         # repeat replacment
         count = buffer.store(self, :replace_count)
         chars = buffer.store(self, :replace_chars).dup
@@ -143,7 +151,7 @@ module VER
       # u		hexadecimal	   4		ffff	 (65535)
       # U		hexadecimal	   8		7fffffff (2147483647)
       def literal(buffer)
-        reader = ->(string = ''){
+        reader = lambda { |string = ''|
           buffer.major_mode.read(1) do |event|
             if unicode = event.unicode
               string += unicode # copy
@@ -167,23 +175,23 @@ module VER
       # returning nil means read next char
       # returning a String means you're done and want the result inserted.
       # returning anything else means you're giving up.
-      def literal_handle(buffer, string)
+      def literal_handle(_buffer, string)
         case string
         when /^\d{,3}$/
           return if string.size < 3
           [string.to_i].pack('U')
         when /^o([0-7]{,3})$/i
-          return if $1.size < 3
-          [Integer("0#$1")].pack('U')
+          return if Regexp.last_match(1).size < 3
+          [Integer("0#{Regexp.last_match(1)}")].pack('U')
         when /^x(\h{,2})$/i
-          return if $1.size < 2
-          [Integer("0x#$1")].pack('U')
+          return if Regexp.last_match(1).size < 2
+          [Integer("0x#{Regexp.last_match(1)}")].pack('U')
         when /^u(\h{,4})$/
-          return if $1.size < 4
-          [Integer("0x#$1")].pack('U')
+          return if Regexp.last_match(1).size < 4
+          [Integer("0x#{Regexp.last_match(1)}")].pack('U')
         when /^U(\h{,8})$/
-          return if $1.size < 8
-          [Integer("0x#$1")].pack('U')
+          return if Regexp.last_match(1).size < 8
+          [Integer("0x#{Regexp.last_match(1)}")].pack('U')
         end
       end
 

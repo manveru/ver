@@ -15,13 +15,14 @@ require 'set'
 require 'tmpdir'
 
 # vendor stuff, extensions and fixes.
-require 'ver/vendor/better_pp_hash'
-require 'ver/vendor/pathname'
-require 'ver/vendor/sized_array'
-require 'ver/vendor/json_store'
+require_relative 'ver/vendor/better_pp_hash'
+require_relative 'ver/vendor/pathname'
+require_relative 'ver/vendor/sized_array'
+require_relative 'ver/vendor/json_store'
 
 # 3rd party dependencies
 require 'ffi'
+require 'ffi-tk'
 
 # Small helper method that equivalent to Kernel#p but writes to log.
 # Please use this for debugging, log is at /tmp/ver/log/all.log.
@@ -42,45 +43,45 @@ end
 
 # This is the doc for VER
 module VER
-  autoload :Action,              'ver/action'
-  autoload :Bookmarks,           'ver/methods/bookmark'
-  autoload :Buffer,              'ver/buffer'
-  autoload :Clipboard,           'ver/clipboard'
-  autoload :Entry,               'ver/entry'
-  autoload :EvalCompleter,       'ver/vendor/eval_completer'
-  autoload :Event,               'ver/event'
-  autoload :ExceptionView,       'ver/exception_view'
-  autoload :Executor,            'ver/executor'
-  autoload :Font,                'ver/font'
-  autoload :Help,                'ver/help'
-  autoload :HoverCompletion,     'ver/hover_completion'
-  autoload :Keymap,              'ver/keymap'
-  autoload :Keymapped,           'ver/keymap/keymapped'
-  autoload :Levenshtein,         'ver/vendor/levenshtein'
-  autoload :Methods,             'ver/methods'
-  autoload :MiniBuffer,          'ver/minibuffer'
-  autoload :ModeResolving,       'ver/mode_resolving'
-  autoload :NotebookLayout,      'ver/layout/notebook'
-  autoload :PanedLayout,         'ver/layout/paned'
-  autoload :Platform,            'ver/platform'
-  autoload :Register,            'ver/register'
-  autoload :RegisterList,        'ver/register'
-  autoload :Status,              'ver/status'
-  autoload :Struct,              'ver/struct'
-  autoload :Syntax,              'ver/syntax'
-  autoload :Text,                'ver/text'
-  autoload :Textpow,             'ver/vendor/textpow'
-  autoload :Theme,               'ver/theme'
-  autoload :TilingLayout,        'ver/layout/tiling'
-  autoload :ToplevelLayout,      'ver/layout/toplevel'
-  autoload :Treeview,            'ver/treeview'
-  autoload :Undo,                'ver/undo'
-  autoload :WidgetEvent,         'ver/widget_event'
-  autoload :WidgetMajorMode,     'ver/widget_major_mode'
+  require_relative 'ver/keymap'
+  require_relative 'ver/keymap/keymapped'
+  require_relative 'ver/text'
+  require_relative 'ver/action'
+  require_relative 'ver/methods/bookmark'
+  require_relative 'ver/buffer'
+  require_relative 'ver/clipboard'
+  require_relative 'ver/entry'
+  require_relative 'ver/vendor/eval_completer'
+  require_relative 'ver/event'
+  require_relative 'ver/exception_view'
+  require_relative 'ver/executor'
+  require_relative 'ver/font'
+  require_relative 'ver/help'
+  require_relative 'ver/hover_completion'
+  require_relative 'ver/vendor/levenshtein'
+  require_relative 'ver/methods'
+  require_relative 'ver/minibuffer'
+  require_relative 'ver/mode_resolving'
+  require_relative 'ver/layout/notebook'
+  require_relative 'ver/layout/paned'
+  require_relative 'ver/platform'
+  require_relative 'ver/register'
+  require_relative 'ver/register'
+  require_relative 'ver/status'
+  require_relative 'ver/struct'
+  require_relative 'ver/syntax'
+  require_relative 'ver/vendor/textpow'
+  require_relative 'ver/theme'
+  require_relative 'ver/layout/tiling'
+  require_relative 'ver/layout/toplevel'
+  require_relative 'ver/treeview'
+  require_relative 'ver/undo'
+  require_relative 'ver/widget_event'
+  require_relative 'ver/widget_major_mode'
 
-  require 'ver/major_mode'
-  require 'ver/minor_mode'
-  require 'ver/options'
+  require_relative 'ver/major_mode'
+  require_relative 'ver/minor_mode'
+  require_relative 'ver/options'
 
   @options = Options.new(:ver)
 
@@ -93,43 +94,43 @@ module VER
 
   # the rest of the options are in config/rc.rb
   options.dsl do
-    o "Fork off on startup to avoid dying with the terminal",
+    o 'Fork off on startup to avoid dying with the terminal',
       :fork, Platform.unix?
 
-    o "Start hidden, useful for specs",
+    o 'Start hidden, useful for specs',
       :hidden, false
 
-    o "Use EventMachine inside VER, at the moment only for the console",
+    o 'Use EventMachine inside VER, at the moment only for the console',
       :eventmachine, false
 
-    o "Internal:External encoding",
-      :encoding, "UTF-8:UTF-8"
+    o 'Internal:External encoding',
+      :encoding, 'UTF-8:UTF-8'
 
-    o "Keymap used",
+    o 'Keymap used',
       :keymap, 'vim'
 
-    o "Load personal rc.rb",
+    o 'Load personal rc.rb',
       :load_rc, true
 
-    o "Width of one tab in pixel",
+    o 'Width of one tab in pixel',
       :tabs, 10
 
-    o "Minimum size of search term to start incremental highlighting",
+    o 'Minimum size of search term to start incremental highlighting',
       :search_incremental_min, 1
 
-    o "Location of personal configuration",
-      :home_conf_dir,  Pathname('~/.config/ver').expand_path
+    o 'Location of personal configuration',
+      :home_conf_dir, Pathname('~/.config/ver').expand_path
 
-    o "Location of system-wide configuration",
+    o 'Location of system-wide configuration',
       :core_conf_dir, Pathname(File.expand_path('../../config/', __FILE__))
 
-    o "Locations where we look for configuration",
+    o 'Locations where we look for configuration',
       :loadpath, [home_conf_dir, core_conf_dir]
 
-    o "Name under which the session is stored (nil means to keep no session)",
+    o 'Name under which the session is stored (nil means to keep no session)',
       :session, nil
 
-    o "Open welcome file on startup without parameters",
+    o 'Open welcome file on startup without parameters',
       :welcome, true
   end
 
@@ -141,31 +142,31 @@ module VER
 
   def run(given_options = {}, &block)
     # we fork, redirect all output to log files.
-    log_dir = Pathname.tmpdir/'ver/log'
+    log_dir = Pathname.tmpdir / 'ver/log'
     log_dir.mkpath
 
-    self.log = Logger.new(log_dir/'all.log', 10, 1 << 20)
+    self.log = Logger.new(log_dir / 'all.log', 10, 1 << 20)
 
     touch
     setup_tk
     run_startup(given_options)
-    pp options if $DEBUG
+    # pp options if $DEBUG
 
     run_maybe_forking do
       Event.load!
       options.eventmachine ? run_em(&block) : run_noem(&block)
     end
-  rescue => exception
+  rescue StandardError => exception
     error(exception)
     exit
   end
 
-  def run_maybe_forking(&block)
+  def run_maybe_forking
     return yield unless options.fork
 
     fork do
-      [$stdout, $stderr].each{|io| io.reopen('/dev/null') }
-      trap(:HUP){ l('terminal lost') }
+      # [$stdout, $stderr].each { |io| io.reopen('/dev/null') }
+      trap(:HUP) { l('terminal lost') }
       yield
     end
   end
@@ -212,7 +213,7 @@ module VER
     if given_options[:load_rc] != false
       load 'rc'
     else
-      require(options.core_conf_dir/'rc')
+      require(options.core_conf_dir / 'rc')
     end
     @options.merge!(given_options)
   end
@@ -228,7 +229,7 @@ module VER
   end
 
   def when_inactive_for(ms, repetitions = 1)
-    block = lambda{
+    block = lambda {
       if @cancel_blocks[block]
         @cancel_blocks.delete(block)
       else
@@ -296,26 +297,25 @@ module VER
 
   def load_plugin(name)
     loadpath.each do |dirname|
-      (dirname/"plugin/#{name}.rb").glob do |rb|
+      (dirname / "plugin/#{name}.rb").glob do |rb|
         return require(rb.to_s)
       end
     end
-  rescue => ex
+  rescue StandardError => ex
     error(ex)
   end
 
   def load_all_plugins
     loadpath.each do |dirname|
-      (dirname/'plugin/*.rb').glob do |rb|
+      (dirname / 'plugin/*.rb').glob do |rb|
         require rb
       end
     end
-  rescue => ex
+  rescue StandardError => ex
     error(ex)
   end
 
   def setup_tk
-    require 'ffi-tk'
     Thread.abort_on_exception = true
   end
 
@@ -374,20 +374,26 @@ module VER
   end
 
   def first_startup
-    home, core = options.home_conf_dir, options.core_conf_dir
+    home = options.home_conf_dir
+    core = options.core_conf_dir
     home.mkpath
 
-    (core/'rc.rb').cp(home/'rc.rb')
-    (core/'scratch').cp(home/'scratch')
-    (core/'tutorial').cp(home/'tutorial')
-    (core/'welcome').cp(home/'welcome')
+    (core / 'rc.rb').cp(home / 'rc.rb')
+    (core / 'scratch').cp(home / 'scratch')
+    (core / 'tutorial').cp(home / 'tutorial')
+    (core / 'welcome').cp(home / 'welcome')
   end
 
   def exit
     store_session
-    @cancel_blocks.keys.each{|key| @cancel_blocks[key] = true }
+    @cancel_blocks.keys.each { |key| @cancel_blocks[key] = true }
     Tk.exit
-    EM.stop rescue nil
+    begin
+      EM.stop
+    rescue StandardError => ex
+      p ex
+      nil
+    end
     Kernel.exit
   end
 
@@ -399,6 +405,7 @@ module VER
         require(file)
         return
       rescue LoadError, TypeError => ex
+        p ex
         # TypeError happens on JRuby sometimes...
       end
     end
@@ -406,7 +413,7 @@ module VER
 
   def find_in_loadpath(basename)
     loadpath.each do |dirname|
-      file = dirname/basename
+      file = dirname / basename
       return file if file.file?
     end
 
@@ -450,12 +457,12 @@ module VER
         bm.name  = raw_bm['name']
         bm.file  = Pathname(raw_bm['file'])
         bm.index = raw_bm['index']
-        l "Loaded %p" % [bm]
+        l format('Loaded %p', bm)
         bookmarks << bm
       end
 
       session['buffers'].each do |buffer|
-        l "Loading Buffer: %p" % [buffer]
+        l format('Loading Buffer: %p', buffer)
         find_or_create_buffer(buffer['filename'], *buffer['insert'])
       end
     end
@@ -465,7 +472,7 @@ module VER
   def store_session
     return unless session_base = VER.options.session
     basename = "sessions/#{session_base}.json"
-    session_path = loadpath.first/basename
+    session_path = loadpath.first / basename
     session_path.parent.mkpath
 
     JSON::Store.new(session_path.to_s, true).transaction do |session|
@@ -473,18 +480,18 @@ module VER
         l buffer: buffer
         { 'name'     => buffer.name.to_s,
           'filename' => buffer.filename.to_s,
-          'insert'   => buffer.at_insert.to_a, }
+          'insert'   => buffer.at_insert.to_a }
       end
-      l "Storing Buffers: %p" % [buffers]
+      l format('Storing Buffers: %p', buffers)
       session['buffers'] = buffers
 
       bookmarks = self.bookmarks.map do |bm|
         l bookmark: bm
         { 'name'  => bm.name,
           'file'  => bm.file.to_s,
-          'index' => bm.index, }
+          'index' => bm.index }
       end
-      l "Storing Bookmarks: %p" % [bookmarks]
+      l format('Storing Bookmarks: %p', bookmarks)
       session['bookmarks'] = bookmarks
     end
   end
@@ -496,7 +503,7 @@ module VER
   end
 
   def emergency_bindings
-    Tk::Bind.bind(:all, options.emergency_exit){ exit }
+    Tk::Bind.bind(:all, options.emergency_exit) { exit }
   end
 
   def opened_file(text)
@@ -525,7 +532,7 @@ module VER
       register << name
     end
 
-    return name
+    name
   end
 
   def return_style_name(style_name)
@@ -540,19 +547,18 @@ module VER
 
     options.each_pair do |key, value|
       out << [key,
-        case value
-        when Tk::Font
-          "VER::Font[%p]" % [value.actual_hash]
-        when Pathname
-          value.to_s
-        else
-          value
-        end
-        ]
+              case value
+              when Tk::Font
+                format('VER::Font[%p]', value.actual_hash)
+              when Pathname
+                value.to_s
+              else
+                value
+              end]
     end
 
     out.each do |pair|
-      puts("VER.options.%s = %p" % pair)
+      puts(format('VER.options.%s = %p', pair))
     end
   end
 
@@ -576,6 +582,7 @@ module VER
 
   # a handleable error condition
   def error(*args)
+    p args
     log.error(*args)
     if args.size == 1
       arg = args.first

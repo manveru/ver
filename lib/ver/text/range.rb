@@ -7,7 +7,7 @@ module VER
       end
 
       def copy
-        buffer.with_register{|reg| reg.value = get }
+        buffer.with_register { |reg| reg.value = get }
       end
 
       def count(*options)
@@ -35,7 +35,7 @@ module VER
       end
 
       def inspect
-        "#<VER::Text::Range %s on %p>" % ["(#{first}..#{last})", buffer]
+        format('#<VER::Text::Range %s on %p>', "(#{first}..#{last})", buffer)
       end
 
       def kill

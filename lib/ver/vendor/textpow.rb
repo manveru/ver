@@ -37,27 +37,23 @@
 
 module Textpow
   class Processor
-    def start_parsing(name)
-    end
+    def start_parsing(name); end
 
-    def end_parsing(name)
-    end
+    def end_parsing(name); end
 
-    def new_line(line)
-    end
+    def new_line(line); end
 
-    def open_tag(name, pos)
-    end
+    def open_tag(name, pos); end
 
-    def close_tag(name, mark)
-    end
+    def close_tag(name, mark); end
   end
 
   ParsingError = Class.new(RuntimeError)
 
   class SyntaxProxy
-    def initialize proxy, syntax
-      @proxy, @syntax = proxy, syntax
+    def initialize(proxy, syntax)
+      @proxy = proxy
+      @syntax = syntax
       @proxy_value = nil
     end
 
@@ -79,8 +75,8 @@ module Textpow
       case @proxy
       when /^#(.+)/
         return unless @syntax.repository
-        @syntax.repository[$1.to_sym]
-      when "$self", "$base"
+        @syntax.repository[Regexp.last_match(1).to_sym]
+      when '$self', '$base'
         @syntax
       else
         @syntax.syntaxes[@proxy]
@@ -97,7 +93,7 @@ module Textpow
       table =
         case filename
         when /(\.tmSyntax|\.plist)$/
-          Plist::parse_xml(filename)
+          Plist.parse_xml(filename)
         when /\.json$/i
           JSON.load(File.read(filename))
         when /\.ya?ml$/i
@@ -105,20 +101,20 @@ module Textpow
         when /\.rb$/i
           eval(File.read(filename))
         else
-          raise ArgumentError, "Unknown filename extension"
+          raise ArgumentError, 'Unknown filename extension'
         end
 
       SyntaxNode.new(table, nil, name_space) if table
     end
 
-    LITERAL_KEYS = [:firstLineMatch, :foldingStartMarker, :foldingStopMarker,
-                    :match, :begin, :content, :fileTypes, :name, :contentName,
-                    :end, :scopeName, :keyEquivalent]
+    LITERAL_KEYS = %i[firstLineMatch foldingStartMarker foldingStopMarker
+                      match begin content fileTypes name contentName
+                      end scopeName keyEquivalent]
 
     attr_accessor :processor, :syntax, :firstLineMatch, :foldingStartMarker,
-      :foldingStopMarker, :match, :begin, :content, :fileTypes, :name,
-      :contentName, :end, :scopeName, :keyEquivalent, :captures,
-      :beginCaptures, :endCaptures, :repository, :patterns
+                  :foldingStopMarker, :match, :begin, :content, :fileTypes, :name,
+                  :contentName, :end, :scopeName, :keyEquivalent, :captures,
+                  :beginCaptures, :endCaptures, :repository, :patterns
 
     def initialize(hash, syntax = nil, name_space = :default)
       @name_space = name_space
@@ -129,14 +125,14 @@ module Textpow
 
       hash.each do |key, value|
         case key
-        when *LITERAL_KEYS
-          send("#{key}=", value)
         when :captures, :beginCaptures, :endCaptures
           send("#{key}=", value.sort)
         when :repository
           parse_repository value
         when :patterns
           create_children value
+        when *LITERAL_KEYS
+          send("#{key}=", value)
         else
           # $stderr.puts "Ignoring: #{key} => #{value.to_s.gsub("\n", "\n>>")}" if $DEBUG
         end
@@ -163,7 +159,7 @@ module Textpow
         parse_line(stack, line, processor)
       end
 
-      processor.end_parsing self.scopeName
+      processor.end_parsing scopeName
       processor
     end
 
@@ -171,11 +167,11 @@ module Textpow
       @repository = {}
 
       repository.each do |key, value|
-        if include = value[:include]
-          @repository[key] = SyntaxProxy.new(include, self.syntax)
-        else
-          @repository[key] = SyntaxNode.new(value, self.syntax, @name_space)
-        end
+        @repository[key] = if include = value[:include]
+                             SyntaxProxy.new(include, syntax)
+                           else
+                             SyntaxNode.new(value, syntax, @name_space)
+                           end
       end
     end
 
@@ -184,11 +180,11 @@ module Textpow
       syntax = self.syntax
 
       patterns.each do |pattern|
-        if include = pattern[:include]
-          @patterns << SyntaxProxy.new(include, syntax)
-        else
-          @patterns << SyntaxNode.new(pattern, syntax, @name_space)
-        end
+        @patterns << if include = pattern[:include]
+                       SyntaxProxy.new(include, syntax)
+                     else
+                       SyntaxNode.new(pattern, syntax, @name_space)
+                     end
       end
     end
 
@@ -247,7 +243,7 @@ module Textpow
     end
 
     def match_first(string, position)
-      if self.match
+      if match
         if match = self.match.match(string, position)
           return [self, match]
         end
@@ -266,8 +262,8 @@ module Textpow
     def match_end(string, match, position)
       regstring = self.end.clone
 
-      regstring.gsub!(/\\([1-9])/){ match[$1.to_i] }
-      regstring.gsub!(/\\k<(.*?)>/){ match[$1.to_sym] }
+      regstring.gsub!(/\\([1-9])/) { match[Regexp.last_match(1).to_i] }
+      regstring.gsub!(/\\k<(.*?)>/) { match[Regexp.last_match(1).to_sym] }
       regstring = '\\\\' if regstring == '\\'
 
       Regexp.new(regstring).match(string, position)
@@ -287,7 +283,7 @@ module Textpow
         end
       end
 
-      return match
+      match
     end
 
     def parse_line(stack, line, processor)
@@ -295,7 +291,7 @@ module Textpow
       top, match = stack.last
       position = 0
 
-      while true
+      loop do
         if top.patterns
           pattern, pattern_match = top.match_first_son(line, position)
         else
@@ -304,11 +300,9 @@ module Textpow
 
         end_match = nil
 
-        if top.end
-          end_match = top.match_end(line, match, position)
-        end
+        end_match = top.match_end(line, match, position) if top.end
 
-        if end_match && ( !pattern_match || pattern_match.offset(0).first >= end_match.offset(0).first )
+        if end_match && (!pattern_match || pattern_match.offset(0).first >= end_match.offset(0).first)
           pattern_match = end_match
           pattern_match_first_offset = pattern_match.offset(0)
           start_pos = pattern_match_first_offset.first

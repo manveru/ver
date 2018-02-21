@@ -3,10 +3,10 @@ module VER
     include Keymapped
     extend Forwardable
 
-    autoload :Frame,                     'ver/buffer/frame'
-    autoload :InvalidTrailingWhitespace, 'ver/buffer/invalid_trailing_whitespace'
-    autoload :MarkupUnderlineLink,       'ver/buffer/markup_underline_link'
-    autoload :MatchingBrace,             'ver/buffer/matching_brace'
+    require_relative 'buffer/frame'
+    require_relative 'buffer/invalid_trailing_whitespace'
+    require_relative 'buffer/markup_underline_link'
+    require_relative 'buffer/matching_brace'
 
     OPTIONS = {
       autoseparators:      false,
@@ -28,10 +28,10 @@ module VER
     }
 
     MODE_STYLES = {
-      :control  => {blockcursor: false},
-      :insert   => {blockcursor: false, insertbackground: 'red'},
-      /select/  => {blockcursor: true,  insertbackground: 'yellow'},
-      /replace/ => {blockcursor: true,  insertbackground: 'orange'},
+      :control  => { blockcursor: false },
+      :insert   => { blockcursor: false, insertbackground: 'red' },
+      /select/  => { blockcursor: true,  insertbackground: 'yellow' },
+      /replace/ => { blockcursor: true,  insertbackground: 'orange' }
     }
 
     TAG_ALL_MATCHING_OPTIONS = { from: '1.0', to: 'end - 1 chars' }
@@ -41,18 +41,18 @@ module VER
     MODELINES = {
       /\s+(?:ver|vim?|ex):\s*.*$/ => /\s+(?:ver|vim?|ex):\s*(.*)$/,
       /\s+(?:ver|vim?|ex):[^:]+:/ => /\s+(?:ver|vim?|ex):([^:]+):/,
-      /^(?:ver|vim?):[^:]+:/      => /^(?:ver|vim?):([^:]+):/,
+      /^(?:ver|vim?):[^:]+:/      => /^(?:ver|vim?):([^:]+):/
     }
 
-    REPEAT_BREAK_CMD = [
-      :repeat_action,
-      :undo,
-      :redo,
+    REPEAT_BREAK_CMD = %i[
+      repeat_action
+      undo
+      redo
     ]
 
-    REPEAT_BREAK_MODE = [
-      :move,
-      :search,
+    REPEAT_BREAK_MODE = %i[
+      move
+      search
     ]
 
     None = Object.new
@@ -72,7 +72,7 @@ module VER
     def self.find_or_create(uri, line = nil, char = nil, &block)
       case uri
       when Pathname, Symbol
-        if buffer = VER.buffers.find{|buf| buf.uri == uri }
+        if buffer = VER.buffers.find { |buf| buf.uri == uri }
           buffer.show
           buffer.focus
           buffer.at_insert.go_line_char(line, char)
@@ -85,7 +85,7 @@ module VER
         path = Pathname(uri.to_str).expand_path
         find_or_create(path, line, char, &block)
       else
-        raise ArgumentError, "Invalid path: %p" % [path]
+        raise ArgumentError, format('Invalid path: %p', path)
       end
     end
 
@@ -107,7 +107,8 @@ module VER
       @layout = parent
       @frame = Frame.new(parent, self)
 
-      font, tabstop = VER.options.font, VER.options.tabstop
+      font = VER.options.font
+      tabstop = VER.options.tabstop
       tabs = font.measure('0') * tabstop
 
       default_options = OPTIONS.merge(
@@ -128,7 +129,7 @@ module VER
       setup_widgets
       setup_layout
       setup_binds
-      layout.bind('<Map>'){ Tk.update }
+      layout.bind('<Map>') { Tk.update }
     end
 
     def setup_widgets
@@ -147,7 +148,7 @@ module VER
     end
 
     def setup_layout
-      self.    grid_configure row: 0, column: 0, sticky: :nsew
+      grid_configure row: 0, column: 0, sticky: :nsew
       @ybar.   grid_configure row: 0, column: 1, sticky: :ns if @ybar
       @xbar.   grid_configure row: 1, column: 0, sticky: :ew if @xbar
       status.  grid_configure row: 2, column: 0, sticky: :ew
@@ -162,7 +163,7 @@ module VER
     end
 
     def setup_misc
-      @store_hash     = Hash.new{|h,k| h[k] = {} }
+      @store_hash     = Hash.new { |h, k| h[k] = {} }
       @options        = Options.new(:text, VER.options)
       @at_current     = Mark.new(self, :current)
       @at_insert      = Insert.new(self)
@@ -199,7 +200,7 @@ module VER
       on_movement(event)
     end
 
-    def on_movement(event)
+    def on_movement(_event)
       adjust_sight
       at_sel.refresh
       @matching_brace.refresh
@@ -217,18 +218,18 @@ module VER
       Tk.callback_break
     end
 
-    def on_focus_out(event)
+    def on_focus_out(_event)
       Tk.callback_break
     end
 
-    def on_destroy(event)
+    def on_destroy(_event)
       @lock = true
       frame.destroy
       VER.cancel_block(@highlighter)
       VER.buffers.delete(self)
       unlock_uri(uri)
     ensure
-      VER.defer{ VER.exit if VER.buffers.empty? }
+      VER.defer { VER.exit if VER.buffers.empty? }
     end
 
     def adjust_sight
@@ -242,7 +243,7 @@ module VER
     # This has to be called _before_ <Destroy> is received, otherwise the Buffer
     # is half-dead.
     def persist_info
-      file = VER.loadpath.first/'buffer_info.json'
+      file = VER.loadpath.first / 'buffer_info.json'
       l "Persisting Buffer info into: #{file}"
 
       JSON::Store.new(file.to_s, true).transaction do |buffer_info|
@@ -256,7 +257,7 @@ module VER
     end
 
     def load_info
-      file = VER.loadpath.first/'buffer_info.json'
+      file = VER.loadpath.first / 'buffer_info.json'
       l "Loading Buffer info from: #{file}"
       JSON::Store.new(file.to_s, true).transaction do |buffer_info|
         if info = buffer_info[uri.to_s]
@@ -264,7 +265,7 @@ module VER
         end
       end
 
-      return {}
+      {}
     end
 
     def sync_mode_status
@@ -301,7 +302,7 @@ module VER
 
       status.style = {
         background: cget(:background),
-        foreground: color,
+        foreground: color
       }
     end
 
@@ -404,7 +405,7 @@ module VER
       when String, URI
         open_uri(uri, line, char)
       else
-        raise ArgumentError, "Invalid uri: %p" % [uri]
+        raise ArgumentError, format('Invalid uri: %p', uri)
       end
 
       true
@@ -478,7 +479,7 @@ module VER
 
     def open_uri(uri, line, char)
       self.uri = uri
-      self.value = Kernel.open(uri){|io| io.read.chomp }
+      self.value = Kernel.open(uri) { |io| io.read.chomp }
       after_open(nil, line, char)
     end
 
@@ -489,18 +490,18 @@ module VER
 
       info = load_info
 
-      if line || char
-        self.insert = "#{line || 1}.#{char || 0}"
-      else
-        self.insert = info['insert'] || '1.0'
-      end
+      self.insert = if line || char
+                      "#{line || 1}.#{char || 0}"
+                    else
+                      info['insert'] || '1.0'
+                    end
 
       VER.buffers << self
       message "Opened #{uri}"
 
       # Don't rely on the <Map> event, since it's prone to race-conditions.
       finalize_open(syntax || info['syntax'])
-    rescue => ex
+    rescue StandardError => ex
       VER.error(ex)
     end
 
@@ -510,7 +511,7 @@ module VER
         load_preferences
         apply_modeline
       end
-      bind('<Map>'){ adjust_sight }
+      bind('<Map>') { adjust_sight }
     end
 
     def lock_uri(uri, &block)
@@ -535,7 +536,7 @@ Another program may be editing the same file.
 If this is the case, be careful not to end up with two different instances of the same file when making changes.
 Close this buffer or continue with caution.
 
-[O]pen Read-Only, [E]dit anyway, [D]elete lock, [Q]uit, [A]bort: 
+[O]pen Read-Only, [E]dit anyway, [D]elete lock, [Q]uit, [A]bort:
         TEXT
 
         ask(prompt) do |answer, action|
@@ -587,7 +588,7 @@ Close this buffer or continue with caution.
     def uri_lockfile(uri = self.uri)
       require 'tmpdir'
       hash = Digest::SHA1.hexdigest(uri.to_s)
-      lock = Pathname.tmpdir/'ver/lock'/hash
+      lock = Pathname.tmpdir / 'ver/lock' / hash
       lock.dirname.mkpath
       lock
     end
@@ -602,7 +603,7 @@ Close this buffer or continue with caution.
       parent = filename.expand_path.dirname
 
       begin
-        (parent/PROJECT_DIRECTORY_GLOB).glob do |repo|
+        (parent / PROJECT_DIRECTORY_GLOB).glob do |repo|
           self.project_repo = repo
           self.project_root = repo.dirname
           return
@@ -621,7 +622,7 @@ Close this buffer or continue with caution.
         line = get(pos, "#{pos} + #{count} chars")
 
         line =~ extract_pattern
-        $1.scan(/[^:\s]+/) do |option|
+        Regexp.last_match(1).scan(/[^:\s]+/) do |option|
           apply_modeline_option(option)
         end
       end
@@ -637,15 +638,15 @@ Close this buffer or continue with caution.
       when 'et', 'expandtab'
         set :expandtab, boolean
       when /(?:tw|textwidth)=(\d+)/
-        set :textwidth, $1.to_i
+        set :textwidth, Regexp.last_match(1).to_i
       when /(?:ts|tabstop)=(\d+)/
-        set :tabstop, $1.to_i
+        set :tabstop, Regexp.last_match(1).to_i
       when /(?:sw|shiftwidth)=(\d+)/
-        set :shiftwidth, $1.to_i
+        set :shiftwidth, Regexp.last_match(1).to_i
       when /(?:ft|filetype)=(\w+)/
-        set :filetype, $1
+        set :filetype, Regexp.last_match(1)
       else
-        VER.warn "Unknown modeline: %p" % [option]
+        VER.warn format('Unknown modeline: %p', option)
       end
     end
 
@@ -667,9 +668,7 @@ Close this buffer or continue with caution.
     def set_filetype(type)
       syntax = VER::Syntax.from_filename(Pathname("foo.#{type}"))
 
-      if load_syntax(syntax)
-        options.filetype = type
-      end
+      options.filetype = type if load_syntax(syntax)
     end
 
     def hide
@@ -702,7 +701,7 @@ Close this buffer or continue with caution.
 
     # Use this method in commands that do multiple insert, delete, replace
     def undo_record(&block)
-      VER.warn "Buffer is Read-only" if readonly
+      VER.warn 'Buffer is Read-only' if readonly
       undoer ? undoer.record_multi(&block) : yield(self)
     ensure
       self.pristine = false
@@ -720,12 +719,12 @@ Close this buffer or continue with caution.
       major_mode.read(1) do |name|
         if unicode = name.unicode
           if unicode.empty?
-            warn "invalid name for register: %p" % [name]
+            warn format('invalid name for register: %p', name)
           else
             self.register = Register[unicode]
           end
         else
-          warn "invalid name for register: %p" % [name]
+          warn format('invalid name for register: %p', name)
         end
       end
     end
@@ -744,14 +743,12 @@ Close this buffer or continue with caution.
 
       events.reverse_each do |event|
         break unless event.keysym =~ /^(\d+)$/
-        numbers << $1
+        numbers << Regexp.last_match(1)
       end
 
-      if numbers.any? && numbers != ['0']
-        self.prefix_arg = numbers.reverse.join.to_i
-      else
-        self.prefix_arg = nil
-      end
+      self.prefix_arg = if numbers.any? && numbers != ['0']
+                          numbers.reverse.join.to_i
+                        end
     end
 
     # Same as [prefix_arg], but returns 1 if there is no argument.
@@ -895,7 +892,7 @@ Close this buffer or continue with caution.
       @udl_pos_orig = insert if @udl_pos_prev != insert
 
       lines = count(@udl_pos_orig, insert, :displaylines)
-      target = index("#@udl_pos_orig + #{lines + count} displaylines")
+      target = index("#{@udl_pos_orig} + #{lines + count} displaylines")
       @udl_pos_prev = target
 
       @udl_pos_orig = target if target.char == @udl_pos_orig.char
@@ -914,7 +911,7 @@ Close this buffer or continue with caution.
       # count lines between origin and current insert position.
       lines = count(@udl_pos_orig, insert, :lines)
       # now get the target count lines below.
-      target = index("#@udl_pos_orig + #{lines + count} lines")
+      target = index("#{@udl_pos_orig} + #{lines + count} lines")
 
       @udl_pos_prev = target
 
@@ -936,9 +933,9 @@ Close this buffer or continue with caution.
       VER.cancel_block(@highlighter)
 
       interval = options.syntax_highlight_interval.to_int
-      @highlighter = VER.when_inactive_for(interval){
+      @highlighter = VER.when_inactive_for(interval) do
         handle_pending_syntax_highlights
-      }
+      end
 
       touch!('1.0', 'end')
       handle_pending_syntax_highlights
@@ -997,18 +994,16 @@ Close this buffer or continue with caution.
       return unless @preferences
 
       @preferences.each do |preference|
-        next unless preference[:name] == "Comments"
-        if settings = preference[:settings]
-          if shell_variables = settings[:shellVariables]
-            shell_variables.each do |variable|
-              name, value = variable.values_at(:name, :value)
-              ENV[name] = value
+        next unless preference[:name] == 'Comments'
+        next unless settings = preference[:settings]
+        next unless shell_variables = settings[:shellVariables]
+        shell_variables.each do |variable|
+          name, value = variable.values_at(:name, :value)
+          ENV[name] = value
 
-              case name
-              when 'TM_COMMENT_START'
-                options.comment_line = value
-              end
-            end
+          case name
+          when 'TM_COMMENT_START'
+            options.comment_line = value
           end
         end
       end
@@ -1018,10 +1013,11 @@ Close this buffer or continue with caution.
       ignore_tags = %w[ver.highlight.pending sel]
 
       tag_ranges('ver.highlight.pending').each do |range|
-        from, to = range.first, range.last
+        from = range.first
+        to = range.last
 
         (tag_names(from) - ignore_tags).each do |tag_name|
-          tag_from, _ = tag_prevrange(tag_name, from)
+          tag_from, = tag_prevrange(tag_name, from)
           from = tag_from if tag_from && from > tag_from
         end
 
@@ -1030,7 +1026,8 @@ Close this buffer or continue with caution.
           to = tag_to if tag_to && to < tag_to
         end
 
-        from, to = index("#{from} linestart"), index("#{to} lineend")
+        from = index("#{from} linestart")
+        to = index("#{to} lineend")
         syntax.highlight(self, from.line - 1, from, to) if syntax
         @invalid_trailing_whitespace.refresh(from: from, to: to)
         @markup_underline_link.refresh(from: from, to: to)
@@ -1049,7 +1046,7 @@ Close this buffer or continue with caution.
     end
 
     class HighlightPending < Tag
-      NAME = 'ver.highlight.pending'.freeze
+      NAME = 'ver.highlight.pending'
 
       def initialize(buffer, name = NAME)
         super

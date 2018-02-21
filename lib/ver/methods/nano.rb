@@ -5,20 +5,19 @@ module VER
       module_function
 
       # Insert the next keystroke verbatim
-      def verbatim(buffer, action)
+      def verbatim(buffer, _action)
         char = buffer.events.last.unicode
         buffer.insert(:insert, char)
       end
 
       # Insert the keystroke verbatim
-      def verbatim_insert(buffer)
-      end
+      def verbatim_insert(buffer); end
 
-      def ascii_enter(buffer, old, new)
+      def ascii_enter(buffer, _old, _new)
         buffer.store(self, :ascii_digit, [])
       end
 
-      def ascii_leave(buffer, old, new)
+      def ascii_leave(buffer, _old, _new)
         buffer.store(self, :ascii_digit, nil)
       end
 
@@ -36,7 +35,7 @@ module VER
 
         ord = digits.join.to_i
         buffer.at_insert.insert(ord.chr)
-      rescue => ex
+      rescue StandardError => ex
         VER.error(ex)
         buffer.minor_mode(:ascii_digit, :control)
       else
@@ -45,12 +44,12 @@ module VER
 
       # Noop
       def redraw(buffer)
-        mumble buffer, "Redraw"
+        mumble buffer, 'Redraw'
       end
 
       # Noop
       def suspend(buffer)
-        mumble buffer, "Suspend"
+        mumble buffer, 'Suspend'
       end
 
       def home(buffer)
@@ -80,12 +79,12 @@ module VER
       # Constant cursor position display enable/disable
       def toggle_cursor_pos(buffer)
         widgets = buffer.status.widgets
-        np = widgets.find{|widget| widget.kind_of?(Status::NanoPosition) }
+        np = widgets.find { |widget| widget.is_a?(Status::NanoPosition) }
 
         if np.toggle
-          message buffer, "Constant cursor position display enabled"
+          message buffer, 'Constant cursor position display enabled'
         else
-          message buffer, "Constant cursor position display disabled"
+          message buffer, 'Constant cursor position display disabled'
         end
       end
 
@@ -99,10 +98,10 @@ module VER
       def toggle_smart_home_key(buffer)
         if old = buffer.store(self, :smart_home)
           buffer.store(self, :smart_home, true)
-          message buffer, "Smart home key enabled"
+          message buffer, 'Smart home key enabled'
         else
           buffer.store(self, :smart_home, false)
-          message buffer, "Smart home key disabled"
+          message buffer, 'Smart home key disabled'
         end
       end
 
@@ -111,18 +110,18 @@ module VER
       # Useful when editing source code.
       def toggle_auto_indent(buffer)
         if buffer.options.autoindent = !buffer.options.autoindent
-          message buffer, "Auto indent enabled"
+          message buffer, 'Auto indent enabled'
         else
-          message buffer, "Auto indent disabled"
+          message buffer, 'Auto indent disabled'
         end
       end
 
       # Conversion of typed tabs to spaces enable/disable
       def toggle_convert_typed_tabs_to_spaces(buffer)
         if buffer.options.expandtab = !buffer.options.expandtab
-          message buffer, "Conversion of typed tabs to spaces enabled"
+          message buffer, 'Conversion of typed tabs to spaces enabled'
         else
-          message buffer, "Conversion of typed tabs to spaces disabled"
+          message buffer, 'Conversion of typed tabs to spaces disabled'
         end
       end
 
@@ -132,74 +131,74 @@ module VER
       def toggle_soft_line_wrapping(buffer)
         if buffer.cget(:wrap) == :word
           buffer.configure wrap: :none
-          message buffer, "Soft line wrapping disabled"
+          message buffer, 'Soft line wrapping disabled'
         else
           buffer.configure wrap: :word
-          message buffer, "Soft line wrapping enabled"
+          message buffer, 'Soft line wrapping enabled'
         end
       end
 
       # Help mode enable/disable
       def toggle_help_mode(buffer)
         widgets = buffer.status.widgets
-        np = widgets.find{|widget| widget.kind_of?(Status::NanoHelp) }
+        np = widgets.find { |widget| widget.is_a?(Status::NanoHelp) }
 
-        message(np.toggle ? "Help mode enabled" : "Help mode disabled")
+        message(np.toggle ? 'Help mode enabled' : 'Help mode disabled')
       end
 
       # Use of one more line for editing enable/disable
       def toggle_one_more_line(buffer)
-        mumble buffer, "Toggle one more line ignored"
+        mumble buffer, 'Toggle one more line ignored'
       end
 
       # Smooth scrolling enable/disable
       def toggle_smooth_scrolling(buffer)
-        mumble buffer, "Toggle smooth scrolling"
+        mumble buffer, 'Toggle smooth scrolling'
       end
 
       # Whitespace display enable/disable
       def toggle_whitespace_display(buffer)
-        mumble buffer, "Toggle whitespace display"
+        mumble buffer, 'Toggle whitespace display'
       end
 
       # Color syntax highlighting enable/disable
       def toggle_color_syntax_highlighting(buffer)
-        mumble buffer, "Toggle color syntax highlighting"
+        mumble buffer, 'Toggle color syntax highlighting'
       end
 
       # Cut to end enable/disable
       def toggle_cut_to_end(buffer)
-        mumble buffer, "Toggle cut to end"
+        mumble buffer, 'Toggle cut to end'
       end
 
       # Long line wrapping enable/disable
       def toggle_long_line_wrapping(buffer)
-        mumble buffer, "Toggle long line wrapping"
+        mumble buffer, 'Toggle long line wrapping'
       end
 
       # Backup files enable/disable
       def toggle_backup_files(buffer)
-        mumble buffer, "Toggle backup files"
+        mumble buffer, 'Toggle backup files'
       end
 
       # Multiple file buffers enable/disable
       def toggle_multiple_file_buffers(buffer)
-        mumble buffer, "Toggle multiple file buffers"
+        mumble buffer, 'Toggle multiple file buffers'
       end
 
       # Mouse support enable/disable
       def toggle_mouse(buffer)
-        mumble buffer, "Toggle mouse support"
+        mumble buffer, 'Toggle mouse support'
       end
 
       # No conversion from DOS/Mac format enable/disable
       def toggle_dos_mac_format_conversion(buffer)
-        mumble buffer, "Toggle no conversion from DOS/Mac format"
+        mumble buffer, 'Toggle no conversion from DOS/Mac format'
       end
 
       # Suspension enable/disable
       def toggle_suspension(buffer)
-        mumble buffer, "Toggle suspension"
+        mumble buffer, 'Toggle suspension'
       end
 
       def message(buffer, string)

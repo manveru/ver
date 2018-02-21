@@ -17,14 +17,16 @@ module VER
       # insert mode.
       # Always leaves an empty line and sets the insert mark inside that.
       def change_line(count = buffer.prefix_count)
-        from, to = "insert linestart", "insert + #{count - 1} lines lineend"
+        from = 'insert linestart'
+        to = "insert + #{count - 1} lines lineend"
         range = buffer.range(buffer.index(from), buffer.index(to))
         range.kill
         buffer.minor_mode(:control, :insert)
       end
 
       def change(count = buffer.prefix_count)
-        from, to = "insert", "insert + #{count} displaychars"
+        from = 'insert'
+        to = "insert + #{count} displaychars"
         range = buffer.range(buffer.index(from), buffer.index(to))
         range.kill
         buffer.minor_mode(:control, :insert)
@@ -101,11 +103,10 @@ module VER
       def insert_digraph
         buffer.major_mode.read 2 do |*events|
           require 'ver/digraphs'
-          first, last = events.first.unicode, events.last.unicode
+          first = events.first.unicode
+          last = events.last.unicode
           if found = DIGRAPHS["#{first}#{last}"]
           elsif found = DIGRAPHS["#{last}#{first}"]
-          else
-            # some kinda error?
           end
 
           buffer.insert(self, found) if found

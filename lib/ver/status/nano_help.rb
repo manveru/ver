@@ -32,16 +32,18 @@ module VER
         add 1, 5, '^T', ' To Spell'
 
         0.upto 11 do |col|
-          weight = col % 2 == 0 ? 0 : 1
+          weight = col.even? ? 0 : 1
           grid_columnconfigure(col, weight: weight)
         end
       end
 
       def add(row, col, short, long)
         short_label = Tk::Tile::Label.new(
-          self, font: @font, background: 'white', foreground: 'black', text: short)
-        long_label  = Tk::Tile::Label.new(
-          self, font: @font, background: 'black', foreground: 'white', text: long)
+          self, font: @font, background: 'white', foreground: 'black', text: short
+        )
+        long_label = Tk::Tile::Label.new(
+          self, font: @font, background: 'black', foreground: 'white', text: long
+        )
         short_col = col * 2
         long_col = short_col + 1
 

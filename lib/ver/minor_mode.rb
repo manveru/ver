@@ -47,7 +47,7 @@ module VER
       self.name = name = name.to_sym
 
       if MODES.key?(name)
-        raise ArgumentError, "Duplicate #{self.class}: %p" % [name]
+        raise ArgumentError, format("Duplicate #{self.class}: %p", name)
       else
         MODES[name] = self
       end
@@ -77,25 +77,25 @@ module VER
 
     def become(other, *patterns)
       action = Action.new([:minor_mode, self, other], receiver, self)
-      patterns.each{|pattern| keymap[pattern] = action }
+      patterns.each { |pattern| keymap[pattern] = action }
     end
 
     def map(invocation, *patterns)
       action = Action.new(invocation, receiver, self)
-      patterns.each{|pattern| keymap[pattern] = action }
+      patterns.each { |pattern| keymap[pattern] = action }
     end
 
-    def missing(invocation, &block)
+    def missing(invocation)
       action = Fallback.new(invocation, receiver, self)
       self.fallback_action = action
     end
 
-    def enter(invocation, &block)
+    def enter(invocation)
       action = Action.new(invocation, receiver, self)
       self.enter_action = action
     end
 
-    def leave(invocation, &block)
+    def leave(invocation)
       action = Action.new(invocation, receiver, self)
       self.leave_action = action
     end
@@ -119,15 +119,15 @@ module VER
     def replaces(widget_major, other)
       other.replaced_by(widget_major, self) if other
       yield if block_given?
-      self.replacing(widget_major, other)
+      replacing(widget_major, other)
     end
 
     def replaced_by(widget_major, other)
       return unless widget_major.respond_to?(:widget)
       widget = widget_major.widget
       leave_action.call(widget, self, other) if leave_action
-      Tk::Event.generate(widget, "<<LeaveMode>>", data: name)
-      Tk::Event.generate(widget, "<<LeaveMinorMode>>", data: name)
+      Tk::Event.generate(widget, '<<LeaveMode>>', data: name)
+      Tk::Event.generate(widget, '<<LeaveMinorMode>>', data: name)
       Tk::Event.generate(widget, "<<LeaveMinorMode#{to_camel_case}>>", data: name)
     end
 
@@ -136,8 +136,8 @@ module VER
       widget = widget_major.widget
       enter_action.call(widget, other, self) if enter_action
       Tk::Event.generate(widget, "<<EnterMinorMode#{to_camel_case}>>", data: name)
-      Tk::Event.generate(widget, "<<EnterMinorMode>>", data: name)
-      Tk::Event.generate(widget, "<<EnterMode>>", data: name)
+      Tk::Event.generate(widget, '<<EnterMinorMode>>', data: name)
+      Tk::Event.generate(widget, '<<EnterMode>>', data: name)
     end
 
     def synchronize_recursively(widget_major)
@@ -153,7 +153,7 @@ module VER
     end
 
     def unfold(all = [self])
-      pending = self.parents.dup
+      pending = parents.dup
 
       while current = pending.shift
         unless all.include?(current)
@@ -166,11 +166,11 @@ module VER
     end
 
     def to_camel_case
-      name.to_s.split('_').map{|e| e.capitalize}.join
+      name.to_s.split('_').map(&:capitalize).join
     end
 
     def actions
-      unfold.map{|minor| minor.keymap.actions }
+      unfold.map { |minor| minor.keymap.actions }
     end
 
     def to_sym
@@ -178,7 +178,7 @@ module VER
     end
 
     def inspect
-      "#<VER::MinorMode name=%p>" % [name]
+      format('#<VER::MinorMode name=%p>', name)
     end
 
     def hash
@@ -187,7 +187,7 @@ module VER
 
     # we assume that name is unique
     def eql?(other)
-      other.class == self.class && other.name == self.name
+      other.class == self.class && other.name == name
     end
   end
 end

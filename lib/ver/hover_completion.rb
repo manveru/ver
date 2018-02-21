@@ -42,7 +42,9 @@ module VER
     attr_accessor :from, :to, :choices, :options, :completer
 
     def initialize(parent, options = {}, &completer)
-      @parent, @options, @completer = parent, options, completer
+      @parent = parent
+      @options = options
+      @completer = completer
       setup_widgets
       setup_events
       update
@@ -61,8 +63,8 @@ module VER
     end
 
     def setup_events
-      list.bind('<<ListboxSelect>>'){ layout }
-      list.bind('<Expose>'){ layout }
+      list.bind('<<ListboxSelect>>') { layout }
+      list.bind('<Expose>') { layout }
     end
 
     def continue_completion
@@ -83,9 +85,9 @@ module VER
 
     def update
       self.from, self.to, self.choices = completer.call
-      @longest_choice = choices.map{|choice| choice.size }.max
+      @longest_choice = choices.map(&:size).max
 
-      if choices && choices.size > 0
+      if choices && !choices.empty?
         list.value = choices
         list.select 0
 
@@ -96,20 +98,21 @@ module VER
     end
 
     def layout
-      return unless choices && choices.size > 0
+      return unless choices && !choices.empty?
 
       x, y, caret_height =
         parent.tk_caret.values_at(:x, :y, :height)
 
-      height, width = parent.winfo_height, parent.winfo_width
+      height = parent.winfo_height
+      width = parent.winfo_width
       height -= parent.status.winfo_height
 
       # use side with most space, east or west
-      if x > (width / 2)
-        side = 'e'
-      else
-        side = 'w'
-      end
+      side = if x > (width / 2)
+               'e'
+             else
+               'w'
+             end
 
       # use hemisphere with most space
       if y < (height / 3)

@@ -32,7 +32,7 @@ module VER
     def normalize_options(options)
       result = {}
 
-      options.each{|key, value|
+      options.each do |key, value|
         case key = key.to_s
         when 'family'
           result[key.to_sym] = value.to_s
@@ -43,7 +43,7 @@ module VER
         when 'underline', 'overstrike'
           result[key.to_sym] = !!value
         end
-      }
+      end
 
       result
     end

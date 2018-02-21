@@ -1,0 +1,44 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ast (2.4.0)
+    bacon (1.2.0)
+    coderay (1.1.2)
+    eventmachine (1.2.5)
+    ffi (1.9.21)
+    ffi-tk (2018.02.20)
+      ffi (~> 1.9)
+    method_source (0.9.0)
+    parallel (1.12.1)
+    parser (2.5.0.0)
+      ast (~> 2.4.0)
+    powerpack (0.1.1)
+    pry (0.11.3)
+      coderay (~> 1.1.0)
+      method_source (~> 0.9.0)
+    rainbow (3.0.0)
+    rchardet (1.7.0)
+    rubocop (0.52.1)
+      parallel (~> 1.10)
+      parser (>= 2.4.0.2, < 3.0)
+      powerpack (~> 0.1)
+      rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (~> 1.0, >= 1.0.1)
+    ruby-progressbar (1.9.0)
+    unicode-display_width (1.3.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bacon!
+  eventmachine!
+  ffi!
+  ffi-tk (= 2018.02.20)!
+  pry!
+  rchardet!
+  rubocop!
+
+BUNDLED WITH
+   1.14.6

@@ -1,7 +1,7 @@
 module VER
   class ExceptionView < Tk::Tile::Treeview
     OPTIONS = {
-      context: 7,
+      context: 7
     }
 
     attr_reader :tree, :frames, :context_size, :error_tags, :backtrace_tags
@@ -35,12 +35,12 @@ module VER
     end
 
     def setup_binds
-      bind('<<TreeviewOpen>>'){ on_treeview_open }
+      bind('<<TreeviewOpen>>') { on_treeview_open }
 
-      bind('<Escape>'){
+      bind('<Escape>') do
         pack_forget
         VER.layout.visible.first.show
-      }
+      end
     end
 
     def on_treeview_open
@@ -52,20 +52,20 @@ module VER
         filename, lineno, first_lineno, context =
           frame.values_at(:filename, :lineno, :first_lineno, :context)
 
-        context.each_with_index{|line, idx|
+        context.each_with_index do |line, idx|
           line_lineno = first_lineno + idx + 1
           tags = line_lineno == lineno ? error_tags : backtrace_tags
           line_item = item.insert(:end,
-            text: line, values: [line_lineno], tags: tags)
+                                  text: line, values: [line_lineno], tags: tags)
           frames[line_item.id] = [filename, lineno]
-        }
+        end
       when Array
         filename, lineno = frame
-        VER.find_or_create_buffer(filename, lineno){|buffer|
+        VER.find_or_create_buffer(filename, lineno) do |_buffer|
           pack_forget
-        }
+        end
       end
-    rescue => ex # careful here, don't want infinite loop
+    rescue StandardError => ex # careful here, don't want infinite loop
       puts ex, ex.backtrace
     end
 
@@ -75,7 +75,7 @@ module VER
       # from Rack::ShowExceptions
       exception.backtrace.each do |line|
         next unless line =~ /(.*?):(\d+)(:in `(.*)')?/
-        show_line($1, $2.to_i, $4)
+        show_line(Regexp.last_match(1), Regexp.last_match(2).to_i, Regexp.last_match(4))
       end
 
       focus
@@ -84,7 +84,7 @@ module VER
 
     def show_line(filename, lineno, function)
       item = insert(nil, :end,
-        text: filename, values: [lineno, function], tags: error_tags)
+                    text: filename, values: [lineno, function], tags: error_tags)
 
       # may fail from here on without issues.
       lines = ::File.readlines(filename)
@@ -100,9 +100,9 @@ module VER
         function: function,
         first_lineno: first_lineno,
         last_lineno: last_lineno,
-        context: context,
+        context: context
       }
-    rescue => ex
+    rescue StandardError => ex
       puts ex, ex.backtrace
     end
   end

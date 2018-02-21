@@ -1,4 +1,4 @@
-require 'ver/vendor/fuzzy_file_finder'
+require_relative '../vendor/fuzzy_file_finder'
 
 module VER
   class Executor
@@ -19,7 +19,7 @@ module VER
           ],
           displaycolumns: %w[
             highlighted_path score
-          ],
+          ]
         )
 
         tree.heading('path', text: 'Path')
@@ -50,7 +50,7 @@ module VER
       rescue FFF::TooManyEntries
         setup_fff_with(@pwd)
       rescue FFF::TooManyEntries
-        caller.message "The FuzzyFileFinder is overwhelmed by the amount of files"
+        caller.message 'The FuzzyFileFinder is overwhelmed by the amount of files'
         callback.destroy
         Tk.callback_break
       end
@@ -74,9 +74,9 @@ module VER
       end
 
       def choices(value)
-        choices = @fffinder.find(value).
-          sort_by{|match| [-match[:score], match[:path]] }
-        choices.map{|match|
+        choices = @fffinder.find(value)
+                           .sort_by { |match| [-match[:score], match[:path]] }
+        choices.map do |match|
           [
             match[:path],
             match[:abbr],
@@ -85,9 +85,9 @@ module VER
             match[:highlighted_directory],
             match[:highlighted_name],
             match[:highlighted_path],
-            match[:score].round(2),
+            match[:score].round(2)
           ]
-        }
+        end
       end
 
       def action(path)

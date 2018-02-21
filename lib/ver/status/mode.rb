@@ -7,7 +7,7 @@ module VER
 
       def to_s
         major = buffer.major_mode
-        string = [ major.name, *major.minors.map(&:name) ].join(', ')
+        string = [major.name, *major.minors.map(&:name)].join(', ')
         "[#{string}]"
       end
     end

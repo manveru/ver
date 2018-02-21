@@ -1,8 +1,8 @@
 module VER
   class TilingLayout < Tk::Tile::LabelFrame
-    autoload :CommonTiling, 'ver/layout/tiling/common'
-    autoload :HorizontalTiling, 'ver/layout/tiling/horizontal'
-    autoload :VerticalTiling, 'ver/layout/tiling/vertical'
+    require_relative 'tiling/common'
+    require_relative 'tiling/horizontal'
+    require_relative 'tiling/vertical'
 
     attr_reader :strategy, :stack, :options
 
@@ -70,7 +70,8 @@ module VER
       return unless index = stack.index(current)
       previous = stack[index - 1]
       current.raise(previous)
-      stack[index - 1], stack[index] = current, previous
+      stack[index - 1] = current
+      stack[index] = previous
 
       apply
       previous.focus unless visible?(current)
@@ -86,7 +87,8 @@ module VER
       return unless index = stack.index(current)
       following = stack[index + 1] || stack[0]
       current.raise(following)
-      stack[stack.index(following)], stack[index] = current, following
+      stack[stack.index(following)] = current
+      stack[index] = following
 
       apply
       following.focus unless visible?(current)

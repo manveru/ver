@@ -8,7 +8,7 @@ module VER
       def apply_masters(windows, center, step = 1.0 / windows.size)
         windows.each_with_index do |window, idx|
           evolve(window, relx: (step * idx), rely: 0.0,
-                 relheight: center, relwidth: step)
+                         relheight: center, relwidth: step)
         end
       end
 
@@ -17,7 +17,7 @@ module VER
 
         windows.each_with_index do |window, idx|
           evolve(window, relx: (step * idx), rely: center,
-                 relheight: relheight, relwidth: step)
+                         relheight: relheight, relwidth: step)
         end
       end
     end

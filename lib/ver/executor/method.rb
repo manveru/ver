@@ -11,7 +11,7 @@ module VER
         tree.configure(
           show: [:headings],
           columns: %w[id method signature],
-          displaycolumns: %w[method signature],
+          displaycolumns: %w[method signature]
         )
 
         tree.heading('method', text: 'Method')
@@ -32,14 +32,14 @@ module VER
       end
 
       def choices(name)
-        subset(name, @actions.map.with_index{|action, id|
+        subset(name, @actions.map.with_index do |action, id|
           receiver = action.receiver || caller
           method = receiver.method(action.method)
           [id, method.name.to_s, signature_of(method)]
-        }.compact, 1)
+        end.compact, 1)
       end
 
-      def accept_line(event)
+      def accept_line(_event)
         self.tabcount = 0
         return unless item = tree.selection.first
         id = item.options[:values].first.to_i
