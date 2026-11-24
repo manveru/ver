@@ -3,14 +3,17 @@
     "ffi-tk": {
       "flake": false,
       "locked": {
-        "lastModified": 1795113192,
-        "narHash": "sha256-yYs8t+7pTrg/wBlnVnHd7XBbB/KVnYJNB1rpKt4pmqQ=",
-        "path": "/home/manveru/ghq/github.com/manveru/ffi-tk",
-        "type": "path"
+        "lastModified": 1795546901,
+        "narHash": "sha256-Vrg7qUzfKSTQecvSEGzQJgDNCxF9o1eKPNuGDBLDqVE=",
+        "owner": "manveru",
+        "repo": "ffi-tk",
+        "rev": "ab5313aafbaa9fedbee373083b8aae260f1e8e81",
+        "type": "github"
       },
       "original": {
-        "path": "/home/manveru/ghq/github.com/manveru/ffi-tk",
-        "type": "path"
+        "owner": "manveru",
+        "repo": "ffi-tk",
+        "type": "github"
       }
     },
     "flake-parts": {

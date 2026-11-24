@@ -114,7 +114,7 @@ autosave doesn't require any keybinds, so it works with all keymaps.
 
 h3. Keymaps
 
-VER features 3 keymaps out of the box, Vim, Nano, and Diakonos, which are
+VER includes Vim, Nano, Diakonos, and Helix keymaps, which are
 constantly tested and improved.
 As might be expected, the Vim keymap is not 100% complete, and I'm adding new
 mappings as I become aware of them.
@@ -122,6 +122,12 @@ Vim is a fairly complex piece of software developed over the past 20 years, so
 don't expect full compatibility or behaviour in all cases.
 
 An Emacs keymap is currently under development, but not ready for daily use.
+
+Start VER with @ver -k helix@ to use Helix-style editing with a single selection.
+Use word motions, @x@, or @v@ and a motion to select text, then @d@ to delete,
+@c@ to change, or @y@ to yank. Use @mi@ or @ma@ to select inside or around
+a word, paragraph, or delimiter pair. The keymap also supports insert mode, search,
+@Space f@ for the file picker, and @:w@ and @:q@ for saving and quitting.
 
 We are searching for contributors that can provide keymaps for other editors.
 To add a new keymap, put it under config/keymap/$name.rb and start VER with

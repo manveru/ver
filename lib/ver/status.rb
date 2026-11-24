@@ -86,27 +86,21 @@ module VER
     require_relative 'status/short_filename'
     require_relative 'status/syntax'
 
+    MODE_LINE = lambda { |status|
+      [
+        ShortFilename.new(status, weight: 1),
+        Position.new(status),
+        Percent.new(status),
+        Mode.new(status),
+        Syntax.new(status),
+        Encoding.new(status)
+      ]
+    }
+
     LINES = {
-      vim: lambda { |status|
-        [
-          ShortFilename.new(status, weight: 1),
-          Position.new(status),
-          Percent.new(status),
-          Mode.new(status),
-          Syntax.new(status),
-          Encoding.new(status)
-        ]
-      },
-      emacs: lambda { |status|
-        [
-          ShortFilename.new(status, weight: 1),
-          Position.new(status),
-          Percent.new(status),
-          Mode.new(status),
-          Syntax.new(status),
-          Encoding.new(status)
-        ]
-      },
+      vim: MODE_LINE,
+      emacs: MODE_LINE,
+      helix: MODE_LINE,
       nano: lambda { |status|
         [
           NanoPosition.new(status, row: 0, column: 0, weight: 1, anchor: :center),

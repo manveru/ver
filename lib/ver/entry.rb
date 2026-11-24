@@ -24,8 +24,7 @@ module VER
 
     ## Maintenance
     def style
-      style = cget(:style)
-      style.flatten.first if style
+      Array(cget(:style)).flatten.first
     end
 
     def message(*args)

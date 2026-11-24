@@ -38,6 +38,22 @@ module VER
         compact!
       end
 
+      def begin_group
+        return if group_open?
+
+        separate!
+        @group_open = true
+      end
+
+      def end_group
+        separate!
+        @group_open = false
+      end
+
+      def group_open?
+        @group_open
+      end
+
       def record(&block)
         if recording
           stack << block
@@ -108,8 +124,7 @@ module VER
         self.records = []
 
         yield(self) if block_given?
-
-        records.last.separator = true if records.any?
+        records.last.separator = true if records.any? && !tree.group_open?
       end
 
       def insert(*args)
@@ -240,6 +255,7 @@ module VER
       def compact!
         return if separator
         return unless parent = self.parent
+        return if tree.group_open? && parent.separator
 
         pundo_from, pundo_to, pundo_string = parent.undo_info
         sundo_from, sundo_to, sundo_string = undo_info

@@ -4,11 +4,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    # The modernised ffi-tk is not on origin yet; switch to
-    # github:manveru/ffi-tk once it is pushed. Refresh after editing it with
-    # `nix flake update ffi-tk`.
+    # To test local ffi-tk changes, pass
+    # `--override-input ffi-tk path:/path/to/ffi-tk`.
     ffi-tk = {
-      url = "path:/home/manveru/ghq/github.com/manveru/ffi-tk";
+      url = "github:manveru/ffi-tk";
       flake = false;
     };
   };
