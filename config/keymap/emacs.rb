@@ -5,47 +5,46 @@ module VER
 
   minor_mode :fundamental do
     handler Methods::Basic
-    map :quit, %w[Control-x Control-c]
+    map :quit, '<Control-x><Control-c>'
 
-    handler Methods::Save
-    map :save,     %w[Control-x Control-s]
-    map :save_all, %w[Control-x s]
+    handler nil # Buffer instance methods
+    map :save,     '<Control-x><Control-s>'
+    map :save_all, '<Control-x>s'
 
     handler Methods::Open
-    map :file_open_popup, %w[Control-x Control-f]
+    map :file_open_popup, '<Control-x><Control-f>'
 
     handler Methods::Help
-    map :describe_key, %w[Control-h k]
+    map :describe_key, '<Control-h>k'
 
     handler Methods::Undo
-    map :undo, %w[Control-slash], %w[Control-x u], %w[Control-underscore], %w[Undo]
-    map :redo, %w[Redo] # emacs redo breaks my brain... undo only for now
+    map :undo, '<Control-slash>', '<Control-x>u', '<Control-underscore>', '<Undo>'
+    map :redo, '<Redo>' # emacs redo breaks my brain... undo only for now
 
     handler :at_insert
-    map :end_of_file,     %w[Control-greater]
-    map :end_of_line,     %w[Control-e], %w[End]
-    map :next_char,       %w[Control-f], %w[Right]
-    map :next_line,       %w[Control-n], %w[Down]
-    map :next_page,       %w[Control-v], %w[Next]
-    map :next_word,       %w[Alt-f]
-    map :prev_char,       %w[Control-b], %w[Left]
-    map :prev_line,       %w[Control-p], %w[Up]
-    map :prev_page,       %w[Alt-v],     %w[Prior]
-    map :prev_word,       %w[Alt-b]
-    map :start_of_file,   %w[Control-less]
-    map :start_of_line,   %w[Control-a], %w[Home]
-    map :end_of_sentence, %w[Alt-e]
+    map :last_line,       '<Control-greater>'
+    map :last_char,       '<Control-e>', '<End>'
+    map :next_char,       '<Control-f>', '<Right>'
+    map :next_line,       '<Control-n>', '<Down>'
+    map :next_page,       '<Control-v>', '<Next>'
+    map :next_word,       '<Alt-f>'
+    map :prev_char,       '<Control-b>', '<Left>'
+    map :prev_line,       '<Control-p>', '<Up>'
+    map :prev_page,       '<Alt-v>',     '<Prior>'
+    map :prev_word,       '<Alt-b>'
+    map :first_line,      '<Control-less>'
+    map :start_of_line,   '<Control-a>', '<Home>'
+    map :end_of_sentence, '<Alt-e>'
 
-    handler Methods::Delete
-    map [:delete_motion, :prev_char],     %w[BackSpace]
-    map [:delete_motion, :next_char],     %w[Control-d], %w[Delete]
-    map [:kill_motion, :end_of_line],     %w[Control-k]
-    map [:kill_motion, :end_of_sentence], %w[Alt-k]
-    map [:kill_motion, :next_word],       %w[Alt-d]
-    map [:kill_motion, :prev_word],       %w[Alt-BackSpace]
+    map [:deleting, :prev_char],      '<BackSpace>'
+    map [:deleting, :next_char],      '<Control-d>', '<Delete>'
+    map [:killing, :last_char],       '<Control-k>'
+    map [:killing, :end_of_sentence], '<Alt-k>'
+    map [:killing, :next_word],       '<Alt-d>'
+    map [:killing, :prev_word],       '<Alt-BackSpace>'
 
     handler VER::Methods::Insert
-    map :newline, %w[Return]
+    map :newline, '<Return>'
     missing :string
   end
 end

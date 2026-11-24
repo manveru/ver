@@ -1,53 +1,6 @@
 require_relative '../../helper'
 
-shared :with_buffer do
-  before do
-    @buffer ||= VER::Buffer.new
-    @buffer.value = <<-TEXT
-Fugiat eos voluptatum officia fugit ad sit qui.
-Alias et voluptas sapiente sed.
-Unde ut qui esse repellendus sunt dolorum officia.
-Officia accusamus perferendis ab.
-Nesciunt repellendus et recusandae dolorum quis repudiandae ad minima.
-Ducimus quo et ea.
-Qui cumque blanditiis aliquam accusamus perspiciatis provident sapiente fuga.
-    TEXT
-    @buffer.insert = '1.0'
-    @buffer.major_mode = VER::MajorMode[:Fundamental]
-    @insert = @buffer.at_insert
-  end
-
-  after do
-    @buffer.value = ''
-  end
-
-  def buffer
-    @buffer
-  end
-
-  def insert
-    @insert
-  end
-
-  def type(string)
-    buffer.type(string)
-  end
-
-  def minibuf
-    buffer.minibuf
-  end
-end
-
-shared :control_mode do
-  behaves_like :with_buffer
-
-  before do
-    buffer.minor_mode?(:insert).should == nil
-    Tk::Clipboard.set 'foo'
-  end
-end
-
-VER.spec keymap: 'emacs' do
+VER.spec keymap: 'emacs', hidden: false do
   describe 'Keymap for Emacs' do
     describe 'movement' do
       behaves_like :with_buffer
@@ -59,6 +12,30 @@ VER.spec keymap: 'emacs' do
         insert.index = '1.0 lineend'
         type '<Control-a>'
         insert.index.should == '1.0 linestart'
+      end
+
+      it 'goes to end of line with <End> and <Control-e>' do
+        insert.index = '1.0'
+        type '<End>'
+        insert.index.should == '1.0 lineend'
+        insert.index = '1.0'
+        type '<Control-e>'
+        insert.index.should == '1.0 lineend'
+      end
+    end
+
+    describe 'deletion' do
+      behaves_like :destructive_mode
+
+      it 'deletes the next char with <Control-d>' do
+        type '<Control-d>'
+        buffer.get('1.0', '1.0 lineend').should == 'nventore voluptatibus dolorem assumenda.'
+      end
+
+      it 'kills to end of line with <Control-k>' do
+        insert.index = '1.9'
+        type '<Control-k>'
+        buffer.get('1.0', '1.0 lineend').should == 'Inventore'
       end
     end
   end
