@@ -78,7 +78,7 @@ module VER
       if previous = visible.first
         previous.focus
       else
-        Methods::Save.quit(nil)
+        VER.exit
       end
     end
 

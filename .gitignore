@@ -1,2 +1,6 @@
 tags
 .todo
+/tmp
+/pkg
+/result
+.direnv

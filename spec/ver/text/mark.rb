@@ -1,7 +1,7 @@
 require_relative '../../helper'
 
-before = lambda{ @buffer = VER::Buffer.new(VER.layout) }
-after = lambda{ @buffer.destroy }
+before = proc { @buffer = VER::Buffer.new(VER.layout) }
+after = proc { @buffer.destroy }
 
 VER.spec do
   describe 'VER::Text::Mark' do

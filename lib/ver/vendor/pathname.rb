@@ -1,4 +1,5 @@
 require 'pathname'
+require 'rchardet'
 
 # annoying fixes
 class Pathname
@@ -77,24 +78,19 @@ class Pathname
   end
 
   def read_encoded_file
-    content = read
-    content.force_encoding('BINARY')
+    content = binread
+    content.force_encoding(Pathname.detect_encoding(content))
+    [content, content.encoding]
+  rescue Errno::ENOENT
+    [+'', Encoding::UTF_8]
+  end
 
-    require_relative 'open3'
-    encoding, status = Open3.capture2('rchardet', to_s)
-    content.force_encoding(encoding.strip)
+  # rchardet's guess when Ruby knows that encoding, otherwise the first entry
+  # of GUESS_ENCODING_ORDER that +content+ is valid in (BINARY always is).
+  def self.detect_encoding(content)
+    name = CharDet.detect(content)['encoding']
+    return Encoding.find(name) if name && Encoding.name_list.any? { |known| known.casecmp?(name) }
 
-    return content, content.encoding
-  rescue ArgumentError, Errno::ENOENT # file or rchardet missing?
-    if content
-      GUESS_ENCODING_ORDER.find do |enc|
-        content.force_encoding(enc)
-        content.valid_encoding?
-      end
-
-      return content, content.encoding
-    else
-      return '', Encoding::UTF_8
-    end
+    GUESS_ENCODING_ORDER.find { |enc| content.dup.force_encoding(enc).valid_encoding? }
   end
 end

@@ -2,7 +2,16 @@ require 'bacon'
 # Bacon.summary_at_exit
 
 $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
-require 'lib/ver'
+require 'ver'
+
+# Tk's default bgerror opens a modal dialog and waits for a click, which hangs
+# a headless spec run; report the error and fail instead.
+Tk.interp.eval(<<~'TCL')
+  proc bgerror {message} {
+    puts stderr "Tk background error: $message\n$::errorInfo"
+    exit 2
+  }
+TCL
 
 module VER
   class Spec
@@ -29,24 +38,16 @@ module VER
     def bacon_summary
       Tk.update # finish all pending events first
       Bacon.handle_summary
-
-      if $!
-        Kernel.raise $!
-      elsif Bacon::Counter[:errors] + Bacon::Counter[:failed] > 0
-        Kernel.exit 1
-      else
-        Kernel.exit 0
-      end
-    ensure
       $stdout.flush
       $stderr.flush
-      Tk.exit
+      failures = Bacon::Counter[:errors] + Bacon::Counter[:failed]
+      Tk.execute('exit', failures.zero? ? 0 : 1)
     end
   end
 
 
   # Schedule all describe blocks in a 'after idle' block that is scheduled by tcl.
-  # The last 'after idle' will output the bacon summary and call [Tk.exit].
+  # The last 'after idle' will output the bacon summary and exit Tcl.
   # Not sure how well this handles nested describe blocks, but it might just work?
   #
   # @example usgage
@@ -70,7 +71,7 @@ module VER
 
   # this is called when no buffers are left, make sure we finish all pending
   # events and output the summary first.
-  def self.exit
+  def self.exit(_status = 0)
     Tk.update
   end
 end

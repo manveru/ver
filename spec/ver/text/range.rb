@@ -1,6 +1,6 @@
 require_relative '../../helper'
 
-before = lambda{
+before = proc {
   @buffer = VER::Buffer.new(VER.layout)
   @buffer.value = <<-VALUE.chomp
 line one
@@ -8,7 +8,7 @@ line two
   VALUE
   @range = @buffer.range('1.5', '2.4')
 }
-after = lambda{ @buffer.destroy }
+after = proc { @buffer.destroy }
 
 VER.spec do
   describe 'VER::Text::Range' do

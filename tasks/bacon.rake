@@ -1,68 +1,58 @@
-require 'fileutils'
+# frozen_string_literal: true
 
-desc 'Run all bacon specs with pretty output'
+desc 'Run all bacon specs headless with pretty output'
 task :bacon do
   require 'open3'
-  require 'scanf'
-  require 'matrix'
+  require 'fileutils'
+  require_relative 'support/headless_display'
 
   specs = PROJECT_SPECS
 
+  # VER writes ~/.config/ver on startup (first_startup, .events, buffer_info);
+  # give specs a throwaway HOME so they never touch the real one.
+  spec_home = File.expand_path('../tmp/spec-home', __dir__)
+  FileUtils.rm_rf(spec_home)
+  FileUtils.mkdir_p(spec_home)
+
   some_failed = false
   specs_size = specs.size
-  len = specs.map{|s| s.size }.sort.last
-  total_tests = total_assertions = total_failures = total_errors = 0
-  totals = Vector[0, 0, 0, 0]
+  len = specs.map(&:size).max
+  totals = [0, 0, 0, 0]
 
-  red, yellow, green = "\e[31m%s\e[0m", "\e[33m%s\e[0m", "\e[32m%s\e[0m"
+  red = "\e[31m%s\e[0m"
+  green = "\e[32m%s\e[0m"
   left_format = "%4d/%d: %-#{len + 11}s"
-  spec_format = "%d specifications (%d requirements), %d failures, %d errors"
+  spec_format = '%d specifications (%d requirements), %d failures, %d errors'
+  summary_re = /(\d+) specifications \((\d+) requirements\), (\d+) failures, (\d+) errors/
 
-  specs.each_with_index do |spec, idx|
-    print(left_format % [idx + 1, specs_size, spec])
+  HeadlessDisplay.with_display do |display_env|
+    env = display_env.merge('HOME' => spec_home)
 
-    Open3.popen3(FileUtils::RUBY, '-w', spec) do |sin, sout, serr|
-      out = sout.read.strip
-      err = serr.read.strip
+    specs.each_with_index do |spec, idx|
+      print(format(left_format, idx + 1, specs_size, spec))
 
-      # this is conventional, see spec/innate/state/fiber.rb for usage
-      if out =~ /^Bacon::Error: (needed .*)/
-        puts(yellow % ("%6s %s" % ['', $1]))
+      out, err, = Open3.capture3(env, FileUtils::RUBY, spec)
+      out.strip!
+      err.strip!
+      total = out.match(summary_re)&.captures&.map(&:to_i)
+
+      if total
+        totals = totals.zip(total).map { |a, b| a + b }
+        tests, _, failures, errors = total
+      end
+
+      if total && tests.positive? && (failures + errors).zero?
+        puts((green % '%6d passed') % tests)
       else
-        total = nil
-
-        out.each_line do |line|
-          scanned = line.scanf(spec_format)
-
-          next unless scanned.size == 4
-
-          total = Vector[*scanned]
-          break
-        end
-
-        if total
-          totals += total
-          tests, assertions, failures, errors = total_array = total.to_a
-
-          if tests > 0 && failures + errors == 0
-            puts((green % "%6d passed") % tests)
-          else
-            some_failed = true
-            puts(red % "       failed")
-            puts out unless out.empty?
-            puts err unless err.empty?
-          end
-        else
-          some_failed = true
-          puts(red % "       failed")
-          puts out unless out.empty?
-          puts err unless err.empty?
-        end
+        some_failed = true
+        puts(red % '       failed')
+        puts out unless out.empty?
+        puts err unless err.empty?
       end
     end
   end
 
   total_color = some_failed ? red : green
-  puts(total_color % (spec_format % totals.to_a))
+  puts(total_color % (spec_format % totals))
   exit 1 if some_failed
 end

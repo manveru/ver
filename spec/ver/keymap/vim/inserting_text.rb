@@ -25,7 +25,7 @@ VER.spec keymap: 'vim', hidden: false do
         "Inventore voluptatibus dolorem assumenda. Hello, World! "
       end
 
-      keys 'i', '<Insert>', 'insert text before the cursor (N times)', do |key|
+      keys 'i', '<Insert>', 'insert text before the cursor (N times)' do |key|
         buffer.minor_mode?(:insert).should.be.nil
         type key
         buffer.minor_mode?(:insert).should.not.be.nil

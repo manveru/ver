@@ -3,7 +3,7 @@ module VER
     class Label < Tk::Tile::Label
       include LabelToggle
 
-      attr_reader :status, :variable, :weight, :row, :column, :sticky, :format
+      attr_reader :status, :variable, :weight, :row, :column, :sticky, :template
 
       def initialize(status, options = {})
         @status = status
@@ -11,7 +11,7 @@ module VER
         @row = options.delete(:row)
         @column = options.delete(:column)
         @sticky = options.delete(:sticky)
-        @format = options.delete(:format) || '%s'
+        @template = options.delete(:format) || '%s'
         options[:font] ||= options.delete(:font) || buffer.options.font
 
         super

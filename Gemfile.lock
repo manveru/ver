@@ -1,44 +1,64 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    ast (2.4.0)
+    abbrev (0.1.2)
     bacon (1.2.0)
-    coderay (1.1.2)
-    eventmachine (1.2.5)
-    ffi (1.9.21)
-    ffi-tk (2018.02.20)
-      ffi (~> 1.9)
-    method_source (0.9.0)
-    parallel (1.12.1)
-    parser (2.5.0.0)
-      ast (~> 2.4.0)
-    powerpack (0.1.1)
-    pry (0.11.3)
-      coderay (~> 1.1.0)
-      method_source (~> 0.9.0)
-    rainbow (3.0.0)
-    rchardet (1.7.0)
-    rubocop (0.52.1)
-      parallel (~> 1.10)
-      parser (>= 2.4.0.2, < 3.0)
-      powerpack (~> 0.1)
-      rainbow (>= 2.2.2, < 4.0)
-      ruby-progressbar (~> 1.7)
-      unicode-display_width (~> 1.0, >= 1.0.1)
-    ruby-progressbar (1.9.0)
-    unicode-display_width (1.3.0)
+    benchmark (0.5.0)
+    coderay (1.1.3)
+    eventmachine (1.2.7)
+    ffi (1.17.4)
+    io-console (0.9.5)
+    logger (1.7.0)
+    method_source (1.1.0)
+    mini_portile2 (2.8.9)
+    nokogiri (1.19.7)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    pry (0.16.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+      reline (>= 0.6.0)
+    pstore (0.3.0)
+    racc (1.8.1)
+    rake (13.4.2)
+    rchardet (1.10.2)
+    reline (0.7.0)
+      io-console (~> 0.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bacon!
-  eventmachine!
-  ffi!
-  ffi-tk (= 2018.02.20)!
-  pry!
-  rchardet!
-  rubocop!
+  abbrev
+  bacon
+  benchmark
+  eventmachine
+  ffi
+  logger
+  nokogiri
+  pry
+  pstore
+  rake
+  rchardet
+
+CHECKSUMS
+  abbrev (0.1.2) sha256=ad1b4eaaaed4cb722d5684d63949e4bde1d34f2a95e20db93aecfe7cbac74242
+  bacon (1.2.0) sha256=51d52d72a61729668ade581fe68fb10b9654027d2ac73203fbbcae73647b06b8
+  benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
+  coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
+  eventmachine (1.2.7) sha256=994016e42aa041477ba9cff45cbe50de2047f25dd418eba003e84f0d16560972
+  ffi (1.17.4) sha256=bcd1642e06f0d16fc9e09ac6d49c3a7298b9789bcb58127302f934e437d60acf
+  io-console (0.9.5) sha256=83dd9bbf4c4680416629245b39cd4212eb5f4d9a4ea91804870c1f6b846414d5
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
+  method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5
+  mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
+  nokogiri (1.19.7) sha256=abe94507c54cb18f872777b16bdca4aad32b1abdc4c52fe843f1c80fbdf992b8
+  pry (0.16.1) sha256=d92d82c86e7f2dc34beec6d2892d5cf5ea517eea22eed3ceabb38ee62a98accc
+  pstore (0.3.0) sha256=97888d57cdc8b99b3587dde5e1d01fc5ca4a9124dfeb2afb84e3dd982e78f829
+  racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
+  rake (13.4.2) sha256=cb825b2bd5f1f8e91ca37bddb4b9aaf345551b4731da62949be002fa89283701
+  rchardet (1.10.2) sha256=e041cb195f464dc10e49ab130f78c8b5956cd9a4f4f6df84e0c183b87c135f33
+  reline (0.7.0) sha256=5b012d8e55dbf9d450f12bde2cf7d15ff546ae80b3f8f3b30e570d431815583d
 
 BUNDLED WITH
-   1.14.6
+  4.0.20

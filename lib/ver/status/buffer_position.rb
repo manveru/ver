@@ -7,7 +7,7 @@ module VER
 
       def to_s
         buffers = VER.buffers.to_a
-        format(format, buffers.index(buffer).to_i + 1, buffers.size)
+        format(template, buffers.index(buffer).to_i + 1, buffers.size)
       end
     end
   end

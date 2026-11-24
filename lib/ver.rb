@@ -158,7 +158,7 @@ module VER
     end
   rescue StandardError => exception
     error(exception)
-    exit
+    Kernel.exit(1)
   end
 
   def run_maybe_forking
@@ -384,31 +384,23 @@ module VER
     (core / 'welcome').cp(home / 'welcome')
   end
 
-  def exit
+  # Tcl's exit terminates the process from C, which is safe to call from inside
+  # a Tk callback (raising SystemExit through Tcl frames is not).
+  def exit(status = 0)
     store_session
-    @cancel_blocks.keys.each { |key| @cancel_blocks[key] = true }
-    Tk.exit
-    begin
-      EM.stop
-    rescue StandardError => ex
-      p ex
-      nil
-    end
-    Kernel.exit
+    @cancel_blocks.each_key { |key| @cancel_blocks[key] = true }
+    Tk.execute('exit', status)
   end
 
+  # Require +name+ (with or without .rb) from the first loadpath entry that has
+  # it, so a personal file in home_conf_dir shadows the core one.
   def load(name)
-    loadpath.each do |path|
-      file = File.join(path, name)
+    basename = name.end_with?('.rb') ? name : "#{name}.rb"
+    candidates = loadpath.map { |dir| dir / basename }
+    file = candidates.find(&:file?)
+    raise LoadError, "#{basename} not found in #{candidates.join(', ')}" unless file
 
-      begin
-        require(file)
-        return
-      rescue LoadError, TypeError => ex
-        p ex
-        # TypeError happens on JRuby sometimes...
-      end
-    end
+    require(file.to_s)
   end
 
   def find_in_loadpath(basename)

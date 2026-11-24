@@ -650,15 +650,11 @@ Close this buffer or continue with caution.
       end
     end
 
-    def set(option, value)
+    def set(option, value, &block)
       method = "set_#{option}"
 
       if respond_to?(method)
-        if block_given?
-          __send__(method, value, &Proc.new)
-        else
-          __send__(method, value)
-        end
+        __send__(method, value, &block)
       else
         options[option] = value
         yield(value) if block_given?

@@ -38,9 +38,9 @@ module VER
         compact!
       end
 
-      def record
+      def record(&block)
         if recording
-          stack << Proc.new
+          stack << block
         else
           self.recording = true
           current = Record.new(self, widget, applied)

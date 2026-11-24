@@ -337,15 +337,11 @@ module VER
         end
       end
 
-      def set(text, option, value)
+      def set(text, option, value, &block)
         method = "set_#{option}"
 
         if respond_to?(method)
-          if block_given?
-            __send__(method, text, value, &Proc.new)
-          else
-            __send__(method, text, value)
-          end
+          __send__(method, text, value, &block)
         else
           text.options[option] = value
           yield(text, value) if block_given?

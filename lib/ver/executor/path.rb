@@ -33,9 +33,8 @@ module VER
         throw(:invalid) if File.directory?(path)
 
         VER.find_or_create_buffer(path) do |buffer|
-          text = buffer.text
-          text.value = caller.value.chomp
-          Methods::Save.file_save(text)
+          buffer.value = caller.value.chomp
+          buffer.save
         end
 
         callback.destroy(false)

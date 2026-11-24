@@ -22,7 +22,7 @@ module VER
       def self.newline_above(text)
         Undo.record text do |record|
           if text.index(:insert).y > 1
-            Move.prev_line(text)
+            text.prev_line
             newline_below(text)
           else
             record.insert('insert linestart', "\n")

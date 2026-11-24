@@ -21,7 +21,7 @@ end
 
 VER.spec do
   describe 'VER::Methods::SmartAutoindent' do
-    require 'config/plugin/smart_autoindent'
+    require_relative '../../../config/plugin/smart_autoindent'
 
     describe 'insert indented newline' do
       Indent = VER::Methods::SmartAutoindent

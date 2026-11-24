@@ -6,12 +6,12 @@ line one
     line three
 CONTENT
 
-before = lambda{
+before = proc {
   @buffer = VER::Buffer.new(VER.layout)
   @buffer.value = content
   @insert = @buffer.at_insert
 }
-after = lambda{ @buffer.destroy }
+after = proc { @buffer.destroy }
 
 VER.spec do
   describe 'VER::Buffer::Insert' do
