@@ -1,3 +1,11 @@
+[e3d6d18 | 2018-02-21 11:31:59 UTC] Michael Fellinger <michael.fellinger@xing.com>
+
+  * back to a working state
+
+[ed0156d | 2013-03-31 13:00:09 UTC] Michael Fellinger <m.fellinger@gmail.com>
+
+  * Version 2013.03
+
 [6fe3519 | 2013-03-31 12:55:15 UTC] Michael Fellinger <m.fellinger@gmail.com>
 
   * update rake tasks
@@ -5011,7 +5019,7 @@
 
   * Hack for 1.8
 
-[6d2a591 | 2009-08-24 02:58:57 UTC] lian <meta.rb@gmail.com>
+[6d2a591 | 2009-08-24 02:58:57 UTC] Julian Langschaedel <meta.rb@gmail.com>
 
   * fix broken-pipe error when xclip not installed
 
