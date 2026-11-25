@@ -2,7 +2,7 @@ module VER
   class Executor
     class ExMethod < Entry
       def setup
-        @actions = caller.major_mode.actions.sort_by(&:method)
+        @actions = caller.major_mode.actions
 
         setup_tree
       end
@@ -32,26 +32,21 @@ module VER
       end
 
       def choices(name)
-        subset(name, @actions.map.with_index do |action, id|
-          receiver = action.receiver || caller
-          method = receiver.method(action.method)
+        rows = @actions.map.with_index do |action, id|
+          method = action.to_method(caller)
           [id, method.name.to_s, signature_of(method)]
-        end.compact, 1)
+        end
+        subset(name, rows, 1)
       end
 
-      def accept_line(_event)
+      def accept_line
         self.tabcount = 0
-        return unless item = tree.selection.first
-        id = item.options[:values].first.to_i
-        return unless action = @actions[id]
+        item = tree.selection.first
+        return unless item
+
+        action = @actions.fetch(Integer(item.options[:values].first))
         callback.destroy
         action.call(caller)
-      end
-
-      def action(id)
-        caller.message @actions[id].call(caller).inspect
-      rescue Exception => ex
-        caller.warn ex.message
       end
 
       # TODO:

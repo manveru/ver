@@ -13,8 +13,7 @@ module VER
         raise ArgumentError
       end
     rescue StandardError => ex
-      VER.error(format('Exception from %p', self))
-      VER.error(ex)
+      VER.error(ex, context: format('Exception from %p', self))
     end
 
     def combine(action)

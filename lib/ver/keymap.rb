@@ -55,16 +55,14 @@ module VER
     # A subclass to make lookup unambigous
     class MapHash < Hash
       def deep_each(&block)
-        if block
-          each do |key, value|
-            if value.respond_to?(:deep_each)
-              value.deep_each(&block)
-            else
-              yield key, value
-            end
+        return enum_for(:deep_each) unless block
+
+        each do |key, value|
+          if value.respond_to?(:deep_each)
+            value.deep_each(&block)
+          else
+            yield key, value
           end
-        else
-          Enumerator.new(self, :deep_each)
         end
       end
 

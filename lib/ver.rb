@@ -573,20 +573,16 @@ module VER
   end
 
   # a handleable error condition
-  def error(*args)
-    p args
-    log.error(*args)
-    if args.size == 1
-      arg = args.first
-      case arg
-      when Exception
-        puts "#{arg.class}: #{arg}", *arg.backtrace
-      else
-        p(:error, *args)
-      end
-    else
-      p(:error, *args)
-    end
+  def error(error, context: nil)
+    detail = error.is_a?(Exception) ? error.full_message(highlight: false, order: :top) : error.to_s
+    message = [context, detail].compact.join("\n").chomp
+    log.error(message)
+
+    output = "#{message}\n"
+    # Raw terminals need a carriage return to start the next line at column one.
+    output = output.gsub(/\r?\n/, "\r\n") if $stderr.tty?
+    $stderr.write(output)
+    nil
   end
 
   # an unhandleable error that results in a program crash
