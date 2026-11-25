@@ -79,23 +79,12 @@ module VER
         end
       end
 
-      def insert_newline_below
-        return insert_indented_newline_below if buffer.options.autoindent
+      def insert_newline_above(...)
         super
         buffer.minor_mode(:control, :insert)
       end
 
-      def insert_indented_newline_below
-        super
-        buffer.minor_mode(:control, :insert)
-      end
-
-      def insert_indented_newline_below
-        super
-        buffer.minor_mode(:control, :insert)
-      end
-
-      def insert_newline_above
+      def insert_newline_below(...)
         super
         buffer.minor_mode(:control, :insert)
       end

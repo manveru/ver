@@ -180,7 +180,7 @@ VER.spec do
       @buffer.minor_mode?(:insert).should.not.be.nil
     end
 
-    it 'inserts newline above with autoindent from line two' do
+    it 'inserts newline above without autoindent from line two' do
       @buffer.options.autoindent = false
       @insert.index = '2.1'
       @insert.insert_newline_above
@@ -188,6 +188,15 @@ VER.spec do
       @insert.get('+ 1 lines linestart', '+ 1 lines lineend').should == "  line two"
       @insert.get('linestart', 'lineend').should == ""
       @buffer.minor_mode?(:insert).should.not.be.nil
+    end
+
+    it 'copies the previous line indentation when opening above at column zero' do
+      @buffer.options.autoindent = true
+      @insert.index = '3.0'
+      VER::Methods::Insert.newline_above(@buffer)
+      @insert.index.should == '3.2'
+      @insert.get('linestart', 'lineend').should == '  '
+      @insert.get('+ 1 line linestart', '+ 1 line lineend').should == '    line three'
     end
 
     it 'deletes previous char using virtual movement' do

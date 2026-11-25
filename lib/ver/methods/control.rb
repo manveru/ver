@@ -20,12 +20,12 @@ module VER
         text.minor_mode(:control, :insert)
       end
 
-      def insert_indented_newline_above(text)
-        Insert.insert_indented_newline_above(text)
+      def insert_indented_newline_above(buffer)
+        buffer.at_insert.insert_newline_above(autoindent: true)
       end
 
-      def insert_indented_newline_below(text)
-        Insert.insert_indented_newline_below(text)
+      def insert_indented_newline_below(buffer)
+        buffer.at_insert.insert_indented_newline_below
       end
 
       def open_file_under_cursor(text)

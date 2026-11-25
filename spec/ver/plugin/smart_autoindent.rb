@@ -1,78 +1,40 @@
 require_relative '../../helper'
-require 'ffi-tk'
 
-class SpecText < Tk::Text
-  attr_accessor :syntax
+VER.spec keymap: 'vim', hidden: false do
+  VER.plugin :smart_autoindent
+  VER.load_plugins
 
-  def options
-    VER.options
-  end
-
-  def load_preferences
-    true
-  end
-
-  def preferences
-    eval(File.read("config/preferences/#{syntax}.rb"))
-  end
-end
-
-# NOTE: do _not_ remove trailing whitespace in this file, it's essential.
-
-VER.spec do
   describe 'VER::Methods::SmartAutoindent' do
-    require_relative '../../../config/plugin/smart_autoindent'
+    behaves_like :with_buffer
+
+    before do
+      buffer.syntax = VER::Syntax.new('Ruby')
+      buffer.options.autoindent = true
+      buffer.options.shiftwidth = 2
+      buffer.value = ''
+      buffer.undoer = VER::Undo::Tree.new(buffer)
+    end
 
     describe 'insert indented newline' do
-      Indent = VER::Methods::SmartAutoindent
-
-      def fake_input(text, string)
-        string.each_line.with_index do |line, index|
-          puts " #{line.lstrip.inspect} ".center(80, '-') if $DEBUG
-          Indent.newline(text) unless index == 0
-          text.insert :insert, line.chomp.lstrip
-          puts text.value.gsub(/^( +)(.*)$/, "\e[41m\\1\e[0m\\2") if $DEBUG
+      def check(code)
+        code.each_line do |line|
+          buffer.insert(:insert, line.chomp.lstrip)
+          VER::Methods::Insert.newline(buffer)
         end
-      end
-
-      def check(syntax, code)
-        text = SpecText.new
-        text.syntax = syntax
-        fake_input(text, code)
-        if $DEBUG
-          puts " <result> ".center(80, '*')
-          puts text.value.gsub(/^( +)(.*)$/, "\e[41m\\1\e[0m\\2")
-          puts " </result> ".center(80, '*')
-          puts " <original> ".center(80, '*')
-          puts code.gsub(/^( +)(.*)$/, "\e[41m\\1\e[0m\\2")
-          puts " </original> ".center(80, '*')
-        end
-        text.value.chomp.should == code.chomp
-      ensure
-        text.destroy
-      end
-
-      def with_text(syntax)
-        text = SpecText.new
-        text.syntax = syntax
-        yield text
-        text.value.chomp
-      ensure
-        text.destroy
+        buffer.get('1.0', 'insert linestart').should == code
       end
 
       it 'indents by simple rules' do
-        # the end will be ok once next newline is entered
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 class Foo
   def bar
   end
-  end
+end
         RUBY
       end
 
       it 'indents deeper' do
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 class Foo
   def bar
     if foo
@@ -86,7 +48,7 @@ end
       end
 
       it 'indents with empty lines' do
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 class Foo
   def bar
     return 1 if foo
@@ -104,21 +66,20 @@ end
       end
 
       it 'indents partial already' do
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 class Foo
   def bar
         RUBY
       end
 
       it 'indents next line at start of buffer' do
-        check(:Ruby, <<-RUBY)
-class Foo
-  
-        RUBY
+        buffer.value = 'class Foo'
+        type 'A<Control-m>'
+        buffer.value.should == "class Foo\n  \n"
       end
 
       it 'indents an empty case statement' do
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 case foo
 when bar
 when foobar
@@ -128,7 +89,7 @@ end
       end
 
       it 'indents a filled case statement' do
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 case foo
 when bar
   stuff
@@ -136,13 +97,12 @@ when foobar
   more stuff
 else
   other stuff
-  end
+end
         RUBY
       end
 
       it 'indents an if/elsif/else statement' do
-        # the end will be ok once next newline is entered
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 if 1 == 2
   a
 elsif 2 == 3
@@ -151,13 +111,12 @@ elsif 4 == 5
   c
 else
   d
-  end
+end
         RUBY
       end
 
       it 'indents some block structures' do
-        # the end will be ok once next newline is entered
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 [1,2,3].each do |element|
   p element
 end
@@ -172,26 +131,24 @@ end
 
 while ok
   puts "I'm fine"
-  end
+end
         RUBY
       end
 
       it 'indents begin/rescue/else/end' do
-        # the end will be ok once next newline is entered
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 begin
   foo
 rescue
   bar
 else
   foobar
-  end
+end
         RUBY
       end
 
       it 'indents rescue in a method' do
-        # the end will be ok once next newline is entered
-        check(:Ruby, <<-RUBY)
+        check(<<-RUBY)
 class Foo
   def bar
     some stuff
@@ -205,19 +162,14 @@ end
       end
 
       it 'indents after a nested block' do
-        # the end will be ok once next newline is entered
-        check(:Ruby, <<-RUBY)
-module VER
-  major_mode :Fundamental do
-    stuff do
-    end
-    
-        RUBY
+        buffer.value = "module VER\n  if ready\n    work\n  end"
+        buffer.insert = '4.0'
+        type 'A<Return>next_work'
+        buffer.value.should == "module VER\n  if ready\n    work\n  end\n  next_work\n"
       end
 
       it 'indents nested module/class/method' do
-        # the end will be ok once next newline is entered
-        check(:Ruby, <<-'RUBY')
+        check(<<-'RUBY')
 # the best editor since ed
 module VER
   # a module for modules with methods
@@ -256,20 +208,92 @@ end
         RUBY
       end
 
-      it 'indents after a nested block' do
-        # the end will be ok once next newline is entered
-        check(:newLisp, <<-LISP)
+      it 'indents a Lisp expression using an increase-only rule' do
+        buffer.syntax = VER::Syntax.new('newLisp')
+        check(<<-LISP)
 (if (= 1 2)
   (+ 1 3))
 LISP
       end
 
-      it 'inserts newlines in the middle of a line' do
-        with_text(:Ruby){|text|
-          text.insert :insert, "one two"
-          text.mark_set :insert, '4.0'
-          Indent.newline(text)
-        }.should == "one\ntwo"
+      it 'splits at the cursor and undoes the split in one step' do
+        buffer.value = "if ready\n  end # done"
+        buffer.insert = '2.5'
+        type 'i'
+        Tk::Event.generate(buffer, '<Return>', when: :now)
+        Tk.update
+        buffer.value.should == "if ready\nend\n# done\n"
+        buffer.at_insert.index.should == '3.0'
+        buffer.undo
+        buffer.value.should == "if ready\n  end # done\n"
+        buffer.redo
+        buffer.value.should == "if ready\nend\n# done\n"
+      end
+
+      it 'uses the prefix before the cursor and the configured shiftwidth' do
+        buffer.options.shiftwidth = 4
+        buffer.value = 'items = [1, 2, 3]'
+        buffer.insert = '1.9'
+        type 'i<Control-j>'
+        buffer.value.should == "items = [\n    1, 2, 3]\n"
+        buffer.at_insert.index.should == '2.4'
+      end
+
+      it 'dedents a tab-indented closer by one shiftwidth' do
+        buffer.options.tabstop = 4
+        buffer.value = "  if ready\n\tend"
+        buffer.insert = '2.1'
+        type 'A<Return>'
+        buffer.value.should == "  if ready\n  end\n  \n"
+        buffer.at_insert.index.should == '3.2'
+      end
+
+      it 'indents an open Slate block using the bundled preference' do
+        buffer.syntax = VER::Syntax.new('Slate')
+        check("[\n  value\n]\n")
+      end
+
+      it 'copies existing indentation in a syntax without indentation rules' do
+        buffer.syntax = VER::Syntax.new('Plain Text')
+        buffer.value = "\t  one two"
+        buffer.insert = '1.6'
+        type 'i<Return>'
+        buffer.value.should == "\t  one\n\t  two\n"
+        buffer.at_insert.index.should == '2.3'
+      end
+
+      it 'leaves following whitespace intact when autoindent is disabled' do
+        buffer.options.autoindent = false
+        buffer.value = "  one two"
+        buffer.insert = '1.5'
+        type 'i<Return>'
+        buffer.value.should == "  one\n two\n"
+        buffer.at_insert.index.should == '2.0'
+      end
+
+      it 'opens above a closing line and below an opening line' do
+        buffer.value = "if ready\nend"
+        buffer.insert = '2.0'
+        type 'O'
+        buffer.value.should == "if ready\n  \nend\n"
+        buffer.at_insert.index.should == '2.2'
+        buffer.undo
+        buffer.value.should == "if ready\nend\n"
+
+        type '<Escape>'
+        buffer.insert = '1.0'
+        type 'o'
+        buffer.value.should == "if ready\n  \nend\n"
+        buffer.at_insert.index.should == '2.2'
+        buffer.minor_mode?(:insert).should.not.be.nil
+      end
+
+      it 'opens above the first line without moving its text' do
+        buffer.value = "  work"
+        buffer.insert = '1.4'
+        type 'O'
+        buffer.value.should == "  \n  work\n"
+        buffer.at_insert.index.should == '1.2'
       end
     end
   end

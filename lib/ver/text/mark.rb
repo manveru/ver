@@ -198,55 +198,75 @@ module VER
         self << "\t"
       end
 
-      def insert_newline
-        if buffer.options.autoindent
-          insert_indented_newline
-        else
-          self << "\n"
-        end
+      def insert_newline(autoindent: buffer.options.autoindent)
+        insert_line_break(index, :split, autoindent: autoindent)
       end
 
       def insert_indented_newline
-        buffer.undo_record do |record|
-          indent1 = get('linestart', 'lineend')[/^\s*/]
-          record.insert(self, "\n")
-
-          indent2 = get('linestart', 'lineend')[/^\s*/]
-          record.replace(
-            "#{self} linestart",
-            "#{self} linestart + #{indent2.size} chars",
-            indent1
-          )
-
-          Methods::Control.clean_line(buffer, "#{self} - 1 line", record)
-        end
+        insert_newline(autoindent: true)
       end
 
-      def insert_newline_below
-        return insert_indented_newline_below if buffer.options.autoindent
-        set "#{self} lineend"
-        self << "\n"
+      def insert_newline_below(autoindent: buffer.options.autoindent)
+        insert_line_break(lineend, :below, autoindent: autoindent)
       end
 
       def insert_indented_newline_below
-        line = get('linestart', 'lineend')
-        indent = line[/^\s*/]
-        set "#{self} lineend"
-        self << "\n#{indent}"
+        insert_newline_below(autoindent: true)
       end
 
-      def insert_newline_above
-        if char > 1
-          set(self - '1 line')
-          insert_newline_below
+      def insert_newline_above(autoindent: buffer.options.autoindent)
+        start = linestart
+        if start.line == 1
+          indent = autoindent ? first_line_indent(start) : ''
+          buffer.insert(start, "#{indent}\n")
+          set(start + indent.size)
         else
-          buffer.undo_record do |record|
-            record.insert("#{self} linestart", "\n")
-            set "#{self} - 1 line"
-            Methods::Control.clean_line(buffer, "#{self} - 1 line", record)
-          end
+          previous_end = buffer.index("#{start} - 1 line lineend")
+          insert_line_break(previous_end, :below, autoindent: autoindent)
         end
       end
+
+      def insert_line_break(position, placement, autoindent:)
+        unless autoindent
+          set(position) if placement == :below
+          return self << "\n"
+        end
+
+        start = position.linestart
+        prefix = buffer.get(start, position)
+        indent = leading_indent(prefix)
+        suffix_indent = placement == :split ? leading_indent(buffer.get(position, position.lineend)) : ''
+        if placement == :split && prefix == indent
+          current_indent = ''
+          next_indent = indent + suffix_indent
+        else
+          current_indent, next_indent = newline_indentation(start, prefix, indent, placement)
+        end
+
+        buffer.undo_record do |record|
+          record.delete(position, position + suffix_indent.size) unless suffix_indent.empty?
+          record.insert(position, "\n#{next_indent}")
+          record.replace(start, start + indent.size, current_indent) if current_indent != indent
+        end
+        set("#{start.line + 1}.#{next_indent.size}")
+      end
+      private :insert_line_break
+
+      # Returns the indentation of the reference line and the new line.
+      def newline_indentation(_start, _prefix, indent, _placement)
+        [indent, indent]
+      end
+      private :newline_indentation
+
+      def first_line_indent(_start)
+        ''
+      end
+      private :first_line_indent
+
+      def leading_indent(line)
+        line[/\A\s*/]
+      end
+      private :leading_indent
 
       # Set mark to be +count+ display-chars to the right.
       # Stays on the same line.

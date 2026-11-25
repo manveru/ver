@@ -12,7 +12,7 @@
       ["[", "]"],
       ["“", "”"],
       ["'", "'"]],
-    increaseIndentPattern: "^.*(\\(|\\[|\\{].*[^)]}\"]$",
+    increaseIndentPattern: '(?:\([^)]*|\[[^\]]*|\{[^}]*)$',
     shellVariables: 
      [{name: "TM_COMMENT_START", value: "\""},
       {name: "TM_COMMENT_END", value: "\""}]},

@@ -1,6 +1,6 @@
 module VER
   Buffer.def_delegator(:@at_insert, :tab, :insert_tab)
-  Buffer.def_delegator(:@at_insert, :newline, :insert_newline)
+  Buffer.def_delegator(:@at_insert, :insert_newline)
   Buffer.def_delegator(:@at_insert, :selection, :insert_selection)
 
   module Methods
@@ -26,56 +26,16 @@ module VER
         VER.error(ex)
       end
 
-      def newline_below(text)
-        Undo.record text do |record|
-          if text.options.autoindent
-            line = text.get('insert linestart', 'insert lineend')
-
-            indent = line[/^\s*/]
-            text.insert = 'insert lineend'
-            record.insert(:insert, "\n#{indent}")
-          else
-            text.insert = 'insert lineend'
-            record.insert(:insert, "\n")
-          end
-
-          Control.clean_line(text, 'insert - 1 line', record)
-        end
-
-        text.minor_mode(:control, :insert)
+      def newline_below(buffer)
+        buffer.at_insert.insert_newline_below
       end
 
-      def newline_above(text)
-        Undo.record text do |record|
-          if text.index(:insert).y > 1
-            Move.prev_line(text)
-            newline_below(text)
-          else
-            record.insert('insert linestart', "\n")
-            text.mark_set(:insert, 'insert - 1 line')
-            Control.clean_line(text, 'insert - 1 line', record)
-            text.minor_mode(:control, :insert)
-          end
-        end
+      def newline_above(buffer)
+        buffer.at_insert.insert_newline_above
       end
 
-      def indented_newline(text)
-        Undo.record text do |record|
-          line1 = text.get('insert linestart', 'insert lineend')
-          indentation1 = line1[/^\s+/] || ''
-          record.insert(:insert, "\n")
-
-          line2 = text.get('insert linestart', 'insert lineend')
-          indentation2 = line2[/^\s+/] || ''
-
-          record.replace(
-            'insert linestart',
-            "insert linestart + #{indentation2.size} chars",
-            indentation1
-          )
-
-          Control.clean_line(text, 'insert - 1 line', record)
-        end
+      def indented_newline(buffer)
+        buffer.at_insert.insert_indented_newline
       end
 
       # Most of the input will be in US-ASCII, but an encoding can be set per

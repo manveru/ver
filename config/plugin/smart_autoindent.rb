@@ -1,157 +1,65 @@
 module VER
   module Methods
     module SmartAutoindent
-      def self.newline(text)
-        if text.options.autoindent
-          indented_newline(text)
-        else
-          Insert.newline(text)
-        end
+      private
+
+      def first_line_indent(start)
+        leading_indent(buffer.get(start, start.lineend))
       end
 
-      def self.newline_below(text)
-        if text.options.autoindent
-          text.mark_set('insert', 'insert lineend')
-          newline(text)
-          text.minor_mode(:control, :insert)
-        else
-          Insert.newline_below(text)
+      def newline_indentation(start, prefix, indent, placement)
+        increase, decrease = indent_patterns
+        return super unless increase || decrease
+
+        step = ' ' * buffer.options.shiftwidth
+        if placement == :split && decrease&.match?(prefix) && !indent.empty? && !step.empty?
+          indent = closing_indent(start, indent, increase, step)
         end
+        [indent, following_indent(prefix, indent, increase, step)]
       end
 
-      def self.newline_above(text)
-        Undo.record text do |record|
-          if text.index(:insert).y > 1
-            text.prev_line
-            newline_below(text)
-          else
-            record.insert('insert linestart', "\n")
-            text.mark_set(:insert, 'insert - 1 line')
-            Control.clean_line(text, 'insert - 1 line', record)
-            text.minor_mode(:control, :insert)
-          end
-        end
+      def following_indent(line, base, increase, step)
+        increase&.match?(line) ? base + step : base
       end
 
-      def self.indented_newline(text, record = text)
-        settings = indent_settings(text)
-        increase, decrease = settings.values_at(:increase, :decrease)
-        unless increase || decrease
-          record.insert :insert, "\n"
-          return
-        end
+      def closing_indent(start, indent, increase, step)
+        match = buffer.rsearch(/[^ \t\r\n\f\v]/, start, '1.0', :elide).first
+        return indent unless match
 
-        ref_line = text.get(
-          "insert - 1 lines linestart",
-          "insert - 1 lines lineend"
-        )
-        ref = ref_line[/^\s*/].size / 2
-        ref_inc = increase ? ref_line.scan(increase).size : 0
-        ref_dec = decrease ? ref_line.scan(decrease).size : 0
+        previous = buffer.get("#{match} linestart", "#{match} lineend")
+        tabstop = buffer.options.tabstop
+        columns = indent_columns(indent, tabstop)
+        expected = following_indent(previous, leading_indent(previous), increase, step)
+        # A closer left of the expected body indent is already aligned.
+        return indent if columns.last < indent_columns(expected, tabstop).last
 
-        cur_line = text.get(
-          "insert linestart",
-          "insert lineend"
-        )
-        cur_inc = increase ? cur_line.scan(increase).size : 0
-        cur_dec = decrease ? cur_line.scan(decrease).size : 0
-
-        # we strip whitespace from previous empty lines, but it's still added to
-        # the current one, so we use it as reference.
-        if ref_line.empty?
-          ref = cur_line[/^\s*/].size / 2
-        end
-
-        pattern = [
-          if ref_inc != 0 && ref_dec != 0; '='
-          elsif ref_inc != 0; '+'
-          elsif ref_dec != 0; '-'
-          else; '?'
-          end,
-          if cur_inc != 0 && cur_dec != 0; '='
-          elsif cur_inc != 0; '+'
-          elsif cur_dec != 0; '-'
-          else; '?'
-          end
-        ].join
-
-        cur_indent, next_indent =
-          case pattern
-          when '++'; [ref + 1, ref + 2]
-          when '+-'; [ref,     ref]
-          when '+='; [ref,     ref]
-          when '+?'; [ref + 1, ref + 1]
-          when '-+'; [ref,     ref]
-          when '--'; [ref - 1, ref - 2]
-          when '-='; [ref,     ref]
-          when '-?'; [ref,     ref]
-          when '=+'; [ref + 1, ref + 1]
-          when '=-'; [ref,     ref]
-          when '=='; [ref,     ref]
-          when '=?'; [ref + 1, ref + 1]
-          when '?+'; [ref,     ref + 1]
-          when '?-'; [ref - 1, ref - 2]
-          when '?='; [ref - 1, ref]
-          when '??'; [ref,     ref]
-          end
-
-        if text.index('insert - 1 line') == text.index('insert')
-          # first line, replace is futile
-          next_indent -= 1
-        elsif cur_line =~ /\S/
-          cur_indent = [0, cur_indent].max
-          record.replace(
-            'insert linestart',
-            'insert lineend',
-            (' ' * (cur_indent * 2)) << cur_line.lstrip
-          )
-        else # that was an empty line
-          record.replace('insert linestart', 'insert lineend', '')
-        end
-
-        next_indent = [0, next_indent].max
-
-        record.insert('insert lineend', "\n#{' ' * (next_indent * 2)}")
+        width = [columns.last - step.size, 0].max
+        keep = columns.bsearch_index { |column| column > width } - 1
+        indent[0, keep] + ' ' * (width - columns[keep])
       end
 
-      def self.indent_settings(text)
-        return {} unless text.load_preferences
-
-        indent_settings = {}
-
-        text.preferences.each do |pref|
-          settings = pref[:settings]
-          indent_settings[:increase]    ||= settings[:increaseIndentPattern]
-          indent_settings[:decrease]    ||= settings[:decreaseIndentPattern]
-          indent_settings[:indent_next] ||= settings[:indentNextLinePattern]
-          indent_settings[:unindented]  ||= settings[:unIndentedLinePattern]
+      def indent_columns(indent, tabstop)
+        columns = [0]
+        indent.each_char do |char|
+          column = columns.last
+          columns << column + (char == "\t" ? tabstop - column % tabstop : 1)
         end
+        columns
+      end
 
+      def indent_patterns
+        return [nil, nil] unless buffer.load_preferences
 
-        [:increase, :decrease, :indent_next, :unindented].each do |key|
-          if value = indent_settings[key]
-            indent_settings[key] = Regexp.new(value)
-          else
-            indent_settings.delete(key)
-          end
+        increase = decrease = nil
+        buffer.preferences.each do |preference|
+          settings = preference.fetch(:settings)
+          increase ||= settings[:increaseIndentPattern]
+          decrease ||= settings[:decreaseIndentPattern]
         end
-
-        return indent_settings
+        [increase, decrease].map { |pattern| Regexp.new(pattern) if pattern }
       end
     end
   end
 
-  case options.keymap
-  when 'vim'
-    minor_mode :control do
-      handler Methods::SmartAutoindent
-      map :newline_below, %w[o]
-      map :newline_above, %w[O]
-    end
-
-    minor_mode :insert do
-      handler Methods::SmartAutoindent
-      map :newline, %w[Return]
-    end
-  end
+  Text::Mark.prepend(Methods::SmartAutoindent) if options.keymap == 'vim'
 end
